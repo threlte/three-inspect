@@ -12,9 +12,22 @@ export { stats } from './pane/stats'
 export { addPane, addFolder }
 export { save, storage } from './storage'
 
-export const init = (scene: THREE.Scene, camera: THREE.Camera, renderer: THREE.WebGLRenderer, composer?: EffectComposer) => {
+/**
+ * Disposes the debugger
+ */
+type Disposer = () => void
+
+/**
+ * Mounts Three.js debugging and monitoring tools
+ * @param scene The scene to debug.
+ * @param camera The current camera.
+ * @param renderer The rendering instance.
+ * @param composer An optional EffectComposer instance.
+ * @returns A cleanup function to unmount and dispose the debugger.
+ */
+export const init = (scene: THREE.Scene, camera: THREE.Camera, renderer: THREE.WebGLRenderer, composer?: EffectComposer): Disposer => {
   const disposeStats = initStats(renderer)
-  initScene(scene)
+  const disposeScene = initScene(scene)
   initSceneFolder(scene)
   initCameraFolder(camera, renderer)
   initPostFolder(composer)
@@ -22,6 +35,7 @@ export const init = (scene: THREE.Scene, camera: THREE.Camera, renderer: THREE.W
 
   return () => {
     disposeStats()
+    disposeScene()
   }
 }
 

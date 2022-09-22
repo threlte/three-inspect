@@ -1,12 +1,12 @@
 import { addFolder, pane } from '../pane'
 import * as post from 'postprocessing'
 
-const postFolder = addFolder(pane, 'postprocessing')
-
 export const initPostFolder = (composer?: post.EffectComposer) => {
   if (composer === undefined) {
     return
   }
+
+  const postFolder = addFolder(pane, 'postprocessing')
 
   let effectPass: post.EffectPass | undefined
 
@@ -50,6 +50,10 @@ export const initPostFolder = (composer?: post.EffectComposer) => {
         },
       })
       vignetteFolder.addInput(effect, 'offset')
+    }
+
+    return () => {
+
     }
   }
 

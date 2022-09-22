@@ -103,5 +103,12 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
   
   setEnabledControls()
   
-  addTransformInputs(cameraFolder, camera)
+  const disposeTransformInputs =  addTransformInputs(cameraFolder, camera)
+
+  return () => {
+    camera.position.set = setPosition
+    disposeTransformInputs()
+    orbitControls.dispose()
+    cameraFolder.dispose()
+  }
 }

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { Pane, addFolder, deleteFolder } from '../pane'
+import { Pane, addFolder } from '../pane'
 import { defaultMinMax } from '../constants'
 
 export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
@@ -70,9 +70,7 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
     materialFolder.addInput(material, 'clearcoatRoughness', defaultMinMax)
   }
 
-  const dispose = () => {
-    deleteFolder(materialFolder)
-  }
+  return () => {
 
-  return dispose
+  }
 }

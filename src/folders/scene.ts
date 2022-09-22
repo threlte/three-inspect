@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { disposeHelper } from '../lib/dispose'
 import { addFolder, pane } from '../pane'
 import { save, storage } from '../storage'
 
@@ -35,10 +36,8 @@ export const initSceneFolder = (scene: THREE.Scene) => {
 
   const handleGridChange = (param: 'gridSize' | 'gridDivisions') => {
     scene.remove(helpers.grid)
-    helpers.grid.geometry.dispose()
-    if (helpers.grid.material instanceof THREE.Material) {
-      helpers.grid.material.dispose()
-    }
+    disposeHelper(helpers.grid)
+
     helpers.grid = new THREE.GridHelper(params.gridSize, params.gridDivisions)
     scene.add(helpers.grid)
     save(param, params[param])
@@ -70,5 +69,11 @@ export const initSceneFolder = (scene: THREE.Scene) => {
   
     fogFolder.addInput(scene.fog, 'near')
     fogFolder.addInput(scene.fog, 'far')
+  }
+
+  return () => {
+    scene.remove(helpers.grid, helpers.axes)
+    disposeHelper(helpers.grid)
+    disposeHelper(helpers.axes)
   }
 }

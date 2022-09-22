@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { disposeHelper } from '../lib/dispose'
 import type { Pane } from '../pane'
 
 export const addForwardHelperInput = (pane: Pane, object3D: THREE.Object3D) => {
@@ -19,7 +20,6 @@ export const addForwardHelperInput = (pane: Pane, object3D: THREE.Object3D) => {
 
   return () => {
     object3D.remove(helper)
-    // @ts-expect-error This will be added to three.js soon
-    helper.dispose?.()
+    disposeHelper(helper as unknown as THREE.Line)
   }
 }

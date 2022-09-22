@@ -16,6 +16,7 @@
     "preview": "vite preview --host"
   },
   "devDependencies": {
+    "@types/three": "^0.144.0",
     "@typescript-eslint/eslint-plugin": "^5.37.0",
     "@typescript-eslint/parser": "^5.37.0",
     "eslint": "^8.23.1",
@@ -27,7 +28,6 @@
     "@0b5vr/tweakpane-plugin-rotation": "^0.1.1",
     "@tweakpane/core": "^1.1.0",
     "@tweakpane/plugin-essentials": "^0.1.5",
-    "@types/three": "^0.144.0",
     "postprocessing": "^6.28.7",
     "screen-space-reflections": "^2.5.0",
     "three": "^0.144.0",

@@ -92,19 +92,12 @@ export const addTransformInputs = (pane: Pane, object3D: THREE.Object3D) => {
     update(handleInstancedMeshUpdate)
 
     imeshDispose = () => {
-      deleteFolder(imeshFolder)
       removeUpdate(handleInstancedMeshUpdate)
     }
   }
 
-  const dispose = () => {
-    posInput.dispose()
-    rotInput.dispose()
-
+  return () => {
     removeUpdate(handleTransformUpdate)
-
     imeshDispose?.()
   }
-
-  return dispose
 }

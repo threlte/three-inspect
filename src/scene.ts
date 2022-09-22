@@ -15,7 +15,7 @@ export const initScene = (scene: THREE.Scene) => {
       objects.register(object)
     } else {
       // eslint-disable-next-line no-console
-      console.log('three-kit debug unregistered item:', object)
+      console.warn('three-debug cannot register:', object)
     }
   }
   
@@ -24,6 +24,13 @@ export const initScene = (scene: THREE.Scene) => {
       lights.deregister(object)
     } else if (object instanceof THREE.Object3D) {
       objects.deregister(object)
+    }
+  }
+
+  const deregisterAll = () => {
+    const { children } = scene
+    for (let i = 0, l = children.length; i < l; i += 1) {
+      deregister(children[i])
     }
   }
   
@@ -48,11 +55,15 @@ export const initScene = (scene: THREE.Scene) => {
   }
   
   scene.clear = () => {
-    const { children } = scene
-    for (let i = 0, l = children.length; i < l; i += 1) {
-      deregister(children[i])
-    }
+    deregisterAll()
   
     return clear()
+  }
+
+  return () => {
+    deregisterAll()
+    scene.add = add
+    scene.remove = remove
+    scene.clear = clear
   }
 }

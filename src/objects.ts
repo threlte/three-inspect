@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { addFolder, deleteFolder, pane } from './pane'
+import { addFolder, pane } from './pane'
 import { addForwardHelperInput } from './inputs/helper-forward'
 import { addMaterialInputs } from './inputs/material'
 import { addTransformInputs } from './inputs/transform'
@@ -60,14 +60,10 @@ export const register = (object: THREE.Object3D, mainFolder = objectFolder) => {
     }
   }
 
-  console.log(object)
-
   disposers.set(object, () => {
     disposeMaterialInputs?.()
     disposeTransformInputs()
     disposeForwardHelper?.()
-    deleteFolder(folder)
-    object.traverse(child => console.log('child', object === child))
     object.traverse(child => object !== child && deregister(child)) 
   })
 }

@@ -1,8 +1,9 @@
 import * as THREE from 'three'
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
 import { addTransformInputs } from '../inputs/transform'
-import { addFolder, deleteFolder, pane } from '../pane'
+import { addFolder, pane } from '../pane'
 import { defaultMinMax, shadowmapSizes } from '../constants'
+import { disposeHelper } from '../lib/dispose'
 
 type LightHelper =
   | THREE.SpotLightHelper
@@ -155,16 +156,14 @@ export const addLightFolder = (light: THREE.Light) => {
   })
 
   return () => {
-    deleteFolder(folder)
-
     if (helper !== undefined) {
-      helper.dispose?.()
       light.remove(helper)
+      disposeHelper(helper as THREE.Line)
     }
 
     if (shadowHelper !== undefined) {
-      shadowHelper.dispose?.()
       light.remove(shadowHelper)
+      disposeHelper(shadowHelper)
     }
   }
 }
