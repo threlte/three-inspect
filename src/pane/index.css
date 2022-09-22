@@ -1,0 +1,35 @@
+.panels {
+  position: absolute;
+  top: 8px;
+  right: 314px;
+  display: flex;
+  transition: transform 300ms;
+  overflow: hidden;
+}
+
+.panels-button {
+  width: auto !important;
+  padding-right: 6px !important;
+  padding-left: 6px !important;
+}
+
+.pane {
+  overflow: auto;
+  max-height: calc(100vh - 16px);
+  border-radius: 5px;
+  transition: transform 300ms;
+}
+
+.selected {
+  background: #bbb !important;
+  color: #333 !important;
+}
+
+.pane-left {
+  left: 8px;
+  right: auto;
+}
+
+.hidden {
+  display: none;
+}

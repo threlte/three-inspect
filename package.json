@@ -1,0 +1,36 @@
+{
+  "name": "three-debug",
+  "version": "0.0.1",
+  "type": "module",
+  "types": "./src/main.ts",
+  "exports": {
+    ".": {
+      "import": "./src/main.ts"
+    }
+  },
+  "scripts": {
+    "start": "vite --host",
+    "build": "vite build",
+    "check": "tsc",
+    "lint": "eslint ./src",
+    "preview": "vite preview --host"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "@typescript-eslint/parser": "^5.37.0",
+    "eslint": "^8.23.1",
+    "three-kit": "github:michealparks/three-kit",
+    "typescript": "^4.8.3",
+    "vite": "^3.1.2"
+  },
+  "dependencies": {
+    "@0b5vr/tweakpane-plugin-rotation": "^0.1.1",
+    "@tweakpane/core": "^1.1.0",
+    "@tweakpane/plugin-essentials": "^0.1.5",
+    "@types/three": "^0.144.0",
+    "postprocessing": "^6.28.7",
+    "screen-space-reflections": "^2.5.0",
+    "three": "^0.144.0",
+    "tweakpane": "^3.1.0"
+  }
+}
