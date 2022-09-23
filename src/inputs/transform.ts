@@ -1,11 +1,6 @@
-import * as THREE from 'three'
-import { Pane, addFolder, deleteFolder, state } from '../pane'
+import { Pane, addFolder, state } from '../pane'
+import { three } from '../three'
 import { removeUpdate, update } from '../update'
-
-const vec3 = new THREE.Vector3()
-const scale = new THREE.Vector3()
-const quat = new THREE.Quaternion()
-const mat4 = new THREE.Matrix4()
 
 const quatSettings = {
   expanded: true,
@@ -14,6 +9,12 @@ const quatSettings = {
 }
 
 export const addTransformInputs = (pane: Pane, object3D: THREE.Object3D) => {
+  const THREE = three()
+  const vec3 = new THREE.Vector3()
+  const scale = new THREE.Vector3()
+  const quat = new THREE.Quaternion()
+  const mat4 = new THREE.Matrix4()
+
   const { quaternion } = object3D
 
   const params = {

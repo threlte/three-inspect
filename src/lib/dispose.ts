@@ -1,13 +1,16 @@
-import * as THREE from 'three'
-
 export const disposeHelper = (helper?: THREE.Line) => {
   if (helper === undefined) {
     return
   }
 
-  helper.geometry.dispose()
+  if ('dispose' in helper) {
+    // @ts-expect-error
+    helper.dispose?.()
+  }
 
-  if (helper.material instanceof THREE.Material) {
-    helper.material.dispose()
+  helper.geometry?.dispose()
+
+  if ((helper.material as THREE.Material).isMaterial) {
+    (helper.material as THREE.Material).dispose()
   }
 }

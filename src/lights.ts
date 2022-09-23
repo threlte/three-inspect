@@ -1,4 +1,3 @@
-import type * as THREE from 'three'
 import { addLightFolder } from './folders/lights'
 
 type Disposer = () => void
@@ -17,4 +16,3 @@ export const deregister = (light: THREE.Light) => {
   disposers.get(light)!()
   disposers.delete(light)
 }
-

@@ -1,0 +1,26 @@
+name: NPM Publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.4.0
+        with:
+          persist-credentials: false
+
+      - name: Install and Build 🔧
+        run: |
+          npm ci --audit=false
+          npm run build
+
+      - name: Publish 🚀
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }} 

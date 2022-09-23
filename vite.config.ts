@@ -1,7 +1,16 @@
+import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    lib: {
+      entry: resolve(__dirname, 'src/main.ts'),
+      name: 'MyLib',
+      // the proper extensions will be added
+      fileName: 'three-debug'
+    }
+  },
   server: {
     fs: {
       allow: ['.'],

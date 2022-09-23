@@ -1,17 +1,15 @@
-import * as THREE from 'three'
 import { erase, save, storage } from '../storage'
 import { addFolder, pane } from '../pane'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { addTransformInputs } from '../inputs/transform'
 
 export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRenderer) => {
-
   const constants = {
     CONTROLS_MAP: 2,
     CONTROLS_NONE: 0,
     CONTROLS_ORBIT: 1,
   }
-  
+
   const params = {
     controls: storage.controls ?? constants.CONTROLS_NONE,
   }
@@ -70,8 +68,8 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
   }
   
   const handleCameraChange = () => {
-    if (camera instanceof THREE.PerspectiveCamera) {
-      camera.updateProjectionMatrix()
+    if ((camera as THREE.PerspectiveCamera).isPerspectiveCamera) {
+      (camera as THREE.PerspectiveCamera).updateProjectionMatrix()
     }
   }
   
@@ -92,13 +90,13 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
     view: 'radiogrid',
   }).on('change', setEnabledControls)
 
-  if (camera instanceof THREE.PerspectiveCamera) {
-    cameraFolder.addInput(camera, 'near').on('change', handleCameraChange)
-    cameraFolder.addInput(camera, 'far').on('change', handleCameraChange)
-    cameraFolder.addInput(camera, 'fov').on('change', handleCameraChange)
-    cameraFolder.addInput(camera, 'filmOffset').on('change', handleCameraChange)
-    cameraFolder.addInput(camera, 'filmGauge').on('change', handleCameraChange)
-    cameraFolder.addInput(camera, 'zoom').on('change', handleCameraChange)
+  if ((camera as THREE.PerspectiveCamera).isPerspectiveCamera) {
+    cameraFolder.addInput(camera as THREE.PerspectiveCamera, 'near').on('change', handleCameraChange)
+    cameraFolder.addInput(camera as THREE.PerspectiveCamera, 'far').on('change', handleCameraChange)
+    cameraFolder.addInput(camera as THREE.PerspectiveCamera, 'fov').on('change', handleCameraChange)
+    cameraFolder.addInput(camera as THREE.PerspectiveCamera, 'filmOffset').on('change', handleCameraChange)
+    cameraFolder.addInput(camera as THREE.PerspectiveCamera, 'filmGauge').on('change', handleCameraChange)
+    cameraFolder.addInput(camera as THREE.PerspectiveCamera, 'zoom').on('change', handleCameraChange)
   }
   
   setEnabledControls()
@@ -109,6 +107,5 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
     camera.position.set = setPosition
     disposeTransformInputs()
     orbitControls.dispose()
-    cameraFolder.dispose()
   }
 }

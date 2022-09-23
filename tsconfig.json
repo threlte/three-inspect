@@ -26,9 +26,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "noEmit": true,
     "skipLibCheck": true,
-    "importsNotUsedAsValues": "error"
+    "importsNotUsedAsValues": "error",
+    "outDir": "dist"
   },
   "include": ["src/**/*"]
 }

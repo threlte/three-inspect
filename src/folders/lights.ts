@@ -1,9 +1,9 @@
-import * as THREE from 'three'
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
 import { addTransformInputs } from '../inputs/transform'
 import { addFolder, pane } from '../pane'
 import { defaultMinMax, shadowmapSizes } from '../constants'
 import { disposeHelper } from '../lib/dispose'
+import { three } from '../three'
 
 type LightHelper =
   | THREE.SpotLightHelper
@@ -16,6 +16,7 @@ type LightHelper =
 const lightFolder = addFolder(pane, 'lights', 1)
 
 export const addLightFolder = (light: THREE.Light) => {
+  const THREE = three()
   const folder = addFolder(lightFolder, `#${light.id} ${light.name} (${light.type})`)
 
   let helper: LightHelper | undefined
@@ -27,7 +28,7 @@ export const addLightFolder = (light: THREE.Light) => {
     color: `#${light.color.getHexString().toUpperCase()}`,
   }
 
-  if ((light instanceof THREE.AmbientLight) === false) {
+  if (('isAmbientLight' in light) === false) {
     folder
       .addInput(params, 'helper')
       .on('change', () => light[params.helper ? 'add' : 'remove'](helper!))
@@ -47,7 +48,6 @@ export const addLightFolder = (light: THREE.Light) => {
 
   if (light instanceof THREE.HemisphereLight) {
     folder.addInput(light, 'groundColor')
-
     helper = new THREE.HemisphereLightHelper(light, 10)
   } else if (light instanceof THREE.DirectionalLight) {
     helper = new THREE.DirectionalLightHelper(light)
@@ -62,7 +62,16 @@ export const addLightFolder = (light: THREE.Light) => {
   ) {
     folder.addInput(light, 'castShadow')
     addTransformInputs(folder, light)
-    // @TODO camera position
+  }
+
+  if (
+    light instanceof THREE.DirectionalLight ||
+    light instanceof THREE.SpotLight
+  ) {
+    const targetFolder = addFolder(folder, 'target')
+    targetFolder.addInput(light.target, 'position', { step: 0.1 }).on('change', () => {
+      light.target.updateMatrixWorld()
+    })
   }
 
   if (light instanceof THREE.SpotLight) {
@@ -97,7 +106,7 @@ export const addLightFolder = (light: THREE.Light) => {
   }
 
   if (light.castShadow) {
-    const camFolder = addFolder(folder, `#${light.id} shadow`)
+    const camFolder = addFolder(folder, `#${light.id} shadow camera`)
 
     const shadowMapParams = {
       mapSize: light.shadow.mapSize.x,
@@ -131,6 +140,7 @@ export const addLightFolder = (light: THREE.Light) => {
       const camera = light.shadow.camera
       camFolder.addInput(camera, 'near').on('change', handleShadowmapChange)
       camFolder.addInput(camera, 'far').on('change', handleShadowmapChange)
+      addTransformInputs(camFolder, camera)
     }
     
     if (

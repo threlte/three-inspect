@@ -1,4 +1,3 @@
-import * as THREE from 'three'
 import { addFolder, pane } from './pane'
 import { addForwardHelperInput } from './inputs/helper-forward'
 import { addMaterialInputs } from './inputs/material'
@@ -11,7 +10,7 @@ type Disposer = () => void
 const disposers = new WeakMap<THREE.Object3D, Disposer>()
 
 export const register = (object: THREE.Object3D, mainFolder = objectFolder) => {
-  const isInstanced = object instanceof THREE.InstancedMesh
+  const isInstanced = (object as THREE.InstancedMesh).isInstancedMesh
   const instancedFlag = isInstanced ? ' (instanced)' : ''
   const name = `#${object.id} ${object.name || '[unnamed]'}${instancedFlag}`
   const folder = addFolder(mainFolder, name)
@@ -27,8 +26,8 @@ export const register = (object: THREE.Object3D, mainFolder = objectFolder) => {
   const disposeTransformInputs = addTransformInputs(folder, object)
 
   let disposeMaterialInputs: (() => void) | undefined
-  if (object instanceof THREE.Mesh) {
-    disposeMaterialInputs = addMaterialInputs(folder, object)
+  if ((object as THREE.Mesh).isMesh) {
+    disposeMaterialInputs = addMaterialInputs(folder, object as THREE.Mesh)
   }
 
   const childrenFolder = addFolder(folder, 'children')

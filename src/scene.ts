@@ -1,4 +1,3 @@
-import * as THREE from 'three'
 import * as lights from './lights'
 import * as objects from './objects'
 
@@ -9,20 +8,17 @@ export const initScene = (scene: THREE.Scene) => {
   const clear = scene.clear.bind(scene)
   
   const register = (object: THREE.Object3D) => {
-    if (object instanceof THREE.Light) {
-      lights.register(object)
-    } else if (object instanceof THREE.Object3D) {
-      objects.register(object)
+    if ((object as THREE.Light).isLight) {
+      lights.register(object as THREE.Light)
     } else {
-      // eslint-disable-next-line no-console
-      console.warn('three-debug cannot register:', object)
+      objects.register(object)
     }
   }
   
   const deregister = (object: THREE.Object3D) => {
-    if (object instanceof THREE.Light) {
-      lights.deregister(object)
-    } else if (object instanceof THREE.Object3D) {
+    if ((object as THREE.Light).isLight) {
+      lights.deregister(object as THREE.Light)
+    } else {
       objects.deregister(object)
     }
   }

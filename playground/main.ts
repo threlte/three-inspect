@@ -1,5 +1,4 @@
 import './main.css'
-import debug from '../src/main'
 import * as THREE from 'three'
 import { scene, camera, renderer, run, lights, composer } from 'three-kit'
 
@@ -66,5 +65,6 @@ const count = 30
 camera.position.set(1, 1, 1)
 camera.lookAt(0, 0, 0)
 
-debug.init(scene, camera, renderer, composer)
+const debug = await import('../src/main')
+debug.init(THREE, scene, camera, renderer, composer)
 run()

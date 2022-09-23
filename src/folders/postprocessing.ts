@@ -3,7 +3,7 @@ import * as post from 'postprocessing'
 
 export const initPostFolder = (composer?: post.EffectComposer) => {
   if (composer === undefined) {
-    return
+    return () => {}
   }
 
   const postFolder = addFolder(pane, 'postprocessing')
@@ -18,7 +18,7 @@ export const initPostFolder = (composer?: post.EffectComposer) => {
   }
 
   if (effectPass === undefined) {
-    return
+    return () => {}
   }
 
   postFolder.addInput(effectPass, 'dithering')
@@ -51,10 +51,10 @@ export const initPostFolder = (composer?: post.EffectComposer) => {
       })
       vignetteFolder.addInput(effect, 'offset')
     }
+  }
 
-    return () => {
+  return () => {
 
-    }
   }
 
   // const ssrFolder = addFolder(folder, 'ssr')
