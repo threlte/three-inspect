@@ -2,7 +2,7 @@
 
 `three-debug` is a debugger for three.js. It is designed to be minimalistic, powerful, and extensible.
 
-![A screenshot of three-debug in action](/assets/screen1.png)
+![A screenshot of three-debug in action](https://raw.githubusercontent.com/michealparks/three-debug/main/assets/screen1.jpg)
 
 Currently, it covers:
 * Scene helpers
