@@ -4,6 +4,14 @@
 
 ![A screenshot of three-debug in action](/assets/screen1.png)
 
+Currently, it covers:
+* Scene helpers
+* Camera
+* Lights
+  * Shadow cameras
+* Objects and child objects
+* Postprocessing (only [pmndrs/postprocessing](https://github.com/pmndrs/postprocessing) is supported)
+
 `three-debug` uses [Tweakpane](https://cocopon.github.io/tweakpane/) for its UI.
 
 ### Getting started
