@@ -2,13 +2,16 @@
   "name": "three-debug",
   "version": "0.0.3",
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/three-debug.umd.cjs",
+  "module": "./dist/main.js",
   "types": "./dist/main.ts",
   "exports": {
     ".": {
-      "import": "./dist/three-debug.js",
-      "require": "./dist/three-debug.umd.cjs",
+      "import": "./dist/main.js",
+      "require": "./dist/main.umd.cjs",
       "types": "./dist/main.ts"
     }
   },

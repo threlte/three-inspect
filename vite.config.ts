@@ -8,9 +8,9 @@ export default defineConfig({
     target: 'esnext',
     lib: {
       entry: resolve(__dirname, 'src/main.ts'),
-      name: 'MyLib',
+      name: 'THREE_DEBUG',
       // the proper extensions will be added
-      fileName: 'three-debug'
+      fileName: 'main'
     }
   },
   server: {

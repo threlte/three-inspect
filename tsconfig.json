@@ -22,6 +22,7 @@
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "Node",
     "declaration": true, // generates declaration files
+    "declarationMap": false,
     "sourceMap": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
