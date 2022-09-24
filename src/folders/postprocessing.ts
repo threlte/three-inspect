@@ -1,14 +1,14 @@
 import { addFolder, pane } from '../pane'
-import * as post from 'postprocessing'
+import type * as Postprocessing from 'postprocessing'
 
-export const initPostFolder = (composer?: post.EffectComposer) => {
+export const initPostFolder = (post: typeof Postprocessing, composer?: Postprocessing.EffectComposer) => {
   if (composer === undefined) {
     return () => {}
   }
 
   const postFolder = addFolder(pane, 'postprocessing')
 
-  let effectPass: post.EffectPass | undefined
+  let effectPass: Postprocessing.EffectPass | undefined
 
   for (const pass of composer.passes) {
     if (pass instanceof post.EffectPass) {
@@ -23,7 +23,7 @@ export const initPostFolder = (composer?: post.EffectComposer) => {
 
   postFolder.addInput(effectPass, 'dithering')
 
-  for (const effect of (effectPass as unknown as { effects: post.Effect[]}).effects) {
+  for (const effect of (effectPass as unknown as { effects: Postprocessing.Effect[]}).effects) {
     if (effect instanceof post.SMAAEffect) {
       addFolder(postFolder, 'smaa')
     }

@@ -1,6 +1,6 @@
 import { Pane, addFolder, state } from '../pane'
-import { three } from '../three'
 import { removeUpdate, update } from '../update'
+import { three } from '../three'
 
 const quatSettings = {
   expanded: true,

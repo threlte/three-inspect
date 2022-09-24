@@ -1,6 +1,6 @@
 import { erase, save, storage } from '../storage'
 import { addFolder, pane } from '../pane'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { OrbitControls } from '../lib/orbit-controls'
 import { addTransformInputs } from '../inputs/transform'
 
 export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRenderer) => {

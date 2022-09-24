@@ -1,9 +1,10 @@
-import * as THREE from 'three'
 import { disposeHelper } from '../lib/dispose'
 import { addFolder, pane } from '../pane'
 import { save, storage } from '../storage'
+import { three } from '../three'
 
 export const initSceneFolder = (scene: THREE.Scene) => {
+  const THREE = three()
   const sceneFolder = addFolder(pane, 'scene', 0)
 
   const params = {

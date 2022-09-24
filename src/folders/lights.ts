@@ -1,4 +1,4 @@
-import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
+import { createRectAreaLightHelper } from '../lib/rectarealight'
 import { addTransformInputs } from '../inputs/transform'
 import { addFolder, pane } from '../pane'
 import { defaultMinMax, shadowmapSizes } from '../constants'
@@ -9,9 +9,9 @@ type LightHelper =
   | THREE.SpotLightHelper
   | THREE.DirectionalLightHelper
   | THREE.HemisphereLightHelper
-  | RectAreaLightHelper
   | THREE.PointLightHelper
   | THREE.CameraHelper
+  | THREE.Line
 
 const lightFolder = addFolder(pane, 'lights', 1)
 
@@ -102,7 +102,7 @@ export const addLightFolder = (light: THREE.Light) => {
     folder.addInput(light, 'width')
     folder.addInput(light, 'height')
 
-    helper = new RectAreaLightHelper(light)
+    helper = createRectAreaLightHelper(light)
   }
 
   if (light.castShadow) {
