@@ -1,7 +1,11 @@
 import { addFolder, pane } from '../pane'
 import type * as Postprocessing from 'postprocessing'
 
-export const initPostFolder = (post: typeof Postprocessing, composer?: Postprocessing.EffectComposer) => {
+export const initPostFolder = (post?: typeof Postprocessing, composer?: Postprocessing.EffectComposer) => {
+  if (post === undefined) {
+    return () => {}
+  }
+
   if (composer === undefined) {
     return () => {}
   }
@@ -53,9 +57,7 @@ export const initPostFolder = (post: typeof Postprocessing, composer?: Postproce
     }
   }
 
-  return () => {
-
-  }
+  return () => {}
 
   // const ssrFolder = addFolder(folder, 'ssr')
   // ssrFolder.addInput(ssrEffect, 'intensity', {

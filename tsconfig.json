@@ -21,6 +21,7 @@
     "module": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "moduleResolution": "Node",
+    "removeComments": false,
     "declaration": true, // generates declaration files
     "sourceMap": true,
     "resolveJsonModule": true,
