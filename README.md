@@ -23,14 +23,13 @@ npm i -D three-debug
 Then, in your project:
 
 ```ts
-/**
- * It is recommended to import this way to ensure that the debugger
- * is entirely tree-shaken in a production environment.
- */
+import debug from 'three-debug'
 
-// Using vite, for example:
-if (import.meta.env.DEV) {
-  const debug = await import('three-debug')
+/**
+ * This should be a conditional that is compiled away
+ * when building for production to ensure tree-shaking.
+ */
+if (devMode) {
   debug.init(THREE, scene, camera, renderer, composer)
 }
 ```

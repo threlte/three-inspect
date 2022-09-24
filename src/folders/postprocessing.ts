@@ -1,11 +1,7 @@
 import { addFolder, pane } from '../pane'
 import type * as Postprocessing from 'postprocessing'
 
-export const initPostFolder = (post?: typeof Postprocessing, composer?: Postprocessing.EffectComposer) => {
-  if (post === undefined) {
-    return () => {}
-  }
-
+export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
   if (composer === undefined) {
     return () => {}
   }
@@ -15,8 +11,8 @@ export const initPostFolder = (post?: typeof Postprocessing, composer?: Postproc
   let effectPass: Postprocessing.EffectPass | undefined
 
   for (const pass of composer.passes) {
-    if (pass instanceof post.EffectPass) {
-      effectPass = pass
+    if ('effects' in pass) {
+      effectPass = pass as Postprocessing.EffectPass
       break
     }
   }
@@ -27,33 +23,36 @@ export const initPostFolder = (post?: typeof Postprocessing, composer?: Postproc
 
   postFolder.addInput(effectPass, 'dithering')
 
+  // This crazy typecasting is done because .effects is private >:|
   for (const effect of (effectPass as unknown as { effects: Postprocessing.Effect[]}).effects) {
-    if (effect instanceof post.SMAAEffect) {
+    if (effect.name === 'SMAAEffect') {
       addFolder(postFolder, 'smaa')
     }
 
-    if (effect instanceof post.BloomEffect) {
+    if (effect.name === 'BloomEffect') {
+      const bloomEffect = effect as Postprocessing.BloomEffect
       const bloomFolder = addFolder(postFolder, 'bloom')
-      bloomFolder.addInput(effect, 'height')
-      bloomFolder.addInput(effect, 'width')
-      bloomFolder.addInput(effect, 'intensity')
+      bloomFolder.addInput(bloomEffect, 'height')
+      bloomFolder.addInput(bloomEffect, 'width')
+      bloomFolder.addInput(bloomEffect, 'intensity')
     }
 
-    if (effect instanceof post.NoiseEffect) {
+    if (effect.name === 'NoiseEffect') {
       const noiseFolder = addFolder(postFolder, 'noise')
       noiseFolder.addInput(effect.blendMode.opacity, 'value', { label: 'opacity' })
     }
 
-    if (effect instanceof post.VignetteEffect) {
+    if (effect.name === 'VignetteEffect') {
+      const vignetteEffect = effect as Postprocessing.VignetteEffect
       const vignetteFolder = addFolder(postFolder, 'vignette')
-      vignetteFolder.addInput(effect, 'darkness')
-      vignetteFolder.addInput(effect, 'technique', {
+      vignetteFolder.addInput(vignetteEffect, 'darkness')
+      vignetteFolder.addInput(vignetteEffect, 'technique', {
         options: {
-          default: post.VignetteTechnique.DEFAULT,
-          eskil: post.VignetteTechnique.ESKIL,
+          default: 0,
+          eskil: 1,
         },
       })
-      vignetteFolder.addInput(effect, 'offset')
+      vignetteFolder.addInput(vignetteEffect, 'offset')
     }
   }
 
