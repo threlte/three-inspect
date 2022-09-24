@@ -1,6 +1,8 @@
 import './main.css'
 import * as THREE from 'three'
+import * as post from 'postprocessing'
 import { scene, camera, renderer, run, lights, composer } from 'three-kit'
+import debug from '../dist/three-debug'
 
 camera.parent!.name = 'Camera'
 
@@ -65,6 +67,5 @@ const count = 30
 camera.position.set(1, 1, 1)
 camera.lookAt(0, 0, 0)
 
-const debug = await import('../src/main')
-debug.init(THREE, scene, camera, renderer, composer)
+debug.init(THREE, scene, camera, renderer, post, composer)
 run()
