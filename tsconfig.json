@@ -19,10 +19,9 @@
     "useUnknownInCatchVariables": true,
     
     "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "moduleResolution": "Node",
     "declaration": true, // generates declaration files
-    "declarationMap": false,
     "sourceMap": true,
     "resolveJsonModule": true,
     "isolatedModules": true,

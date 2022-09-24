@@ -1,18 +1,17 @@
 {
   "name": "three-debug",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "files": [
     "dist"
   ],
   "main": "./dist/three-debug.umd.cjs",
   "module": "./dist/main.js",
-  "types": "./dist/main.ts",
+  "types": "./dist/main.d.ts",
   "exports": {
     ".": {
       "import": "./dist/main.js",
-      "require": "./dist/main.umd.cjs",
-      "types": "./dist/main.ts"
+      "require": "./dist/main.umd.cjs"
     }
   },
   "scripts": {
@@ -20,7 +19,8 @@
     "build": "vite build && tsc --emitDeclarationOnly",
     "check": "tsc",
     "lint": "eslint ./src",
-    "preview": "vite preview --host"
+    "preview": "vite preview --host",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@0b5vr/tweakpane-plugin-rotation": "^0.1.1",
