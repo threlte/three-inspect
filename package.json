@@ -1,6 +1,6 @@
 {
   "name": "three-debug",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "type": "module",
   "files": [
     "dist"
@@ -18,6 +18,8 @@
     "type": "git",
     "url": "git+https://github.com/michealparks/three-debug.git"
   },
+  "keywords": ["three", "three.js", "3d", "debug"],
+  "license": "MIT",
   "scripts": {
     "start": "vite --host",
     "build": "vite build && tsc --emitDeclarationOnly",
