@@ -26,10 +26,12 @@
     "preview": "vite preview --host",
     "typecheck": "tsc --noEmit"
   },
-  "devDependencies": {
+  "dependencies": {
     "@0b5vr/tweakpane-plugin-rotation": "^0.1.1",
     "@tweakpane/core": "^1.1.0",
-    "@tweakpane/plugin-essentials": "^0.1.5",
+    "@tweakpane/plugin-essentials": "^0.1.5"
+  },
+  "devDependencies": {
     "@types/three": "^0.144.0",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
