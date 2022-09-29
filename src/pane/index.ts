@@ -44,6 +44,7 @@ export const addPane = (title: string) => {
 
   parent.style.transition = 'transform 300ms'
   parent.style.width = '300px'
+  parent.style.zIndex = '1000'
   paneContainers.push(parent)
   panels.addPanelEntry(title, pane)
 

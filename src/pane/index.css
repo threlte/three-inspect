@@ -1,5 +1,6 @@
 .panels {
   position: absolute;
+  z-index: 1000;
   top: 8px;
   right: 314px;
   display: flex;
@@ -14,6 +15,7 @@
 }
 
 .pane {
+  
   overflow: auto;
   max-height: calc(100vh - 16px);
   border-radius: 5px;
@@ -26,6 +28,7 @@
 }
 
 .pane-left {
+  z-index: 1000;
   left: 8px;
   right: auto;
 }
