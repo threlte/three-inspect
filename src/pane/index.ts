@@ -2,26 +2,36 @@ import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation'
 import * as Tweakpane from 'tweakpane'
 import * as panels from './panels'
-import { save, storage } from '../storage'
+import { storage } from '../lib/storage'
 
 export type Pane = Tweakpane.Pane | Tweakpane.FolderApi
 
-const savedSelectedPanelTitle = storage.selectedPanelTitle
-const storedState = (storage.expandedPanes ?? {}) as Record<string, boolean | undefined>
 const folders: Pane[] = []
 const paneContainers: HTMLElement[] = []
 
 let isVisible = true
 
+const selectedPane = storage.get('selectedPane')
 const addFolder = Tweakpane.FolderApi.prototype.addFolder
 const dispose = Tweakpane.FolderApi.prototype.dispose
 
 Tweakpane.FolderApi.prototype.addFolder = function (params: Tweakpane.FolderParams) {
   const folder = addFolder.call(this, {
-    expanded: params.expanded ?? storedState[params.title] ?? false,
+    expanded: storage.get(`panels.${params.title}`) !== null,
     ...params,
   })
   folders.push(folder)
+
+  folder.on('fold', (event) => {
+    const target = event.target as Pane
+    const key = `three-debug.panels.${target.title}`
+    if (event.expanded) {
+      storage.set(key, '')
+    } else {
+      storage.remove(key)
+    }
+  })
+
   return folder
 }
 
@@ -48,7 +58,7 @@ export const addPane = (title: string) => {
   paneContainers.push(parent)
   panels.addPanelEntry(title, pane)
 
-  if (savedSelectedPanelTitle === title) {
+  if (selectedPane === title) {
     panels.selectPanel(title)
   }
 
@@ -62,21 +72,9 @@ const closeFolders = () => {
 }
 
 export const pane = addPane('world')
-if (!savedSelectedPanelTitle) {
+
+if (selectedPane === null) {
   panels.selectPanel('world')
-}
-
-window.onbeforeunload = () => {
-  const state: Record<string, boolean> = {}
-  for (const { title, expanded } of folders) {
-    if (title === undefined) {
-      throw new Error('Pane has undefined title!')
-    }
-
-    state[title] = expanded
-  }
-
-  save('expandedPanes', state)
 }
 
 export const state = { controlling: false }

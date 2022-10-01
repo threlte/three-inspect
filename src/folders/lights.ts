@@ -29,14 +29,13 @@ const addTargetInput = (folder: Pane, light: TargetLight) => {
 }
 
 export const addLightFolder = (light: THREE.Light) => {
+  const folder = lightFolder.addFolder({ title: `#${light.id} ${light.name} (${light.type})` })
+  const THREE = three()
   const dirLight = light as THREE.DirectionalLight
   const hemiLight = light as THREE.HemisphereLight
   const pointLight = light as THREE.PointLight
   const spotLight = light as THREE.SpotLight
   const rectLight = light as THREE.RectAreaLight
-
-  const THREE = three()
-  const folder = lightFolder.addFolder({ title: `#${light.id} ${light.name} (${light.type})` })
 
   let helper: LightHelper | undefined
   let shadowHelper: THREE.CameraHelper | undefined
@@ -192,6 +191,8 @@ export const addLightFolder = (light: THREE.Light) => {
   })
 
   return () => {
+    folder.dispose()
+
     if (helper !== undefined) {
       light.remove(helper)
       disposeHelper(helper as THREE.Line)

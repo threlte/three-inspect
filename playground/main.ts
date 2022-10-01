@@ -46,6 +46,14 @@ box.castShadow = box.receiveShadow = true
 box.position.set(0, 1.5, 0)
 scene.add(box)
 
+setInterval(() => {
+  if (scene.getObjectByName('Box')) {
+    scene.remove(box)
+  } else {
+    scene.add(box)
+  }
+}, 1000)
+
 const count = 30
 {
   const geometry = new THREE.DodecahedronGeometry()
@@ -78,6 +86,9 @@ camera.lookAt(0, 0, 0)
 
 debug.init(THREE, scene, camera, renderer, composer)
 run()
+
+const pane = debug.addPane('Game')
+
 
 // const controls = new OrbitControls(camera, renderer.domElement)
 // controls.enableDamping = true

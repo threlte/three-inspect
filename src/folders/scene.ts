@@ -1,18 +1,20 @@
-import { save, storage } from '../storage'
 import { disposeHelper } from '../lib/dispose'
 import { pane } from '../pane'
+import { storage } from '../lib/storage'
 import { three } from '../three'
 
 export const initSceneFolder = (scene: THREE.Scene) => {
-  const THREE = three()
   const sceneFolder = pane.addFolder({ index: 0, title: 'scene' })
+  const THREE = three()
+  const grid = storage.get('grid') !== null
+  const axes = storage.get('axes') !== null
 
   const params = {
-    axes: storage.axes as boolean | undefined ?? false,
+    axes,
     fogColor: `#${scene.fog?.color.getHexString().toUpperCase()}`,
-    grid: storage.grid as boolean | undefined ?? false,
-    gridDivisions: storage.gridDivisions as number | undefined ?? 1,
-    gridSize: storage.gridSize as number | undefined ?? 10,
+    grid,
+    gridDivisions: storage.getNumber('gridDivisions') ?? 4,
+    gridSize: storage.getNumber('gridSize') ?? 10,
   }
 
   const helpers = {
@@ -23,17 +25,22 @@ export const initSceneFolder = (scene: THREE.Scene) => {
   helpers.grid.name = 'Grid helper'
   helpers.axes.name = 'Axes helper'
 
-  if (storage.grid) {
+  if (grid) {
     scene.add(helpers.grid)
   }
 
-  if (storage.axes) {
+  if (axes) {
     scene.add(helpers.axes)
   }
 
   const toggleHelper = (helper: 'axes' | 'grid') => {
     scene[params[helper] ? 'add' : 'remove'](helpers[helper])
-    save(helper, params[helper])
+
+    if (params[helper]) {
+      storage.set(helper, '')
+    } else {
+      storage.remove(helper)
+    }
   }
 
   const handleGridChange = (param: 'gridSize' | 'gridDivisions') => {
@@ -42,7 +49,8 @@ export const initSceneFolder = (scene: THREE.Scene) => {
 
     helpers.grid = new THREE.GridHelper(params.gridSize, params.gridDivisions)
     scene.add(helpers.grid)
-    save(param, params[param])
+
+    storage.setNumber(param, params[param])
   }
 
   sceneFolder
@@ -79,6 +87,7 @@ export const initSceneFolder = (scene: THREE.Scene) => {
   }
 
   return () => {
+    sceneFolder.dispose()
     scene.remove(helpers.grid, helpers.axes)
     disposeHelper(helpers.grid)
     disposeHelper(helpers.axes)

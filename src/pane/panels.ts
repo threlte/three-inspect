@@ -1,6 +1,6 @@
 import type { Pane } from 'tweakpane'
 import css from './index.css'
-import { save } from '../storage'
+import { storage } from '../lib/storage'
 
 const style = document.createElement('style')
 style.innerHTML = css
@@ -19,7 +19,7 @@ export const paneTitles: string[] = []
 
 export const selectPanel = (title: string) => {
   selectedTitle = title
-  save('selectedPanelTitle', title)
+  storage.set('selectedPane', title)
 
   selected?.classList.add('hidden')
   selectedButton?.classList.remove('selected')

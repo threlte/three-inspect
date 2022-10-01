@@ -63,6 +63,7 @@ const addInstancedMeshFolder = (folder: Pane, mesh: THREE.InstancedMesh) => {
   update(handleInstancedMeshUpdate)
 
   return () => {
+    meshFolder.dispose()
     removeUpdate(handleInstancedMeshUpdate)
   }
 }
@@ -101,6 +102,8 @@ export const addTransformInputs = (pane: Pane, object3D: THREE.Object3D) => {
   }
 
   return () => {
+    posInput.dispose()
+    rotInput.dispose()
     removeUpdate(handleTransformUpdate)
     imeshDispose?.()
   }

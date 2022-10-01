@@ -25,7 +25,7 @@ export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
 
   if (effectPass === undefined) {
     return () => {
-      /* No-op */
+      postFolder.dispose()
     }
   }
 
@@ -123,6 +123,6 @@ export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
   }
 
   return () => {
-    /* No-op */
+    postFolder.dispose()
   }
 }

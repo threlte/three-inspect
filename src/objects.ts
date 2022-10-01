@@ -10,14 +10,7 @@ type Disposer = () => void
 const disposers = new WeakMap<THREE.Object3D, Disposer>()
 
 export const deregister = (object: THREE.Object3D) => {
-  const dispose = disposers.get(object)
-
-  if (dispose) {
-    dispose()
-  } else {
-    console.warn('No dispose found for', object)
-  }
-
+  disposers.get(object)?.()
   disposers.delete(object)
 }
 
@@ -76,5 +69,6 @@ export const register = (object: THREE.Object3D, mainFolder = objectFolder) => {
     disposeTransformInputs()
     disposeForwardHelper?.()
     object.traverse((child) => object !== child && deregister(child))
+    folder.dispose()
   })
 }

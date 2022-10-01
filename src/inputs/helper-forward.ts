@@ -10,7 +10,7 @@ export const addForwardHelperInput = (pane: Pane, object3D: THREE.Object3D) => {
     forwardHelper: false,
   }
 
-  pane.addInput(params, 'forwardHelper').on('change', () => {
+  const input = pane.addInput(params, 'forwardHelper').on('change', () => {
     if (params.forwardHelper) {
       object3D.add(helper)
     } else {
@@ -19,6 +19,7 @@ export const addForwardHelperInput = (pane: Pane, object3D: THREE.Object3D) => {
   })
 
   return () => {
+    input.dispose()
     object3D.remove(helper)
     disposeHelper(helper as unknown as THREE.Line)
   }
