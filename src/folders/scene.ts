@@ -1,6 +1,6 @@
-import { disposeHelper } from '../lib/dispose'
 import { addFolder, pane } from '../pane'
 import { save, storage } from '../storage'
+import { disposeHelper } from '../lib/dispose'
 import { three } from '../three'
 
 export const initSceneFolder = (scene: THREE.Scene) => {
@@ -8,24 +8,25 @@ export const initSceneFolder = (scene: THREE.Scene) => {
   const sceneFolder = addFolder(pane, 'scene', 0)
 
   const params = {
-    grid: storage.grid as boolean ?? false,
-    gridSize: storage.gridSize as number ?? 10,
-    gridDivisions: storage.gridDivisions as number ?? 1,
-    axes: storage.axes as boolean ?? false,
+    axes: storage.axes as boolean | undefined ?? false,
     fogColor: `#${scene.fog?.color.getHexString().toUpperCase()}`,
+    grid: storage.grid as boolean | undefined ?? false,
+    gridDivisions: storage.gridDivisions as number | undefined ?? 1,
+    gridSize: storage.gridSize as number | undefined ?? 10,
   }
 
   const helpers = {
-    grid: new THREE.GridHelper(params.gridSize, params.gridDivisions),
     axes: new THREE.AxesHelper(1_000),
+    grid: new THREE.GridHelper(params.gridSize, params.gridDivisions),
   }
+
   helpers.grid.name = 'Grid helper'
   helpers.axes.name = 'Axes helper'
 
   if (storage.grid) {
     scene.add(helpers.grid)
   }
-  
+
   if (storage.axes) {
     scene.add(helpers.axes)
   }
@@ -59,7 +60,7 @@ export const initSceneFolder = (scene: THREE.Scene) => {
   sceneFolder
     .addInput(params, 'axes', { label: 'axes' })
     .on('change', () => toggleHelper('axes'))
-  
+
   if (scene.fog instanceof THREE.Fog) {
     const fogFolder = addFolder(sceneFolder, 'fog')
     fogFolder.addInput(params, 'fogColor', {
@@ -67,7 +68,7 @@ export const initSceneFolder = (scene: THREE.Scene) => {
     }).on('change', () => {
       scene.fog!.color.set(params.fogColor!)
     })
-  
+
     fogFolder.addInput(scene.fog, 'near')
     fogFolder.addInput(scene.fog, 'far')
   }

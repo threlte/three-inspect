@@ -9,6 +9,18 @@ type Disposer = () => void
 
 const disposers = new WeakMap<THREE.Object3D, Disposer>()
 
+export const deregister = (object: THREE.Object3D) => {
+  const dispose = disposers.get(object)
+
+  if (dispose) {
+    dispose()
+  } else {
+    console.warn('No dispose found for', object)
+  }
+
+  disposers.delete(object)
+}
+
 export const register = (object: THREE.Object3D, mainFolder = objectFolder) => {
   const isInstanced = (object as THREE.InstancedMesh).isInstancedMesh
   const instancedFlag = isInstanced ? ' (instanced)' : ''
@@ -20,7 +32,7 @@ export const register = (object: THREE.Object3D, mainFolder = objectFolder) => {
   folder.addInput(object, 'visible')
 
   let disposeForwardHelper: (() => void) | undefined
-  if (object.type.toLowerCase().includes('helper') === false) {
+  if (!object.type.toLowerCase().includes('helper')) {
     disposeForwardHelper = addForwardHelperInput(folder, object)
   }
   const disposeTransformInputs = addTransformInputs(folder, object)
@@ -41,7 +53,7 @@ export const register = (object: THREE.Object3D, mainFolder = objectFolder) => {
     for (const child of args) {
       register(child, childrenFolder)
     }
-    
+
     return add(...args)
   }
 
@@ -63,18 +75,6 @@ export const register = (object: THREE.Object3D, mainFolder = objectFolder) => {
     disposeMaterialInputs?.()
     disposeTransformInputs()
     disposeForwardHelper?.()
-    object.traverse(child => object !== child && deregister(child)) 
+    object.traverse((child) => object !== child && deregister(child))
   })
-}
-
-export const deregister = (object: THREE.Object3D) => {
-  const dispose = disposers.get(object)
-
-  if (dispose) {
-    dispose()
-  } else {
-    console.warn('No dispose found for', object)
-  }
-  
-  disposers.delete(object)
 }

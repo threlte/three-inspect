@@ -1,5 +1,5 @@
-import { disposeHelper } from '../lib/dispose'
 import type { Pane } from '../pane'
+import { disposeHelper } from '../lib/dispose'
 import { three } from '../three'
 
 export const addForwardHelperInput = (pane: Pane, object3D: THREE.Object3D) => {

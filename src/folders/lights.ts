@@ -1,7 +1,9 @@
-import { createRectAreaLightHelper } from '../lib/rectarealight'
-import { addTransformInputs } from '../inputs/transform'
-import { addFolder, pane } from '../pane'
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+
+import { type Pane, addFolder, pane } from '../pane'
 import { defaultMinMax, shadowmapSizes } from '../constants'
+import { addTransformInputs } from '../inputs/transform'
+import { createRectAreaLightHelper } from '../lib/rectarealight'
 import { disposeHelper } from '../lib/dispose'
 import { three } from '../three'
 
@@ -13,9 +15,26 @@ type LightHelper =
   | THREE.CameraHelper
   | THREE.Line
 
+type TargetLight =
+  | THREE.DirectionalLight
+  | THREE.SpotLight
+
 const lightFolder = addFolder(pane, 'lights', 1)
 
+const addTargetInput = (folder: Pane, light: TargetLight) => {
+  const targetFolder = addFolder(folder, 'target')
+  targetFolder.addInput(light.target, 'position', { step: 0.1 }).on('change', () => {
+    light.target.updateMatrixWorld()
+  })
+}
+
 export const addLightFolder = (light: THREE.Light) => {
+  const dirLight = light as THREE.DirectionalLight
+  const hemiLight = light as THREE.HemisphereLight
+  const pointLight = light as THREE.PointLight
+  const spotLight = light as THREE.SpotLight
+  const rectLight = light as THREE.RectAreaLight
+
   const THREE = three()
   const folder = addFolder(lightFolder, `#${light.id} ${light.name} (${light.type})`)
 
@@ -23,21 +42,15 @@ export const addLightFolder = (light: THREE.Light) => {
   let shadowHelper: THREE.CameraHelper | undefined
 
   const params = {
+    color: `#${light.color.getHexString().toUpperCase()}`,
     helper: false,
     shadowHelper: false,
-    color: `#${light.color.getHexString().toUpperCase()}`,
   }
 
-  if (('isAmbientLight' in light) === false) {
+  if (!('isAmbientLight' in light)) {
     folder
       .addInput(params, 'helper')
       .on('change', () => light[params.helper ? 'add' : 'remove'](helper!))
-  }
-
-  if (light.castShadow) {
-    folder
-      .addInput(params, 'shadowHelper', { label: 'shadow helper' })
-      .on('change', () => light[params.shadowHelper ? 'add' : 'remove'](shadowHelper!))
   }
 
   folder
@@ -46,66 +59,68 @@ export const addLightFolder = (light: THREE.Light) => {
 
   folder.addInput(light, 'intensity')
 
-  if (light instanceof THREE.HemisphereLight) {
-    folder.addInput(light, 'groundColor')
-    helper = new THREE.HemisphereLightHelper(light, 10)
-  } else if (light instanceof THREE.DirectionalLight) {
-    helper = new THREE.DirectionalLightHelper(light)
-  } else if (light instanceof THREE.PointLight) {
-    helper = new THREE.PointLightHelper(light, 10)
-  }
-
-  if (
-    light instanceof THREE.DirectionalLight ||
-    light instanceof THREE.SpotLight ||
-    light instanceof THREE.PointLight
-  ) {
-    folder.addInput(light, 'castShadow')
+  /**
+   * Directional
+   */
+  if (dirLight.isDirectionalLight) {
     addTransformInputs(folder, light)
-  }
+    addTargetInput(folder, dirLight)
+    folder.addInput(light, 'castShadow')
+    helper = new THREE.DirectionalLightHelper(dirLight)
 
-  if (
-    light instanceof THREE.DirectionalLight ||
-    light instanceof THREE.SpotLight
-  ) {
-    const targetFolder = addFolder(folder, 'target')
-    targetFolder.addInput(light.target, 'position', { step: 0.1 }).on('change', () => {
-      light.target.updateMatrixWorld()
-    })
-  }
+  /**
+   * Hemisphere
+   */
+  } else if (hemiLight.isHemisphereLight) {
+    folder.addInput(hemiLight, 'groundColor')
+    helper = new THREE.HemisphereLightHelper(hemiLight, 10)
 
-  if (light instanceof THREE.SpotLight) {
-    folder.addInput(light, 'angle', {
+  /**
+   * Point
+   * There's no .isPointLight ???
+   */
+  } else if (light instanceof THREE.PointLight) {
+    addTransformInputs(folder, pointLight)
+    folder.addInput(pointLight, 'decay')
+    folder.addInput(pointLight, 'distance')
+    folder.addInput(pointLight, 'power')
+    folder.addInput(pointLight, 'castShadow')
+    helper = new THREE.PointLightHelper(pointLight, 10)
+
+  /**
+   * Spot
+   */
+  } else if (spotLight.isSpotLight) {
+    addTransformInputs(folder, spotLight)
+    addTargetInput(folder, spotLight)
+    folder.addInput(spotLight, 'angle', {
       max: Math.PI / 2,
       min: 0,
     })
-    folder.addInput(light, 'penumbra', defaultMinMax)
+    folder.addInput(spotLight, 'decay')
+    folder.addInput(spotLight, 'distance')
+    folder.addInput(spotLight, 'penumbra', defaultMinMax)
+    folder.addInput(spotLight, 'power')
 
-    helper = new THREE.SpotLightHelper(light)
-  }
+    folder.addInput(spotLight, 'castShadow')
+    helper = new THREE.SpotLightHelper(spotLight)
 
-  if (
-    light instanceof THREE.SpotLight ||
-    light instanceof THREE.PointLight ||
-    light instanceof THREE.RectAreaLight
-  ) {
-    folder.addInput(light, 'power')
-  }
-
-  if (
-    light instanceof THREE.SpotLight ||
-    light instanceof THREE.PointLight
-  ) {
-    folder.addInput(light, 'decay')
-    folder.addInput(light, 'distance')
-  } else if (light instanceof THREE.RectAreaLight) {
-    folder.addInput(light, 'width')
-    folder.addInput(light, 'height')
-
-    helper = createRectAreaLightHelper(light)
+  /**
+   * Rect
+   */
+  } else if (rectLight.isRectAreaLight) {
+    addTransformInputs(folder, rectLight)
+    folder.addInput(rectLight, 'power')
+    folder.addInput(rectLight, 'width')
+    folder.addInput(rectLight, 'height')
+    helper = createRectAreaLightHelper(rectLight)
   }
 
   if (light.castShadow) {
+    folder
+      .addInput(params, 'shadowHelper', { label: 'shadow helper' })
+      .on('change', () => light[params.shadowHelper ? 'add' : 'remove'](shadowHelper!))
+
     const camFolder = addFolder(folder, `#${light.id} shadow camera`)
 
     const shadowMapParams = {
@@ -133,27 +148,28 @@ export const addLightFolder = (light: THREE.Light) => {
     camFolder.addInput(light.shadow, 'normalBias').on('change', handleShadowmapChange)
     camFolder.addInput(light.shadow, 'radius').on('change', handleShadowmapChange)
 
-    if (
-      light instanceof THREE.SpotLight ||
-      light instanceof THREE.DirectionalLight
-    ) {
-      const camera = light.shadow.camera
+    /**
+     * Directional
+     */
+    if (dirLight.isDirectionalLight) {
+      const { camera } = dirLight.shadow
       camFolder.addInput(camera, 'near').on('change', handleShadowmapChange)
       camFolder.addInput(camera, 'far').on('change', handleShadowmapChange)
-      addTransformInputs(camFolder, camera)
-    }
-    
-    if (
-      light instanceof THREE.DirectionalLight
-    ) {
-      const camera = light.shadow.camera
       camFolder.addInput(camera, 'left').on('change', handleShadowmapChange)
       camFolder.addInput(camera, 'right').on('change', handleShadowmapChange)
       camFolder.addInput(camera, 'top').on('change', handleShadowmapChange)
       camFolder.addInput(camera, 'bottom').on('change', handleShadowmapChange)
-    } else if (light instanceof THREE.SpotLight) {
-      const camera = light.shadow.camera
+      addTransformInputs(camFolder, camera)
+
+    /**
+     * Spot
+     */
+    } else if (spotLight.isSpotLight) {
+      const { camera } = spotLight.shadow
+      camFolder.addInput(camera, 'near').on('change', handleShadowmapChange)
+      camFolder.addInput(camera, 'far').on('change', handleShadowmapChange)
       camFolder.addInput(camera, 'focus', defaultMinMax)
+      addTransformInputs(camFolder, camera)
     }
 
     shadowHelper = new THREE.CameraHelper(light.shadow.camera)

@@ -1,66 +1,93 @@
 import { three } from '../three'
 
-const positions = [ 1, 1, 0, - 1, 1, 0, - 1, - 1, 0, 1, - 1, 0, 1, 1, 0 ];
-const positions2 = [ 1, 1, 0, - 1, 1, 0, - 1, - 1, 0, 1, 1, 0, - 1, - 1, 0, 1, - 1, 0 ];
+const positions = [
+  +1, +1, 0,
+  -1, +1, 0,
+  -1, -1, 0,
+  +1, -1, 0,
+  +1, +1, 0,
+]
+
+const positions2 = [
+  +1, +1, 0,
+  -1, +1, 0,
+  -1, -1, 0,
+  +1, +1, 0,
+  -1, -1, 0,
+  +1, -1, 0,
+]
 
 export const createRectAreaLightHelper = (light: THREE.RectAreaLight, color?: THREE.Color) => {
   const THREE = three()
 
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-  geometry.computeBoundingSphere();
+  const geometry = new THREE.BufferGeometry()
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+  geometry.computeBoundingSphere()
 
-  const material = new THREE.LineBasicMaterial( { fog: false } );
+  const material = new THREE.LineBasicMaterial({ fog: false })
   const line = new THREE.Line()
 
-  line.type = 'RectAreaLightHelper';
+  line.type = 'RectAreaLightHelper'
 
-  const geometry2 = new THREE.BufferGeometry();
-  geometry2.setAttribute( 'position', new THREE.Float32BufferAttribute( positions2, 3 ) );
-  geometry2.computeBoundingSphere();
+  const geometry2 = new THREE.BufferGeometry()
+  geometry2.setAttribute('position', new THREE.Float32BufferAttribute(positions2, 3))
+  geometry2.computeBoundingSphere()
 
-  line.add( new THREE.Mesh( geometry2, new THREE.MeshBasicMaterial( { side: THREE.BackSide, fog: false } ) ) );
+  line.add(new THREE.Mesh(geometry2, new THREE.MeshBasicMaterial({
+    fog: false,
+    side: THREE.BackSide,
+  })))
 
   line.updateMatrixWorld = () => {
+    line.scale.set(0.5 * light.width, 0.5 * light.height, 1)
 
-		line.scale.set( 0.5 * light.width, 0.5 * light.height, 1 );
+    if (color === undefined) {
+      material.color.copy(light.color).multiplyScalar(light.intensity)
 
-		if ( color !== undefined ) {
+      // Prevent hue shift
+      const { color } = material
+      const max = Math.max(color.r, color.g, color.b)
+      if (max > 1) {
+        color.multiplyScalar(1 / max)
+      }
 
-			material.color.set( color );
+      const child = line.children[0] as THREE.Mesh
+      const mat = child.material as THREE.MeshBasicMaterial
+      mat.color.copy(material.color)
+    } else {
+      material.color.set(color)
 
-      const mat = (line.children[ 0 ] as THREE.Mesh).material as THREE.MeshBasicMaterial
-			mat.color.set( color );
+      const child = line.children[0] as THREE.Mesh
+      const mat = child.material as THREE.MeshBasicMaterial
+      mat.color.set(color)
+    }
 
-		} else {
+    // Ignore world scale on light
+    line.matrixWorld.extractRotation(light.matrixWorld).scale(line.scale)
+      .copyPosition(light.matrixWorld)
 
-			material.color.copy( light.color ).multiplyScalar( light.intensity );
+    line.children[0].matrixWorld.copy(line.matrixWorld)
+  }
 
-			// prevent hue shift
-			const c = material.color;
-			const max = Math.max( c.r, c.g, c.b );
-			if ( max > 1 ) c.multiplyScalar( 1 / max );
+  const lineAlias = line as unknown as { dispose: () => void }
 
-      const child = line.children[ 0 ] as THREE.Mesh
-			(child.material as THREE.MeshBasicMaterial).color.copy( material.color );
+  lineAlias.dispose = () => {
+    line.geometry.dispose()
 
-		}
+    {
+      const lineMaterial = line.material as THREE.MeshBasicMaterial
+      lineMaterial.dispose()
+    }
 
-		// ignore world scale on light
-		line.matrixWorld.extractRotation( light.matrixWorld ).scale( line.scale ).copyPosition( light.matrixWorld );
+    const child = line.children[0] as THREE.Mesh
 
-		line.children[ 0 ].matrixWorld.copy( line.matrixWorld );
+    child.geometry.dispose()
 
-	}
-
-  (line as unknown as { dispose: () => void }).dispose = () => {
-		line.geometry.dispose();
-		(line.material as THREE.MeshBasicMaterial).dispose();
-
-    const child = line.children[ 0 ] as THREE.Mesh;
-		child.geometry.dispose();
-		(child.material as THREE.MeshBasicMaterial).dispose();
-	}
+    {
+      const childMaterial = child.material as THREE.MeshBasicMaterial
+      childMaterial.dispose()
+    }
+  }
 
   return line
 }

@@ -1,7 +1,8 @@
 import './main.css'
 import * as THREE from 'three'
-import { scene, camera, renderer, run, lights, composer } from 'three-kit'
+import { scene, camera, renderer, run, lights, composer, update } from 'three-kit'
 import debug from '../src/main'
+import { OrbitControls } from '../src/lib/orbit-controls'
 
 camera.parent!.name = 'Camera'
 
@@ -22,6 +23,15 @@ scene.add(ambient)
   scene.add(directional)
 }
 
+{
+  const rect = lights.createRectArea('red')
+  rect.intensity = 0.5
+  rect.position.y = 0.1
+  rect.rotateX(Math.PI / 2)
+  rect.width = 30
+  rect.height = 30
+  scene.add(rect)
+}
 
 const euler = new THREE.Euler()
 const m4 = new THREE.Matrix4()
@@ -68,3 +78,11 @@ camera.lookAt(0, 0, 0)
 
 debug.init(THREE, scene, camera, renderer, composer)
 run()
+
+const controls = new OrbitControls(camera, renderer.domElement)
+controls.enableDamping = true
+controls.enableKeyEvents = true
+
+update(() => {
+  controls.update()
+})

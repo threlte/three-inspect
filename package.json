@@ -18,7 +18,12 @@
     "type": "git",
     "url": "git+https://github.com/michealparks/three-debug.git"
   },
-  "keywords": ["three", "three.js", "3d", "debug"],
+  "keywords": [
+    "three",
+    "three.js",
+    "3d",
+    "debug"
+  ],
   "license": "MIT",
   "scripts": {
     "start": "vite --host",
@@ -29,11 +34,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    
     "@0b5vr/tweakpane-plugin-rotation": "^0.1.1",
-    "@types/three": "^0.144.0",
     "@tweakpane/core": "^1.1.0",
     "@tweakpane/plugin-essentials": "^0.1.5",
+    "@types/three": "^0.144.0",
     "postprocessing": "^6.28.7",
     "tweakpane": "^3.1.0",
     "vite": "^3.1.4"

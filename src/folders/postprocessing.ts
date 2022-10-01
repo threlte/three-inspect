@@ -1,9 +1,12 @@
-import { addFolder, pane } from '../pane'
+
 import type * as Postprocessing from 'postprocessing'
+import { addFolder, pane } from '../pane'
 
 export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
   if (composer === undefined) {
-    return () => {}
+    return () => {
+      /* No-op */
+    }
   }
 
   const postFolder = addFolder(pane, 'postprocessing')
@@ -18,7 +21,9 @@ export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
   }
 
   if (effectPass === undefined) {
-    return () => {}
+    return () => {
+      /* No-op */
+    }
   }
 
   postFolder.addInput(effectPass, 'dithering')
@@ -56,7 +61,9 @@ export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
     }
   }
 
-  return () => {}
+  return () => {
+    /* No-op */
+  }
 
   // const ssrFolder = addFolder(folder, 'ssr')
   // ssrFolder.addInput(ssrEffect, 'intensity', {

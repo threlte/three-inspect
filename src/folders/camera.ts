@@ -1,9 +1,11 @@
-import { erase, save, storage } from '../storage'
 import { addFolder, pane } from '../pane'
+import { erase, save, storage } from '../storage'
 import { OrbitControls } from '../lib/orbit-controls'
 import { addTransformInputs } from '../inputs/transform'
 
 export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRenderer) => {
+  const perspective = camera as THREE.PerspectiveCamera
+
   const constants = {
     CONTROLS_MAP: 2,
     CONTROLS_NONE: 0,
@@ -13,9 +15,9 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
   const params = {
     controls: storage.controls ?? constants.CONTROLS_NONE,
   }
-  
+
   const setPosition = camera.position.set.bind(camera.position)
-  
+
   camera.position.set = (...args) => {
     if (params.controls !== constants.CONTROLS_NONE) {
       return camera.position
@@ -24,59 +26,60 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
     return setPosition(...args)
   }
 
-  const orbitControls = new OrbitControls(camera, renderer.domElement)
-  
+  let orbitControls: OrbitControls | undefined
+
   if (storage.debugCamera) {
     const cam = storage.debugCamera as {
       target: number[]
       quaternion: number[]
       position: number[]
     }
+    orbitControls = new OrbitControls(camera, renderer.domElement)
     orbitControls.target.fromArray(cam.target)
     camera.quaternion.fromArray(cam.quaternion)
     camera.position.fromArray(cam.position)
     orbitControls.update()
   }
-  
+
   const controls = [
     constants.CONTROLS_NONE,
     constants.CONTROLS_ORBIT,
     constants.CONTROLS_MAP,
   ]
-  
+
   const savePosition = () => {
     save('debugCamera', {
       position: camera.position.toArray(),
       quaternion: camera.quaternion.toArray(),
-      target: orbitControls.target.toArray(),
+      target: orbitControls!.target.toArray(),
     })
   }
-  
+
   const setEnabledControls = () => {
     save('controls', params.controls)
-  
+
     if (params.controls === constants.CONTROLS_NONE) {
       erase('debugCamera')
-      orbitControls.enabled = false
       window.removeEventListener('pointerup', savePosition)
       window.removeEventListener('wheel', savePosition)
+      orbitControls?.dispose()
     } else {
-      orbitControls.enabled = true
+      orbitControls = new OrbitControls(camera, renderer.domElement)
       window.addEventListener('pointerup', savePosition, { passive: true })
       window.addEventListener('wheel', savePosition, { passive: true })
     }
   }
-  
+
   const handleCameraChange = () => {
-    if ((camera as THREE.PerspectiveCamera).isPerspectiveCamera) {
-      (camera as THREE.PerspectiveCamera).updateProjectionMatrix()
+    if (perspective.isPerspectiveCamera) {
+      perspective.updateProjectionMatrix()
     }
   }
-  
+
   const cameraFolder = addFolder(pane, 'camera', 1)
-  
+
   const titles = ['none', 'orbit', 'map']
-  
+
   cameraFolder.addInput(params, 'controls', {
     cells: (x: number, y: number) => {
       return {
@@ -90,22 +93,22 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
     view: 'radiogrid',
   }).on('change', setEnabledControls)
 
-  if ((camera as THREE.PerspectiveCamera).isPerspectiveCamera) {
-    cameraFolder.addInput(camera as THREE.PerspectiveCamera, 'near').on('change', handleCameraChange)
-    cameraFolder.addInput(camera as THREE.PerspectiveCamera, 'far').on('change', handleCameraChange)
-    cameraFolder.addInput(camera as THREE.PerspectiveCamera, 'fov').on('change', handleCameraChange)
-    cameraFolder.addInput(camera as THREE.PerspectiveCamera, 'filmOffset').on('change', handleCameraChange)
-    cameraFolder.addInput(camera as THREE.PerspectiveCamera, 'filmGauge').on('change', handleCameraChange)
-    cameraFolder.addInput(camera as THREE.PerspectiveCamera, 'zoom').on('change', handleCameraChange)
+  if (perspective.isPerspectiveCamera) {
+    cameraFolder.addInput(perspective, 'near').on('change', handleCameraChange)
+    cameraFolder.addInput(perspective, 'far').on('change', handleCameraChange)
+    cameraFolder.addInput(perspective, 'fov').on('change', handleCameraChange)
+    cameraFolder.addInput(perspective, 'filmOffset').on('change', handleCameraChange)
+    cameraFolder.addInput(perspective, 'filmGauge').on('change', handleCameraChange)
+    cameraFolder.addInput(perspective, 'zoom').on('change', handleCameraChange)
   }
-  
+
   setEnabledControls()
-  
-  const disposeTransformInputs =  addTransformInputs(cameraFolder, camera)
+
+  const disposeTransformInputs = addTransformInputs(cameraFolder, camera)
 
   return () => {
     camera.position.set = setPosition
     disposeTransformInputs()
-    orbitControls.dispose()
+    orbitControls?.dispose()
   }
 }

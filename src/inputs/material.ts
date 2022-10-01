@@ -72,6 +72,6 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
   }
 
   return () => {
-
+    /* No-op */
   }
 }

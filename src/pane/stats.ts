@@ -1,5 +1,5 @@
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
-import { update, removeUpdate } from '../update'
+import { removeUpdate, update } from '../update'
 import { Pane } from 'tweakpane'
 import { addFolder } from '.'
 
