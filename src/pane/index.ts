@@ -83,10 +83,11 @@ export const state = { controlling: false }
 
 pane.element.addEventListener('mousedown', () => {
   state.controlling = true
-})
+}, { passive: true })
+
 pane.element.addEventListener('mouseup', () => {
   state.controlling = false
-})
+}, { passive: true })
 
 document.addEventListener('keypress', (event) => {
   if (!event.shiftKey) {

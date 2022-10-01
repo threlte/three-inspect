@@ -79,10 +79,10 @@ camera.lookAt(0, 0, 0)
 debug.init(THREE, scene, camera, renderer, composer)
 run()
 
-const controls = new OrbitControls(camera, renderer.domElement)
-controls.enableDamping = true
-controls.enableKeyEvents = true
+// const controls = new OrbitControls(camera, renderer.domElement)
+// controls.enableDamping = true
+// controls.enableKeyEvents = true
 
-update(() => {
-  controls.update()
-})
+// update(() => {
+//   controls.update()
+// })

@@ -61,16 +61,21 @@ export const initSceneFolder = (scene: THREE.Scene) => {
     .addInput(params, 'axes', { label: 'axes' })
     .on('change', () => toggleHelper('axes'))
 
-  if (scene.fog instanceof THREE.Fog) {
+  if (scene.fog !== null) {
     const fogFolder = addFolder(sceneFolder, 'fog')
     fogFolder.addInput(params, 'fogColor', {
       label: 'color',
     }).on('change', () => {
-      scene.fog!.color.set(params.fogColor!)
+      scene.fog?.color.set(params.fogColor!)
     })
 
-    fogFolder.addInput(scene.fog, 'near')
-    fogFolder.addInput(scene.fog, 'far')
+    if ('near' in scene.fog) {
+      fogFolder.addInput(scene.fog, 'near')
+    }
+
+    if ('far' in scene.fog) {
+      fogFolder.addInput(scene.fog, 'far')
+    }
   }
 
   return () => {

@@ -4,10 +4,13 @@ import { three } from '../three'
 
 export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
   const THREE = three()
-  const { material } = mesh
-  const materialFolder = addFolder(pane, `#${mesh.id} ${(material as THREE.Material).type}`)
+  const material = mesh.material as THREE.Material
+  const meshStandardMat = mesh.material as THREE.MeshStandardMaterial
+  const meshPhysicalMat = mesh.material as THREE.MeshPhysicalMaterial
 
-  if (material instanceof THREE.Material) {
+  const materialFolder = addFolder(pane, `#${mesh.id} ${material.type}`)
+
+  if (material.isMaterial) {
     materialFolder.addInput(material, 'depthTest')
     materialFolder.addInput(material, 'depthWrite')
     materialFolder.addInput(material, 'visible')
@@ -24,32 +27,32 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
     materialFolder.addInput(material, 'opacity', defaultMinMax)
     materialFolder.addInput(material, 'alphaTest', defaultMinMax)
     materialFolder.addInput(material, 'blendDst')
+    materialFolder.addInput(material, 'vertexColors')
   }
 
-  if (material instanceof THREE.MeshStandardMaterial) {
+  if (meshStandardMat.isMeshStandardMaterial) {
     materialFolder.addSeparator()
 
     const params = {
-      color: `#${material.color.getHexString()}`,
-      emissive: `#${material.emissive.getHexString()}`,
+      color: `#${meshStandardMat.color.getHexString()}`,
+      emissive: `#${meshStandardMat.emissive.getHexString()}`,
     }
 
     materialFolder.addInput(params, 'color').on('change', () => {
-      material.color.set(params.color)
+      meshStandardMat.color.set(params.color)
     })
     materialFolder.addInput(params, 'emissive').on('change', () => {
-      material.emissive.set(params.emissive)
+      meshStandardMat.emissive.set(params.emissive)
     })
-    materialFolder.addInput(material, 'emissiveIntensity', {
+    materialFolder.addInput(meshStandardMat, 'emissiveIntensity', {
       max: 5,
       min: 0,
     })
-    materialFolder.addInput(material, 'roughness', defaultMinMax)
-    materialFolder.addInput(material, 'metalness', defaultMinMax)
-    materialFolder.addInput(material, 'flatShading')
-    materialFolder.addInput(material, 'wireframe')
-    materialFolder.addInput(material, 'vertexColors')
-    materialFolder.addInput(material, 'fog')
+    materialFolder.addInput(meshStandardMat, 'roughness', defaultMinMax)
+    materialFolder.addInput(meshStandardMat, 'metalness', defaultMinMax)
+    materialFolder.addInput(meshStandardMat, 'flatShading')
+    materialFolder.addInput(meshStandardMat, 'wireframe')
+    materialFolder.addInput(meshStandardMat, 'fog')
     /**
      * @TODO add:
      * - alphaMap
@@ -65,10 +68,13 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
      */
   }
 
-  if (material instanceof THREE.MeshPhysicalMaterial) {
-    materialFolder.addInput(material, 'reflectivity', defaultMinMax)
-    materialFolder.addInput(material, 'clearcoat', defaultMinMax)
-    materialFolder.addInput(material, 'clearcoatRoughness', defaultMinMax)
+  /**
+   * @TODO .isMeshPhysicalMaterial
+   */
+  if (meshPhysicalMat.reflectivity !== undefined) {
+    materialFolder.addInput(meshPhysicalMat, 'reflectivity', defaultMinMax)
+    materialFolder.addInput(meshPhysicalMat, 'clearcoat', defaultMinMax)
+    materialFolder.addInput(meshPhysicalMat, 'clearcoatRoughness', defaultMinMax)
   }
 
   return () => {
