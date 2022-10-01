@@ -70,7 +70,7 @@ export const initStats = (renderer: THREE.WebGLRenderer) => {
   }
 
   if ('info' in renderer) {
-    const folder = stats.addFolder({ title: 'renderer' })
+    const folder = stats.addFolder({ title: 'Renderer' })
     folder.addMonitor(renderer.info.memory, 'geometries', { interval: 3_000 })
     folder.addMonitor(renderer.info.memory, 'textures', { interval: 3_000 })
     folder.addMonitor(renderer.info.render, 'calls', { interval: 3_000 })

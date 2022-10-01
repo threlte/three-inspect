@@ -4,7 +4,7 @@ import { three } from '../three'
 
 export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
   const material = mesh.material as THREE.Material
-  const materialFolder = pane.addFolder({ title: `#${mesh.id} ${material.type}` })
+  const materialFolder = pane.addFolder({ index: mesh.id, title: `${material.name} (${material.type})` })
   const THREE = three()
   const meshStandardMat = mesh.material as THREE.MeshStandardMaterial
   const meshPhysicalMat = mesh.material as THREE.MeshPhysicalMaterial

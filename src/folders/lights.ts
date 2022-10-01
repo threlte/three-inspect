@@ -19,17 +19,20 @@ type TargetLight =
   | THREE.DirectionalLight
   | THREE.SpotLight
 
-const lightFolder = pane.addFolder({ title: 'lights' })
+const lightFolder = pane.addFolder({ title: 'Lights' })
 
 const addTargetInput = (folder: Pane, light: TargetLight) => {
-  const targetFolder = folder.addFolder({ title: 'target' })
+  const targetFolder = folder.addFolder({ index: light.id, title: 'Target' })
   targetFolder.addInput(light.target, 'position', { step: 0.1 }).on('change', () => {
     light.target.updateMatrixWorld()
   })
 }
 
 export const addLightFolder = (light: THREE.Light) => {
-  const folder = lightFolder.addFolder({ title: `#${light.id} ${light.name} (${light.type})` })
+  const folder = lightFolder.addFolder({
+    index: light.id,
+    title: `${light.name} (${light.type})`,
+  })
   const THREE = three()
   const dirLight = light as THREE.DirectionalLight
   const hemiLight = light as THREE.HemisphereLight
@@ -124,7 +127,7 @@ export const addLightFolder = (light: THREE.Light) => {
   }
 
   if (light.castShadow) {
-    const camFolder = folder.addFolder({ title: `#${light.id} shadow camera` })
+    const camFolder = folder.addFolder({ index: light.id, title: 'Shadow Camera' })
 
     camFolder
       .addInput(params, 'shadowHelper', { label: 'helper' })

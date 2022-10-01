@@ -13,7 +13,7 @@ const quat = createQuat()
 const m4 = createM4()
 
 const addInstancedMeshFolder = (folder: Pane, mesh: THREE.InstancedMesh) => {
-  const meshFolder = folder.addFolder({ title: 'instances' })
+  const meshFolder = folder.addFolder({ index: mesh.id, title: 'Instances' })
 
   const imeshParams = {
     index: 0,
@@ -81,6 +81,7 @@ export const addTransformInputs = (pane: Pane, object3D: THREE.Object3D) => {
     }
   }
 
+  pane.addSeparator()
   const posInput = pane.addInput(object3D, 'position', { step: 0.1 })
   const rotInput = pane.addInput(params, 'quaternion', quatSettings)
     .on('change', quaternionChange)

@@ -4,7 +4,7 @@ import { pane } from '../pane'
 import { storage } from '../lib/storage'
 
 export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRenderer) => {
-  const cameraFolder = pane.addFolder({ index: 1, title: 'camera' })
+  const cameraFolder = pane.addFolder({ index: 1, title: 'Camera' })
   const perspective = camera as THREE.PerspectiveCamera
 
   // eslint-disable-next-line no-shadow

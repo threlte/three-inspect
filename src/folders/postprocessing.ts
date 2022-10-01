@@ -9,7 +9,7 @@ export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
     }
   }
 
-  const postFolder = pane.addFolder({ title: 'postprocessing' })
+  const postFolder = pane.addFolder({ title: 'Postprocessing' })
   const { passes } = composer
 
   let effectPass: Postprocessing.EffectPass | undefined
@@ -79,6 +79,7 @@ export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
      * SSR
      */
     } else if (effect.name === 'SSREffect') {
+      const index = 0
       const ssrEffect = effect as any
       const ssrFolder = postFolder.addFolder({ title: 'ssr' })
       ssrFolder.addInput(ssrEffect, 'intensity', { max: 3, min: 0, step: 0.01 })
@@ -91,26 +92,26 @@ export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
       ssrFolder.addInput(ssrEffect, 'maxRoughness', { max: 1, min: 0, step: 0.01 })
       ssrFolder.addInput(ssrEffect, 'maxDepthDifference', { max: 100, min: 0, step: 0.1 })
 
-      const temporalResolveFolder = ssrFolder.addFolder({ title: 'Temporal Resolve' })
+      const temporalResolveFolder = ssrFolder.addFolder({ index, title: 'Temporal Resolve' })
       temporalResolveFolder.addInput(ssrEffect, 'blend', { max: 1, min: 0, step: 0.001 })
       temporalResolveFolder.addInput(ssrEffect, 'correction', { max: 1, min: 0, step: 0.0001 })
       temporalResolveFolder.addInput(ssrEffect, 'correctionRadius', { max: 4, min: 1, step: 1 })
 
-      const blurFolder = ssrFolder.addFolder({ title: 'Blur' })
+      const blurFolder = ssrFolder.addFolder({ index, title: 'Blur' })
       blurFolder.addInput(ssrEffect, 'blur', { max: 1, min: 0, step: 0.01 })
       blurFolder.addInput(ssrEffect, 'blurKernel', { max: 5, min: 0, step: 1 })
       blurFolder.addInput(ssrEffect, 'blurSharpness', { max: 100, min: 0, step: 1 })
 
-      const jitterFolder = ssrFolder.addFolder({ title: 'Jitter' })
+      const jitterFolder = ssrFolder.addFolder({ index, title: 'Jitter' })
       jitterFolder.addInput(ssrEffect, 'jitter', { max: 4, min: 0, step: 0.01 })
       jitterFolder.addInput(ssrEffect, 'jitterRoughness', { max: 4, min: 0, step: 0.01 })
 
-      const definesFolder = ssrFolder.addFolder({ title: 'Tracing' })
+      const definesFolder = ssrFolder.addFolder({ index, title: 'Tracing' })
       definesFolder.addInput(ssrEffect, 'steps', { max: 256, min: 1, step: 1 })
       definesFolder.addInput(ssrEffect, 'refineSteps', { max: 16, min: 0, step: 1 })
       definesFolder.addInput(ssrEffect, 'missedRays')
 
-      const resolutionFolder = ssrFolder.addFolder({ title: 'Resolution' })
+      const resolutionFolder = ssrFolder.addFolder({ index, title: 'Resolution' })
       resolutionFolder.addInput(ssrEffect, 'resolutionScale', { max: 1, min: 0.125, step: 0.125 })
       resolutionFolder.addInput(ssrEffect, 'velocityResolutionScale', { max: 1, min: 0.125, step: 0.125 })
 

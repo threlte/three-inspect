@@ -16,15 +16,19 @@ const addFolder = Tweakpane.FolderApi.prototype.addFolder
 const dispose = Tweakpane.FolderApi.prototype.dispose
 
 Tweakpane.FolderApi.prototype.addFolder = function (params: Tweakpane.FolderParams) {
+  const id = `${String(params.index ?? -1)}.${params.title}`
+
   const folder = addFolder.call(this, {
-    expanded: storage.get(`panels.${params.title}`) !== null,
+    expanded: storage.get(`panels.${id}`) !== null,
     ...params,
   })
   folders.push(folder)
 
+  folder.element.id = id
+
   folder.on('fold', (event) => {
-    const target = event.target as Pane
-    const key = `three-debug.panels.${target.title}`
+    const key = `panels.${id}`
+
     if (event.expanded) {
       storage.set(key, '')
     } else {
@@ -71,10 +75,10 @@ const closeFolders = () => {
   }
 }
 
-export const pane = addPane('world')
+export const pane = addPane('World')
 
 if (selectedPane === null) {
-  panels.selectPanel('world')
+  panels.selectPanel('World')
 }
 
 export const state = { controlling: false }

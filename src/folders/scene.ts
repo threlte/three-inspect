@@ -4,7 +4,7 @@ import { storage } from '../lib/storage'
 import { three } from '../three'
 
 export const initSceneFolder = (scene: THREE.Scene) => {
-  const sceneFolder = pane.addFolder({ index: 0, title: 'scene' })
+  const sceneFolder = pane.addFolder({ index: 0, title: 'Scene' })
   const THREE = three()
   const grid = storage.get('grid') !== null
   const axes = storage.get('axes') !== null
@@ -70,7 +70,7 @@ export const initSceneFolder = (scene: THREE.Scene) => {
     .on('change', () => toggleHelper('axes'))
 
   if (scene.fog !== null) {
-    const fogFolder = sceneFolder.addFolder({ title: 'fog' })
+    const fogFolder = sceneFolder.addFolder({ title: 'Fog' })
     fogFolder.addInput(params, 'fogColor', {
       label: 'color',
     }).on('change', () => {

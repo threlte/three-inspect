@@ -3,7 +3,7 @@ import { addMaterialInputs } from './inputs/material'
 import { addTransformInputs } from './inputs/transform'
 import { pane } from './pane'
 
-export const objectFolder = pane.addFolder({ title: 'objects' })
+export const objectFolder = pane.addFolder({ title: 'Objects' })
 
 type Disposer = () => void
 
@@ -14,34 +14,34 @@ export const deregister = (object: THREE.Object3D) => {
   disposers.delete(object)
 }
 
-export const register = (object: THREE.Object3D, mainFolder = objectFolder) => {
-  const isInstanced = (object as THREE.InstancedMesh).isInstancedMesh
+export const register = (object3D: THREE.Object3D, mainFolder = objectFolder) => {
+  const isInstanced = (object3D as THREE.InstancedMesh).isInstancedMesh
   const instancedFlag = isInstanced ? ' (instanced)' : ''
-  const title = `#${object.id} ${object.name || '[unnamed]'}${instancedFlag}`
-  const folder = mainFolder.addFolder({ title })
-  folder.addInput(object, 'castShadow')
-  folder.addInput(object, 'receiveShadow')
-  folder.addInput(object, 'frustumCulled')
-  folder.addInput(object, 'visible')
+  const title = `${object3D.name || '[unnamed]'}${instancedFlag}`
+  const folder = mainFolder.addFolder({ index: object3D.id, title })
+  folder.addInput(object3D, 'castShadow')
+  folder.addInput(object3D, 'receiveShadow')
+  folder.addInput(object3D, 'frustumCulled')
+  folder.addInput(object3D, 'visible')
 
   let disposeForwardHelper: (() => void) | undefined
-  if (!object.type.toLowerCase().includes('helper')) {
-    disposeForwardHelper = addForwardHelperInput(folder, object)
+  if (!object3D.type.toLowerCase().includes('helper')) {
+    disposeForwardHelper = addForwardHelperInput(folder, object3D)
   }
-  const disposeTransformInputs = addTransformInputs(folder, object)
+  const disposeTransformInputs = addTransformInputs(folder, object3D)
 
   let disposeMaterialInputs: (() => void) | undefined
-  if ((object as THREE.Mesh).isMesh) {
-    disposeMaterialInputs = addMaterialInputs(folder, object as THREE.Mesh)
+  if ((object3D as THREE.Mesh).isMesh) {
+    disposeMaterialInputs = addMaterialInputs(folder, object3D as THREE.Mesh)
   }
 
-  const childrenFolder = folder.addFolder({ title: 'children' })
+  const childrenFolder = folder.addFolder({ index: object3D.id, title: 'Children' })
   childrenFolder.hidden = true
 
-  const add = object.add.bind(object)
-  const remove = object.remove.bind(object)
+  const add = object3D.add.bind(object3D)
+  const remove = object3D.remove.bind(object3D)
 
-  object.add = (...args) => {
+  object3D.add = (...args) => {
     childrenFolder.hidden = false
     for (const child of args) {
       register(child, childrenFolder)
@@ -50,25 +50,25 @@ export const register = (object: THREE.Object3D, mainFolder = objectFolder) => {
     return add(...args)
   }
 
-  object.remove = (...args) => {
+  object3D.remove = (...args) => {
     for (const child of args) {
       deregister(child)
     }
     return remove(...args)
   }
 
-  if (object.children.length > 0) {
+  if (object3D.children.length > 0) {
     childrenFolder.hidden = false
-    for (const child of object.children) {
+    for (const child of object3D.children) {
       register(child, childrenFolder)
     }
   }
 
-  disposers.set(object, () => {
+  disposers.set(object3D, () => {
     disposeMaterialInputs?.()
     disposeTransformInputs()
     disposeForwardHelper?.()
-    object.traverse((child) => object !== child && deregister(child))
+    object3D.traverse((child) => object3D !== child && deregister(child))
     folder.dispose()
   })
 }
