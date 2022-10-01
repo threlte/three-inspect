@@ -1,7 +1,7 @@
-import { addFolder, pane } from '../pane'
 import { erase, save, storage } from '../storage'
 import { OrbitControls } from '../lib/orbit-controls'
 import { addTransformInputs } from '../inputs/transform'
+import { pane } from '../pane'
 
 export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRenderer) => {
   const perspective = camera as THREE.PerspectiveCamera
@@ -76,7 +76,7 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
     }
   }
 
-  const cameraFolder = addFolder(pane, 'camera', 1)
+  const cameraFolder = pane.addFolder({ index: 1, title: 'camera' })
 
   const titles = ['none', 'orbit', 'map']
 

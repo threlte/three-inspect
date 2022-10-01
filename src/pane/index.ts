@@ -13,21 +13,21 @@ const paneContainers: HTMLElement[] = []
 
 let isVisible = true
 
-export const addFolder = (pane: Pane, title: string, index?: number) => {
-  const folder = pane.addFolder({
-    expanded: storedState[title] ?? false,
-    index,
-    title,
+const addFolder = Tweakpane.FolderApi.prototype.addFolder
+const dispose = Tweakpane.FolderApi.prototype.dispose
+
+Tweakpane.FolderApi.prototype.addFolder = function (params: Tweakpane.FolderParams) {
+  const folder = addFolder.call(this, {
+    expanded: params.expanded ?? storedState[params.title] ?? false,
+    ...params,
   })
-
   folders.push(folder)
-
   return folder
 }
 
-export const deleteFolder = (folder: Pane) => {
-  folders.splice(folders.indexOf(folder), 1)
-  folder.dispose()
+Tweakpane.FolderApi.prototype.dispose = function () {
+  dispose.call(this)
+  folders.splice(folders.indexOf(this), 1)
 }
 
 export const addPane = (title: string) => {

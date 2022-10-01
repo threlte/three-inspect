@@ -1,4 +1,4 @@
-import { Pane, addFolder } from '../pane'
+import type { Pane } from '../pane'
 import { defaultMinMax } from '../constants'
 import { three } from '../three'
 
@@ -8,7 +8,7 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
   const meshStandardMat = mesh.material as THREE.MeshStandardMaterial
   const meshPhysicalMat = mesh.material as THREE.MeshPhysicalMaterial
 
-  const materialFolder = addFolder(pane, `#${mesh.id} ${material.type}`)
+  const materialFolder = pane.addFolder({ title: `#${mesh.id} ${material.type}` })
 
   if (material.isMaterial) {
     materialFolder.addInput(material, 'depthTest')

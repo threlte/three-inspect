@@ -1,9 +1,9 @@
-import { addFolder, pane } from './pane'
 import { addForwardHelperInput } from './inputs/helper-forward'
 import { addMaterialInputs } from './inputs/material'
 import { addTransformInputs } from './inputs/transform'
+import { pane } from './pane'
 
-export const objectFolder = addFolder(pane, 'objects', 3)
+export const objectFolder = pane.addFolder({ title: 'objects' })
 
 type Disposer = () => void
 
@@ -24,8 +24,8 @@ export const deregister = (object: THREE.Object3D) => {
 export const register = (object: THREE.Object3D, mainFolder = objectFolder) => {
   const isInstanced = (object as THREE.InstancedMesh).isInstancedMesh
   const instancedFlag = isInstanced ? ' (instanced)' : ''
-  const name = `#${object.id} ${object.name || '[unnamed]'}${instancedFlag}`
-  const folder = addFolder(mainFolder, name)
+  const title = `#${object.id} ${object.name || '[unnamed]'}${instancedFlag}`
+  const folder = mainFolder.addFolder({ title })
   folder.addInput(object, 'castShadow')
   folder.addInput(object, 'receiveShadow')
   folder.addInput(object, 'frustumCulled')
@@ -42,7 +42,7 @@ export const register = (object: THREE.Object3D, mainFolder = objectFolder) => {
     disposeMaterialInputs = addMaterialInputs(folder, object as THREE.Mesh)
   }
 
-  const childrenFolder = addFolder(folder, 'children')
+  const childrenFolder = folder.addFolder({ title: 'children' })
   childrenFolder.hidden = true
 
   const add = object.add.bind(object)

@@ -1,7 +1,6 @@
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 import { removeUpdate, update } from '../update'
 import { Pane } from 'tweakpane'
-import { addFolder } from '.'
 
 export const stats = new Pane()
 stats.registerPlugin(EssentialsPlugin)
@@ -18,23 +17,23 @@ export const initStats = (renderer: THREE.WebGLRenderer) => {
     usedJSHeapSize: number
     jsHeapSizeLimit: number
   } }
-  
+
   const parameters = {
     memory: memory ? memory.usedJSHeapSize / mb : 0,
     time: '',
   }
-  
+
   const start = performance.now()
   let total = 0
-  
+
   const updateTime = () => {
     const now = performance.now()
     total = (now - start) / 1000
-  
+
     const seconds = (total % 60) | 0
     const minutes = (total / 60) | 0
     const hours = (total / 60 / 60) | 0
-  
+
     parameters.time = `${
       hours < 10 ? `0${hours}` : hours
     }:${
@@ -43,20 +42,20 @@ export const initStats = (renderer: THREE.WebGLRenderer) => {
       seconds < 10 ? `0${seconds}` : seconds
     }`
   }
-  
+
   updateTime()
   const timeId = setInterval(updateTime, 1000)
-  
+
   stats.addMonitor(parameters, 'time', {
     interval: 1000,
   })
-  
+
   const fpsGraph = stats.addBlade({
     label: 'fps',
     lineCount: 2,
     view: 'fpsgraph',
   })
-  
+
   let memoryId = -1
   if (memory) {
     stats.addMonitor(parameters, 'memory', {
@@ -64,14 +63,14 @@ export const initStats = (renderer: THREE.WebGLRenderer) => {
       min: 0,
       view: 'graph',
     })
-  
+
     memoryId = setInterval(() => {
       parameters.memory = memory.usedJSHeapSize / mb
     }, 3000)
   }
-  
+
   if ('info' in renderer) {
-    const folder = addFolder(stats, 'renderer')
+    const folder = stats.addFolder({ title: 'renderer' })
     folder.addMonitor(renderer.info.memory, 'geometries', { interval: 3_000 })
     folder.addMonitor(renderer.info.memory, 'textures', { interval: 3_000 })
     folder.addMonitor(renderer.info.render, 'calls', { interval: 3_000 })

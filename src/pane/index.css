@@ -15,7 +15,6 @@
 }
 
 .pane {
-  
   overflow: auto;
   max-height: calc(100vh - 16px);
   border-radius: 5px;

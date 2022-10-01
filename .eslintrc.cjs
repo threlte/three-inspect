@@ -39,6 +39,7 @@ module.exports = {
     'default-case': 'off',
     'default-last-param': 'off',
     'dot-location': ['error', 'property'],
+    'func-names': 'off',
     'function-call-argument-newline': ['error', 'consistent'],
     'id-length': 'off',
     'indent': ['error', 2],

@@ -1,4 +1,4 @@
-import { Pane, addFolder, state } from '../pane'
+import { type Pane, state } from '../pane'
 import { createM4, createQuat, createVec3 } from '../lib/math'
 import { removeUpdate, update } from '../update'
 
@@ -13,7 +13,7 @@ const quat = createQuat()
 const m4 = createM4()
 
 const addInstancedMeshFolder = (folder: Pane, mesh: THREE.InstancedMesh) => {
-  const meshFolder = addFolder(folder, 'instances')
+  const meshFolder = folder.addFolder({ title: 'instances' })
 
   const imeshParams = {
     index: 0,

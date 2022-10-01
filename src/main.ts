@@ -1,7 +1,7 @@
 import type * as ThreeLib from 'three'
-import { addFolder, addPane } from './pane'
 import { initStats, stats } from './pane/stats'
 import type { EffectComposer } from 'postprocessing'
+import { addPane } from './pane'
 import { initCameraFolder } from './folders/camera'
 import { initPostFolder } from './folders/postprocessing'
 import { initScene } from './scene'
@@ -37,18 +37,6 @@ const init = (
 }
 
 export default {
-  /**
-   * Adds a new folder to a pane or folder. Enables folders to have their open / closed
-   * state to be saved to browser storage and preserved.
-   *
-   * @param pane A Tweakpane pane or folder.
-   * @param title The folder title.
-   * @param index An optional index representing folder order.
-   *
-   * @returns A Tweakpane folder instance.
-   */
-  addFolder,
-
   /**
    * Adds a new pane and navigation menu item.
    *

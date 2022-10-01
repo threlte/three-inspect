@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 
-import { type Pane, addFolder, pane } from '../pane'
+import { type Pane, pane } from '../pane'
 import { defaultMinMax, shadowmapSizes } from '../constants'
 import { addTransformInputs } from '../inputs/transform'
 import { createRectAreaLightHelper } from '../lib/rectarealight'
@@ -19,10 +19,10 @@ type TargetLight =
   | THREE.DirectionalLight
   | THREE.SpotLight
 
-const lightFolder = addFolder(pane, 'lights', 1)
+const lightFolder = pane.addFolder({ title: 'lights' })
 
 const addTargetInput = (folder: Pane, light: TargetLight) => {
-  const targetFolder = addFolder(folder, 'target')
+  const targetFolder = folder.addFolder({ title: 'target' })
   targetFolder.addInput(light.target, 'position', { step: 0.1 }).on('change', () => {
     light.target.updateMatrixWorld()
   })
@@ -36,7 +36,7 @@ export const addLightFolder = (light: THREE.Light) => {
   const rectLight = light as THREE.RectAreaLight
 
   const THREE = three()
-  const folder = addFolder(lightFolder, `#${light.id} ${light.name} (${light.type})`)
+  const folder = lightFolder.addFolder({ title: `#${light.id} ${light.name} (${light.type})` })
 
   let helper: LightHelper | undefined
   let shadowHelper: THREE.CameraHelper | undefined
@@ -125,7 +125,7 @@ export const addLightFolder = (light: THREE.Light) => {
   }
 
   if (light.castShadow) {
-    const camFolder = addFolder(folder, `#${light.id} shadow camera`)
+    const camFolder = folder.addFolder({ title: `#${light.id} shadow camera` })
 
     camFolder
       .addInput(params, 'shadowHelper', { label: 'helper' })

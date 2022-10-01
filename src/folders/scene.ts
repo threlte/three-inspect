@@ -1,11 +1,11 @@
-import { addFolder, pane } from '../pane'
 import { save, storage } from '../storage'
 import { disposeHelper } from '../lib/dispose'
+import { pane } from '../pane'
 import { three } from '../three'
 
 export const initSceneFolder = (scene: THREE.Scene) => {
   const THREE = three()
-  const sceneFolder = addFolder(pane, 'scene', 0)
+  const sceneFolder = pane.addFolder({ index: 0, title: 'scene' })
 
   const params = {
     axes: storage.axes as boolean | undefined ?? false,
@@ -62,7 +62,7 @@ export const initSceneFolder = (scene: THREE.Scene) => {
     .on('change', () => toggleHelper('axes'))
 
   if (scene.fog !== null) {
-    const fogFolder = addFolder(sceneFolder, 'fog')
+    const fogFolder = sceneFolder.addFolder({ title: 'fog' })
     fogFolder.addInput(params, 'fogColor', {
       label: 'color',
     }).on('change', () => {
