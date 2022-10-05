@@ -1,4 +1,4 @@
-import { OrbitControls } from '../lib/orbit-controls'
+import { MapControls, OrbitControls } from '../lib/orbit-controls'
 import { addTransformInputs } from '../inputs/transform'
 import { pane } from '../pane'
 import { storage } from '../lib/storage'
@@ -28,19 +28,19 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
     return setPosition(...args)
   }
 
-  let orbitControls: OrbitControls | undefined
+  let controls: OrbitControls | undefined
 
   const debugCamera = storage.getJSON('camera')
 
   if (debugCamera) {
-    orbitControls = new OrbitControls(camera, renderer.domElement)
-    orbitControls.target.fromArray((debugCamera as { target: number[] }).target)
+    controls = new OrbitControls(camera, renderer.domElement)
+    controls.target.fromArray((debugCamera as { target: number[] }).target)
     camera.quaternion.fromArray((debugCamera as { quaternion: number[] }).quaternion)
     camera.position.fromArray((debugCamera as { position: number[] }).position)
-    orbitControls.update()
+    controls.update()
   }
 
-  const controls = [
+  const controlOptions = [
     Controls.NONE,
     Controls.ORBIT,
     Controls.MAP,
@@ -50,21 +50,26 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
     storage.setJSON('camera', {
       position: camera.position.toArray(),
       quaternion: camera.quaternion.toArray(),
-      target: orbitControls!.target.toArray(),
+      target: controls!.target.toArray(),
     })
   }
 
   const setEnabledControls = () => {
-    storage.setJSON('controls', params.controls)
+    controls?.dispose()
+    window.removeEventListener('pointerup', savePosition)
+    window.removeEventListener('wheel', savePosition)
 
     if (params.controls === Controls.NONE) {
       storage.remove('camera')
       storage.remove('controls')
-      window.removeEventListener('pointerup', savePosition)
-      window.removeEventListener('wheel', savePosition)
-      orbitControls?.dispose()
-    } else {
-      orbitControls = new OrbitControls(camera, renderer.domElement)
+    } else if (params.controls === Controls.MAP) {
+      storage.setJSON('controls', Controls.MAP)
+      controls = new MapControls(camera, renderer.domElement)
+      window.addEventListener('pointerup', savePosition, { passive: true })
+      window.addEventListener('wheel', savePosition, { passive: true })
+    } else if (params.controls === Controls.ORBIT) {
+      storage.setJSON('controls', Controls.ORBIT)
+      controls = new OrbitControls(camera, renderer.domElement)
       window.addEventListener('pointerup', savePosition, { passive: true })
       window.addEventListener('wheel', savePosition, { passive: true })
     }
@@ -81,8 +86,8 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
   cameraFolder.addInput(params, 'controls', {
     cells: (x: number, y: number) => {
       return {
-        title: titles[controls[(y * 3) + x]],
-        value: controls[(y * 3) + x],
+        title: titles[controlOptions[(y * 3) + x]],
+        value: controlOptions[(y * 3) + x],
       }
     },
     groupName: 'controls',
@@ -108,6 +113,6 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
     cameraFolder.dispose()
     camera.position.set = setPosition
     disposeTransformInputs()
-    orbitControls?.dispose()
+    controls?.dispose()
   }
 }

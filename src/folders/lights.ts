@@ -19,7 +19,13 @@ type TargetLight =
   | THREE.DirectionalLight
   | THREE.SpotLight
 
-const lightFolder = pane.addFolder({ title: 'Lights' })
+let lightFolder: Pane
+
+export const initLightFolder = () => {
+  lightFolder = pane.addFolder({ title: 'Lights' })
+
+  return () => lightFolder.dispose()
+}
 
 const addTargetInput = (folder: Pane, light: TargetLight) => {
   const targetFolder = folder.addFolder({ index: light.id, title: 'Target' })

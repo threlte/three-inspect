@@ -1,42 +1,22 @@
 import type * as ThreeLib from 'three'
-import { initStats, stats } from './pane/stats'
+import { type Pane, addPane, initPane } from './pane'
+import { pause, run } from './update'
 import type { EffectComposer } from 'postprocessing'
-import { addPane } from './pane'
 import { initCameraFolder } from './folders/camera'
+import { initLightFolder } from './folders/lights'
+import { initObjectFolder } from './objects'
+import { initPanels } from './pane/panels'
 import { initPostFolder } from './folders/postprocessing'
 import { initScene } from './scene'
 import { initSceneFolder } from './folders/scene'
-import { run } from './update'
+import { initStats } from './pane/stats'
 import { setThree } from './three'
 
-/**
- * Disposes the debugger
- */
 type Disposer = () => void
 
-const init = (
-  THREE: typeof ThreeLib,
-  scene: THREE.Scene,
-  camera: THREE.Camera,
-  renderer: THREE.WebGLRenderer,
-  composer?: EffectComposer
-): Disposer => {
-  setThree(THREE)
+export default class Debug {
+  disposers: Disposer[] = []
 
-  const disposeStats = initStats(renderer)
-  const disposeScene = initScene(scene)
-  initSceneFolder(scene)
-  initCameraFolder(camera, renderer)
-  initPostFolder(composer)
-  run()
-
-  return () => {
-    disposeStats()
-    disposeScene()
-  }
-}
-
-export default {
   /**
    * Adds a new pane and navigation menu item.
    *
@@ -44,10 +24,15 @@ export default {
    *
    * @returns a Tweakpane.Pane instance.
    */
-  addPane,
+  addPane = addPane
 
   /**
-   * Mounts Three.js debugging and monitoring tools.
+   * The stats panel. Can be extended.
+   */
+  stats: Pane
+
+  /**
+   * Instantiates Three.js debugging and monitoring tools.
    *
    * @param THREE The THREE object used in this project.
    * @param scene The scene to debug.
@@ -57,10 +42,38 @@ export default {
    *
    * @returns A cleanup function to unmount and dispose the debugger.
    */
-  init,
+  constructor (
+    THREE: typeof ThreeLib,
+    scene: THREE.Scene,
+    camera: THREE.Camera,
+    renderer: THREE.WebGLRenderer,
+    composer?: EffectComposer
+  ) {
+    setThree(THREE)
+
+    const { stats, dispose: disposeStats } = initStats(renderer)
+    this.stats = stats
+
+    this.disposers.push(disposeStats)
+    this.disposers.push(initPane())
+    this.disposers.push(initPanels())
+    this.disposers.push(initLightFolder())
+    this.disposers.push(initObjectFolder())
+    this.disposers.push(initScene(scene))
+    this.disposers.push(initCameraFolder(camera, renderer))
+    this.disposers.push(initSceneFolder(scene))
+    this.disposers.push(initPostFolder(composer))
+    run()
+  }
 
   /**
-   * The stats pane. Can be extended.
+   * Disposes the debugger
    */
-  stats,
+  dispose () {
+    pause()
+
+    for (let i = this.disposers.length - 1; i > -1; i -= 1) {
+      this.disposers[i]()
+    }
+  }
 }

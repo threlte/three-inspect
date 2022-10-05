@@ -1,13 +1,19 @@
+import { type Pane, pane } from './pane'
 import { addForwardHelperInput } from './inputs/helper-forward'
 import { addMaterialInputs } from './inputs/material'
 import { addTransformInputs } from './inputs/transform'
-import { pane } from './pane'
 
-export const objectFolder = pane.addFolder({ title: 'Objects' })
+export let objectFolder: Pane
 
 type Disposer = () => void
 
 const disposers = new WeakMap<THREE.Object3D, Disposer>()
+
+export const initObjectFolder = () => {
+  objectFolder = pane.addFolder({ title: 'Objects' })
+
+  return () => objectFolder.dispose()
+}
 
 export const deregister = (object: THREE.Object3D) => {
   disposers.get(object)?.()
@@ -28,6 +34,7 @@ export const register = (object3D: THREE.Object3D, mainFolder = objectFolder) =>
   if (!object3D.type.toLowerCase().includes('helper')) {
     disposeForwardHelper = addForwardHelperInput(folder, object3D)
   }
+
   const disposeTransformInputs = addTransformInputs(folder, object3D)
 
   let disposeMaterialInputs: (() => void) | undefined
@@ -35,7 +42,10 @@ export const register = (object3D: THREE.Object3D, mainFolder = objectFolder) =>
     disposeMaterialInputs = addMaterialInputs(folder, object3D as THREE.Mesh)
   }
 
-  const childrenFolder = folder.addFolder({ index: object3D.id, title: 'Children' })
+  const childrenFolder = folder.addFolder({
+    index: object3D.id,
+    title: 'Children',
+  })
   childrenFolder.hidden = true
 
   const add = object3D.add.bind(object3D)
@@ -43,24 +53,26 @@ export const register = (object3D: THREE.Object3D, mainFolder = objectFolder) =>
 
   object3D.add = (...args) => {
     childrenFolder.hidden = false
-    for (const child of args) {
-      register(child, childrenFolder)
+    for (let i = 0, l = args.length; i < l; i += 1) {
+      register(args[i], childrenFolder)
     }
 
     return add(...args)
   }
 
   object3D.remove = (...args) => {
-    for (const child of args) {
-      deregister(child)
+    for (let i = 0, l = args.length; i < l; i += 1) {
+      deregister(args[i])
     }
+
     return remove(...args)
   }
 
-  if (object3D.children.length > 0) {
+  const { children } = object3D
+  if (children.length > 0) {
     childrenFolder.hidden = false
-    for (const child of object3D.children) {
-      register(child, childrenFolder)
+    for (let i = 0, l = children.length; i < l; i += 1) {
+      register(children[i])
     }
   }
 

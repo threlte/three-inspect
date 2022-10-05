@@ -6,9 +6,9 @@
 
 Currently, it covers:
 * Scene helpers
+* Helpers for lights, cameras, shadow cameras
 * Camera
 * Lights
-  * Shadow cameras
 * Objects and child objects
 * Postprocessing (only [pmndrs/postprocessing](https://github.com/pmndrs/postprocessing) is supported)
 
@@ -30,7 +30,19 @@ import debug from 'three-debug'
  * when building for production to ensure tree-shaking.
  */
 if (devMode) {
-  debug.init(THREE, scene, camera, renderer, composer)
+  const debug = new Debug(
+    THREE, /* the THREE object used in your project */
+    scene,
+    camera,
+    renderer,
+    composer /* optional */
+  )
+
+  /**
+   * Call this when you wish to remove the debugger,
+   * or re-init it with a new scene, camera, etc.
+   */
+  debug.dispose()
 }
 ```
 

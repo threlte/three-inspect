@@ -1,7 +1,7 @@
 import './main.css'
 import * as THREE from 'three'
 import { scene, camera, renderer, run, lights, composer, update } from 'three-kit'
-import debug from '../src/main'
+import Debug from '../src/main'
 import { OrbitControls } from '../src/lib/orbit-controls'
 
 camera.parent!.name = 'Camera'
@@ -76,8 +76,21 @@ const count = 30
 camera.position.set(1, 1, 1)
 camera.lookAt(0, 0, 0)
 
-debug.init(THREE, scene, camera, renderer, composer)
+
 run()
+
+let debug
+const toggle = () => {
+  if (debug) {
+    debug.dispose()
+    debug = undefined
+  } else {
+    debug = new Debug(THREE, scene, camera, renderer, composer)
+  }
+}
+
+toggle()
+// setInterval(toggle, 1_000)
 
 const pane = debug.addPane('Game')
 

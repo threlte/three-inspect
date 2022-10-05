@@ -7,16 +7,20 @@ export const initScene = (scene: THREE.Scene) => {
   const clear = scene.clear.bind(scene)
 
   const register = (object: THREE.Object3D) => {
-    if ((object as THREE.Light).isLight) {
-      lights.register(object as THREE.Light)
+    const light = object as THREE.Light
+
+    if (light.isLight) {
+      lights.register(light)
     } else {
       objects.register(object)
     }
   }
 
   const deregister = (object: THREE.Object3D) => {
-    if ((object as THREE.Light).isLight) {
-      lights.deregister(object as THREE.Light)
+    const light = object as THREE.Light
+
+    if (light.isLight) {
+      lights.deregister(light)
     } else {
       objects.deregister(object)
     }
@@ -24,13 +28,15 @@ export const initScene = (scene: THREE.Scene) => {
 
   const deregisterAll = () => {
     const { children } = scene
+
     for (let i = 0, l = children.length; i < l; i += 1) {
       deregister(children[i])
     }
   }
 
-  for (const child of scene.children) {
-    register(child)
+  const { children } = scene
+  for (let i = 0, l = children.length; i < l; i += 1) {
+    register(children[i])
   }
 
   scene.add = (...args: THREE.Object3D[]) => {
@@ -51,7 +57,6 @@ export const initScene = (scene: THREE.Scene) => {
 
   scene.clear = () => {
     deregisterAll()
-
     return clear()
   }
 

@@ -44,13 +44,19 @@ Tweakpane.FolderApi.prototype.dispose = function () {
   folders.splice(folders.indexOf(this), 1)
 }
 
-export const addPane = (title: string) => {
-  const pane = new Tweakpane.Pane()
-  pane.registerPlugin(EssentialsPlugin)
-  pane.registerPlugin(RotationPlugin)
-  pane.element.classList.add('pane')
+export let pane: Pane
 
-  const parent = pane.element.parentElement
+export const state = {
+  controlling: false,
+}
+
+export const addPane = (title: string) => {
+  const newPane = new Tweakpane.Pane()
+  newPane.registerPlugin(EssentialsPlugin)
+  newPane.registerPlugin(RotationPlugin)
+  newPane.element.classList.add('pane')
+
+  const parent = newPane.element.parentElement
 
   if (parent === null) {
     throw new Error(`Parent of pane ${title} is null!`)
@@ -60,13 +66,31 @@ export const addPane = (title: string) => {
   parent.style.width = '300px'
   parent.style.zIndex = '1000'
   paneContainers.push(parent)
-  panels.addPanelEntry(title, pane)
+  panels.addPanelEntry(title, newPane)
 
   if (selectedPane === title) {
     panels.selectPanel(title)
   }
 
-  return pane
+  return newPane
+}
+
+const setControlled = () => {
+  state.controlling = true
+}
+
+const setUncontrolled = () => {
+  state.controlling = false
+}
+
+export const initPane = () => {
+  pane = addPane('World')
+  pane.element.addEventListener('mousedown', setControlled, { passive: true })
+  pane.element.addEventListener('mouseup', setUncontrolled, { passive: true })
+
+  return () => {
+    pane.dispose()
+  }
 }
 
 const closeFolders = () => {
@@ -75,21 +99,9 @@ const closeFolders = () => {
   }
 }
 
-export const pane = addPane('World')
-
 if (selectedPane === null) {
   panels.selectPanel('World')
 }
-
-export const state = { controlling: false }
-
-pane.element.addEventListener('mousedown', () => {
-  state.controlling = true
-}, { passive: true })
-
-pane.element.addEventListener('mouseup', () => {
-  state.controlling = false
-}, { passive: true })
 
 document.addEventListener('keypress', (event) => {
   if (!event.shiftKey) {
@@ -103,20 +115,17 @@ document.addEventListener('keypress', (event) => {
     }
     panels.element.style.transform = isVisible ? 'translate(0, -150%)' : ''
     isVisible = !isVisible
-    break
+    return
 
   case 'x':
     closeFolders()
-    break
+    return
 
   case '~':
     panels.selectPreviousPanel()
-    break
+    return
 
   case '!':
     panels.selectNextPanel()
-    break
-  default:
-    break
   }
 })

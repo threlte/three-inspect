@@ -12,10 +12,24 @@ let selectedButton: HTMLButtonElement | undefined
 
 export const element = document.createElement('div')
 element.className = 'panels tp-rotv'
-document.body.append(element)
 
 export const paneMap = new Map<string, Pane>()
 export const paneTitles: string[] = []
+
+const deletePanelEntries = () => {
+  paneTitles.splice(0, paneTitles.length)
+  paneMap.clear()
+  element.innerHTML = ''
+}
+
+export const initPanels = () => {
+  document.body.append(element)
+
+  return () => {
+    deletePanelEntries()
+    element.remove()
+  }
+}
 
 export const selectPanel = (title: string) => {
   selectedTitle = title

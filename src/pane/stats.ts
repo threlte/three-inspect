@@ -2,16 +2,11 @@ import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 import { removeUpdate, update } from '../update'
 import { Pane } from 'tweakpane'
 
-export const stats = new Pane()
-stats.registerPlugin(EssentialsPlugin)
-
-if (stats.element.parentElement === null) {
-  throw new Error('stats panel parentElement is null!')
-}
-
-stats.element.parentElement.classList.add('pane-left')
-
 export const initStats = (renderer: THREE.WebGLRenderer) => {
+  const stats = new Pane()
+  stats.element.parentElement!.classList.add('pane-left')
+  stats.registerPlugin(EssentialsPlugin)
+
   const mb = 1_048_576
   const { memory } = performance as unknown as { memory: undefined | {
     usedJSHeapSize: number
@@ -87,9 +82,12 @@ export const initStats = (renderer: THREE.WebGLRenderer) => {
 
   update(tick)
 
-  return () => {
+  const dispose = () => {
+    stats.dispose()
     clearInterval(timeId)
     clearInterval(memoryId)
     removeUpdate(tick)
   }
+
+  return { stats, dispose }
 }

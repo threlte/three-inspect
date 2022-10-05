@@ -372,16 +372,6 @@ class OrbitControls extends EventDispatcher {
 
     this.update = update
 
-    this.dispose = () => {
-      domElement.removeEventListener('contextmenu', onContextMenu)
-      domElement.removeEventListener('pointerdown', onPointerDown)
-      domElement.removeEventListener('pointercancel', onPointerCancel)
-      domElement.removeEventListener('wheel', onMouseWheel)
-      domElement.removeEventListener('pointermove', onPointerMove)
-      domElement.removeEventListener('pointerup', onPointerUp)
-      window.removeEventListener('keydown', onKeyDown)
-    }
-
     const getAutoRotationAngle = () => {
       return 2 * Math.PI / 60 / 60 * this.autoRotateSpeed
     }
@@ -599,8 +589,7 @@ class OrbitControls extends EventDispatcher {
     const handleTouchStartDolly = () => {
       const dx = pointers[0].pageX - pointers[1].pageX
       const dy = pointers[0].pageY - pointers[1].pageY
-
-      const distance = Math.sqrt(dx * dx + dy * dy)
+      const distance = Math.sqrt((dx ** 2) + (dy ** 2))
 
       dollyStart.set(0, distance)
     }
@@ -672,7 +661,7 @@ class OrbitControls extends EventDispatcher {
       const dx = event.pageX - position.x
       const dy = event.pageY - position.y
 
-      const distance = Math.sqrt(dx * dx + dy * dy)
+      const distance = Math.sqrt((dx ** 2) + (dy ** 2))
 
       dollyEnd.set(0, distance)
 
@@ -709,207 +698,15 @@ class OrbitControls extends EventDispatcher {
      *
      */
 
-    const onPointerDown = (event: PointerEvent) => {
-      if (!this.enabled) {
-        return
+    const trackPointer = (event: PointerEvent) => {
+      let position = pointerPositions[event.pointerId]
+
+      if (position === undefined) {
+        position = new THREE.Vector2()
+        pointerPositions[event.pointerId] = position
       }
 
-      if (pointers.length === 0) {
-        domElement.setPointerCapture(event.pointerId)
-
-        domElement.addEventListener('pointermove', onPointerMove)
-        domElement.addEventListener('pointerup', onPointerUp)
-      }
-
-      addPointer(event)
-
-      if (event.pointerType === 'touch') {
-        onTouchStart(event)
-      } else {
-        onMouseDown(event)
-      }
-    }
-
-    const onPointerMove = (event: PointerEvent) => {
-      if (!this.enabled) {
-        return
-      }
-
-      if (event.pointerType === 'touch') {
-        onTouchMove(event)
-      } else {
-        onMouseMove(event)
-      }
-    }
-
-    const onPointerUp = (event: PointerEvent) => {
-      removePointer(event)
-
-      if (pointers.length === 0) {
-        domElement.releasePointerCapture(event.pointerId)
-
-        domElement.removeEventListener('pointermove', onPointerMove)
-        domElement.removeEventListener('pointerup', onPointerUp)
-      }
-
-      this.dispatchEvent(endEvent)
-
-      state = STATE.NONE
-    }
-
-    const onPointerCancel = (event: PointerEvent) => {
-      removePointer(event)
-    }
-
-    const onMouseDown = (event: MouseEvent) => {
-      let mouseAction = -1
-
-      switch (event.button) {
-      case 0:
-
-        mouseAction = this.mouseButtons.LEFT
-        break
-
-      case 1:
-
-        mouseAction = this.mouseButtons.MIDDLE
-        break
-
-      case 2:
-
-        mouseAction = this.mouseButtons.RIGHT
-        break
-
-      default:
-
-        mouseAction = -1
-      }
-
-      switch (mouseAction) {
-      case MOUSE.DOLLY:
-
-        if (!this.enableZoom) {
-          return
-        }
-
-        handleMouseDownDolly(event)
-
-        state = STATE.DOLLY
-
-        break
-
-      case MOUSE.ROTATE:
-
-        if (event.ctrlKey || event.metaKey || event.shiftKey) {
-          if (!this.enablePan) {
-            return
-          }
-
-          handleMouseDownPan(event)
-
-          state = STATE.PAN
-        } else {
-          if (!this.enableRotate) {
-            return
-          }
-
-          handleMouseDownRotate(event)
-
-          state = STATE.ROTATE
-        }
-
-        break
-
-      case MOUSE.PAN:
-
-        if (event.ctrlKey || event.metaKey || event.shiftKey) {
-          if (!this.enableRotate) {
-            return
-          }
-
-          handleMouseDownRotate(event)
-
-          state = STATE.ROTATE
-        } else {
-          if (!this.enablePan) {
-            return
-          }
-
-          handleMouseDownPan(event)
-
-          state = STATE.PAN
-        }
-
-        break
-
-      default:
-
-        state = STATE.NONE
-      }
-
-      if (state !== STATE.NONE) {
-        this.dispatchEvent(startEvent)
-      }
-    }
-
-    const onMouseMove = (event: MouseEvent) => {
-      switch (state) {
-      case STATE.ROTATE:
-
-        if (!this.enableRotate) {
-          return
-        }
-
-        handleMouseMoveRotate(event)
-
-        break
-
-      case STATE.DOLLY:
-
-        if (!this.enableZoom) {
-          return
-        }
-
-        handleMouseMoveDolly(event)
-
-        break
-
-      case STATE.PAN:
-
-        if (!this.enablePan) {
-          return
-        }
-
-        handleMouseMovePan(event)
-
-        break
-      }
-    }
-
-    const onMouseWheel = (event: WheelEvent) => {
-      if (!this.enabled || !this.enableZoom || state !== STATE.NONE) {
-        return
-      }
-
-      event.preventDefault()
-
-      this.dispatchEvent(startEvent)
-
-      handleMouseWheel(event)
-
-      this.dispatchEvent(endEvent)
-    }
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (
-        !this.enableKeyEvents ||
-        !this.enabled ||
-        !this.enablePan
-      ) {
-        return
-      }
-
-      handleKeyDown(event)
+      position.set(event.pageX, event.pageY)
     }
 
     const onTouchStart = (event: PointerEvent) => {
@@ -999,57 +796,219 @@ class OrbitControls extends EventDispatcher {
 
       switch (state) {
       case STATE.TOUCH_ROTATE:
-
         if (!this.enableRotate) {
           return
         }
 
         handleTouchMoveRotate(event)
-
         update()
-
-        break
+        return
 
       case STATE.TOUCH_PAN:
-
         if (!this.enablePan) {
           return
         }
 
         handleTouchMovePan(event)
-
         update()
-
-        break
+        return
 
       case STATE.TOUCH_DOLLY_PAN:
-
         if (!this.enableZoom && !this.enablePan) {
           return
         }
 
         handleTouchMoveDollyPan(event)
-
         update()
-
-        break
+        return
 
       case STATE.TOUCH_DOLLY_ROTATE:
-
         if (!this.enableZoom && !this.enableRotate) {
           return
         }
 
         handleTouchMoveDollyRotate(event)
-
         update()
+        return
 
+      default:
+        state = STATE.NONE
+      }
+    }
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (!this.enabled) {
+        return
+      }
+
+      if (event.pointerType === 'touch') {
+        onTouchMove(event)
+      } else {
+        onMouseMove(event)
+      }
+    }
+
+    const onPointerUp = (event: PointerEvent) => {
+      removePointer(event)
+
+      if (pointers.length === 0) {
+        domElement.releasePointerCapture(event.pointerId)
+
+        domElement.removeEventListener('pointermove', onPointerMove)
+        domElement.removeEventListener('pointerup', onPointerUp)
+      }
+
+      this.dispatchEvent(endEvent)
+
+      state = STATE.NONE
+    }
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (!this.enabled) {
+        return
+      }
+
+      if (pointers.length === 0) {
+        domElement.setPointerCapture(event.pointerId)
+
+        domElement.addEventListener('pointermove', onPointerMove)
+        domElement.addEventListener('pointerup', onPointerUp)
+      }
+
+      addPointer(event)
+
+      if (event.pointerType === 'touch') {
+        onTouchStart(event)
+      } else {
+        onMouseDown(event)
+      }
+    }
+
+    const onPointerCancel = (event: PointerEvent) => {
+      removePointer(event)
+    }
+
+    const onMouseDown = (event: MouseEvent) => {
+      let mouseAction = -1
+
+      switch (event.button) {
+      case 0:
+        mouseAction = this.mouseButtons.LEFT
+        break
+      case 1:
+        mouseAction = this.mouseButtons.MIDDLE
+        break
+      case 2:
+        mouseAction = this.mouseButtons.RIGHT
+        break
+      }
+
+      switch (mouseAction) {
+      case MOUSE.DOLLY:
+        if (!this.enableZoom) {
+          return
+        }
+
+        handleMouseDownDolly(event)
+        state = STATE.DOLLY
+
+        break
+
+      case MOUSE.ROTATE:
+        if (event.ctrlKey || event.metaKey || event.shiftKey) {
+          if (!this.enablePan) {
+            return
+          }
+
+          handleMouseDownPan(event)
+          state = STATE.PAN
+        } else {
+          if (!this.enableRotate) {
+            return
+          }
+
+          handleMouseDownRotate(event)
+          state = STATE.ROTATE
+        }
+
+        break
+
+      case MOUSE.PAN:
+        if (event.ctrlKey || event.metaKey || event.shiftKey) {
+          if (!this.enableRotate) {
+            return
+          }
+
+          handleMouseDownRotate(event)
+          state = STATE.ROTATE
+        } else {
+          if (!this.enablePan) {
+            return
+          }
+
+          handleMouseDownPan(event)
+          state = STATE.PAN
+        }
         break
 
       default:
 
         state = STATE.NONE
       }
+
+      if (state !== STATE.NONE) {
+        this.dispatchEvent(startEvent)
+      }
+    }
+
+    const onMouseMove = (event: MouseEvent) => {
+      switch (state) {
+      case STATE.ROTATE:
+        if (!this.enableRotate) {
+          return
+        }
+
+        handleMouseMoveRotate(event)
+        return
+
+      case STATE.DOLLY:
+        if (!this.enableZoom) {
+          return
+        }
+
+        handleMouseMoveDolly(event)
+        return
+
+      case STATE.PAN:
+        if (!this.enablePan) {
+          return
+        }
+
+        handleMouseMovePan(event)
+      }
+    }
+
+    const onMouseWheel = (event: WheelEvent) => {
+      if (!this.enabled || !this.enableZoom || state !== STATE.NONE) {
+        return
+      }
+
+      event.preventDefault()
+      this.dispatchEvent(startEvent)
+      handleMouseWheel(event)
+      this.dispatchEvent(endEvent)
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (
+        !this.enableKeyEvents ||
+        !this.enabled ||
+        !this.enablePan
+      ) {
+        return
+      }
+
+      handleKeyDown(event)
     }
 
     const onContextMenu = (event: Event) => {
@@ -1075,32 +1034,29 @@ class OrbitControls extends EventDispatcher {
       }
     }
 
-    const trackPointer = (event: PointerEvent) => {
-      let position = pointerPositions[event.pointerId]
-
-      if (position === undefined) {
-        position = new THREE.Vector2()
-        pointerPositions[event.pointerId] = position
-      }
-
-      position.set(event.pageX, event.pageY)
-    }
-
     const getSecondPointerPosition = (event: PointerEvent) => {
       const pointer = (event.pointerId === pointers[0].pointerId) ? pointers[1] : pointers[0]
 
       return pointerPositions[pointer.pointerId]
     }
 
+    this.dispose = () => {
+      window.removeEventListener('keydown', onKeyDown)
+      domElement.removeEventListener('contextmenu', onContextMenu)
+      domElement.removeEventListener('pointerdown', onPointerDown)
+      domElement.removeEventListener('pointercancel', onPointerCancel)
+      domElement.removeEventListener('wheel', onMouseWheel)
+      domElement.removeEventListener('pointermove', onPointerMove)
+      domElement.removeEventListener('pointerup', onPointerUp)
+    }
+
     window.addEventListener('keydown', onKeyDown)
     domElement.addEventListener('contextmenu', onContextMenu)
-
     domElement.addEventListener('pointerdown', onPointerDown)
     domElement.addEventListener('pointercancel', onPointerCancel)
     domElement.addEventListener('wheel', onMouseWheel, { passive: false })
 
     // Force an update at start
-
     update()
   }
 }
