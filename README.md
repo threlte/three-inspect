@@ -58,10 +58,10 @@ Additionally, the debugger will do its best to "try" to remember which debugging
 
 ### Keyboard shortcuts
 
-`shift + a` - hide debugger
-`shift + ~` - previous pane
-`shift + !` - next pane
-`shift + x` - close all folders
+* `shift + a` - hide debugger
+* `shift + ~` - previous pane
+* `shift + !` - next pane
+* `shift + x` - close all folders
 
 ### Extending
 
