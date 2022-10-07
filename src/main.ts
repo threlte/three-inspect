@@ -4,8 +4,8 @@ import { pause, run } from './update'
 import type { EffectComposer } from 'postprocessing'
 import { initCameraFolder } from './folders/camera'
 import { initLightFolder } from './folders/lights'
-import { initObjectFolder } from './objects'
 import { initNav } from './pane/nav'
+import { initObjectFolder } from './objects'
 import { initPostFolder } from './folders/postprocessing'
 import { initScene } from './scene'
 import { initSceneFolder } from './folders/scene'
@@ -58,7 +58,7 @@ export default class Debug {
     this.stats = stats
 
     this.disposers.push(disposeStats)
-    this.disposers.push(initPane())
+    this.disposers.push(initPane(renderer))
     this.disposers.push(initNav())
     this.disposers.push(initLightFolder())
     this.disposers.push(initObjectFolder())
