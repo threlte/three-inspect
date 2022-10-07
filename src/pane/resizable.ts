@@ -23,7 +23,7 @@ export const resizable = (
     window.removeEventListener('mousemove', handleMove)
   }
 
-  const handleMouseDown = (event: Event) => {
+  const handleMouseDown = (event: MouseEvent) => {
     event.preventDefault()
 
     const rect = element.getBoundingClientRect()
