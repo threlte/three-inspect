@@ -20,7 +20,7 @@ type TargetLight =
 let lightFolder: Pane
 
 export const initLightFolder = () => {
-  lightFolder = pane.addFolder({ title: 'Lights' })
+  lightFolder = pane.addFolder({ index: 2, title: 'Lights' })
 
   return () => lightFolder.dispose()
 }

@@ -4,7 +4,7 @@ import { pane } from '../pane'
 import { storage } from '../lib/storage'
 
 export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRenderer) => {
-  const cameraFolder = pane.addFolder({ index: 1, title: 'Camera' })
+  const cameraFolder = pane.addFolder({ index: 0, title: 'Camera' })
   const perspective = camera as THREE.PerspectiveCamera
 
   // eslint-disable-next-line no-shadow
@@ -59,24 +59,31 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
     window.removeEventListener('pointerup', savePosition)
     window.removeEventListener('wheel', savePosition)
 
+    /**
+     * No controls
+     */
     if (params.controls === Controls.NONE) {
       storage.remove('camera')
       storage.remove('controls')
+
+    /**
+     * Map Controls
+     */
     } else if (params.controls === Controls.MAP) {
       storage.setJSON('controls', Controls.MAP)
       controls = new MapControls(camera, renderer.domElement)
       window.addEventListener('pointerup', savePosition, { passive: true })
       window.addEventListener('wheel', savePosition, { passive: true })
+
+    /**
+     * Orbit Controls
+     */
     } else if (params.controls === Controls.ORBIT) {
       storage.setJSON('controls', Controls.ORBIT)
       controls = new OrbitControls(camera, renderer.domElement)
       window.addEventListener('pointerup', savePosition, { passive: true })
       window.addEventListener('wheel', savePosition, { passive: true })
     }
-  }
-
-  const handleCameraChange = () => {
-    perspective.updateProjectionMatrix()
   }
 
   const titles = ['none', 'orbit', 'map']
@@ -93,6 +100,10 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
     size: [3, 1],
     view: 'radiogrid',
   }).on('change', setEnabledControls)
+
+  const handleCameraChange = () => {
+    perspective.updateProjectionMatrix()
+  }
 
   if (perspective.isPerspectiveCamera) {
     cameraFolder.addInput(perspective, 'near').on('change', handleCameraChange)

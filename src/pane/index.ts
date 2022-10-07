@@ -2,10 +2,10 @@ import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation'
 import * as Tweakpane from 'tweakpane'
 import { addPanelEntry, navigate, selectPanel } from './nav'
-import { container, top } from './elements'
+import { container, resizer, top } from './elements'
 import { closeFolders } from './folders'
-
 import css from './index.css?inline'
+import { resizable } from './resizable'
 import { storage } from '../lib/storage'
 
 const style = document.createElement('style')
@@ -53,10 +53,13 @@ export const initPane = (renderer: THREE.WebGLRenderer) => {
   pane = addPane('World')
   pane.element.addEventListener('mousedown', setControlled, { passive: true })
 
+  const disposeResize = resizable(container, resizer, renderer, 300)
+
   return () => {
     pane.element.removeEventListener('mousedown', setControlled)
     pane.dispose()
     container.remove()
+    disposeResize()
   }
 }
 

@@ -1,6 +1,7 @@
 export const resizable = (
   element: HTMLElement,
   resizer: HTMLElement,
+  renderer: THREE.WebGLRenderer,
   minSize = 20
 ) => {
   let startWidth = 0
@@ -14,6 +15,7 @@ export const resizable = (
       element.style.width = `${width}px`
       element.style.left = `${startX + (event.pageX - startMouseX)}px`
     } else {
+      renderer.domElement.style.removeProperty('width')
       element.style.removeProperty('width')
       element.style.removeProperty('left')
     }
@@ -36,4 +38,8 @@ export const resizable = (
   }
 
   resizer.addEventListener('mousedown', handleMouseDown)
+
+  return () => {
+    resizer.removeEventListener('mousedown', handleMouseDown)
+  }
 }

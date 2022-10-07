@@ -2,10 +2,6 @@
   --bs-br: 0px !important;
 }
 
-canvas[data-engine^="three.js"] {
-  width: calc(100% - 300px) !important;
-}
-
 .three-debug {
   position: absolute;
   top: 0;
@@ -33,11 +29,6 @@ canvas[data-engine^="three.js"] {
   top: 0;
   width: 6px;
   height: 100vh;
-}
-
-.three-debug-bottom {
-  /* position: sticky;
-  bottom: 0; */
 }
 
 .three-debug-nav {

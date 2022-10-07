@@ -1,4 +1,3 @@
-import { resizable } from './resizable'
 
 export const container = document.createElement('div')
 container.classList.add('three-debug', 'visible')
@@ -18,5 +17,3 @@ container.append(bottom)
 export const resizer = document.createElement('div')
 resizer.classList.add('three-debug-resizer')
 container.append(resizer)
-
-resizable(container, resizer, 300)

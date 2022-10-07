@@ -1,7 +1,7 @@
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 import { removeUpdate, update } from '../update'
 import { Pane } from 'tweakpane'
-import { bottom } from './elements'
+import { top } from './elements'
 
 type PerformanceMemory = Performance & {
   memory: undefined | {
@@ -13,20 +13,10 @@ type PerformanceMemory = Performance & {
 const interval = { interval: 3_000 }
 
 export const initStats = (renderer: THREE.WebGLRenderer) => {
-  const stats = new Pane({ container: bottom })
+  const stats = new Pane({ container: top })
   stats.registerPlugin(EssentialsPlugin)
 
-  if ('info' in renderer) {
-    const folder = stats.addFolder({ title: 'Renderer' })
-    folder.addMonitor(renderer.info.memory, 'geometries', interval)
-    folder.addMonitor(renderer.info.memory, 'textures', interval)
-    folder.addMonitor(renderer.info.render, 'calls', interval)
-    folder.addMonitor(renderer.info.render, 'lines', interval)
-    folder.addMonitor(renderer.info.render, 'points', interval)
-    folder.addMonitor(renderer.info.render, 'triangles', interval)
-  }
-
-  stats.addSeparator()
+  // stats.addSeparator()
 
   const mb = 1_048_576
   const { memory } = performance as PerformanceMemory
@@ -81,6 +71,17 @@ export const initStats = (renderer: THREE.WebGLRenderer) => {
       parameters.memory = memory.usedJSHeapSize / mb
     }, 3000)
   }
+
+  if ('info' in renderer) {
+    const folder = stats.addFolder({ title: 'Renderer' })
+    folder.addMonitor(renderer.info.memory, 'geometries', interval)
+    folder.addMonitor(renderer.info.memory, 'textures', interval)
+    folder.addMonitor(renderer.info.render, 'calls', interval)
+    folder.addMonitor(renderer.info.render, 'lines', interval)
+    folder.addMonitor(renderer.info.render, 'points', interval)
+    folder.addMonitor(renderer.info.render, 'triangles', interval)
+  }
+
 
   const tick = () => {
     const graph = fpsGraph as unknown as { begin(): void; end(): void }
