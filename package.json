@@ -1,6 +1,6 @@
 {
   "name": "three-debug",
-  "version": "0.0.13",
+  "version": "0.0.15",
   "type": "module",
   "files": [
     "dist"
@@ -22,7 +22,9 @@
     "three",
     "three.js",
     "3d",
-    "debug"
+    "debug",
+    "inspect",
+    "webgl"
   ],
   "license": "MIT",
   "scripts": {
@@ -33,22 +35,19 @@
     "preview": "vite preview --host",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
+  "devDependencies": {
     "@0b5vr/tweakpane-plugin-rotation": "^0.1.1",
     "@tweakpane/core": "^1.1.0",
     "@tweakpane/plugin-essentials": "^0.1.5",
     "@types/three": "^0.144.0",
-    "localforage": "^1.10.0",
-    "postprocessing": "^6.28.7",
-    "tweakpane": "^3.1.0",
-    "vite": "^3.1.4"
-  },
-  "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
     "eslint": "^8.24.0",
+    "postprocessing": "^6.28.7",
     "three": "^0.145.0",
     "three-kit": "github:michealparks/three-kit",
-    "typescript": "^4.8.4"
+    "tweakpane": "^3.1.0",
+    "typescript": "^4.8.4",
+    "vite": "^3.1.4"
   }
 }

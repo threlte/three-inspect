@@ -1,35 +1,63 @@
-.panels {
-  position: absolute;
-  z-index: 1000;
-  top: 8px;
-  right: 314px;
-  display: flex;
-  transition: transform 300ms;
-  overflow: hidden;
+* {
+  --bs-br: 0px !important;
 }
 
-.panels-button {
+canvas[data-engine^="three.js"] {
+  width: calc(100% - 300px) !important;
+}
+
+.three-debug {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 1000;
+  transition: transform 300ms;
+  transform: translate(110%, 0);
+  background-color: #28292e;
+}
+
+.three-debug::-webkit-scrollbar {
+  display: none;
+}
+
+.three-debug.visible {
+  transform: translate(0, 0);
+}
+
+.three-debug-resizer {
+  cursor: col-resize;
+  position: absolute;
+  top: 0;
+  width: 6px;
+  height: 100vh;
+}
+
+.three-debug-bottom {
+  /* position: sticky;
+  bottom: 0; */
+}
+
+.three-debug-nav {
+  position: sticky;
+  top: 0;
+  display: flex;
+  overflow-x: auto;
+  background-color: #28292e !important;
+  z-index: 1;
+}
+
+.nav-button {
   width: auto !important;
   padding-right: 6px !important;
   padding-left: 6px !important;
 }
 
-.pane {
-  overflow: auto;
-  max-height: calc(100vh - 16px);
-  border-radius: 5px;
-  transition: transform 300ms;
-}
-
 .selected {
   background: #bbb !important;
   color: #333 !important;
-}
-
-.pane-left {
-  z-index: 1000;
-  left: 8px;
-  right: auto;
 }
 
 .hidden {

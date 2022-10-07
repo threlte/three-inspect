@@ -5,7 +5,7 @@ import type { EffectComposer } from 'postprocessing'
 import { initCameraFolder } from './folders/camera'
 import { initLightFolder } from './folders/lights'
 import { initObjectFolder } from './objects'
-import { initPanels } from './pane/panels'
+import { initNav } from './pane/nav'
 import { initPostFolder } from './folders/postprocessing'
 import { initScene } from './scene'
 import { initSceneFolder } from './folders/scene'
@@ -13,6 +13,9 @@ import { initStats } from './pane/stats'
 import { setThree } from './three'
 
 type Disposer = () => void
+
+// eslint-disable-next-line no-use-before-define
+type Plugin = (debug: Debug) => Disposer
 
 export default class Debug {
   disposers: Disposer[] = []
@@ -56,7 +59,7 @@ export default class Debug {
 
     this.disposers.push(disposeStats)
     this.disposers.push(initPane())
-    this.disposers.push(initPanels())
+    this.disposers.push(initNav())
     this.disposers.push(initLightFolder())
     this.disposers.push(initObjectFolder())
     this.disposers.push(initScene(scene))
@@ -67,7 +70,16 @@ export default class Debug {
   }
 
   /**
-   * Disposes the debugger
+   * Registers a plugin.
+   *
+   * @param plugin A function that has the debugger as a param and returns a disposer.
+   */
+  registerPlugin (plugin: Plugin) {
+    this.disposers.push(plugin(this))
+  }
+
+  /**
+   * Disposes the debugger.
    */
   dispose () {
     pause()

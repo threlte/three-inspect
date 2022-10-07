@@ -1,17 +1,10 @@
 import type { Pane } from 'tweakpane'
-import css from './index.css'
+import { nav } from './elements'
 import { storage } from '../lib/storage'
-
-const style = document.createElement('style')
-style.innerHTML = css
-document.head.append(style)
 
 let selectedTitle = ''
 let selected: HTMLElement | undefined
 let selectedButton: HTMLButtonElement | undefined
-
-export const element = document.createElement('div')
-element.className = 'panels tp-rotv'
 
 export const paneMap = new Map<string, Pane>()
 export const paneTitles: string[] = []
@@ -19,15 +12,12 @@ export const paneTitles: string[] = []
 const deletePanelEntries = () => {
   paneTitles.splice(0, paneTitles.length)
   paneMap.clear()
-  element.innerHTML = ''
+  nav.innerHTML = ''
 }
 
-export const initPanels = () => {
-  document.body.append(element)
-
+export const initNav = () => {
   return () => {
     deletePanelEntries()
-    element.remove()
   }
 }
 
@@ -38,7 +28,7 @@ export const selectPanel = (title: string) => {
   selected?.classList.add('hidden')
   selectedButton?.classList.remove('selected')
 
-  const button = element.querySelector<HTMLButtonElement>(`[data-title="${title}"]`)
+  const button = nav.querySelector<HTMLButtonElement>(`[data-title="${title}"]`)
 
   if (button === null) {
     throw new Error(`panel of title ${title} does not exist!`)
@@ -53,7 +43,7 @@ export const selectPanel = (title: string) => {
 
 const createButton = (title: string) => {
   const button = document.createElement('button')
-  button.className = 'tp-fldv_b panels-button'
+  button.className = 'tp-fldv_b nav-button'
   button.dataset.title = title
   button.textContent = title
   button.addEventListener('click', () => {
@@ -62,19 +52,27 @@ const createButton = (title: string) => {
   return button
 }
 
-export const selectNextPanel = () => {
+const selectNextPanel = () => {
   const index = paneTitles.indexOf(selectedTitle)
   selectPanel(paneTitles[index + 1] ?? paneTitles[0])
 }
 
-export const selectPreviousPanel = () => {
+const selectPreviousPanel = () => {
   const index = paneTitles.indexOf(selectedTitle)
   selectPanel(paneTitles[index - 1] ?? paneTitles[paneTitles.length - 1])
+}
+
+export const navigate = (direction: 1 | -1) => {
+  if (direction === 1) {
+    selectNextPanel()
+  } else {
+    selectPreviousPanel()
+  }
 }
 
 export const addPanelEntry = (title: string, pane: Pane) => {
   paneTitles.push(title)
   paneMap.set(title, pane)
-  element.append(createButton(title))
+  nav.append(createButton(title))
   pane.element.classList.add('hidden')
 }

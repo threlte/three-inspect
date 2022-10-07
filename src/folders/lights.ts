@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-
 import { type Pane, pane } from '../pane'
 import { defaultMinMax, shadowmapSizes } from '../constants'
 import { addTransformInputs } from '../inputs/transform'
@@ -70,7 +68,7 @@ export const addLightFolder = (light: THREE.Light) => {
   /**
    * Directional
    */
-  if (dirLight.isDirectionalLight) {
+  if (light.type === 'DirectionalLight') {
     folder.addInput(light, 'castShadow')
 
     addTransformInputs(folder, light)
@@ -81,16 +79,15 @@ export const addLightFolder = (light: THREE.Light) => {
   /**
    * Hemisphere
    */
-  } else if (hemiLight.isHemisphereLight) {
+  } else if (light.type === 'HemisphereLight') {
     folder.addInput(hemiLight, 'groundColor')
 
     helper = new THREE.HemisphereLightHelper(hemiLight, 10)
 
   /**
    * Point
-   * There's no .isPointLight ???
    */
-  } else if (light instanceof THREE.PointLight) {
+  } else if (light.type === 'PointLight') {
     folder.addInput(pointLight, 'decay')
     folder.addInput(pointLight, 'distance')
     folder.addInput(pointLight, 'power')
@@ -103,7 +100,7 @@ export const addLightFolder = (light: THREE.Light) => {
   /**
    * Spot
    */
-  } else if (spotLight.isSpotLight) {
+  } else if (light.type === 'SpotLight') {
     folder.addInput(spotLight, 'angle', {
       max: Math.PI / 2,
       min: 0,
@@ -122,7 +119,7 @@ export const addLightFolder = (light: THREE.Light) => {
   /**
    * Rect
    */
-  } else if (rectLight.isRectAreaLight) {
+  } else if (light.type === 'RectAreaLight') {
     folder.addInput(rectLight, 'power')
     folder.addInput(rectLight, 'width')
     folder.addInput(rectLight, 'height')
@@ -167,7 +164,7 @@ export const addLightFolder = (light: THREE.Light) => {
     /**
      * Directional
      */
-    if (dirLight.isDirectionalLight) {
+    if (light.type === 'DirectionalLight') {
       const { camera } = dirLight.shadow
       camFolder.addInput(camera, 'near').on('change', handleShadowmapChange)
       camFolder.addInput(camera, 'far').on('change', handleShadowmapChange)
@@ -181,7 +178,7 @@ export const addLightFolder = (light: THREE.Light) => {
     /**
      * Spot
      */
-    } else if (spotLight.isSpotLight) {
+    } else if (light.type === 'SpotLight') {
       const { camera } = spotLight.shadow
       camFolder.addInput(camera, 'near').on('change', handleShadowmapChange)
       camFolder.addInput(camera, 'far').on('change', handleShadowmapChange)

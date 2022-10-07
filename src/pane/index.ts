@@ -1,48 +1,22 @@
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation'
 import * as Tweakpane from 'tweakpane'
-import * as panels from './panels'
+import { addPanelEntry, navigate, selectPanel } from './nav'
+import { container, top } from './elements'
+import { closeFolders } from './folders'
+
+import css from './index.css?inline'
 import { storage } from '../lib/storage'
 
-export type Pane = Tweakpane.Pane | Tweakpane.FolderApi
+const style = document.createElement('style')
+style.innerHTML = css
+document.head.append(style)
 
-const folders: Pane[] = []
-const paneContainers: HTMLElement[] = []
+export type Pane = Tweakpane.Pane | Tweakpane.FolderApi
 
 let isVisible = true
 
 const selectedPane = storage.get('selectedPane')
-const addFolder = Tweakpane.FolderApi.prototype.addFolder
-const dispose = Tweakpane.FolderApi.prototype.dispose
-
-Tweakpane.FolderApi.prototype.addFolder = function (params: Tweakpane.FolderParams) {
-  const id = `${String(params.index ?? -1)}.${params.title}`
-
-  const folder = addFolder.call(this, {
-    expanded: storage.get(`panels.${id}`) !== null,
-    ...params,
-  })
-  folders.push(folder)
-
-  folder.element.id = id
-
-  folder.on('fold', (event) => {
-    const key = `panels.${id}`
-
-    if (event.expanded) {
-      storage.set(key, '')
-    } else {
-      storage.remove(key)
-    }
-  })
-
-  return folder
-}
-
-Tweakpane.FolderApi.prototype.dispose = function () {
-  dispose.call(this)
-  folders.splice(folders.indexOf(this), 1)
-}
 
 export let pane: Pane
 
@@ -51,56 +25,43 @@ export const state = {
 }
 
 export const addPane = (title: string) => {
-  const newPane = new Tweakpane.Pane()
+  const newPane = new Tweakpane.Pane({ container: top })
   newPane.registerPlugin(EssentialsPlugin)
   newPane.registerPlugin(RotationPlugin)
-  newPane.element.classList.add('pane')
 
-  const parent = newPane.element.parentElement
-
-  if (parent === null) {
-    throw new Error(`Parent of pane ${title} is null!`)
-  }
-
-  parent.style.transition = 'transform 300ms'
-  parent.style.width = '300px'
-  parent.style.zIndex = '1000'
-  paneContainers.push(parent)
-  panels.addPanelEntry(title, newPane)
+  addPanelEntry(title, newPane)
 
   if (selectedPane === title) {
-    panels.selectPanel(title)
+    selectPanel(title)
   }
 
   return newPane
-}
-
-const setControlled = () => {
-  state.controlling = true
 }
 
 const setUncontrolled = () => {
   state.controlling = false
 }
 
-export const initPane = () => {
-  pane = addPane('World')
-  pane.element.addEventListener('mousedown', setControlled, { passive: true })
-  pane.element.addEventListener('mouseup', setUncontrolled, { passive: true })
-
-  return () => {
-    pane.dispose()
-  }
+const setControlled = (event: MouseEvent) => {
+  const target = event.target as HTMLElement
+  state.controlling = true
+  target.addEventListener('mouseup', setUncontrolled, { once: true, passive: true })
 }
 
-const closeFolders = () => {
-  for (const folder of folders) {
-    folder.expanded = false
+export const initPane = (renderer: THREE.WebGLRenderer) => {
+  document.body.append(container)
+  pane = addPane('World')
+  pane.element.addEventListener('mousedown', setControlled, { passive: true })
+
+  return () => {
+    pane.element.removeEventListener('mousedown', setControlled)
+    pane.dispose()
+    container.remove()
   }
 }
 
 if (selectedPane === null) {
-  panels.selectPanel('World')
+  selectPanel('World')
 }
 
 document.addEventListener('keypress', (event) => {
@@ -110,10 +71,7 @@ document.addEventListener('keypress', (event) => {
 
   switch (event.key.toLowerCase()) {
   case 'a':
-    for (const element of paneContainers) {
-      element.style.transform = isVisible ? 'translate(110%, 0)' : ''
-    }
-    panels.element.style.transform = isVisible ? 'translate(0, -150%)' : ''
+    container.classList.toggle('visible', !isVisible)
     isVisible = !isVisible
     return
 
@@ -122,10 +80,10 @@ document.addEventListener('keypress', (event) => {
     return
 
   case '~':
-    panels.selectPreviousPanel()
+    navigate(-1)
     return
 
   case '!':
-    panels.selectNextPanel()
+    navigate(+1)
   }
 })

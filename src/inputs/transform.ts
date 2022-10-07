@@ -3,7 +3,7 @@ import { createM4, createQuat, createVec3 } from '../lib/math'
 import { removeUpdate, update } from '../update'
 
 const quatSettings = {
-  expanded: true,
+  expanded: false,
   picker: 'inline',
   view: 'rotation',
 }

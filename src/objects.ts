@@ -72,7 +72,7 @@ export const register = (object3D: THREE.Object3D, mainFolder = objectFolder) =>
   if (children.length > 0) {
     childrenFolder.hidden = false
     for (let i = 0, l = children.length; i < l; i += 1) {
-      register(children[i])
+      register(children[i], childrenFolder)
     }
   }
 

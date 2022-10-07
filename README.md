@@ -1,15 +1,21 @@
 # three-debug
 
-`three-debug` is a debugger for three.js. It is designed to be minimalistic, powerful, and extensible.
+`three-debug` is a debugger for three.js. It is designed to be minimalistic, powerful, and extensible, with very little configuration and boilerplate required.
 
-![A screenshot of three-debug in action](https://raw.githubusercontent.com/michealparks/three-debug/main/assets/screen1.jpg)
+![A screenshot of three-debug in action](https://raw.githubusercontent.com/michealparks/three-debug/main/assets/screen.gif)
 
 Currently, it covers:
 * Scene helpers
-* Helpers for lights, cameras, shadow cameras
+  * Grid
+  * Axes
 * Camera
+  * Helpers
 * Lights
-* Objects and child objects
+  * Shadows
+  * Helpers
+* Objects
+  * Materials
+  * Children
 * Postprocessing (only [pmndrs/postprocessing](https://github.com/pmndrs/postprocessing) is supported)
 
 `three-debug` uses [Tweakpane](https://cocopon.github.io/tweakpane/) for its UI.
@@ -20,7 +26,7 @@ Currently, it covers:
 npm i -D three-debug
 ```
 
-Then, in your project:
+Then, in your project, create the debugger:
 
 ```ts
 import debug from 'three-debug'
@@ -46,6 +52,17 @@ if (devMode) {
 }
 ```
 
+Creating the debugger will add hooks to `add()` and `remove()` methods so that all objects are automatically registered / deregisterd.
+
+Additionally, the debugger will do its best to "try" to remember which debugging panes were open / closed between page refreshes.
+
+### Keyboard shortcuts
+
+`shift + a` - hide debugger
+`shift + ~` - previous pane
+`shift + !` - next pane
+`shift + x` - close all folders
+
 ### Extending
 
 By default, the debugger only comes with a "World" pane. Additional panes can be added:
@@ -59,3 +76,19 @@ pane.addInput(parameters, 'scale').on('change', () => {
 ```
 
 This allows you to directly interact with the Tweakpane API.
+
+### Plugins
+
+It's possible to create a plugin for `three-debug`:
+
+```ts
+const myPlugin = (debug: Debug) => {
+  // Create some inputs and folders...
+
+  return () => {
+    // A dispose function.
+  }
+}
+
+// Then, as the consumer of the plugin...
+debug.registerPlugin(myPlugin)

@@ -76,9 +76,7 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
   }
 
   const handleCameraChange = () => {
-    if (perspective.isPerspectiveCamera) {
-      perspective.updateProjectionMatrix()
-    }
+    perspective.updateProjectionMatrix()
   }
 
   const titles = ['none', 'orbit', 'map']

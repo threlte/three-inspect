@@ -65,5 +65,7 @@ module.exports = {
     'quote-props': ['error', 'consistent-as-needed'],
     'quotes': ['error', 'single'],
     'semi': ['error', 'never'],
+
+    '@typescript-eslint/prefer-for-of': 'off',
   },
 }

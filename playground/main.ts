@@ -39,17 +39,18 @@ const position = (symmetry = true) => (Math.random() - (symmetry ? 0.5 : 0)) * 2
 const rotation = () => Math.random() * Math.PI * 2
 
 const geometry = new THREE.BoxGeometry(3, 3, 3)
-const material = new THREE.MeshStandardMaterial()
+const material = new THREE.MeshPhysicalMaterial()
 const box = new THREE.Mesh(geometry, material)
 box.name = 'Box'
-box.castShadow = box.receiveShadow = true
+box.castShadow = true
+box.receiveShadow = true
 box.position.set(0, 1.5, 0)
 scene.add(box)
 
 const count = 30
 {
   const geometry = new THREE.DodecahedronGeometry()
-  const material = new THREE.MeshStandardMaterial()
+  const material = new THREE.MeshPhysicalMaterial()
   const mesh = new THREE.InstancedMesh(geometry, material, count)
   mesh.name = 'Dodecahedrons'
   mesh.castShadow = mesh.receiveShadow = true
@@ -76,7 +77,6 @@ const count = 30
 camera.position.set(1, 1, 1)
 camera.lookAt(0, 0, 0)
 
-
 run()
 
 let debug
@@ -93,7 +93,6 @@ toggle()
 // setInterval(toggle, 1_000)
 
 const pane = debug.addPane('Game')
-
 
 // const controls = new OrbitControls(camera, renderer.domElement)
 // controls.enableDamping = true
