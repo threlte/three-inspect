@@ -25,9 +25,11 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
     emissive: '',
   }
 
-  if (material.isMaterial) {
-    params.color = `#${meshStandardMat.color.getHexString()}`
+  const handleColorChange = () => {
+    meshStandardMat.color.set(params.color)
+  }
 
+  if (material.isMaterial) {
     materialFolder.addInput(material, 'alphaTest', defaultMinMax)
     materialFolder.addInput(material, 'blendDst')
     materialFolder.addInput(material, 'clipShadows')
@@ -43,25 +45,27 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
       material.needsUpdate = true
     })
     materialFolder.addInput(material, 'vertexColors')
-    materialFolder.addInput(params, 'color').on('change', () => {
-      meshStandardMat.color.set(params.color)
-    })
   }
 
   /**
    * LineBasicMaterial
    */
   if (lineBasicMat.type === 'LineBasicMaterial') {
+    params.color = `#${lineBasicMat.color.getHexString()}`
+
     materialFolder.addSeparator()
+    materialFolder.addInput(params, 'color').on('change', handleColorChange)
     materialFolder.addInput(lineBasicMat, 'linewidth')
 
   /**
    * MeshStandardMaterial / MeshPhysicalMaterial
    */
   } else if (meshStandardMat.isMeshStandardMaterial) {
+    params.color = `#${meshStandardMat.color.getHexString()}`
     params.emissive = `#${meshStandardMat.emissive.getHexString()}`
 
     materialFolder.addSeparator()
+    materialFolder.addInput(params, 'color').on('change', handleColorChange)
     materialFolder.addInput(params, 'emissive').on('change', () => {
       meshStandardMat.emissive.set(params.emissive)
     })
