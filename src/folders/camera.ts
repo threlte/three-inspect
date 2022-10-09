@@ -3,9 +3,10 @@ import { addTransformInputs } from '../inputs/transform'
 import { pane } from '../pane'
 import { storage } from '../lib/storage'
 
-export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRenderer) => {
+type Cameras = THREE.PerspectiveCamera | THREE.OrthographicCamera
+
+export const initCameraFolder = (camera: Cameras, renderer: THREE.WebGLRenderer) => {
   const cameraFolder = pane.addFolder({ index: 0, title: 'Camera' })
-  const perspective = camera as THREE.PerspectiveCamera
 
   // eslint-disable-next-line no-shadow
   const enum Controls {
@@ -101,17 +102,28 @@ export const initCameraFolder = (camera: THREE.Camera, renderer: THREE.WebGLRend
     view: 'radiogrid',
   }).on('change', setEnabledControls)
 
+  const perspective = camera as THREE.PerspectiveCamera
+  const ortho = camera as THREE.OrthographicCamera
+
   const handleCameraChange = () => {
-    perspective.updateProjectionMatrix()
+    camera.updateProjectionMatrix()
+  }
+
+  cameraFolder.addInput(camera, 'near').on('change', handleCameraChange)
+  cameraFolder.addInput(camera, 'far').on('change', handleCameraChange)
+  cameraFolder.addInput(camera, 'zoom').on('change', handleCameraChange)
+
+  if (ortho.isOrthographicCamera) {
+    cameraFolder.addInput(ortho, 'bottom').on('change', handleCameraChange)
+    cameraFolder.addInput(ortho, 'left').on('change', handleCameraChange)
+    cameraFolder.addInput(ortho, 'right').on('change', handleCameraChange)
+    cameraFolder.addInput(ortho, 'top').on('change', handleCameraChange)
   }
 
   if (perspective.isPerspectiveCamera) {
-    cameraFolder.addInput(perspective, 'near').on('change', handleCameraChange)
-    cameraFolder.addInput(perspective, 'far').on('change', handleCameraChange)
     cameraFolder.addInput(perspective, 'fov').on('change', handleCameraChange)
     cameraFolder.addInput(perspective, 'filmOffset').on('change', handleCameraChange)
     cameraFolder.addInput(perspective, 'filmGauge').on('change', handleCameraChange)
-    cameraFolder.addInput(perspective, 'zoom').on('change', handleCameraChange)
   }
 
   setEnabledControls()

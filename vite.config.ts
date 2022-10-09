@@ -1,5 +1,6 @@
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
+import define from './env'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -25,5 +26,6 @@ export default defineConfig({
     port: 5171,
     strictPort: true,
   },
+  define,
   envPrefix: 'THREE',
 })
