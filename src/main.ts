@@ -48,7 +48,7 @@ export default class Debug {
   constructor (
     THREE: typeof ThreeLib,
     scene: THREE.Scene,
-    camera: THREE.Camera,
+    camera: THREE.PerspectiveCamera | THREE.OrthographicCamera,
     renderer: THREE.WebGLRenderer,
     composer?: EffectComposer
   ) {

@@ -31,13 +31,17 @@ export const initCameraFolder = (camera: Cameras, renderer: THREE.WebGLRenderer)
 
   let controls: OrbitControls | undefined
 
-  const debugCamera = storage.getJSON('camera')
+  const debugCamera = storage.getJSON('camera') as undefined | {
+    target: number[]
+    quaternion: number[]
+    position: number[]
+  }
 
-  if (debugCamera) {
+  if (debugCamera !== undefined) {
     controls = new OrbitControls(camera, renderer.domElement)
-    controls.target.fromArray((debugCamera as { target: number[] }).target)
-    camera.quaternion.fromArray((debugCamera as { quaternion: number[] }).quaternion)
-    camera.position.fromArray((debugCamera as { position: number[] }).position)
+    controls.target.fromArray(debugCamera.target)
+    camera.quaternion.fromArray(debugCamera.quaternion)
+    camera.position.fromArray(debugCamera.position)
     controls.update()
   }
 
