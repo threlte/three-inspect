@@ -47,8 +47,8 @@ export default {
   kit__CAMERA_FOV: 75,
   kit__CAMERA_NEAR: 0.1,
   kit__CAMERA_FAR: 100,
-  kit__CAMERA_ORTHO_WIDTH: 10,
-  kit__CAMERA_ORTHO_HEIGHT: 10,
+  kit__CAMERA_ORTHO_WIDTH: 100,
+  kit__CAMERA_ORTHO_HEIGHT: 50,
 
   kit__CONTROLS: true,
   kit__CONTROLS_KEYBOARD: true,

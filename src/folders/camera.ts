@@ -31,17 +31,19 @@ export const initCameraFolder = (camera: Cameras, renderer: THREE.WebGLRenderer)
 
   let controls: OrbitControls | undefined
 
-  const debugCamera = storage.getJSON('camera') as undefined | {
+  const debugCamera = storage.getJSON('camera') as null | {
     target: number[]
     quaternion: number[]
     position: number[]
+    zoom: number
   }
 
-  if (debugCamera !== undefined) {
+  if (debugCamera !== null) {
     controls = new OrbitControls(camera, renderer.domElement)
     controls.target.fromArray(debugCamera.target)
     camera.quaternion.fromArray(debugCamera.quaternion)
     camera.position.fromArray(debugCamera.position)
+    camera.zoom = debugCamera.zoom
     controls.update()
   }
 
@@ -56,6 +58,7 @@ export const initCameraFolder = (camera: Cameras, renderer: THREE.WebGLRenderer)
       position: camera.position.toArray(),
       quaternion: camera.quaternion.toArray(),
       target: controls!.target.toArray(),
+      zoom: camera.zoom,
     })
   }
 
@@ -115,7 +118,9 @@ export const initCameraFolder = (camera: Cameras, renderer: THREE.WebGLRenderer)
 
   cameraFolder.addInput(camera, 'near').on('change', handleCameraChange)
   cameraFolder.addInput(camera, 'far').on('change', handleCameraChange)
-  cameraFolder.addInput(camera, 'zoom').on('change', handleCameraChange)
+  const input = cameraFolder.addInput(camera, 'zoom').on('change', handleCameraChange)
+
+  window.addEventListener('wheel', () => input.refresh())
 
   if (ortho.isOrthographicCamera) {
     cameraFolder.addInput(ortho, 'bottom').on('change', handleCameraChange)

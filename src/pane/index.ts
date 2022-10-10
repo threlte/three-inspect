@@ -53,6 +53,10 @@ export const initPane = (renderer: THREE.WebGLRenderer) => {
   pane = addPane('World')
   pane.element.addEventListener('mousedown', setControlled, { passive: true })
 
+  if (selectedPane === null) {
+    selectPanel('World')
+  }
+
   const disposeResize = resizable(container, resizer, renderer, 300)
 
   return () => {
@@ -61,10 +65,6 @@ export const initPane = (renderer: THREE.WebGLRenderer) => {
     container.remove()
     disposeResize()
   }
-}
-
-if (selectedPane === null) {
-  selectPanel('World')
 }
 
 document.addEventListener('keypress', (event) => {
