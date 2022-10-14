@@ -1,6 +1,5 @@
 import { type Pane, pane } from './pane'
 import { addForwardHelperInput } from './inputs/helper-forward'
-import { addGeometryInputs } from './inputs/geometry'
 import { addMaterialInputs } from './inputs/material'
 import { addTransformInputs } from './inputs/transform'
 
@@ -26,7 +25,8 @@ export const getObjectType = (object3D: THREE.Object3D) => {
     return 'InstancedMesh'
   }
 
-  if (object3D.geometry?.isMeshLine) {
+  // @ts-expect-error Need to type meshline
+  if ((object3D).geometry?.isMeshLine) {
     return 'MeshLine'
   }
 
@@ -50,12 +50,10 @@ export const register = (object3D: THREE.Object3D, mainFolder = objectFolder) =>
   const disposeTransformInputs = addTransformInputs(folder, object3D)
 
   let disposeMaterialInputs: (() => void) | undefined
-  let disposeGeometryInputs: (() => void) | undefined
 
   const mesh = object3D as THREE.Mesh
   if (mesh.type === 'Mesh') {
     disposeMaterialInputs = addMaterialInputs(folder, mesh)
-    disposeGeometryInputs = addGeometryInputs(folder, mesh)
   }
 
   const childrenFolder = folder.addFolder({
@@ -94,7 +92,6 @@ export const register = (object3D: THREE.Object3D, mainFolder = objectFolder) =>
 
   disposers.set(object3D, () => {
     disposeMaterialInputs?.()
-    disposeGeometryInputs?.()
     disposeTransformInputs()
     disposeForwardHelper?.()
     object3D.traverse((child) => object3D !== child && deregister(child))

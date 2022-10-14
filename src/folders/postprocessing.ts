@@ -115,6 +115,7 @@ export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
      * Unhandled
      */
     } else {
+      // eslint-disable-next-line no-console
       console.warn(`three-debug does not yet support postprocessing effect: ${effect.name}`)
     }
   }
