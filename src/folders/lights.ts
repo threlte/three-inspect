@@ -2,7 +2,6 @@ import { type Pane, pane } from '../pane'
 import { defaultMinMax, shadowmapSizes } from '../constants'
 import { addTransformInputs } from '../inputs/transform'
 import { createRectAreaLightHelper } from '../lib/rectarealight'
-import { disposeHelper } from '../lib/dispose'
 import { three } from '../three'
 
 type LightHelper =
@@ -20,14 +19,17 @@ type TargetLight =
 let lightFolder: Pane
 
 export const initLightFolder = () => {
-  lightFolder = pane.addFolder({ index: 2, title: 'Lights' })
+  lightFolder = pane.addFolder({ index: 4, title: 'Lights' })
 
   return () => lightFolder.dispose()
 }
 
 const addTargetInput = (folder: Pane, light: TargetLight) => {
-  const targetFolder = folder.addFolder({ index: light.id, title: 'Target' })
-  targetFolder.addInput(light.target, 'position', { step: 0.1 }).on('change', () => {
+  folder.addSeparator()
+  folder.addInput(light.target, 'position', {
+    label: 'target position',
+    step: 0.1,
+  }).on('change', () => {
     light.target.updateMatrixWorld()
   })
 }
@@ -132,6 +134,8 @@ export const addLightFolder = (light: THREE.Light) => {
   if (light.castShadow) {
     const camFolder = folder.addFolder({ index: light.id, title: 'Shadow Camera' })
 
+    camFolder.addInput(light.shadow, 'autoUpdate')
+
     camFolder
       .addInput(params, 'shadowHelper', { label: 'helper' })
       .on('change', () => light[params.shadowHelper ? 'add' : 'remove'](shadowHelper!))
@@ -201,12 +205,13 @@ export const addLightFolder = (light: THREE.Light) => {
 
     if (helper !== undefined) {
       light.remove(helper)
-      disposeHelper(helper as THREE.Line)
+      // @ts-expect-error exists
+      helper.dispose?.()
     }
 
     if (shadowHelper !== undefined) {
       light.remove(shadowHelper)
-      disposeHelper(shadowHelper)
+      shadowHelper.dispose()
     }
   }
 }

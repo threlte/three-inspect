@@ -10,10 +10,6 @@ export const top = document.createElement('div')
 top.classList.add('three-debug-top')
 container.append(top)
 
-export const bottom = document.createElement('div')
-bottom.classList.add('three-debug-bottom')
-container.append(bottom)
-
 export const resizer = document.createElement('div')
 resizer.classList.add('three-debug-resizer')
 container.append(resizer)

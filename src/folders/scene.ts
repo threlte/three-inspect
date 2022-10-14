@@ -1,10 +1,9 @@
-import { disposeHelper } from '../lib/dispose'
 import { pane } from '../pane'
 import { storage } from '../lib/storage'
 import { three } from '../three'
 
 export const initSceneFolder = (scene: THREE.Scene) => {
-  const sceneFolder = pane.addFolder({ index: 0, title: 'Scene' })
+  const sceneFolder = pane.addFolder({ index: 3, title: 'Scene' })
   const THREE = three()
   const grid = storage.get('grid') !== null
   const axes = storage.get('axes') !== null
@@ -23,7 +22,9 @@ export const initSceneFolder = (scene: THREE.Scene) => {
   }
 
   helpers.grid.name = 'Grid helper'
+  helpers.grid.userData.threeDebugOmit = true
   helpers.axes.name = 'Axes helper'
+  helpers.axes.userData.threeDebugOmit = true
 
   if (grid) {
     scene.add(helpers.grid)
@@ -45,7 +46,8 @@ export const initSceneFolder = (scene: THREE.Scene) => {
 
   const handleGridChange = (param: 'gridSize' | 'gridDivisions') => {
     scene.remove(helpers.grid)
-    disposeHelper(helpers.grid)
+    // @ts-expect-error exists
+    helpers.grid.dispose?.()
 
     helpers.grid = new THREE.GridHelper(params.gridSize, params.gridDivisions)
     scene.add(helpers.grid)
@@ -89,7 +91,8 @@ export const initSceneFolder = (scene: THREE.Scene) => {
   return () => {
     sceneFolder.dispose()
     scene.remove(helpers.grid, helpers.axes)
-    disposeHelper(helpers.grid)
-    disposeHelper(helpers.axes)
+    // @ts-expect-error exists
+    helpers.grid.dispose?.()
+    helpers.axes.dispose()
   }
 }

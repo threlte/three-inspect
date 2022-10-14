@@ -2,7 +2,6 @@ import type { Pane } from '../pane'
 import { defaultMinMax } from '../constants'
 import { three } from '../three'
 
-
 export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
   const THREE = three()
   const material = mesh.material as THREE.Material

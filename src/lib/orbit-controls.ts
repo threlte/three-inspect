@@ -1,4 +1,4 @@
-/* eslint-disable max-classes-per-file */
+/* eslint-disable max-classes-per-file, no-shadow */
 import { EventDispatcher } from './event-dispatcher'
 import { three } from '../three'
 

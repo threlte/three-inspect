@@ -7,6 +7,7 @@ import { initLightFolder } from './folders/lights'
 import { initNav } from './pane/nav'
 import { initObjectFolder } from './objects'
 import { initPostFolder } from './folders/postprocessing'
+import { initRendererFolder } from './folders/renderer'
 import { initScene } from './scene'
 import { initSceneFolder } from './folders/scene'
 import { initStats } from './pane/stats'
@@ -54,18 +55,19 @@ export default class Debug {
   ) {
     setThree(THREE)
 
-    const { stats, dispose: disposeStats } = initStats(renderer)
+    const { stats, dispose: disposeStats } = initStats()
     this.stats = stats
 
-    this.disposers.push(disposeStats)
     this.disposers.push(initPane(renderer))
     this.disposers.push(initNav())
+    this.disposers.push(disposeStats)
+    this.disposers.push(initCameraFolder(camera, renderer))
+    this.disposers.push(initRendererFolder(renderer))
+    this.disposers.push(initSceneFolder(scene))
     this.disposers.push(initLightFolder())
     this.disposers.push(initObjectFolder())
-    this.disposers.push(initScene(scene))
-    this.disposers.push(initCameraFolder(camera, renderer))
-    this.disposers.push(initSceneFolder(scene))
     this.disposers.push(initPostFolder(composer))
+    this.disposers.push(initScene(scene))
     run()
   }
 
@@ -87,5 +89,7 @@ export default class Debug {
     for (let i = this.disposers.length - 1; i > -1; i -= 1) {
       this.disposers[i]()
     }
+
+    this.disposers.slice(0, this.disposers.length)
   }
 }

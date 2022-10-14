@@ -7,6 +7,10 @@ export const initScene = (scene: THREE.Scene) => {
   const clear = scene.clear.bind(scene)
 
   const register = (object: THREE.Object3D) => {
+    if (object.userData.threeDebugOmit === true) {
+      return
+    }
+
     const light = object as THREE.Light
 
     if (light.isLight) {
@@ -17,6 +21,10 @@ export const initScene = (scene: THREE.Scene) => {
   }
 
   const deregister = (object: THREE.Object3D) => {
+    if (object.userData.threeDebugOmit === true) {
+      return
+    }
+
     const light = object as THREE.Light
 
     if (light.isLight) {

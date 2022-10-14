@@ -1,5 +1,6 @@
 import { type Pane, pane } from './pane'
 import { addForwardHelperInput } from './inputs/helper-forward'
+import { addGeometryInputs } from './inputs/geometry'
 import { addMaterialInputs } from './inputs/material'
 import { addTransformInputs } from './inputs/transform'
 
@@ -20,14 +21,25 @@ export const deregister = (object: THREE.Object3D) => {
   disposers.delete(object)
 }
 
+export const getObjectType = (object3D: THREE.Object3D) => {
+  if ((object3D as THREE.InstancedMesh).isInstancedMesh) {
+    return 'InstancedMesh'
+  }
+
+  if (object3D.geometry?.isMeshLine) {
+    return 'MeshLine'
+  }
+
+  return object3D.type
+}
+
 export const register = (object3D: THREE.Object3D, mainFolder = objectFolder) => {
-  const isInstanced = (object3D as THREE.InstancedMesh).isInstancedMesh
-  const instancedFlag = isInstanced ? ' (instanced)' : ''
-  const title = `${object3D.name || '[unnamed]'}${instancedFlag}`
+  const title = `${object3D.name} (${getObjectType(object3D)})`
   const folder = mainFolder.addFolder({ index: object3D.id, title })
   folder.addInput(object3D, 'castShadow')
   folder.addInput(object3D, 'receiveShadow')
   folder.addInput(object3D, 'frustumCulled')
+  folder.addInput(object3D, 'matrixAutoUpdate')
   folder.addInput(object3D, 'visible')
 
   let disposeForwardHelper: (() => void) | undefined
@@ -38,8 +50,12 @@ export const register = (object3D: THREE.Object3D, mainFolder = objectFolder) =>
   const disposeTransformInputs = addTransformInputs(folder, object3D)
 
   let disposeMaterialInputs: (() => void) | undefined
-  if ((object3D as THREE.Mesh).isMesh) {
-    disposeMaterialInputs = addMaterialInputs(folder, object3D as THREE.Mesh)
+  let disposeGeometryInputs: (() => void) | undefined
+
+  const mesh = object3D as THREE.Mesh
+  if (mesh.type === 'Mesh') {
+    disposeMaterialInputs = addMaterialInputs(folder, mesh)
+    disposeGeometryInputs = addGeometryInputs(folder, mesh)
   }
 
   const childrenFolder = folder.addFolder({
@@ -78,6 +94,7 @@ export const register = (object3D: THREE.Object3D, mainFolder = objectFolder) =>
 
   disposers.set(object3D, () => {
     disposeMaterialInputs?.()
+    disposeGeometryInputs?.()
     disposeTransformInputs()
     disposeForwardHelper?.()
     object3D.traverse((child) => object3D !== child && deregister(child))

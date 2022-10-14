@@ -25,8 +25,8 @@
 
 .three-debug-resizer {
   cursor: col-resize;
-  position: absolute;
-  top: 0;
+  position: sticky;
+  bottom: 0;
   width: 6px;
   height: 100vh;
 }

@@ -1,10 +1,12 @@
 import './main.css'
 import * as THREE from 'three'
-import { scene, camera, renderer, run, lights, composer, update } from 'three-kit'
+import { scene, camera, renderer, run, lights, composer, update, Trail, createNoise3D } from 'three-kit'
 import Debug from '../src/main'
 import { OrbitControls } from '../src/lib/orbit-controls'
 
 camera.parent!.name = 'Camera'
+camera.near = -200
+camera.far = 200
 
 const ambient = lights.createAmbient()
 scene.add(ambient)
@@ -31,6 +33,32 @@ scene.add(ambient)
   rect.width = 30
   rect.height = 30
   scene.add(rect)
+}
+
+{
+  for (let i = 0; i < 20; i += 1) {
+    const noise3d = createNoise3D()
+    const v3 = new THREE.Vector3()
+
+    const trail = new Trail()
+    trail.decay = 3
+    trail.geometry.attenuation = 'squared'
+    trail.position.set(0, 7, 0)
+    scene.add(trail)
+
+    update((time) => {
+      // const x = Math.sin(time / 10000) / 2
+      // const y = Math.cos(time / 10000) / 2
+      // const z = Math.sin(time / 10000) / 2
+    
+      const x = noise3d(Math.sin(time / 10000) * 10, 0, 0)
+      const y = noise3d(0, Math.cos(time / 10000) * 10, 0)
+      const z = noise3d(0, 0, Math.sin(time / 10000) * 10)
+      v3.set(x * 5, y * 10, z * 10)
+      trail.target.position.lerp(v3, 0.05)
+      trail.update()
+    })
+  }
 }
 
 const euler = new THREE.Euler()
@@ -79,7 +107,8 @@ camera.lookAt(0, 0, 0)
 
 run()
 
-let debug
+let debug: Debug | undefined
+
 const toggle = () => {
   if (debug) {
     debug.dispose()
@@ -92,7 +121,7 @@ const toggle = () => {
 toggle()
 // setInterval(toggle, 1_000)
 
-const pane = debug.addPane('Game')
+const pane = debug?.addPane('Game')
 
 // const controls = new OrbitControls(camera, renderer.domElement)
 // controls.enableDamping = true

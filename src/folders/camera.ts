@@ -118,9 +118,13 @@ export const initCameraFolder = (camera: Cameras, renderer: THREE.WebGLRenderer)
 
   cameraFolder.addInput(camera, 'near').on('change', handleCameraChange)
   cameraFolder.addInput(camera, 'far').on('change', handleCameraChange)
-  const input = cameraFolder.addInput(camera, 'zoom').on('change', handleCameraChange)
+  const zoomInput = cameraFolder.addInput(camera, 'zoom').on('change', handleCameraChange)
 
-  window.addEventListener('wheel', () => input.refresh())
+  const updateZoomInput = () => {
+    zoomInput.refresh()
+  }
+
+  window.addEventListener('wheel', updateZoomInput, { passive: true })
 
   if (ortho.isOrthographicCamera) {
     cameraFolder.addInput(ortho, 'bottom').on('change', handleCameraChange)
@@ -140,6 +144,7 @@ export const initCameraFolder = (camera: Cameras, renderer: THREE.WebGLRenderer)
   const disposeTransformInputs = addTransformInputs(cameraFolder, camera)
 
   return () => {
+    window.removeEventListener('wheel', updateZoomInput)
     cameraFolder.dispose()
     camera.position.set = setPosition
     disposeTransformInputs()

@@ -4,9 +4,7 @@ import { pane } from '../pane'
 
 export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
   if (composer === undefined) {
-    return () => {
-      /* No-op */
-    }
+    return () => null
   }
 
   const postFolder = pane.addFolder({ title: 'Postprocessing' })
@@ -24,9 +22,7 @@ export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
   }
 
   if (effectPass === undefined) {
-    return () => {
-      postFolder.dispose()
-    }
+    return () => postFolder.dispose()
   }
 
   postFolder.addInput(effectPass, 'dithering')
@@ -123,7 +119,5 @@ export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
     }
   }
 
-  return () => {
-    postFolder.dispose()
-  }
+  return () => postFolder.dispose()
 }

@@ -1,10 +1,10 @@
 import type { Pane } from '../pane'
-import { disposeHelper } from '../lib/dispose'
 import { three } from '../three'
 
 export const addForwardHelperInput = (pane: Pane, object3D: THREE.Object3D) => {
   const helper = new (three().ArrowHelper)()
   helper.setLength(1)
+  helper.userData.threeDebugOmit = true
 
   const params = {
     forwardHelper: false,
@@ -21,6 +21,7 @@ export const addForwardHelperInput = (pane: Pane, object3D: THREE.Object3D) => {
   return () => {
     input.dispose()
     object3D.remove(helper)
-    disposeHelper(helper as unknown as THREE.Line)
+    // @ts-expect-error exists
+    helper.dispose?.()
   }
 }
