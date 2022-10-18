@@ -30,7 +30,7 @@
   "scripts": {
     "start": "vite --host",
     "build": "vite build && tsc --emitDeclarationOnly",
-    "build-playground": "vite build -c vite.playground.config.ts",
+    "build-playground": "vite build -c vite.playground.config.ts --base=/three-debug/",
     "check": "tsc",
     "lint": "eslint ./src",
     "preview": "vite preview --host",
