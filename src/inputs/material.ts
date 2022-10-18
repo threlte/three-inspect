@@ -28,7 +28,7 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
     meshStandardMat.color.set(params.color)
   }
 
-  if (material.isMaterial) {
+  if ('isMaterial' in material) {
     materialFolder.addInput(material, 'alphaTest', defaultMinMax)
     materialFolder.addInput(material, 'blendDst')
     materialFolder.addInput(material, 'clipShadows')

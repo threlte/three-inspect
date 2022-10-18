@@ -2,10 +2,7 @@ import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation'
 import * as Tweakpane from 'tweakpane'
 import { addPanelEntry, navigate, selectPanel } from './nav'
-import { container, resizer, top } from './elements'
-import { closeFolders } from './folders'
 import css from './index.css?inline'
-import { resizable } from './resizable'
 import { storage } from '../lib/storage'
 
 const style = document.createElement('style')
@@ -24,10 +21,15 @@ export const state = {
   controlling: false,
 }
 
-export const addPane = (title: string) => {
-  const newPane = new Tweakpane.Pane({ container: top })
+export const createPane = (container?: HTMLElement) => {
+  const newPane = new Tweakpane.Pane({ container })
   newPane.registerPlugin(EssentialsPlugin)
   newPane.registerPlugin(RotationPlugin)
+  return newPane
+}
+
+export const addPane = (title: string, container) => {
+  const newPane = createPane(container)
 
   addPanelEntry(title, newPane)
 
@@ -48,45 +50,22 @@ const setControlled = (event: MouseEvent) => {
   target.addEventListener('mouseup', setUncontrolled, { once: true, passive: true })
 }
 
-export const initPane = (renderer: THREE.WebGLRenderer) => {
-  document.body.append(container)
-  pane = addPane('World')
-  pane.element.addEventListener('mousedown', setControlled, { passive: true })
+// document.addEventListener('keypress', (event) => {
+//   if (!event.shiftKey) {
+//     return
+//   }
 
-  if (selectedPane === null) {
-    selectPanel('World')
-  }
+//   switch (event.key.toLowerCase()) {
+//   case 'a':
+//     root.classList.toggle('visible', !isVisible)
+//     isVisible = !isVisible
+//     return
 
-  const disposeResize = resizable(container, resizer, renderer, 300)
+//   case '~':
+//     navigate(-1)
+//     return
 
-  return () => {
-    pane.element.removeEventListener('mousedown', setControlled)
-    pane.dispose()
-    container.remove()
-    disposeResize()
-  }
-}
-
-document.addEventListener('keypress', (event) => {
-  if (!event.shiftKey) {
-    return
-  }
-
-  switch (event.key.toLowerCase()) {
-  case 'a':
-    container.classList.toggle('visible', !isVisible)
-    isVisible = !isVisible
-    return
-
-  case 'x':
-    closeFolders()
-    return
-
-  case '~':
-    navigate(-1)
-    return
-
-  case '!':
-    navigate(+1)
-  }
-})
+//   case '!':
+//     navigate(+1)
+//   }
+// })

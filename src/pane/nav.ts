@@ -1,5 +1,4 @@
 import type { Pane } from 'tweakpane'
-import { nav } from './elements'
 import { storage } from '../lib/storage'
 
 let selectedTitle = ''
@@ -16,9 +15,7 @@ const deletePanelEntries = () => {
 }
 
 export const initNav = () => {
-  return () => {
-    deletePanelEntries()
-  }
+  return deletePanelEntries
 }
 
 export const selectPanel = (title: string) => {
@@ -46,9 +43,7 @@ const createButton = (title: string) => {
   button.className = 'tp-fldv_b nav-button'
   button.dataset.title = title
   button.textContent = title
-  button.addEventListener('click', () => {
-    selectPanel(title)
-  })
+  button.addEventListener('click', () => selectPanel(title), { passive: true })
   return button
 }
 
@@ -73,6 +68,6 @@ export const navigate = (direction: 1 | -1) => {
 export const addPanelEntry = (title: string, pane: Pane) => {
   paneTitles.push(title)
   paneMap.set(title, pane)
-  nav.append(createButton(title))
+  // nav.append(createButton(title))
   pane.element.classList.add('hidden')
 }

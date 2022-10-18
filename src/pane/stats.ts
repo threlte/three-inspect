@@ -1,7 +1,6 @@
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 import { removeUpdate, update } from '../update'
 import { Pane } from 'tweakpane'
-import { top } from './elements'
 
 type PerformanceMemory = Performance & {
   memory: undefined | {
@@ -10,9 +9,11 @@ type PerformanceMemory = Performance & {
   }
 }
 
-export const initStats = () => {
-  const stats = new Pane({ container: top })
+export const initStats = (container: HTMLElement) => {
+  const stats = new Pane({ container })
   stats.registerPlugin(EssentialsPlugin)
+
+  stats.addSeparator()
 
   const mb = 1_048_576
   const { memory } = performance as PerformanceMemory

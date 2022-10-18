@@ -1,27 +1,10 @@
-import { type Pane, pane } from './pane'
-import { addForwardHelperInput } from './inputs/helper-forward'
-import { addMaterialInputs } from './inputs/material'
-import { addTransformInputs } from './inputs/transform'
+import { TreeViewItem } from './treeview/item'
 
-export let objectFolder: Pane
+const objectToTreeItem = new WeakMap<THREE.Object3D, TreeViewItem>()
+const treeItemToObject = new WeakMap<TreeViewItem, THREE.Object3D>()
 
-type Disposer = () => void
-
-const disposers = new WeakMap<THREE.Object3D, Disposer>()
-
-export const initObjectFolder = () => {
-  objectFolder = pane.addFolder({ title: 'Objects' })
-
-  return () => objectFolder.dispose()
-}
-
-export const deregister = (object: THREE.Object3D) => {
-  disposers.get(object)?.()
-  disposers.delete(object)
-}
-
-export const getObjectType = (object3D: THREE.Object3D) => {
-  if ((object3D as THREE.InstancedMesh).isInstancedMesh) {
+const getObjectType = (object3D: THREE.Object3D) => {
+  if ('isInstancedMesh' in object3D) {
     return 'InstancedMesh'
   }
 
@@ -33,68 +16,47 @@ export const getObjectType = (object3D: THREE.Object3D) => {
   return object3D.type
 }
 
-export const register = (object3D: THREE.Object3D, mainFolder = objectFolder) => {
-  const title = `${object3D.name} (${getObjectType(object3D)})`
-  const folder = mainFolder.addFolder({ index: object3D.id, title })
-  folder.addInput(object3D, 'castShadow')
-  folder.addInput(object3D, 'receiveShadow')
-  folder.addInput(object3D, 'frustumCulled')
-  folder.addInput(object3D, 'matrixAutoUpdate')
-  folder.addInput(object3D, 'visible')
+export const getFromTreeItem = (item: TreeViewItem) => {
+  return treeItemToObject.get(item)!
+}
 
-  let disposeForwardHelper: (() => void) | undefined
-  if (!object3D.type.toLowerCase().includes('helper')) {
-    disposeForwardHelper = addForwardHelperInput(folder, object3D)
+export const deregister = (object3D: THREE.Object3D) => {
+  if (object3D.userData.threeDebugOmit === true) {
+    return
   }
 
-  const disposeTransformInputs = addTransformInputs(folder, object3D)
+  object3D.traverse((child) => object3D !== child && deregister(child))
 
-  let disposeMaterialInputs: (() => void) | undefined
+  const item = objectToTreeItem.get(object3D)!
+  item.destroy()
+  objectToTreeItem.delete(object3D)
+  treeItemToObject.delete(item)
+}
 
-  const mesh = object3D as THREE.Mesh
-  if (mesh.type === 'Mesh') {
-    disposeMaterialInputs = addMaterialInputs(folder, mesh)
+export const register = (treeroot: TreeViewItem, object3D: THREE.Object3D, parent: THREE.Object3D) => {
+  if (object3D.userData.threeDebugOmit === true) {
+    return
   }
 
-  const childrenFolder = folder.addFolder({
-    index: object3D.id,
-    title: 'Children',
-  })
-  childrenFolder.hidden = true
+  const parentItem = 'isScene' in parent ? treeroot : objectToTreeItem.get(parent)
 
-  const add = object3D.add.bind(object3D)
-  const remove = object3D.remove.bind(object3D)
-
-  object3D.add = (...args) => {
-    childrenFolder.hidden = false
-    for (let i = 0, l = args.length; i < l; i += 1) {
-      register(args[i], childrenFolder)
-    }
-
-    return add(...args)
+  if (parentItem === undefined) {
+    return
   }
 
-  object3D.remove = (...args) => {
-    for (let i = 0, l = args.length; i < l; i += 1) {
-      deregister(args[i])
-    }
+  const text = `${object3D.name} (${getObjectType(object3D)})`
+  const item = new TreeViewItem({ text })
+  item.open = true
+  objectToTreeItem.set(object3D, item)
+  treeItemToObject.set(item, object3D)
+  parentItem.append(item)
 
-    return remove(...args)
-  }
-
-  const { children } = object3D
-  if (children.length > 0) {
-    childrenFolder.hidden = false
-    for (let i = 0, l = children.length; i < l; i += 1) {
-      register(children[i], childrenFolder)
+  {
+    const { children } = object3D
+    if (children.length > 0) {
+      for (let i = 0, l = children.length; i < l; i += 1) {
+        register(treeroot, children[i], object3D)
+      }
     }
   }
-
-  disposers.set(object3D, () => {
-    disposeMaterialInputs?.()
-    disposeTransformInputs()
-    disposeForwardHelper?.()
-    object3D.traverse((child) => object3D !== child && deregister(child))
-    folder.dispose()
-  })
 }

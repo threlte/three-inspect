@@ -1,34 +1,10 @@
-* {
-  --bs-br: 0px !important;
-}
 
-.three-debug {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 300px;
-  height: 100vh;
-  overflow-y: auto;
-  z-index: 1000;
-  transition: transform 300ms;
-  transform: translate(110%, 0);
-  background-color: #28292e;
-}
-
-.three-debug::-webkit-scrollbar {
-  display: none;
+.tp-grlv_g {
+  height: 30px !important
 }
 
 .three-debug.visible {
   transform: translate(0, 0);
-}
-
-.three-debug-resizer {
-  cursor: col-resize;
-  position: sticky;
-  bottom: 0;
-  width: 6px;
-  height: 100vh;
 }
 
 .three-debug-nav {

@@ -12,8 +12,8 @@ const vec3 = createVec3()
 const quat = createQuat()
 const m4 = createM4()
 
-const addInstancedMeshFolder = (folder: Pane, mesh: THREE.InstancedMesh) => {
-  const meshFolder = folder.addFolder({ index: mesh.id, title: 'Instances' })
+const addInstancedMeshFolder = (pane: Pane, mesh: THREE.InstancedMesh) => {
+  pane.addSeparator()
 
   const imeshParams = {
     index: 0,
@@ -21,13 +21,14 @@ const addInstancedMeshFolder = (folder: Pane, mesh: THREE.InstancedMesh) => {
     quaternion: createQuat(),
   }
 
-  const imeshIndex = meshFolder.addInput(imeshParams, 'index', {
+  const imeshIndex = pane.addInput(imeshParams, 'index', {
+    label: 'instance index',
     max: mesh.count - 1,
     min: 0,
     step: 1,
   })
-  const imeshPos = meshFolder.addInput(imeshParams, 'position')
-  const imeshRot = meshFolder.addInput(imeshParams, 'quaternion', quatSettings)
+  const imeshPos = pane.addInput(imeshParams, 'position')
+  const imeshRot = pane.addInput(imeshParams, 'quaternion', quatSettings)
 
   const instanceIndexChange = () => {
     mesh.getMatrixAt(imeshParams.index, m4)
@@ -53,7 +54,7 @@ const addInstancedMeshFolder = (folder: Pane, mesh: THREE.InstancedMesh) => {
   imeshRot.on('change', instanceChange)
 
   const handleInstancedMeshUpdate = () => {
-    if (meshFolder.expanded && !state.controlling) {
+    if (pane.expanded && !state.controlling) {
       imeshParams.quaternion.copy(mesh.quaternion)
       imeshPos.refresh()
       imeshRot.refresh()
@@ -63,7 +64,6 @@ const addInstancedMeshFolder = (folder: Pane, mesh: THREE.InstancedMesh) => {
   update(handleInstancedMeshUpdate)
 
   return () => {
-    meshFolder.dispose()
     removeUpdate(handleInstancedMeshUpdate)
   }
 }

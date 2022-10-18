@@ -1,6 +1,6 @@
-import { type Pane, pane } from '../pane'
 import { defaultMinMax, shadowmapSizes } from '../constants'
-import { addTransformInputs } from '../inputs/transform'
+import type { Pane } from '../pane'
+import { addTransformInputs } from './transform'
 import { createRectAreaLightHelper } from '../lib/rectarealight'
 import { three } from '../three'
 
@@ -16,14 +16,6 @@ type TargetLight =
   | THREE.DirectionalLight
   | THREE.SpotLight
 
-let lightFolder: Pane
-
-export const initLightFolder = () => {
-  lightFolder = pane.addFolder({ index: 4, title: 'Lights' })
-
-  return () => lightFolder.dispose()
-}
-
 const addTargetInput = (folder: Pane, light: TargetLight) => {
   folder.addSeparator()
   folder.addInput(light.target, 'position', {
@@ -34,11 +26,7 @@ const addTargetInput = (folder: Pane, light: TargetLight) => {
   })
 }
 
-export const addLightFolder = (light: THREE.Light) => {
-  const folder = lightFolder.addFolder({
-    index: light.id,
-    title: `${light.name} (${light.type})`,
-  })
+export const addLightInputs = (pane: Pane, light: THREE.Light) => {
   const THREE = three()
   const dirLight = light as THREE.DirectionalLight
   const hemiLight = light as THREE.HemisphereLight
@@ -56,25 +44,25 @@ export const addLightFolder = (light: THREE.Light) => {
   }
 
   if (!('isAmbientLight' in light)) {
-    folder
+    pane
       .addInput(params, 'helper')
       .on('change', () => light[params.helper ? 'add' : 'remove'](helper!))
   }
 
-  folder
+  pane
     .addInput(params, 'color')
     .on('change', () => light.color.set(params.color))
 
-  folder.addInput(light, 'intensity')
+  pane.addInput(light, 'intensity')
 
   /**
    * Directional
    */
   if (light.type === 'DirectionalLight') {
-    folder.addInput(light, 'castShadow')
+    pane.addInput(light, 'castShadow')
 
-    addTransformInputs(folder, light)
-    addTargetInput(folder, dirLight)
+    addTransformInputs(pane, light)
+    addTargetInput(pane, dirLight)
 
     helper = new THREE.DirectionalLightHelper(dirLight)
 
@@ -82,7 +70,7 @@ export const addLightFolder = (light: THREE.Light) => {
    * Hemisphere
    */
   } else if (light.type === 'HemisphereLight') {
-    folder.addInput(hemiLight, 'groundColor')
+    pane.addInput(hemiLight, 'groundColor')
 
     helper = new THREE.HemisphereLightHelper(hemiLight, 10)
 
@@ -90,12 +78,12 @@ export const addLightFolder = (light: THREE.Light) => {
    * Point
    */
   } else if (light.type === 'PointLight') {
-    folder.addInput(pointLight, 'decay')
-    folder.addInput(pointLight, 'distance')
-    folder.addInput(pointLight, 'power')
-    folder.addInput(pointLight, 'castShadow')
+    pane.addInput(pointLight, 'decay')
+    pane.addInput(pointLight, 'distance')
+    pane.addInput(pointLight, 'power')
+    pane.addInput(pointLight, 'castShadow')
 
-    addTransformInputs(folder, pointLight)
+    addTransformInputs(pane, pointLight)
 
     helper = new THREE.PointLightHelper(pointLight, 10)
 
@@ -103,18 +91,18 @@ export const addLightFolder = (light: THREE.Light) => {
    * Spot
    */
   } else if (light.type === 'SpotLight') {
-    folder.addInput(spotLight, 'angle', {
+    pane.addInput(spotLight, 'angle', {
       max: Math.PI / 2,
       min: 0,
     })
-    folder.addInput(spotLight, 'decay')
-    folder.addInput(spotLight, 'distance')
-    folder.addInput(spotLight, 'penumbra', defaultMinMax)
-    folder.addInput(spotLight, 'power')
-    folder.addInput(spotLight, 'castShadow')
+    pane.addInput(spotLight, 'decay')
+    pane.addInput(spotLight, 'distance')
+    pane.addInput(spotLight, 'penumbra', defaultMinMax)
+    pane.addInput(spotLight, 'power')
+    pane.addInput(spotLight, 'castShadow')
 
-    addTransformInputs(folder, spotLight)
-    addTargetInput(folder, spotLight)
+    addTransformInputs(pane, spotLight)
+    addTargetInput(pane, spotLight)
 
     helper = new THREE.SpotLightHelper(spotLight)
 
@@ -122,17 +110,21 @@ export const addLightFolder = (light: THREE.Light) => {
    * Rect
    */
   } else if (light.type === 'RectAreaLight') {
-    folder.addInput(rectLight, 'power')
-    folder.addInput(rectLight, 'width')
-    folder.addInput(rectLight, 'height')
+    pane.addInput(rectLight, 'power')
+    pane.addInput(rectLight, 'width')
+    pane.addInput(rectLight, 'height')
 
-    addTransformInputs(folder, rectLight)
+    addTransformInputs(pane, rectLight)
 
     helper = createRectAreaLightHelper(rectLight)
   }
 
+  if (helper !== undefined) {
+    helper.userData.threeDebugOmit = true
+  }
+
   if (light.castShadow) {
-    const camFolder = folder.addFolder({ index: light.id, title: 'Shadow Camera' })
+    const camFolder = pane.addFolder({ index: light.id, title: 'Shadow Camera' })
 
     camFolder.addInput(light.shadow, 'autoUpdate')
 
@@ -192,17 +184,16 @@ export const addLightFolder = (light: THREE.Light) => {
     }
 
     shadowHelper = new THREE.CameraHelper(light.shadow.camera)
+    shadowHelper.userData.threeDebugOmit = true
   }
 
-  folder.on('change', () => {
+  pane.on('change', () => {
     // @ts-expect-error update() is not correctly typed
     helper?.update?.()
     shadowHelper?.update?.()
   })
 
   return () => {
-    folder.dispose()
-
     if (helper !== undefined) {
       light.remove(helper)
       // @ts-expect-error exists

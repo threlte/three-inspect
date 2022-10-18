@@ -1,8 +1,8 @@
 
 import type * as Postprocessing from 'postprocessing'
-import { pane } from '../pane'
+import type { Pane } from '../pane'
 
-export const initPostFolder = (composer?: Postprocessing.EffectComposer) => {
+export const addPostInputs = (pane: Pane, composer?: Postprocessing.EffectComposer) => {
   if (composer === undefined) {
     return () => null
   }

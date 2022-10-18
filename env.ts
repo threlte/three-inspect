@@ -5,6 +5,8 @@ export default {
   kit__DIR_JSON: '"/json/"',
   kit__DIR_FILE: '"/file/"',
 
+  kit__checkShaderErrors: true,
+  kit__physicallyCorrectLights: true,
   kit__RENDERER_ALPHA: false,
   kit__RENDERER_SRGB: true,
   kit__RENDERER_TONEMAPPING: true,
@@ -22,7 +24,7 @@ export default {
   kit__PCSS_RINGS: 3,
 
   // https://github.com/pmndrs/postprocessing
-  kit__POSTPROCESSING: false,
+  kit__POSTPROCESSING: true,
   kit__POST_MULTISAMPLING: 2,
   kit__POST_SMAA: true,
   kit__POST_DEPTH_PASS: false,
@@ -47,8 +49,7 @@ export default {
   kit__CAMERA_FOV: 75,
   kit__CAMERA_NEAR: 0.1,
   kit__CAMERA_FAR: 100,
-  kit__CAMERA_ORTHO_WIDTH: 100,
-  kit__CAMERA_ORTHO_HEIGHT: 50,
+  kit__CAMERA_ORTHO_SIZE: 50,
 
   kit__CONTROLS: true,
   kit__CONTROLS_KEYBOARD: true,

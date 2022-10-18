@@ -1,17 +1,19 @@
 import type * as ThreeLib from 'three'
-import { type Pane, addPane, initPane } from './pane'
+import { Controls, setEnabledControls } from './lib/controls'
+import { type Pane, addPane } from './pane'
 import { pause, run } from './update'
 import type { EffectComposer } from 'postprocessing'
-import { initCameraFolder } from './folders/camera'
-import { initLightFolder } from './folders/lights'
+import css from './main.css?inline'
+import { initElements } from './elements'
 import { initNav } from './pane/nav'
-import { initObjectFolder } from './objects'
-import { initPostFolder } from './folders/postprocessing'
-import { initRendererFolder } from './folders/renderer'
-import { initScene } from './scene'
-import { initSceneFolder } from './folders/scene'
+import { initSceneHelpers } from './folders/scene'
 import { initStats } from './pane/stats'
 import { setThree } from './three'
+import { storage } from './lib/storage'
+
+const style = document.createElement('style')
+style.textContent = css
+document.head.append(style)
 
 type Disposer = () => void
 
@@ -58,16 +60,11 @@ export default class Debug {
     const { stats, dispose: disposeStats } = initStats()
     this.stats = stats
 
-    this.disposers.push(initPane(renderer))
+    this.disposers.push(initElements(scene, renderer, composer))
     this.disposers.push(initNav())
+    this.disposers.push(initSceneHelpers(scene))
     this.disposers.push(disposeStats)
-    this.disposers.push(initCameraFolder(camera, renderer))
-    this.disposers.push(initRendererFolder(renderer))
-    this.disposers.push(initSceneFolder(scene))
-    this.disposers.push(initLightFolder())
-    this.disposers.push(initObjectFolder())
-    this.disposers.push(initPostFolder(composer))
-    this.disposers.push(initScene(scene))
+    setEnabledControls(camera, renderer, (storage.getNumber('controls') as Controls | null) ?? Controls.NONE)
     run()
   }
 

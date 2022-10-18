@@ -36,7 +36,8 @@ scene.add(ambient)
 }
 
 {
-  for (let i = 0; i < 20; i += 1) {
+  const count = 3
+  for (let i = 0; i < count; i += 1) {
     const noise3d = createNoise3D()
     const v3 = new THREE.Vector3()
 

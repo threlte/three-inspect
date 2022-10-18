@@ -45,7 +45,7 @@ const endEvent = { type: 'end' }
  * Pan - right mouse, or left mouse + ctrl/meta/shiftKey, or arrow keys / touch: two-finger move
  */
 
-class OrbitControls extends EventDispatcher {
+export class OrbitControls extends EventDispatcher {
   // Set to false to disable this control
   enabled = true
 
@@ -157,17 +157,11 @@ class OrbitControls extends EventDispatcher {
   }
 
   getPolarAngle: () => number
-
   getAzimuthalAngle: () => number
-
   getDistance: () => number
-
   saveState: () => void
-
   reset: () => void
-
   update: () => void
-
   dispose: () => void
 
   constructor (camera: THREE.Camera, domElement: HTMLElement) {
@@ -480,7 +474,8 @@ class OrbitControls extends EventDispatcher {
 
       rotateDelta.subVectors(rotateEnd, rotateStart).multiplyScalar(this.rotateSpeed)
 
-      rotateLeft(2 * Math.PI * rotateDelta.x / domElement.clientHeight) // Yes, height
+      // Yes, height
+      rotateLeft(2 * Math.PI * rotateDelta.x / domElement.clientHeight)
 
       rotateUp(2 * Math.PI * rotateDelta.y / domElement.clientHeight)
 
@@ -1061,7 +1056,6 @@ class OrbitControls extends EventDispatcher {
   }
 }
 
-
 /*
  * This set of controls performs orbiting, dollying (zooming), and panning.
  * Unlike TrackballControls, it maintains the "up" direction object.up (+Y by default).
@@ -1071,7 +1065,7 @@ class OrbitControls extends EventDispatcher {
  * Zoom - middle mouse, or mousewheel / touch: two-finger spread or squish
  * Pan - left mouse, or arrow keys / touch: one-finger move
  */
-class MapControls extends OrbitControls {
+export class MapControls extends OrbitControls {
   constructor (object: THREE.Camera, domElement: HTMLElement) {
     super(object, domElement)
 
@@ -1085,5 +1079,3 @@ class MapControls extends OrbitControls {
     this.touches.TWO = TOUCH.DOLLY_ROTATE
   }
 }
-
-export { OrbitControls, MapControls }

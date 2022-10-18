@@ -36,9 +36,3 @@ Tweakpane.FolderApi.prototype.dispose = function () {
   dispose.call(this)
   folders.splice(folders.indexOf(this), 1)
 }
-
-export const closeFolders = () => {
-  for (let i = 0, l = folders.length; i < l; i += 1) {
-    folders[i].expanded = false
-  }
-}

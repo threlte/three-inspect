@@ -1,36 +1,67 @@
-import * as lights from './lights'
-import * as objects from './objects'
+import { type Cameras, addCameraInputs } from './inputs/camera'
+import { deregister, getFromTreeItem, register } from './objects'
+import type { EffectComposer } from 'postprocessing'
+import type TreeView from './treeview'
+import type { TreeViewItem } from './treeview/item'
+import { addLightInputs } from './inputs/lights'
+import { addObjectInputs } from './inputs/object3d'
+import { addSceneInputs } from './folders/scene'
+import { createPane } from './pane'
+import { patchObject3d } from './patch/object3d'
 
-export const initScene = (scene: THREE.Scene) => {
-  const add = scene.add.bind(scene)
-  const remove = scene.remove.bind(scene)
-  const clear = scene.clear.bind(scene)
+type Disposer = () => void
 
-  const register = (object: THREE.Object3D) => {
-    if (object.userData.threeDebugOmit === true) {
-      return
-    }
+const handleSelectItem = (root: HTMLElement, object3D: THREE.Object3D, renderer: THREE.WebGLRenderer, composer?: EffectComposer) => {
+  const pane = createPane(root)
 
-    const light = object as THREE.Light
+  let disposeInputs: Disposer
 
-    if (light.isLight) {
-      lights.register(light)
-    } else {
-      objects.register(object)
-    }
+  if ('isPerspectiveCamera' in object3D || 'isOrthographicCamera' in object3D) {
+    disposeInputs = addCameraInputs(pane, object3D as Cameras, renderer, composer)
+  } else if ('isScene' in object3D) {
+    disposeInputs = addSceneInputs(pane, object3D as THREE.Scene, renderer)
+  } else if ('isLight' in object3D) {
+    disposeInputs = addLightInputs(pane, object3D as THREE.Light)
+  } else {
+    disposeInputs = addObjectInputs(pane, object3D)
   }
 
-  const deregister = (object: THREE.Object3D) => {
-    if (object.userData.threeDebugOmit === true) {
-      return
-    }
+  return () => {
+    disposeInputs()
+    pane.dispose()
+  }
+}
 
-    const light = object as THREE.Light
+export const initScene = (
+  tree: TreeView,
+  treeroot: TreeViewItem,
+  root: HTMLElement,
+  scene: THREE.Scene,
+  renderer: THREE.WebGLRenderer,
+  composer?: EffectComposer
+) => {
+  const disposePatcher = patchObject3d(treeroot)
 
-    if (light.isLight) {
-      lights.deregister(light)
-    } else {
-      objects.deregister(object)
+  let disposer: null | (() => void) = null
+
+  tree.on('deselect', () => {
+    disposer?.()
+    disposer = null
+  })
+
+  tree.on('select', (item: TreeViewItem) => {
+    disposer = handleSelectItem(
+      root,
+      item.text === 'Scene' ? scene : getFromTreeItem(item),
+      renderer,
+      composer
+    )
+  })
+
+  {
+    const { children } = scene
+    for (let i = 0, l = children.length; i < l; i += 1) {
+      register(treeroot, children[i], scene)
     }
   }
 
@@ -42,36 +73,9 @@ export const initScene = (scene: THREE.Scene) => {
     }
   }
 
-  const { children } = scene
-  for (let i = 0, l = children.length; i < l; i += 1) {
-    register(children[i])
-  }
-
-  scene.add = (...args: THREE.Object3D[]) => {
-    for (let i = 0, l = args.length; i < l; i += 1) {
-      register(args[i])
-    }
-
-    return add(...args)
-  }
-
-  scene.remove = (...args: THREE.Object3D[]) => {
-    for (let i = 0, l = args.length; i < l; i += 1) {
-      deregister(args[i])
-    }
-
-    return remove(...args)
-  }
-
-  scene.clear = () => {
-    deregisterAll()
-    return clear()
-  }
-
   return () => {
+    disposePatcher()
+    tree.clearTreeItems()
     deregisterAll()
-    scene.add = add
-    scene.remove = remove
-    scene.clear = clear
   }
 }
