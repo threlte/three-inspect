@@ -17,7 +17,7 @@ jobs:
 
       - name: Install and Build 🔧
         run: |
-          npm ci --production --audit=false
+          npm ci --audit=false
           npm run build-playground
 
       - name: Publish 🚀
