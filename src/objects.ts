@@ -53,10 +53,9 @@ export const register = (treeroot: TreeViewItem, object3D: THREE.Object3D, paren
 
   {
     const { children } = object3D
-    if (children.length > 0) {
-      for (let i = 0, l = children.length; i < l; i += 1) {
-        register(treeroot, children[i], object3D)
-      }
+
+    for (let i = 0, l = children.length; i < l; i += 1) {
+      register(treeroot, children[i], object3D)
     }
   }
 }

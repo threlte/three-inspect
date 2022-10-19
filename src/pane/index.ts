@@ -2,16 +2,9 @@ import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation'
 import * as Tweakpane from 'tweakpane'
 import { addPanelEntry, navigate, selectPanel } from './nav'
-import css from './index.css?inline'
 import { storage } from '../lib/storage'
 
-const style = document.createElement('style')
-style.innerHTML = css
-document.head.append(style)
-
 export type Pane = Tweakpane.Pane | Tweakpane.FolderApi
-
-let isVisible = true
 
 const selectedPane = storage.get('selectedPane')
 
@@ -49,23 +42,3 @@ const setControlled = (event: MouseEvent) => {
   state.controlling = true
   target.addEventListener('mouseup', setUncontrolled, { once: true, passive: true })
 }
-
-// document.addEventListener('keypress', (event) => {
-//   if (!event.shiftKey) {
-//     return
-//   }
-
-//   switch (event.key.toLowerCase()) {
-//   case 'a':
-//     root.classList.toggle('visible', !isVisible)
-//     isVisible = !isVisible
-//     return
-
-//   case '~':
-//     navigate(-1)
-//     return
-
-//   case '!':
-//     navigate(+1)
-//   }
-// })

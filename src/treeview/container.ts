@@ -74,14 +74,15 @@ export class Container extends Element {
    * @param {HTMLElement} [args.dom] - The DOM element to use for the container. If unspecified a new element will be created.
    */
   constructor (args: Args = {}) {
+    // @ts-expect-error @TODO fix
     super(args)
 
     this.dom.classList.add(CLASS_CONTAINER)
 
     if (args.flex) {
-      this.dom.classList.add(pcuiClass.FLEX)
+      this.dom.classList.add('flex', 'flex-col')
     } else if (args.grid) {
-      this.dom.classList.add(pcuiClass.GRID)
+      this.dom.classList.add('grid')
     }
 
     this.resizable = args.resizable ?? null
@@ -169,7 +170,7 @@ export class Container extends Element {
    */
   move (element: Element, index: number) {
     let idx = -1
-    for (let i = 0; i < this.dom.childNodes.length; i += 1) {
+    for (let i = 0, l = this.dom.childNodes.length; i < l; i += 1) {
       if (this.dom.childNodes[i].ui === element) {
         idx = i
         break
@@ -215,7 +216,7 @@ export class Container extends Element {
 
     if (this.resizable) {
       this._createResizeHandle()
-      this._dom.appendChild(this.#domResizeHandle)
+      this.dom.appendChild(this.#domResizeHandle)
     }
   }
 

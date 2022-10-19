@@ -41,12 +41,12 @@ export const addRendererInputs = (pane: Pane, renderer: THREE.WebGLRenderer) => 
   pane.addSeparator()
   pane.addInput(renderer, 'toneMapping', {
     options: {
-      None: THREE.NoToneMapping,
-      Linear: THREE.LinearToneMapping,
-      Reinhard: THREE.ReinhardToneMapping,
-      Cineon: THREE.CineonToneMapping,
       ACESFilmic: THREE.ACESFilmicToneMapping,
+      Cineon: THREE.CineonToneMapping,
       Custom: THREE.CustomToneMapping,
+      Linear: THREE.LinearToneMapping,
+      None: THREE.NoToneMapping,
+      Reinhard: THREE.ReinhardToneMapping,
     },
   })
   pane.addInput(renderer, 'toneMappingExposure', { label: 'exposure' })

@@ -226,6 +226,7 @@ export class TreeViewItem extends Container {
     event.stopPropagation()
 
     const rect = this.containerContents.dom.getBoundingClientRect()
+
     if (this.#numChildren > 0 && event.clientX - rect.left < 0) {
       this.open = !this.open
       if (event.altKey) {
@@ -397,11 +398,11 @@ export class TreeViewItem extends Container {
     return this.#labelText.text
   }
 
-  get textLabel () {
+  get textLabel (): Label {
     return this.#labelText
   }
 
-  get iconLabel () {
+  get iconLabel (): Label {
     return this.#labelIcon
   }
 
@@ -421,11 +422,11 @@ export class TreeViewItem extends Container {
     }
   }
 
-  get open () {
+  get open (): boolean {
     return this.#open || this.parent === this.treeView
   }
 
-  set parentsOpen (value) {
+  set parentsOpen (value: boolean) {
     let { parent } = this
     while (parent && parent instanceof TreeViewItem) {
       parent.open = value
@@ -433,7 +434,7 @@ export class TreeViewItem extends Container {
     }
   }
 
-  get parentsOpen () {
+  get parentsOpen (): boolean {
     let { parent } = this
     while (parent && parent instanceof TreeViewItem) {
       if (!parent.open) {
@@ -445,11 +446,11 @@ export class TreeViewItem extends Container {
     return true
   }
 
-  get numChildren () {
+  get numChildren (): number {
     return this.#numChildren
   }
 
-  get firstChild () {
+  get firstChild (): TreeViewItem | null {
     if (this.#numChildren) {
       for (let i = 0; i < this.dom.childNodes.length; i += 1) {
         if (this.dom.childNodes[i].ui instanceof TreeViewItem) {
@@ -461,7 +462,7 @@ export class TreeViewItem extends Container {
     return null
   }
 
-  get lastChild () {
+  get lastChild (): TreeViewItem | null {
     if (this.#numChildren) {
       for (let i = this.dom.childNodes.length - 1; i >= 0; i -= 1) {
         if (this.dom.childNodes[i].ui instanceof TreeViewItem) {

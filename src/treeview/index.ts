@@ -202,7 +202,7 @@ export class TreeView extends Container {
     }
 
     let lastChild = currentItem.lastChild
-    while (lastChild && lastChild.numChildren && lastChild.open) {
+    while (lastChild?.numChildren && lastChild.open) {
       lastChild = lastChild.lastChild
     }
 
@@ -250,7 +250,7 @@ export class TreeView extends Container {
       let startIndex = -1
       let endIndex = -1
 
-      for (let i = 0; i < filterResults.length; i += 1) {
+      for (let i = 0, l = filterResults.length; i < l; i += 1) {
         const item = filterResults[i].ui
 
         if (item === startChild) {
@@ -348,7 +348,13 @@ export class TreeView extends Container {
   _onChildKeyDown (evt: KeyboardEvent, element: TreeViewItem) {
     const lowerKey = evt.key.toLowerCase()
 
-    if (!['tab', 'arrowleft ', 'arrowup', 'arrowright', 'arrowdown'].includes(lowerKey)) {
+    if (
+      lowerKey !== 'tab' &&
+      lowerKey !== 'arrowleft' &&
+      lowerKey !== 'arrowup' &&
+      lowerKey !== 'arrowright' &&
+      lowerKey !== 'arrowdown'
+    ) {
       return
     }
 
@@ -387,11 +393,6 @@ export class TreeView extends Container {
     } else if (lowerKey === 'arrowright') {
       // Right (open)
       element.open = true
-    } else if (lowerKey === 'skip') {
-      /*
-       * Tab
-       * skip
-       */
     }
   }
 
@@ -444,13 +445,13 @@ export class TreeView extends Container {
       fn(item)
 
       if (item.numChildren) {
-        for (let i = 0; i < item.dom.childNodes.length; i += 1) {
+        for (let i = 0, l = item.dom.childNodes.length; i < l; i += 1) {
           traverse(item.dom.childNodes[i].ui)
         }
       }
     }
 
-    for (let i = 0; i < this.dom.childNodes.length; i += 1) {
+    for (let i = 0, l = this.dom.childNodes.length; i < l; i += 1) {
       traverse(this.dom.childNodes[i].ui)
     }
   }
@@ -470,7 +471,7 @@ export class TreeView extends Container {
     })
   }
 
-  _getChildIndex (item, parent) {
+  _getChildIndex (item: Element, parent: Element) {
     return Array.prototype.indexOf.call(parent.dom.childNodes, item.dom) - 1
   }
 
@@ -491,7 +492,7 @@ export class TreeView extends Container {
        */
       let desiredDepth = -1
       for (let i = 0, l = this.#selectedItems.length; i < l; i += 1) {
-        let parent = this.#selectedItems[i].parent
+        let { parent } = this.#selectedItems[i]
         let depth = 0
         let isChild = false
         while (parent && parent instanceof TreeViewItem) {
@@ -625,21 +626,30 @@ export class TreeView extends Container {
           // Now reparent items
           for (let i = 0, l = reparented.length; i < l; i += 1) {
             const r = reparented[i]
+
+            /**
+             * If dragged before a TreeViewItem...
+             */
             if (this._dragArea === DRAG_AREA_BEFORE) {
-              // If dragged before a TreeViewItem...
               r.newParent = this.#dragOverItem.parent
               const parentChildren = getChildren(this.#dragOverItem.parent)
               const index = parentChildren.indexOf(this.#dragOverItem.dom)
               parentChildren.splice(index, 0, r.item.dom)
               r.newChildIndex = index
+
+            /**
+             * If dragged inside a TreeViewItem...
+             */
             } else if (this._dragArea === DRAG_AREA_INSIDE) {
-              // If dragged inside a TreeViewItem...
               r.newParent = this.#dragOverItem
               const parentChildren = getChildren(this.#dragOverItem)
               parentChildren.push(r.item.dom)
               r.newChildIndex = parentChildren.length - 1
+
+            /**
+             * If dragged after a TreeViewItem...
+             */
             } else if (this._dragArea === DRAG_AREA_AFTER) {
-              // If dragged after a TreeViewItem...
               r.newParent = this.#dragOverItem.parent
               const parentChildren = getChildren(this.#dragOverItem.parent)
               const after = i > 0 ? reparented[i - 1].item : this.#dragOverItem
@@ -885,7 +895,7 @@ export class TreeView extends Container {
       }
 
       handle.dom.style.top = `${top}px`
-      // handle.dom.style.left = `${left}px`
+      // Handle.dom.style.left = `${left}px`
       handle.dom.style.width = `${width - 7}px`
     }
   }

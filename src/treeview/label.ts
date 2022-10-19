@@ -12,13 +12,7 @@ interface Args {
 }
 
 /**
- * @name Label
- * @class
- * @classdesc The Label is a simple span element that displays some text.
- * @property {string} placeholder Gets / sets the placeholder label that appears on the right of the label.
- * @property {string} text Gets / sets the text of the Label.
- * @augments Element
- * @mixes IBindable
+ * The Label is a simple span element that displays some text.
  */
 export class Label extends Element {
   /**
@@ -89,18 +83,20 @@ export class Label extends Element {
     return true
   }
 
+  /**
+   * The text of the Label.
+   */
   set text (value: string | null | undefined) {
-    const changed = this._updateText(value ?? '')
-
-    if (changed && this._binding) {
-      this._binding.setValue(value ?? '')
-    }
+    this._updateText(value ?? '')
   }
 
   get text () {
     return this.#text
   }
 
+  /**
+   * The placeholder label that appears on the right of the label.
+   */
   set placeholder (value) {
     if (value) {
       this.dom.setAttribute('placeholder', value)

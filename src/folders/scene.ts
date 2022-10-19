@@ -1,4 +1,3 @@
-import type { EffectComposer } from 'postprocessing'
 import type { Pane } from '../pane'
 import { addRendererInputs } from '../inputs/renderer'
 import { storage } from '../lib/storage'

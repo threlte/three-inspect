@@ -10,7 +10,6 @@ interface Args {
  * The TextInput is an input element of type text.
  * @augments Element
  * @property {HTMLElement} input Gets the HTML input element.
- * If false then the input will be set in an error state and the value will not propagate to the binding.
  */
 export class TextInput extends Element {
   /**
@@ -47,22 +46,22 @@ export class TextInput extends Element {
    * @param {object} args - Extends the pcui.Element constructor arguments. All settable properties can also be set through the constructor.
    */
   constructor (args: Args = {}) {
-    super({
-      dom: document.createElement('input'),
-      ...args,
-    })
+    const dom = document.createElement('input')
 
-    this.dom.classList.add('pcui-text-input', 'font-mono', 'text-[11px]')
+    super({ dom, ...args })
 
-    this.dom.ui = this
-    this.dom.tabIndex = 0
-    this.dom.autocomplete = 'off'
+    dom.classList.add('pcui-text-input', 'font-mono', 'text-[11px]')
 
-    this.dom.addEventListener('change', this._onInputChange)
-    this.dom.addEventListener('focus', this._onInputFocus)
-    this.dom.addEventListener('blur', this._onInputBlur)
-    this.dom.addEventListener('keydown', this._onInputKeyDown)
-    this.dom.addEventListener('contextmenu', this._onInputCtxMenu, false)
+    // @ts-expect-error @Todo fix
+    dom.ui = this
+    dom.tabIndex = 0
+    dom.autocomplete = 'off'
+
+    dom.addEventListener('change', this._onInputChange)
+    dom.addEventListener('focus', this._onInputFocus)
+    dom.addEventListener('blur', this._onInputBlur)
+    dom.addEventListener('keydown', this._onInputKeyDown)
+    dom.addEventListener('contextmenu', this._onInputCtxMenu, false)
 
     if (args.value !== undefined) {
       this.value = args.value
@@ -96,10 +95,6 @@ export class TextInput extends Element {
     }
 
     this.emit('change', this.value)
-
-    if (this._binding) {
-      this._binding.setValue(this.value)
-    }
   }
 
   _onInputFocus = (evt: FocusEvent) => {
@@ -115,6 +110,8 @@ export class TextInput extends Element {
 
   _onInputKeyDown = (evt: KeyboardEvent) => {
     const lowerKey = evt.key.toLowerCase()
+    const dom = this.dom as HTMLInputElement
+
     if (lowerKey === 'enter' && this.blurOnEnter) {
       /*
        * Do not fire input change event on blur
@@ -123,12 +120,12 @@ export class TextInput extends Element {
        * value
        */
       this.#suspendInputChangeEvt = this.keyChange
-      this.dom.blur()
+      dom.blur()
       this.#suspendInputChangeEvt = false
     } else if (lowerKey === 'escape') {
       this.#suspendInputChangeEvt = true
-      const prev = this.dom.value
-      this.dom.value = this.#prevValue
+      const prev = dom.value
+      dom.value = this.#prevValue
       this.#suspendInputChangeEvt = false
 
       // Manually fire change event
@@ -137,7 +134,7 @@ export class TextInput extends Element {
       }
 
       if (this.blurOnEscape) {
-        this.dom.blur()
+        dom.blur()
       }
     }
 
@@ -145,7 +142,7 @@ export class TextInput extends Element {
   }
 
   _onInputKeyUp = (evt: KeyboardEvent) => {
-    if (evt.keyCode !== 27) {
+    if (evt.key === 'Escape') {
       this._onInputChange(evt)
     }
 
@@ -153,7 +150,7 @@ export class TextInput extends Element {
   }
 
   _onInputCtxMenu = (evt: Event) => {
-    this.dom.select()
+    (this.dom as HTMLInputElement).select()
   }
 
   _updateInputReadOnly () {
@@ -166,14 +163,16 @@ export class TextInput extends Element {
   }
 
   _updateValue (value: string | null | undefined) {
-    this.dom.classList.remove(pcuiClass.MULTIPLE_VALUES)
+    const dom = this.dom as HTMLInputElement
+
+    dom.classList.remove(pcuiClass.MULTIPLE_VALUES)
 
     if (value === this.value) {
       return false
     }
 
     this.#suspendInputChangeEvt = true
-    this.dom.value = value ?? ''
+    dom.value = value ?? ''
     this.#suspendInputChangeEvt = false
 
     this.emit('change', value)
@@ -187,9 +186,10 @@ export class TextInput extends Element {
    * @param {boolean} select - If true then this will also select the text after focusing.
    */
   focus (select: boolean) {
-    this.dom.focus()
+    const input = this.dom as HTMLInputElement
+    input.focus()
     if (select) {
-      this.dom.select()
+      input.select()
     }
   }
 
@@ -212,6 +212,8 @@ export class TextInput extends Element {
     this.dom.removeEventListener('keyup', this._onInputKeyUp)
     this.dom.removeEventListener('contextmenu', this._onInputCtxMenu)
     super.destroy()
+
+    // @ts-expect-error Destroy!
     this.dom = null
   }
 
@@ -222,14 +224,10 @@ export class TextInput extends Element {
       // Reset error
       this.error = false
     }
-
-    if (changed && this._binding) {
-      this._binding.setValue(value)
-    }
   }
 
   get value () {
-    return this.dom.value
+    return (this.dom as HTMLInputElement).value
   }
 
   /**

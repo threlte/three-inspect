@@ -1,3 +1,4 @@
+import './patch/folders'
 import type * as ThreeLib from 'three'
 import { Controls, setEnabledControls } from './lib/controls'
 import { type Pane, addPane } from './pane'
@@ -7,7 +8,6 @@ import css from './main.css?inline'
 import { initElements } from './elements'
 import { initNav } from './pane/nav'
 import { initSceneHelpers } from './folders/scene'
-import { initStats } from './pane/stats'
 import { setThree } from './three'
 import { storage } from './lib/storage'
 
@@ -33,11 +33,6 @@ export default class Debug {
   addPane = addPane
 
   /**
-   * The stats panel. Can be extended.
-   */
-  stats: Pane
-
-  /**
    * Instantiates Three.js debugging and monitoring tools.
    *
    * @param THREE The THREE object used in this project.
@@ -57,13 +52,9 @@ export default class Debug {
   ) {
     setThree(THREE)
 
-    const { stats, dispose: disposeStats } = initStats()
-    this.stats = stats
-
     this.disposers.push(initElements(scene, renderer, composer))
     this.disposers.push(initNav())
     this.disposers.push(initSceneHelpers(scene))
-    this.disposers.push(disposeStats)
     setEnabledControls(camera, renderer, (storage.getNumber('controls') as Controls | null) ?? Controls.NONE)
     run()
   }

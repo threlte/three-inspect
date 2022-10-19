@@ -11,6 +11,34 @@
   display: none;
 }
 
+.tp-grlv_g {
+  height: 30px !important
+}
+
+.three-debug.visible {
+  transform: translate(0, 0);
+}
+
+.three-debug-nav {
+  position: sticky;
+  top: 0;
+  display: flex;
+  overflow-x: auto;
+  background-color: #28292e !important;
+  z-index: 1;
+}
+
+.nav-button {
+  width: auto !important;
+  padding-right: 6px !important;
+  padding-left: 6px !important;
+}
+
+.selected {
+  background: #bbb !important;
+  color: #333 !important;
+}
+
 /**
  * PCUI
  */
@@ -32,25 +60,8 @@
 .font-icon, .pcui-treeview-item-icon:after, .pcui-treeview-item:not(.pcui-treeview-item-empty) > .pcui-treeview-item-contents:before {
   font-family: 'pc-icon';
 }
-.pcui-flex {
-  flex-direction: column;
-}
-.pcui-flex:not(.pcui-hidden) {
-  display: flex;
-}
-.pcui-grid {
-  display: grid;
-}
 .pcui-scrollable {
   overflow: auto;
-}
-.font-thin {
-  font-weight: 100;
-  font-style: normal;
-}
-.font-light {
-  font-weight: 200;
-  font-style: normal;
 }
 .font-bold {
   font-weight: bold;

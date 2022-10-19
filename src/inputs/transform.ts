@@ -98,7 +98,7 @@ export const addTransformInputs = (pane: Pane, object3D: THREE.Object3D) => {
 
   let imeshDispose: (() => void) | undefined
 
-  if (instancedMesh.isInstancedMesh) {
+  if ('isInstancedMesh' in instancedMesh) {
     imeshDispose = addInstancedMeshFolder(pane, instancedMesh)
   }
 

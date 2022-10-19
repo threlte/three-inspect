@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import * as pcuiClass from './class'
+import type { Container } from './container'
 import type { EventHandle } from './event-handle'
 import { Events } from './events'
 
@@ -110,12 +111,12 @@ interface Args {
  * @property {number} [width=null] Gets / sets the width of the Element in pixels. Can also be an empty string to remove it.
  * @property {number} [height=null] Gets / sets the height of the Element in pixels. Can also be an empty string to remove it.
  * @property {boolean} error Gets / sets whether the Element is in an error state.
- * @property {BindingBase} binding Gets / sets the Binding object for the element.
  */
 export class Element extends Events {
   destroyed = false
   #enabled = true
   #ignoreParent = false
+  // eslint-disable-next-line no-use-before-define
   #parent: Element | null = null
   #flashTimeout = -1
   #hiddenParents = false
@@ -161,29 +162,6 @@ export class Element extends Events {
     this.#hiddenParents = !args.isRoot
     this.enabled = args.enabled ?? true
     this.hidden = args.hidden ?? false
-  }
-
-  /**
-   * @name Element#link
-   * @description Links the specified observers and paths to the Element's data binding.
-   * @param {Observer|Observer[]} observers - An array of observers or a single observer.
-   * @param paths - A path for the observer(s) or an array of paths that maps to each separate observer.
-   */
-  link (observers, paths: string | string[]) {
-    if (this._binding) {
-      this._binding.link(observers, paths)
-    }
-  }
-
-
-  /**
-   * @name Element#unlink
-   * @description Unlinks the Element from its observers
-   */
-  unlink () {
-    if (this._binding) {
-      this._binding.unlink()
-    }
   }
 
   /**
@@ -292,20 +270,13 @@ export class Element extends Events {
 
     this.destroyed = true
 
-    if (this.binding) {
-      this.binding = null
-    } else {
-      this.unlink()
-    }
-
     if (this.parent) {
       const parent = this.parent
 
-      for (let i = 0; i < this.#eventsParent.length; i += 1) {
+      for (let i = 0, l = this.#eventsParent.length; i < l; i += 1) {
         this.#eventsParent[i].unbind()
       }
-      this.#eventsParent.length = 0
-
+      this.#eventsParent.slice(0, this.#eventsParent.length)
 
       /*
        * Remove element from parent
@@ -314,8 +285,9 @@ export class Element extends Events {
        * On a destroyed parent after it's been destroyed
        * As it is easy to lead to null exceptions
        */
-      if (parent.remove && !parent.destroyed) {
-        parent.remove(this)
+      const container = parent as Container
+      if ('remove' in container && !parent.destroyed) {
+        container.remove(this)
       }
 
       /*
@@ -332,7 +304,7 @@ export class Element extends Events {
        * But we don't need to remove all these DOM elements from their parents since the root DOM element is destroyed anyway.
        * This has a big impact on destroy speed in certain cases.
        */
-      if (!parent.destroyed && this.dom && this.dom.parentElement) {
+      if (!parent.destroyed && this.dom?.parentElement) {
         this.dom.parentElement.removeChild(this.dom)
       }
     }
@@ -343,6 +315,7 @@ export class Element extends Events {
       // Remove ui reference
       delete dom.ui
 
+      // @ts-expect-error Destroy!
       this.dom = null
     }
 
@@ -405,7 +378,7 @@ export class Element extends Events {
     const oldHiddenToRoot = this.hiddenToRoot
 
     if (this.#parent) {
-      for (let i = 0; i < this.#eventsParent.length; i += 1) {
+      for (let i = 0, l = this.#eventsParent.length; i < l; i += 1) {
         this.#eventsParent[i].unbind()
       }
       this.#eventsParent.length = 0
@@ -527,36 +500,5 @@ export class Element extends Events {
 
   get height (): number {
     return this.dom.clientHeight
-  }
-
-  set binding (value) {
-    if (this._binding === value) {
-      return
-    }
-
-    let prevObservers
-    let prevPaths
-
-    if (this._binding) {
-      prevObservers = this._binding.observers
-      prevPaths = this._binding.paths
-
-      this.unlink()
-      this._binding.dom = null
-      this._binding = null
-    }
-
-    this._binding = value
-
-    if (this._binding) {
-      this._binding.dom = this
-      if (prevObservers && prevPaths) {
-        this.link(prevObservers, prevPaths)
-      }
-    }
-  }
-
-  get binding () {
-    return this._binding
   }
 }

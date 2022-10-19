@@ -24,7 +24,7 @@ export const addObjectInputs = (pane: Pane, object3D: THREE.Object3D) => {
 
   if (Array.isArray(mesh.material)) {
     for (let i = 0, l = mesh.material.length; i < l; i += 1) {
-      if (mesh.material[i].isMaterial) {
+      if ('isMaterial' in mesh.material[i]) {
         disposers.push(addMaterialInputs(pane, mesh))
       }
     }

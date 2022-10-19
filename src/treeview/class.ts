@@ -1,5 +1,3 @@
-const FLEX = 'pcui-flex'
-const GRID = 'pcui-grid'
 const HIDDEN = 'pcui-hidden'
 const SCROLLABLE = 'pcui-scrollable'
 const RESIZABLE = 'pcui-resizable'
@@ -13,11 +11,8 @@ const ERROR = 'pcui-error'
 const FLASH = 'flash'
 const NOT_FLEXIBLE = 'pcui-not-flexible'
 const DEFAULT_MOUSEDOWN = 'pcui-default-mousedown'
-const FONT_BOLD = 'font-bold'
 
 export {
-  FLEX,
-  GRID,
   HIDDEN,
   SCROLLABLE,
   RESIZABLE,
@@ -30,6 +25,5 @@ export {
   ERROR,
   FLASH,
   NOT_FLEXIBLE,
-  DEFAULT_MOUSEDOWN,
-  FONT_BOLD
+  DEFAULT_MOUSEDOWN
 }

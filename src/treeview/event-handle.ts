@@ -32,9 +32,7 @@ export class EventHandle {
     this.fn = null
   }
 
-  /**
-   */
-  call (...args: any[]) {
+  call (...args: []) {
     if (!this.fn) {
       return
     }
@@ -45,9 +43,9 @@ export class EventHandle {
   /**
    * @param name - Name
    * @param {HandleEvent} fn - Callback function
-   * @returns {EventHandle} - EventHandle
+   * @returns - EventHandle
    */
-  on (name: string, fn: any) {
+  on (name: string, fn: any): EventHandle {
     return this.owner!.on(name, fn)
   }
 }

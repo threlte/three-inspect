@@ -1,4 +1,7 @@
+/* eslint-disable require-unicode-regexp */
+/* eslint-disable prefer-named-capture-group */
 /* eslint-disable no-underscore-dangle */
+
 /*
  * Calculate, how many string `a`
  * requires edits, to become string `b`
@@ -95,10 +98,10 @@ export const searchStringTokenize = (name: string) => {
    * dash-notation
    * underscore_notation
    */
-  const parts = string.split(/(\s|\-|_)/g)
+  const parts = string.split(/(\s|-|_)/g)
 
   // Filter valid tokens
-  for (let i = 0; i < parts.length; i += 1) {
+  for (let i = 0, l = parts.length; i < l; i += 1) {
     parts[i] = parts[i].toLowerCase().trim()
     if (parts[i] && parts[i] !== '-' && parts[i] !== '_') {
       tokens.push(parts[i])
@@ -108,11 +111,25 @@ export const searchStringTokenize = (name: string) => {
   return tokens
 }
 
+interface Item {
+  subFull: number
+  edits: number
+  sub: number
+  name: string
+  tokens: string[]
+  item: Item
+}
 
-const _searchItems = (items, search, args) => {
+interface Args {
+  containsCharsTolerance?: number
+  editsDistanceTolerance?: number
+  limitResults?: number
+}
+
+const _searchItems = (items: Item[], search: string, args: Args) => {
   const results = []
 
-  for (let i = 0; i < items.length; i += 1) {
+  for (let i = 0, l = items.length; i < l; i += 1) {
     const item = items[i]
 
     // Direct hit
@@ -144,7 +161,7 @@ const _searchItems = (items, search, args) => {
 
     // Check if name contains enough of search characters
     const contains = searchCharsContains(search, item.name)
-    if (contains / search.length < args.containsCharsTolerance) {
+    if (contains / search.length < args.containsCharsTolerance!) {
       continue
     }
 
@@ -169,7 +186,7 @@ const _searchItems = (items, search, args) => {
         continue
       } else if (subCandidate === Infinity && edits < editsCandidate) {
         // New edits candidate, not a substring of a token
-        if ((edits / Math.max(search.length, item.tokens[t].length)) <= args.editsDistanceTolerance) {
+        if ((edits / Math.max(search.length, item.tokens[t].length)) <= args.editsDistanceTolerance!) {
           // Check if edits tolerance is satisfied
           editsCandidate = edits
         }
@@ -203,12 +220,9 @@ const _searchItems = (items, search, args) => {
  * ]
  *
  */
-export const searchItems = (items: string[][], s: string, args: {
-  containsCharsTolerance?: number
-  editsDistanceTolerance?: number
-  limitResults?: number
-} = {}) => {
+export const searchItems = (items: [string, Item][], s: string, args: Args = {}) => {
   let i = 0
+  let l = 0
 
   const normalized = (s || '').toLowerCase().trim()
 
@@ -226,7 +240,7 @@ export const searchItems = (items: string[][], s: string, args: {
 
   let records = []
 
-  for (i = 0; i < items.length; i += 1) {
+  for (i = 0, l = items.length; i < l; i += 1) {
     const subInd = items[i][0]
       .toLowerCase()
       .trim()
@@ -243,7 +257,7 @@ export const searchItems = (items: string[][], s: string, args: {
   }
 
   // Search each token
-  for (i = 0; i < searchTokens.length; i += 1) {
+  for (i = 0, l = searchTokens.length; i < l; i += 1) {
     records = _searchItems(records, searchTokens[i], args)
   }
 
@@ -260,7 +274,7 @@ export const searchItems = (items: string[][], s: string, args: {
   })
 
   // Return only items without match information
-  for (i = 0; i < records.length; i += 1) {
+  for (i = 0, l = records.length; i < l; i += 1) {
     records[i] = records[i].item
   }
 

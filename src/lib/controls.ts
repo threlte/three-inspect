@@ -17,7 +17,7 @@ export const setEnabledControls = (camera: Cameras, renderer: THREE.WebGLRendere
     storage.setJSON('camera', {
       position: camera.position.toArray(),
       quaternion: camera.quaternion.toArray(),
-      target: controls!.target.toArray(),
+      target: controls?.target.toArray(),
       zoom: camera.zoom,
     })
   }

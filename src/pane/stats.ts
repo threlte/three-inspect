@@ -9,7 +9,11 @@ type PerformanceMemory = Performance & {
   }
 }
 
-export const initStats = (container: HTMLElement) => {
+export const initStats = (root: HTMLElement) => {
+  const container = document.createElement('div')
+  container.className = 'sticky bottom-0'
+  root.append(container)
+
   const stats = new Pane({ container })
   stats.registerPlugin(EssentialsPlugin)
 
@@ -77,12 +81,10 @@ export const initStats = (container: HTMLElement) => {
 
   update(tick)
 
-  const dispose = () => {
+  return () => {
     stats.dispose()
     clearInterval(timeId)
     clearInterval(memoryId)
     removeUpdate(tick)
   }
-
-  return { dispose, stats }
 }
