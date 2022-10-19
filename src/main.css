@@ -60,9 +60,6 @@
 .font-icon, .pcui-treeview-item-icon:after, .pcui-treeview-item:not(.pcui-treeview-item-empty) > .pcui-treeview-item-contents:before {
   font-family: 'pc-icon';
 }
-.pcui-scrollable {
-  overflow: auto;
-}
 .font-bold {
   font-weight: bold;
   font-style: normal;
@@ -150,9 +147,6 @@
 }
 .pcui-element::-moz-focus-inner {
   border: 0;
-}
-.pcui-element.pcui-hidden {
-  display: none;
 }
 .pcui-label {
   display: inline-block;

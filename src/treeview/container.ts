@@ -453,9 +453,9 @@ export class Container extends Element {
     this.#scrollable = value
 
     if (value) {
-      this.dom.classList.add(pcuiClass.SCROLLABLE)
+      this.dom.classList.add('overflow-auto')
     } else {
-      this.dom.classList.remove(pcuiClass.SCROLLABLE)
+      this.dom.classList.remove('overflow-auto')
     }
   }
 

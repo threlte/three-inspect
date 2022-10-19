@@ -431,9 +431,9 @@ export class Element extends Events {
     this.#hidden = value
 
     if (value) {
-      this.dom.classList.add(pcuiClass.HIDDEN)
+      this.dom.classList.add('hidden')
     } else {
-      this.dom.classList.remove(pcuiClass.HIDDEN)
+      this.dom.classList.remove('hidden')
     }
 
     this.emit(value ? 'hide' : 'show')
