@@ -195,11 +195,7 @@
   pointer-events: none;
 }
 .pcui-text-input {
-  display: inline-block;
-  border: 1px solid #202020;
   border-radius: 2px;
-  box-sizing: border-box;
-  margin: 6px;
   min-height: 24px;
   height: 24px;
   background-color: #282828;
@@ -272,18 +268,11 @@
   color: #829193;
   pointer-events: none;
 }
-.pcui-treeview {
- /* // make sure our width covers the largest visible tree item child // this does not work on Edge */
-  min-width: min-content;
-  min-height: min-content;
-}
 .pcui-treeview-item {
   position: relative;
   padding-left: 24px;
   height: max-content;
   min-width: max-content;
- /* // top line */
- /* // top line, last item */
 }
 .pcui-treeview-item:before {
   content: '\00a0';
@@ -378,9 +367,6 @@
 .pcui-treeview-item:not(.pcui-treeview-item-empty).pcui-treeview-item-open > .pcui-treeview-item-contents:before {
   content: '−';
 }
-.pcui-treeview {
- /* // direct children of tree */
-}
 .pcui-treeview > .pcui-treeview-item {
   padding-left: 0;
 }
@@ -402,9 +388,6 @@
 .pcui-treeview > .pcui-treeview-item > .pcui-treeview-item:before {
   left: 11px;
 }
-.pcui-treeview:not(.pcui-treeview-filtering) {
- /* // direct children of tree */
-}
 .pcui-treeview:not(.pcui-treeview-filtering) > .pcui-treeview-item .pcui-treeview-item:not(.pcui-treeview-item-open):not(.pcui-treeview-item-empty) > .pcui-treeview-item {
   display: none;
 }
@@ -414,26 +397,20 @@
 }
 .pcui-treeview-drag-handle {
   position: fixed;
-  width: 32px;
-  height: 20px;
-  top: 0;
-  bottom: 0;
   z-index: 4;
   margin-top: -1px;
   margin-left: -1px;
 }
 .pcui-treeview-drag-handle.before {
-  border-top: 4px solid #f60;
+  border-top: 4px solid rgba(255,255,255,0.5);
   padding-right: 8px;
-  height: 24px;
 }
 .pcui-treeview-drag-handle.inside {
-  border: 4px solid #f60;
+  border: 4px solid rgba(255,255,255,0.5);
 }
 .pcui-treeview-drag-handle.after {
-  border-bottom: 4px solid #f60;
+  border-bottom: 4px solid rgba(255,255,255,0.5);
   padding-right: 8px;
-  height: 24px;
 }
 .pcui-treeview-item-contents:after {
   content: ' ';

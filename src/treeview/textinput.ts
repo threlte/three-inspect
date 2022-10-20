@@ -50,7 +50,11 @@ export class TextInput extends Element {
 
     super({ dom, ...args })
 
-    dom.classList.add('pcui-text-input', 'font-mono', 'text-[11px]')
+    dom.classList.add(
+      'pcui-text-input',
+      'font-mono',
+      'text-[11px]'
+    )
 
     // @ts-expect-error @Todo fix
     dom.ui = this

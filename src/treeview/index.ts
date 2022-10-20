@@ -1,13 +1,13 @@
 /* eslint-disable max-depth */
 /* eslint-disable no-underscore-dangle */
 import { Container } from './container'
-import { Element } from './element'
+import type { Element } from './element'
 import { TreeViewItem } from './item'
 import { searchItems } from './search'
 
 const CLASS_ROOT = 'pcui-treeview'
 const CLASS_DRAGGED_ITEM = `${CLASS_ROOT}-item-dragged`
-const CLASS_DRAGGED_HANDLE = [`${CLASS_ROOT}-drag-handle`, 'border-white', 'border-2']
+const CLASS_DRAGGED_HANDLE = `${CLASS_ROOT}-drag-handle`
 const CLASS_FILTERING = `${CLASS_ROOT}-filtering`
 const CLASS_FILTER_RESULT = `${CLASS_FILTERING}-result`
 
@@ -91,16 +91,16 @@ export class TreeView extends Container {
   #dragItems: TreeViewItem[] = []
   #dragging = false
   #dragOverItem: TreeViewItem | null = null
-  _pressedCtrl = false
-  _pressedShift = false
-  _dragScroll = 0
+  #pressedCtrl = false
+  #pressedShift = false
+  #dragScroll = 0
   #dragScrollInterval = -1
-  _dragArea = DRAG_AREA_INSIDE
-  _filter = null
-  _filterResults: TreeViewItem[] = []
+  #dragArea = DRAG_AREA_INSIDE
+  #filter = ''
+  #filterResults: TreeViewItem[] = []
 
-  _dragHandle: Element
-  _dragScrollElement: Element
+  #dragHandle = document.createElement('div')
+  #dragScrollElement: Element
 
   /**
    * Creates a new TreeView.
@@ -124,20 +124,9 @@ export class TreeView extends Container {
       'text-[11px]'
     )
 
-    this._dragHandle = new Element({
-      class: [
-        ...CLASS_DRAGGED_HANDLE,
-        'fixed',
-        'w-[32px]',
-        'h-[20px]',
-        'top-0',
-        'z-[4]',
-        '-mt-1',
-        '-ml-1',
-      ],
-    })
-    this._dragScrollElement = args.dragScrollElement || this
-    this.append(this._dragHandle)
+    this.#dragHandle.className = `${CLASS_DRAGGED_HANDLE} fixed z-[4] -mt-1 -ml-1`
+    this.#dragScrollElement = args.dragScrollElement || this
+    this.dom.append(this.#dragHandle)
 
     window.addEventListener('keydown', this._updateModifierKeys)
     window.addEventListener('keyup', this._updateModifierKeys)
@@ -145,15 +134,12 @@ export class TreeView extends Container {
 
     this.dom.addEventListener('mouseleave', this.#onMouseLeave)
 
-    this._dragHandle.dom.addEventListener('mousemove', this.#onDragMove)
-    this._dragHandle.on('destroy', (dom) => {
-      dom.removeEventListener('mousemove', this.#onDragMove)
-    })
+    this.#dragHandle.addEventListener('mousemove', this.#onDragMove)
   }
 
-  _updateModifierKeys = (evt) => {
-    this._pressedCtrl = evt.ctrlKey || evt.metaKey
-    this._pressedShift = evt.shiftKey
+  _updateModifierKeys = (evt: MouseEvent | KeyboardEvent) => {
+    this.#pressedCtrl = evt.ctrlKey || evt.metaKey
+    this.#pressedShift = evt.shiftKey
   }
 
   /**
@@ -244,7 +230,7 @@ export class TreeView extends Container {
     const result = []
 
     // Select search results if we are currently filtering tree view items
-    if (this._filterResults.length > 0) {
+    if (this.#filterResults.length > 0) {
       const filterResults = this.dom.querySelectorAll(`.${CLASS_ROOT}-item.${CLASS_FILTER_RESULT}`)
 
       let startIndex = -1
@@ -317,16 +303,16 @@ export class TreeView extends Container {
   _onAppendTreeViewItem (element: TreeViewItem) {
     element.treeView = this
 
-    if (this._filter) {
+    if (this.#filter !== '') {
       /*
        * Add new item to filtered results if it
        * satisfies the current filter
        */
-      this._searchItems([[element.text, element]], this._filter)
+      this._searchItems([[element.text, element]], this.#filter)
     }
 
     // Do the same for all children of the element
-    element.forEachChild((child) => {
+    element.forEachChild((child: TreeViewItem) => {
       if (child instanceof TreeViewItem) {
         this._onAppendTreeViewItem(child)
       }
@@ -366,7 +352,7 @@ export class TreeView extends Container {
       if (this.#selectedItems.length > 0) {
         const next = this.#findNextVisibleTreeItem(element)
         if (next) {
-          if (this._pressedShift || this._pressedCtrl) {
+          if (this.#pressedShift || this.#pressedCtrl) {
             next.selected = true
           } else {
             this._selectSingleItem(next)
@@ -378,7 +364,7 @@ export class TreeView extends Container {
       if (this.#selectedItems.length > 0) {
         const prev = this._findPreviousVisibleTreeItem(element)
         if (prev) {
-          if (this._pressedShift || this._pressedCtrl) {
+          if (this.#pressedShift || this.#pressedCtrl) {
             prev.selected = true
           } else {
             this._selectSingleItem(prev)
@@ -406,10 +392,10 @@ export class TreeView extends Container {
       return
     }
 
-    if (this._pressedCtrl) {
+    if (this.#pressedCtrl) {
       // Toggle selection when Ctrl is pressed
       element.selected = !element.selected
-    } else if (this._pressedShift) {
+    } else if (this.#pressedShift) {
       // On shift add to selection
       if (!this.#selectedItems.length || this.#selectedItems.length === 1 && this.#selectedItems[0] === element) {
         element.selected = true
@@ -438,7 +424,7 @@ export class TreeView extends Container {
    */
   traverseDepthFirst (fn: (item: TreeViewItem) => void) {
     const traverse = (item: TreeViewItem | undefined) => {
-      if (!item || !(item instanceof TreeViewItem)) {
+      if (!(item instanceof TreeViewItem)) {
         return
       }
 
@@ -606,7 +592,7 @@ export class TreeView extends Container {
           for (let i = 0, l = this.#dragItems.length; i < l; i += 1) {
             const item = this.#dragItems[i]
 
-            if (item.parent === this.#dragOverItem && this._dragArea === DRAG_AREA_INSIDE) {
+            if (item.parent === this.#dragOverItem && this.#dragArea === DRAG_AREA_INSIDE) {
               continue
             }
 
@@ -630,7 +616,7 @@ export class TreeView extends Container {
             /**
              * If dragged before a TreeViewItem...
              */
-            if (this._dragArea === DRAG_AREA_BEFORE) {
+            if (this.#dragArea === DRAG_AREA_BEFORE) {
               r.newParent = this.#dragOverItem.parent
               const parentChildren = getChildren(this.#dragOverItem.parent)
               const index = parentChildren.indexOf(this.#dragOverItem.dom)
@@ -640,7 +626,7 @@ export class TreeView extends Container {
             /**
              * If dragged inside a TreeViewItem...
              */
-            } else if (this._dragArea === DRAG_AREA_INSIDE) {
+            } else if (this.#dragArea === DRAG_AREA_INSIDE) {
               r.newParent = this.#dragOverItem
               const parentChildren = getChildren(this.#dragOverItem)
               parentChildren.push(r.item.dom)
@@ -649,7 +635,7 @@ export class TreeView extends Container {
             /**
              * If dragged after a TreeViewItem...
              */
-            } else if (this._dragArea === DRAG_AREA_AFTER) {
+            } else if (this.#dragArea === DRAG_AREA_AFTER) {
               r.newParent = this.#dragOverItem.parent
               const parentChildren = getChildren(this.#dragOverItem.parent)
               const after = i > 0 ? reparented[i - 1].item : this.#dragOverItem
@@ -672,7 +658,7 @@ export class TreeView extends Container {
           // First remove all items from their parent
           for (let i = 0, l = this.#dragItems.length; i < l; i += 1) {
             const item = this.#dragItems[i]
-            if (item.parent === this.#dragOverItem && this._dragArea === DRAG_AREA_INSIDE) {
+            if (item.parent === this.#dragOverItem && this.#dragArea === DRAG_AREA_INSIDE) {
               return
             }
 
@@ -686,18 +672,18 @@ export class TreeView extends Container {
           // Now reparent items
           for (let i = 0, l = reparented.length; i < l; i += 1) {
             const r = reparented[i]
-            if (this._dragArea === DRAG_AREA_BEFORE) {
+            if (this.#dragArea === DRAG_AREA_BEFORE) {
               // If dragged before a TreeViewItem...
               r.newParent = this.#dragOverItem.parent
               this.#dragOverItem.parent.appendBefore(r.item, this.#dragOverItem)
               r.newChildIndex = this._getChildIndex(r.item, r.newParent)
-            } else if (this._dragArea === DRAG_AREA_INSIDE) {
+            } else if (this.#dragArea === DRAG_AREA_INSIDE) {
               // If dragged inside a TreeViewItem...
               r.newParent = this.#dragOverItem
               this.#dragOverItem.append(r.item)
               this.#dragOverItem.open = true
               r.newChildIndex = this._getChildIndex(r.item, r.newParent)
-            } else if (this._dragArea === DRAG_AREA_AFTER) {
+            } else if (this.#dragArea === DRAG_AREA_AFTER) {
               // If dragged after a TreeViewItem...
               r.newParent = this.#dragOverItem.parent
               this.#dragOverItem.parent.appendAfter(r.item, i > 0 ? reparented[i - 1].item : this.#dragOverItem)
@@ -757,26 +743,27 @@ export class TreeView extends Container {
 
     // Determine if we need to scroll the treeview if we are dragging towards the edges
     const rect = this.dom.getBoundingClientRect()
-    this._dragScroll = 0
-    let top = rect.top
+    const dragEl = this.#dragScrollElement.dom
+    this.#dragScroll = 0
 
-    let bottom = rect.bottom
-    if (this._dragScrollElement !== this) {
-      const dragScrollRect = this._dragScrollElement.dom.getBoundingClientRect()
-      top = Math.max(top + this._dragScrollElement.dom.scrollTop, dragScrollRect.top)
-      bottom = Math.min(bottom + this._dragScrollElement.dom.scrollTop, dragScrollRect.bottom)
+    let { top, bottom } = rect
+
+    if (this.#dragScrollElement !== this) {
+      const dragScrollRect = dragEl.getBoundingClientRect()
+      top = Math.max(top + dragEl.scrollTop, dragScrollRect.top)
+      bottom = Math.min(bottom + dragEl.scrollTop, dragScrollRect.bottom)
     }
 
     top = Math.max(0, top)
     bottom = Math.min(bottom, document.body.clientHeight)
 
-    if (evt.pageY < top + 32 && this._dragScrollElement.dom.scrollTop > 0) {
-      this._dragScroll = -1
+    if (evt.pageY < top + 32 && dragEl.scrollTop > 0) {
+      this.#dragScroll = -1
     } else if (
       evt.pageY > bottom - 32 &&
-      this._dragScrollElement.dom.scrollHeight > this._dragScrollElement.height + this._dragScrollElement.dom.scrollTop
+      dragEl.scrollHeight > this.#dragScrollElement.height + dragEl.scrollTop
     ) {
-      this._dragScroll = 1
+      this.#dragScroll = 1
     }
   }
 
@@ -785,11 +772,11 @@ export class TreeView extends Container {
     if (!this.#dragging) {
       return
     }
-    if (this._dragScroll === 0) {
+    if (this.#dragScroll === 0) {
       return
     }
 
-    this._dragScrollElement.dom.scrollTop += this._dragScroll * 8
+    this.#dragScrollElement.dom.scrollTop += this.#dragScroll * 8
     this.#dragOverItem = null
     this.#updateDragHandle()
   }
@@ -799,19 +786,19 @@ export class TreeView extends Container {
     evt.preventDefault()
     evt.stopPropagation()
 
-    if (!this.#allowDrag || !this.#dragOverItem) {
+    if (!this.#allowDrag || this.#dragOverItem === null) {
       return
     }
 
-    const rect = this._dragHandle.dom.getBoundingClientRect()
-    const area = Math.floor((evt.clientY - rect.top) / rect.height * 5)
+    const rect = this.#dragHandle.getBoundingClientRect()
+    const area = Math.floor((evt.clientY - rect.top) / rect.height)
 
-    const oldArea = this._dragArea
+    const oldArea = this.#dragArea
     const oldDragOver = this.#dragOverItem
 
     if (this.#dragOverItem.parent === this) {
       let parent = false
-      for (let i = 0; i < this.#dragItems.length; i += 1) {
+      for (let i = 0, l = this.#dragItems.length; i < l; i += 1) {
         if (this.#dragItems[i].parent === this.#dragOverItem) {
           parent = true
           this.#dragOverItem = null
@@ -820,12 +807,13 @@ export class TreeView extends Container {
       }
 
       if (!parent) {
-        this._dragArea = DRAG_AREA_INSIDE
+        this.#dragArea = DRAG_AREA_INSIDE
       }
     } else {
       // Check if we are trying to drag item inside any of its children
       let invalid = false
-      for (let i = 0; i < this.#dragItems.length; i += 1) {
+
+      for (let i = 0, l = this.#dragItems.length; i < l; i += 1) {
         if (this.#dragItems[i].dom.contains(this.#dragOverItem.dom)) {
           invalid = true
           break
@@ -838,32 +826,32 @@ export class TreeView extends Container {
         this.allowReordering && area <= 1 &&
         !this.#dragItems.includes(this.#dragOverItem.previousSibling)
       ) {
-        this._dragArea = DRAG_AREA_BEFORE
+        this.#dragArea = DRAG_AREA_BEFORE
       } else if (
         this.allowReordering && area >= 4 &&
         !this.#dragItems.includes(this.#dragOverItem.nextSibling) &&
         (this.#dragOverItem.numChildren === 0 || !this.#dragOverItem.open)
       ) {
-        this._dragArea = DRAG_AREA_AFTER
+        this.#dragArea = DRAG_AREA_AFTER
       } else {
         let parent = false
         if (this.allowReordering && this.#dragOverItem.open) {
           for (let i = 0; i < this.#dragItems.length; i += 1) {
             if (this.#dragItems[i].parent === this.#dragOverItem) {
               parent = true
-              this._dragArea = DRAG_AREA_BEFORE
+              this.#dragArea = DRAG_AREA_BEFORE
               break
             }
           }
         }
 
         if (!parent) {
-          this._dragArea = DRAG_AREA_INSIDE
+          this.#dragArea = DRAG_AREA_INSIDE
         }
       }
     }
 
-    if (oldArea !== this._dragArea || oldDragOver !== this.#dragOverItem) {
+    if (oldArea !== this.#dragArea || oldDragOver !== this.#dragOverItem) {
       this.#updateDragHandle()
     }
   }
@@ -877,16 +865,16 @@ export class TreeView extends Container {
     const item = element ?? this.#dragOverItem
 
     if (!item || item.hidden || !item.parentsOpen) {
-      this._dragHandle.hidden = true
+      this.#dragHandle.hidden = true
     } else {
-      const handle = this._dragHandle
+      const handle = this.#dragHandle
       const rect = item.containerContents.dom.getBoundingClientRect()
 
       handle.hidden = false
-      handle.dom.classList.remove(DRAG_AREA_AFTER, DRAG_AREA_BEFORE, DRAG_AREA_INSIDE)
-      handle.dom.classList.add(this._dragArea)
+      handle.classList.remove(DRAG_AREA_AFTER, DRAG_AREA_BEFORE, DRAG_AREA_INSIDE)
+      handle.classList.add(this.#dragArea)
 
-      const { top } = rect
+      const { top, height } = rect
       let { left, width } = rect
       if (this.dom.parentElement) {
         const parentRect = this.dom.parentElement.getBoundingClientRect()
@@ -894,9 +882,15 @@ export class TreeView extends Container {
         width = Math.min(width, this.dom.parentElement.clientWidth - left + parentRect.left)
       }
 
-      handle.dom.style.top = `${top}px`
+      if (this.#dragArea === DRAG_AREA_INSIDE) {
+        handle.style.height = `${height}px`
+      } else {
+        handle.style.removeProperty('height')
+      }
+
+      handle.style.top = `${top}px`
       // Handle.dom.style.left = `${left}px`
-      handle.dom.style.width = `${width - 7}px`
+      handle.style.width = `${width - 7}px`
     }
   }
 
@@ -952,16 +946,16 @@ export class TreeView extends Container {
    *
    */
   _onChildRename (item: TreeViewItem, newName: string | null | undefined) {
-    if (this._filter) {
+    if (this.#filter !== '') {
       // Unfilter this item
       item.dom.classList.remove(CLASS_FILTER_RESULT)
-      const index = this._filterResults.indexOf(item)
+      const index = this.#filterResults.indexOf(item)
       if (index !== -1) {
-        this._filterResults.splice(index, 1)
+        this.#filterResults.splice(index, 1)
       }
 
       // See if we can include it in the current filter
-      this._searchItems([[item.text, item]], this._filter)
+      this._searchItems([[item.text, item]], this.#filter)
     }
     this.emit('rename', item, newName)
   }
@@ -973,10 +967,10 @@ export class TreeView extends Container {
       return
     }
 
-    results.forEach((item) => {
-      this._filterResults.push(item)
-      item.dom.classList.add(CLASS_FILTER_RESULT)
-    })
+    for (let i = 0, l = results.length; i < l; i += 1) {
+      this.#filterResults.push(results[i])
+      results[i].dom.classList.add(CLASS_FILTER_RESULT)
+    }
   }
 
   /**
@@ -1004,13 +998,13 @@ export class TreeView extends Container {
    * Clears search filter.
    */
   _clearFilter () {
-    this._filterResults.forEach((item) => {
+    this.#filterResults.forEach((item) => {
       if (item.destroyed) {
         return
       }
       item.dom.classList.remove(CLASS_FILTER_RESULT)
     })
-    this._filterResults.length = 0
+    this.#filterResults.splice(0, this.#filterResults.length)
 
     this.dom.classList.remove(CLASS_FILTERING)
 
@@ -1022,8 +1016,7 @@ export class TreeView extends Container {
   }
 
   /**
-   * @name TreeView#deselect
-   * @description Deselects all selected tree view items.
+   * Deselects all selected tree view items.
    */
   deselect () {
     let i = this.#selectedItems.length - 1
@@ -1058,8 +1051,8 @@ export class TreeView extends Container {
       i -= 1
     }
 
-    this.#selectedItems = []
-    this.#dragItems = []
+    this.#selectedItems.splice(0, this.#selectedItems.length)
+    this.#dragItems.splice(0, this.#dragItems.length)
     this.#allowDrag = this.#wasDraggingAllowedBeforeFiltering
   }
 
@@ -1068,6 +1061,7 @@ export class TreeView extends Container {
       return
     }
 
+    this.#dragHandle.removeEventListener('mousemove', this.#onDragMove)
     window.removeEventListener('keydown', this._updateModifierKeys)
     window.removeEventListener('keyup', this._updateModifierKeys)
     window.removeEventListener('mousedown', this._updateModifierKeys)
@@ -1084,20 +1078,20 @@ export class TreeView extends Container {
   }
 
   /**
-   * @property {boolean} allowDrag=true Whether dragging a TreeViewItem is allowed.
+   * Whether dragging a TreeViewItem is allowed.
    */
-  set allowDrag (value) {
+  set allowDrag (value: boolean) {
     this.#allowDrag = value
-    if (this._filter) {
+    if (this.#filter !== '') {
       this.#wasDraggingAllowedBeforeFiltering = value
     }
   }
 
-  get allowDrag () {
+  get allowDrag (): boolean {
     return this.#allowDrag
   }
 
-  set isDragging (value) {
+  set isDragging (value: boolean) {
     if (this.#dragging === value) {
       return
     }
@@ -1107,7 +1101,7 @@ export class TreeView extends Container {
       this.#updateDragHandle()
 
       // Handle mouse move to scroll when dragging if necessary
-      if (this.scrollable || this._dragScrollElement !== this) {
+      if (this.scrollable || this.#dragScrollElement !== this) {
         window.removeEventListener('mousemove', this.#onMouseMove)
         window.addEventListener('mousemove', this.#onMouseMove)
         if (this.#dragScrollInterval === -1) {
@@ -1128,20 +1122,20 @@ export class TreeView extends Container {
     }
   }
 
-  get isDragging () {
+  get isDragging (): boolean {
     return this.#dragging
   }
 
-  get selected () {
-    return this.#selectedItems.slice()
+  get selected (): TreeViewItem[] {
+    return [...this.#selectedItems]
   }
 
-  set filter (value) {
-    if (this._filter === value) {
+  set filter (value: string) {
+    if (this.#filter === value) {
       return
     }
 
-    this._filter = value
+    this.#filter = value
 
     if (value) {
       this._applyFilter(value)
@@ -1150,16 +1144,16 @@ export class TreeView extends Container {
     }
   }
 
-  get filter () {
-    return this._filter
+  get filter (): string {
+    return this.#filter
   }
 
-  get pressedCtrl () {
-    return this._pressedCtrl
+  get pressedCtrl (): boolean {
+    return this.#pressedCtrl
   }
 
-  get pressedShift () {
-    return this._pressedShift
+  get pressedShift (): boolean {
+    return this.#pressedShift
   }
 }
 
