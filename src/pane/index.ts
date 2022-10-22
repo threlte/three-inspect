@@ -1,7 +1,7 @@
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation'
 import * as Tweakpane from 'tweakpane'
-import { addPanelEntry, navigate, selectPanel } from './nav'
+import { addPanelEntry } from './nav'
 import { storage } from '../lib/storage'
 
 export type Pane = Tweakpane.Pane | Tweakpane.FolderApi

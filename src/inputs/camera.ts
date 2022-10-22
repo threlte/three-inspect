@@ -3,6 +3,7 @@ import type { EffectComposer } from 'postprocessing'
 import type { Pane } from '../pane'
 import { addPostInputs } from './postprocessing'
 import { addTransformInputs } from './transform'
+import { addUserdataInput } from './userdata'
 import { storage } from '../lib/storage'
 
 export type { Cameras }
@@ -17,7 +18,7 @@ const params = {
   controls: (storage.getNumber('controls') as Controls | null) ?? Controls.NONE,
 }
 
-export const addCameraInputs = (pane: Pane, camera: Cameras, renderer: THREE.WebGLRenderer, composer: EffectComposer) => {
+export const addCameraInputs = (pane: Pane, camera: Cameras, renderer: THREE.WebGLRenderer, composer?: EffectComposer) => {
   const titles = ['none', 'orbit', 'map']
 
   pane
@@ -60,12 +61,10 @@ export const addCameraInputs = (pane: Pane, camera: Cameras, renderer: THREE.Web
     pane.addInput(camera, 'filmGauge').on('change', handleCameraChange)
   }
 
-  const disposeTransformInputs = addTransformInputs(pane, camera)
-  const diposePostInputs = addPostInputs(pane, composer)
-
-  return () => {
-    window.removeEventListener('wheel', updateZoomInput)
-    disposeTransformInputs()
-    diposePostInputs()
-  }
+  const disposers: Disposer[] = []
+  disposers.push(addTransformInputs(pane, camera))
+  disposers.push(addUserdataInput(pane, camera))
+  disposers.push(addPostInputs(pane, composer))
+  disposers.push(() => window.removeEventListener('wheel', updateZoomInput))
+  return disposers
 }

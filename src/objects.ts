@@ -16,7 +16,7 @@ const getObjectType = (object3D: THREE.Object3D) => {
   return object3D.type
 }
 
-export const getFromTreeItem = (item: TreeViewItem) => {
+export const objectFromTreeItem = (item: TreeViewItem) => {
   return treeItemToObject.get(item)!
 }
 

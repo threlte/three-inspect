@@ -49,22 +49,24 @@
   min-width: fit-content; /* this fixes a lot of flex / grid issues */
   min-height: fit-content; /* this fixes a lot of flex / grid issues */
 }
-.noSelect, .pcui-label.pcui-selectable:hover {
+.noSelect,
+.pcui-label.pcui-selectable:hover {
   user-select: none;
 }
-.font-smooth, .font-icon, .pcui-treeview-item-icon:after, .pcui-treeview-item:not(.pcui-treeview-item-empty) > .pcui-treeview-item-contents:before {
+.font-icon,
+.pcui-treeview-item-icon:after,
+.pcui-treeview-item:not(.pcui-treeview-item-empty) > .pcui-treeview-item-contents:before {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-smoothing: antialiased;
 }
-.font-icon, .pcui-treeview-item-icon:after, .pcui-treeview-item:not(.pcui-treeview-item-empty) > .pcui-treeview-item-contents:before {
+.font-icon,
+.pcui-treeview-item-icon:after,
+.pcui-treeview-item:not(.pcui-treeview-item-empty) > .pcui-treeview-item-contents:before {
   font-family: 'pc-icon';
 }
-.font-bold {
-  font-weight: bold;
-  font-style: normal;
-}
-.fixedFont, .pcui-label.pcui-multiple-values:before, .pcui-text-input > input, .pcui-text-input.pcui-multiple-values:before {
+.fixedFont,
+.pcui-text-input > input {
   font-family: inconsolatamedium, Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
   font-weight: normal;
 }
@@ -164,16 +166,6 @@
 .pcui-label.pcui-default-mousedown {
   user-select: initial;
 }
-.pcui-label.pcui-multiple-values {
-  position: relative;
-  color: transparent;
-}
-.pcui-label.pcui-multiple-values:before {
-  content: '...';
-  color: #aaa;
-  white-space: nowrap;
-  font-size: 12px;
-}
 .pcui-label.pcui-error {
   color: #d34141;
 }
@@ -217,13 +209,6 @@
 }
 .pcui-text-input:before {
   color: inherit;
-}
-.pcui-text-input.pcui-multiple-values:before {
-  position: absolute;
-  padding: 0 8px;
-  content: '...';
-  white-space: nowrap;
-  top: 5px;
 }
 /* // focus / hover states */
 .pcui-text-input:not(.pcui-disabled):not(.pcui-readonly):hover {
@@ -396,12 +381,14 @@
   color: #fff;
 }
 .pcui-treeview-drag-handle {
+  pointer-events: none;
   position: fixed;
   z-index: 4;
   margin-top: -1px;
   margin-left: -1px;
 }
 .pcui-treeview-drag-handle.before {
+  margin-top: -2px;
   border-top: 4px solid rgba(255,255,255,0.5);
   padding-right: 8px;
 }
@@ -409,6 +396,7 @@
   border: 4px solid rgba(255,255,255,0.5);
 }
 .pcui-treeview-drag-handle.after {
+  margin-top: 2px;
   border-bottom: 4px solid rgba(255,255,255,0.5);
   padding-right: 8px;
 }

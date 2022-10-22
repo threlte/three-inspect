@@ -169,8 +169,6 @@ export class TextInput extends Element {
   _updateValue (value: string | null | undefined) {
     const dom = this.dom as HTMLInputElement
 
-    dom.classList.remove(pcuiClass.MULTIPLE_VALUES)
-
     if (value === this.value) {
       return false
     }
@@ -232,21 +230,6 @@ export class TextInput extends Element {
 
   get value () {
     return (this.dom as HTMLInputElement).value
-  }
-
-  /**
-   * The placeholder label that appears on the right of the input.
-   */
-  set placeholder (value: string | null) {
-    if (value === null) {
-      this.dom.removeAttribute('placeholder')
-    } else {
-      this.dom.setAttribute('placeholder', value)
-    }
-  }
-
-  get placeholder () {
-    return this.dom.getAttribute('placeholder')
   }
 
   /**

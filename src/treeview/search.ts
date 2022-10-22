@@ -2,6 +2,9 @@
 /* eslint-disable prefer-named-capture-group */
 /* eslint-disable no-underscore-dangle */
 
+import type { Element } from './element'
+import type { TreeViewItem } from './item'
+
 /*
  * Calculate, how many string `a`
  * requires edits, to become string `b`
@@ -117,7 +120,7 @@ interface Item {
   sub: number
   name: string
   tokens: string[]
-  item: Item
+  item: Element
 }
 
 interface Args {
@@ -220,7 +223,7 @@ const _searchItems = (items: Item[], search: string, args: Args) => {
  * ]
  *
  */
-export const searchItems = (items: [string, Item][], s: string, args: Args = {}) => {
+export const searchItems = (items: [string, TreeViewItem][], s: string, args: Args = {}) => {
   let i = 0
   let l = 0
 
@@ -238,7 +241,7 @@ export const searchItems = (items: [string, Item][], s: string, args: Args = {})
   args.containsCharsTolerance ??= 0.5
   args.editsDistanceTolerance ??= 0.5
 
-  let records = []
+  let records: Item[] = []
 
   for (i = 0, l = items.length; i < l; i += 1) {
     const subInd = items[i][0]
@@ -273,15 +276,17 @@ export const searchItems = (items: [string, Item][], s: string, args: Args = {})
     return a.name.length - b.name.length
   })
 
+  const results: Element[] = []
+
   // Return only items without match information
   for (i = 0, l = records.length; i < l; i += 1) {
-    records[i] = records[i].item
+    results[i] = records[i].item
   }
 
   // Limit number of results
-  if (args.limitResults !== undefined && records.length > args.limitResults) {
-    records = records.slice(0, args.limitResults)
+  if (args.limitResults !== undefined && results.length > args.limitResults) {
+    return results.slice(0, args.limitResults)
   }
 
-  return records
+  return results
 }

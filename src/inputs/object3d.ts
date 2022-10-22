@@ -2,6 +2,7 @@ import type { Pane } from '../pane'
 import { addForwardHelperInput } from './helper-forward'
 import { addMaterialInputs } from './material'
 import { addTransformInputs } from './transform'
+import { addUserdataInput } from './userdata'
 
 type Disposer = () => void
 
@@ -32,9 +33,7 @@ export const addObjectInputs = (pane: Pane, object3D: THREE.Object3D) => {
     disposers.push(addMaterialInputs(pane, mesh))
   }
 
-  return () => {
-    for (let i = 0, l = disposers.length; i < l; i += 1) {
-      disposers[i]()
-    }
-  }
+  disposers.push(addUserdataInput(pane, object3D))
+
+  return disposers
 }

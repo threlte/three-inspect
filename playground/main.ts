@@ -123,6 +123,7 @@ toggle()
 // setInterval(toggle, 1_000)
 
 const pane = debug?.addPane('Game')
+pane?.addInput({ test: '' }, 'test')
 
 // const controls = new OrbitControls(camera, renderer.domElement)
 // controls.enableDamping = true

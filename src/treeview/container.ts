@@ -44,6 +44,11 @@ interface Args {
   resizable?: 'top' | 'right' | 'bottom' | 'left' | null
   resizeMin?: number
   resizeMax?: number
+
+  /**
+   * The DOM element to use for the container. If unspecified a new element will be created.
+   */
+  dom?: HTMLElement
 }
 
 /**
@@ -69,12 +74,8 @@ export class Container extends Element {
 
   /**
    * Creates a new Container.
-   *
-   * @param {object} args - Extends the pcui.Element constructor arguments. All settable properties can also be set through the constructor.
-   * @param {HTMLElement} [args.dom] - The DOM element to use for the container. If unspecified a new element will be created.
    */
   constructor (args: Args = {}) {
-    // @ts-expect-error @TODO fix
     super(args)
 
     this.dom.classList.add(CLASS_CONTAINER)

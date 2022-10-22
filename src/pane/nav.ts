@@ -18,35 +18,6 @@ export const initNav = () => {
   return deletePanelEntries
 }
 
-export const selectPanel = (title: string) => {
-  selectedTitle = title
-  storage.set('selectedPane', title)
-
-  selected?.classList.add('hidden')
-  selectedButton?.classList.remove('selected')
-
-  const button = nav.querySelector<HTMLButtonElement>(`[data-title="${title}"]`)
-
-  if (button === null) {
-    throw new Error(`panel of title ${title} does not exist!`)
-  }
-
-  selectedButton = button
-  selectedButton.classList.add('selected')
-
-  selected = paneMap.get(title)!.element
-  selected.classList.remove('hidden')
-}
-
-const createButton = (title: string) => {
-  const button = document.createElement('button')
-  button.className = 'tp-fldv_b nav-button'
-  button.dataset.title = title
-  button.textContent = title
-  button.addEventListener('click', () => selectPanel(title), { passive: true })
-  return button
-}
-
 const selectNextPanel = () => {
   const index = paneTitles.indexOf(selectedTitle)
   selectPanel(paneTitles[index + 1] ?? paneTitles[0])

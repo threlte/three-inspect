@@ -47,6 +47,7 @@ export const initSceneHelpers = (scene: THREE.Scene) => {
 
 export const addSceneInputs = (pane: Pane, scene: THREE.Scene, renderer: THREE.WebGLRenderer) => {
   const THREE = three()
+  const disposers: Disposer[] = []
 
   const toggleHelper = (helper: 'axes' | 'grid') => {
     scene[params[helper] ? 'add' : 'remove'](helpers[helper])
@@ -106,12 +107,11 @@ export const addSceneInputs = (pane: Pane, scene: THREE.Scene, renderer: THREE.W
 
   pane.addSeparator()
 
-  const disposeRenderInputs = addRendererInputs(pane, renderer)
-
-  return () => {
+  disposers.push(addRendererInputs(pane, renderer))
+  disposers.push(() => {
     // @ts-expect-error exists
     helpers.grid.dispose?.()
     helpers.axes.dispose()
-    disposeRenderInputs()
-  }
+  })
+  return disposers
 }

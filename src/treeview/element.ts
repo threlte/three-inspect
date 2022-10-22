@@ -152,13 +152,6 @@ export class Element extends Events {
 
     this.dom.classList.add('pcui-element')
 
-    // Add user classes
-    if (args.class) {
-      for (let i = 0; i < args.class.length; i += 1) {
-        this.dom.classList.add(args.class[i])
-      }
-    }
-
     this.#hiddenParents = !args.isRoot
     this.enabled = args.enabled ?? true
     this.hidden = args.hidden ?? false

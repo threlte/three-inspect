@@ -1,6 +1,7 @@
 import { defaultMinMax, shadowmapSizes } from '../constants'
 import type { Pane } from '../pane'
 import { addTransformInputs } from './transform'
+import { addUserdataInput } from './userdata'
 import { createRectAreaLightHelper } from '../lib/rectarealight'
 import { three } from '../three'
 
@@ -36,6 +37,8 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
 
   let helper: LightHelper | undefined
   let shadowHelper: THREE.CameraHelper | undefined
+
+  const disposers: Disposer[] = []
 
   const params = {
     color: `#${light.color.getHexString().toUpperCase()}`,
@@ -193,7 +196,8 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
     shadowHelper?.update?.()
   })
 
-  return () => {
+  disposers.push(addUserdataInput(pane, light))
+  disposers.push(() => {
     if (helper !== undefined) {
       light.remove(helper)
       // @ts-expect-error exists
@@ -204,5 +208,7 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
       light.remove(shadowHelper)
       shadowHelper.dispose()
     }
-  }
+  })
+
+  return disposers
 }

@@ -5,7 +5,7 @@ export const createCanvas = (renderer: THREE.WebGLRenderer) => {
   canvas.resizable = 'right'
   canvas.resizeMax = Infinity
   canvas.dom.classList.add('relative', 'h-screen', 'float-left')
-  canvas.dom.style.width = `${(window.innerWidth * 2) / 3}px`
+  canvas.dom.style.width = `${window.innerWidth - 300}px`
 
   renderer.domElement.setAttribute('style', `
     width: 100% !important;

@@ -1,9 +1,9 @@
 import './patch/folders'
 import type * as ThreeLib from 'three'
 import { Controls, setEnabledControls } from './lib/controls'
-import { type Pane, addPane } from './pane'
 import { pause, run } from './update'
 import type { EffectComposer } from 'postprocessing'
+import type { Pane } from './pane'
 import css from './main.css?inline'
 import { initElements } from './elements'
 import { initNav } from './pane/nav'
@@ -14,8 +14,6 @@ import { storage } from './lib/storage'
 const style = document.createElement('style')
 style.textContent = css
 document.head.append(style)
-
-type Disposer = () => void
 
 // eslint-disable-next-line no-use-before-define
 type Plugin = (debug: Debug) => Disposer
@@ -30,7 +28,7 @@ export default class Debug {
    *
    * @returns a Tweakpane.Pane instance.
    */
-  addPane = addPane
+  addPane: (title: string) => Pane
 
   /**
    * Instantiates Three.js debugging and monitoring tools.
@@ -52,10 +50,15 @@ export default class Debug {
   ) {
     setThree(THREE)
 
-    this.disposers.push(initElements(scene, renderer, composer))
+    const { disposers, addPane } = initElements(scene, renderer, composer)
+
+    this.addPane = addPane
+    this.disposers.push(...disposers)
     this.disposers.push(initNav())
     this.disposers.push(initSceneHelpers(scene))
+
     setEnabledControls(camera, renderer, (storage.getNumber('controls') as Controls | null) ?? Controls.NONE)
+
     run()
   }
 

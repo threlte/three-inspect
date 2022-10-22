@@ -4,7 +4,6 @@ const READONLY = 'pcui-readonly'
 const DISABLED = 'pcui-disabled'
 const COLLAPSIBLE = 'pcui-collapsible'
 const FOCUS = 'pcui-focus'
-const MULTIPLE_VALUES = 'pcui-multiple-values'
 const ERROR = 'pcui-error'
 const FLASH = 'flash'
 const NOT_FLEXIBLE = 'pcui-not-flexible'
@@ -16,7 +15,6 @@ export {
   DISABLED,
   COLLAPSIBLE,
   FOCUS,
-  MULTIPLE_VALUES,
   ERROR,
   FLASH,
   NOT_FLEXIBLE,

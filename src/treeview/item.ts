@@ -94,31 +94,31 @@ export class TreeViewItem extends Container {
   #labelIcon: Label
   #labelText: Label
   #open = false
+  #icon = ''
 
   /**
    * Creates a new TreeViewItem.
-   *
-   * @param {object} [args] - The arguments.
    */
   constructor (args: Args) {
     super({ flex: true, ...args })
 
     this.dom.classList.add(CLASS_ROOT, CLASS_EMPTY, 'relative', 'pl-8', 'h-[20px]')
 
-    this.containerContents = new Container({
-      class: [CLASS_CONTENTS, 'relative', 'flex', 'flex-row'],
-    })
+    this.containerContents = new Container()
+    this.containerContents.dom.classList.add(CLASS_CONTENTS, 'relative', 'flex', 'flex-row')
     this.containerContents.dom.tabIndex = 0
     this.append(this.containerContents)
 
     this.containerContents.dom.draggable = true
 
-    this.#labelIcon = new Label({ class: [CLASS_ICON] })
+    this.#labelIcon = new Label()
+    this.#labelIcon.dom.classList.add(CLASS_ICON)
     this.containerContents.append(this.#labelIcon)
 
     this.icon = args.icon ?? ''
 
-    this.#labelText = new Label({ class: [CLASS_TEXT] })
+    this.#labelText = new Label()
+    this.#labelText.dom.classList.add(CLASS_TEXT)
     this.containerContents.append(this.#labelText)
 
     this.text = args.text
@@ -241,13 +241,15 @@ export class TreeViewItem extends Container {
     }
   }
 
-  traverseDepthFirst (fn: (arg: this) => void) {
+  traverseDepthFirst (fn: (arg: TreeViewItem) => void) {
     fn(this)
     let child = this.firstChild
     while (child) {
       child.traverseDepthFirst(fn)
       child = child.nextSibling
-      fn(child)
+      if (child !== null) {
+        fn(child)
+      }
     }
   }
 
@@ -385,7 +387,7 @@ export class TreeViewItem extends Container {
     return this.containerContents.dom.classList.contains(CLASS_SELECTED)
   }
 
-  set text (value) {
+  set text (value: string) {
     if (this.#labelText.text !== value) {
       this.#labelText.text = value
       if (this.treeView) {
@@ -394,7 +396,7 @@ export class TreeViewItem extends Container {
     }
   }
 
-  get text () {
+  get text (): string {
     return this.#labelText.text
   }
 
@@ -492,8 +494,8 @@ export class TreeViewItem extends Container {
     return sibling?.ui
   }
 
-  set icon (value) {
-    this._icon = value
+  set icon (value: string) {
+    this.#icon = value
 
     if (value) {
       // Set data-icon attribute but first convert the value to a code point
@@ -503,7 +505,7 @@ export class TreeViewItem extends Container {
     }
   }
 
-  get icon () {
-    return this._icon
+  get icon (): string {
+    return this.#icon
   }
 }

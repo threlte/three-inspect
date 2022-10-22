@@ -1,22 +1,24 @@
 import type { EffectComposer } from 'postprocessing'
 import { createCanvas } from './canvas'
 import { createControls } from './controls'
+import { createNav } from './nav'
 import { initScene } from '../scene'
 import { initStats } from '../pane/stats'
 
 export const initElements = (scene: THREE.Scene, renderer: THREE.WebGLRenderer, composer?: EffectComposer) => {
+  const disposers: Disposer[] = []
   const root = document.createElement('div')
   const canvas = createCanvas(renderer)
   const { controls, nav, treeroot, treeview, pane } = createControls()
 
+  const { addPane } = createNav(controls, nav)
+
+  disposers.push(initStats(controls))
+  disposers.push(initScene(treeview, treeroot, pane, scene, renderer, composer))
+
   root.append(canvas.dom)
   root.append(controls)
-
-  const disposeStats = initStats(controls)
-
   document.body.append(root)
-
-  const dispose = initScene(treeview, treeroot, pane, scene, renderer, composer)
 
   let width = window.innerWidth
 
@@ -29,9 +31,7 @@ export const initElements = (scene: THREE.Scene, renderer: THREE.WebGLRenderer, 
 
   window.addEventListener('resize', handleResize, { passive: true })
 
-  return () => {
-    disposeStats()
-    window.removeEventListener('resize', handleResize)
-    dispose()
-  }
+  disposers.push(() => window.removeEventListener('resize', handleResize))
+
+  return { addPane, disposers }
 }

@@ -3,11 +3,12 @@ import * as pcuiClass from './class'
 import { Element } from './element'
 
 interface Args {
+  /**
+   * If true then the label can be clicked to select text.
+   */
   allowTextSelection?: boolean
-  nativeTooltip?: boolean
   dom?: HTMLElement
   text?: string
-  placeholder?: string
   renderChanges?: boolean
 }
 
@@ -15,11 +16,6 @@ interface Args {
  * The Label is a simple span element that displays some text.
  */
 export class Label extends Element {
-  /**
-   * If true then the innerHTML property will be used to set the text. Otherwise textContent will be used instead.
-   */
-  unsafe = false
-
   /**
    * If true then the Label will flash when its text changes.
    */
@@ -29,10 +25,6 @@ export class Label extends Element {
 
   /**
    * Creates a new Label.
-   *
-   * @param args - Extends the pcui.Element constructor arguments. All settable properties can also be set through the constructor.
-   * @param {boolean} [args.nativeTooltip] - If true then use the text of the label as the native HTML tooltip.
-   * @param {boolean} [args.allowTextSelection] - If true then the label can be clicked to select text.
    */
   constructor (args: Args = {}) {
     args.dom ??= document.createElement('span')
@@ -47,11 +39,6 @@ export class Label extends Element {
       this.dom.classList.add(pcuiClass.DEFAULT_MOUSEDOWN)
     }
 
-    if (args.nativeTooltip) {
-      this.dom.title = this.text
-    }
-    this.placeholder = args.placeholder ?? null
-
     if (args.renderChanges) {
       this.renderChanges = args.renderChanges
     }
@@ -63,21 +50,13 @@ export class Label extends Element {
     })
   }
 
-  _updateText (value: string) {
-    this.dom.classList.remove(pcuiClass.MULTIPLE_VALUES)
-
+  #updateText (value: string) {
     if (this.#text === value) {
       return false
     }
 
     this.#text = value
-
-    if (this.unsafe) {
-      this.dom.innerHTML = value
-    } else {
-      this.dom.textContent = value
-    }
-
+    this.dom.textContent = value
     this.emit('change', value)
 
     return true
@@ -86,26 +65,11 @@ export class Label extends Element {
   /**
    * The text of the Label.
    */
-  set text (value: string | null | undefined) {
-    this._updateText(value ?? '')
+  set text (value: string) {
+    this.#updateText(value)
   }
 
-  get text () {
+  get text (): string {
     return this.#text
-  }
-
-  /**
-   * The placeholder label that appears on the right of the label.
-   */
-  set placeholder (value) {
-    if (value) {
-      this.dom.setAttribute('placeholder', value)
-    } else {
-      this.dom.removeAttribute('placeholder')
-    }
-  }
-
-  get placeholder () {
-    return this.dom.getAttribute('placeholder')
   }
 }

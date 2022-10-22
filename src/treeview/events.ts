@@ -42,8 +42,9 @@ export class Events {
    * @returns Self for chaining.
    */
   emit (name: string, ...args: unknown[]): this {
-    const events = this.#events[name]
+    let events = this.#events[name]
     if (events !== undefined && events.length > 0) {
+      events = [...events]
       for (let i = 0, l = events.length; i < l; i += 1) {
         events[i].call(this, ...args)
       }

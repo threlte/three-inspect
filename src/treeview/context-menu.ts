@@ -30,7 +30,7 @@ export class ContextMenu {
    * @param {object} [args.triggerElement] - Will trigger the context menu to open when right clicked. If undefined args.dom will be used.
    */
   constructor (args: Args = {}) {
-    this._menu = new Container({ dom: args.dom })
+    this._menu = new Container(args)
     this._menu.contextMenu = this
     this.args = args
     this._menu.class.add(CLASS_ContextMenu)
@@ -97,7 +97,8 @@ export class ContextMenu {
       this._menu.dom.append(menuItemElement.dom)
       if (menuItem.items) {
         menuItem.items.forEach((childItem, j) => {
-          const childMenuItemElement = new Container({ class: CLASS_ContextMenu_child })
+          const childMenuItemElement = new Container()
+          childMenuItemElement.dom.classList.add(CLASS_ContextMenu_child)
           childMenuItemElement.dom.setAttribute('style', `top: ${j * 27.0}px; left: 150px;`)
           childMenuItemElement.on('click', (e) => {
             e.stopPropagation()
