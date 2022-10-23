@@ -27,10 +27,14 @@ export const deregister = (object3D: THREE.Object3D) => {
 
   object3D.traverse((child) => object3D !== child && deregister(child))
 
-  const item = objectToTreeItem.get(object3D)!
-  item.destroy()
+  const item = objectToTreeItem.get(object3D)
   objectToTreeItem.delete(object3D)
-  treeItemToObject.delete(item)
+
+  // @TODO investigate
+  if (item !== undefined) {
+    treeItemToObject.delete(item)
+    item.destroy()
+  }
 }
 
 export const register = (treeroot: TreeViewItem, object3D: THREE.Object3D, parent: THREE.Object3D) => {
