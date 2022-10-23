@@ -6,7 +6,6 @@ import type { EffectComposer } from 'postprocessing'
 import type { Pane } from './pane'
 import css from './main.css?inline'
 import { initElements } from './elements'
-import { initNav } from './pane/nav'
 import { initSceneHelpers } from './folders/scene'
 import { setThree } from './three'
 import { storage } from './lib/storage'
@@ -54,7 +53,6 @@ export default class Debug {
 
     this.addPane = addPane
     this.disposers.push(...disposers)
-    this.disposers.push(initNav())
     this.disposers.push(initSceneHelpers(scene))
 
     setEnabledControls(camera, renderer, (storage.getNumber('controls') as Controls | null) ?? Controls.NONE)

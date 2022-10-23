@@ -83,7 +83,7 @@ export class TextInput extends Element {
     this._updateInputReadOnly()
   }
 
-  _onInputChange = (evt: Event) => {
+  _onInputChange = (_evt: Event) => {
     if (this.#suspendInputChangeEvt) {
       return
     }
@@ -153,7 +153,7 @@ export class TextInput extends Element {
     this.emit('keyup', evt)
   }
 
-  _onInputCtxMenu = (evt: Event) => {
+  _onInputCtxMenu = (_evt: Event) => {
     (this.dom as HTMLInputElement).select()
   }
 

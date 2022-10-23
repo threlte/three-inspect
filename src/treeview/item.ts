@@ -455,7 +455,9 @@ export class TreeViewItem extends Container {
   get firstChild (): TreeViewItem | null {
     if (this.#numChildren) {
       for (let i = 0; i < this.dom.childNodes.length; i += 1) {
+        // @ts-expect-error @TODO Fix
         if (this.dom.childNodes[i].ui instanceof TreeViewItem) {
+          // @ts-expect-error @TODO Fix
           return this.dom.childNodes[i].ui
         }
       }
@@ -467,7 +469,9 @@ export class TreeViewItem extends Container {
   get lastChild (): TreeViewItem | null {
     if (this.#numChildren) {
       for (let i = this.dom.childNodes.length - 1; i >= 0; i -= 1) {
+        // @ts-expect-error @TODO Fix
         if (this.dom.childNodes[i].ui instanceof TreeViewItem) {
+          // @ts-expect-error @TODO Fix
           return this.dom.childNodes[i].ui
         }
       }
@@ -478,19 +482,25 @@ export class TreeViewItem extends Container {
 
   get nextSibling () {
     let sibling = this.dom.nextSibling
+
+    // @ts-expect-error @TODO Fix
     while (sibling && !(sibling.ui instanceof TreeViewItem)) {
       sibling = sibling.nextSibling
     }
 
+    // @ts-expect-error @TODO Fix
     return sibling?.ui
   }
 
   get previousSibling () {
     let sibling = this.dom.previousSibling
+
+    // @ts-expect-error @TODO Fix
     while (sibling && !(sibling.ui instanceof TreeViewItem)) {
       sibling = sibling.previousSibling
     }
 
+    // @ts-expect-error @TODO Fix
     return sibling?.ui
   }
 

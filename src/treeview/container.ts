@@ -172,6 +172,7 @@ export class Container extends Element {
   move (element: Element, index: number) {
     let idx = -1
     for (let i = 0, l = this.dom.childNodes.length; i < l; i += 1) {
+      // @ts-expect-error @TODO fix
       if (this.dom.childNodes[i].ui === element) {
         idx = i
         break
@@ -179,13 +180,16 @@ export class Container extends Element {
     }
 
     if (idx === -1) {
-      this.appendBefore(element, this.dom.childNodes[index])
+      // @ts-expect-error @TODO fix
+      this.appendBefore(element, this.dom.childNodes[index].ui)
     } else if (index !== idx) {
       this.remove(element)
       if (index < idx) {
-        this.appendBefore(element, this.dom.childNodes[index])
+        // @ts-expect-error @TODO fix
+        this.appendBefore(element, this.dom.childNodes[index].ui)
       } else {
-        this.appendAfter(element, this.dom.childNodes[index - 1])
+        // @ts-expect-error @TODO fix
+        this.appendAfter(element, this.dom.childNodes[index - 1].ui)
       }
     }
   }
@@ -201,7 +205,10 @@ export class Container extends Element {
 
     while (i > -1) {
       const node = this.dom.childNodes[i]
+
+      // @ts-expect-error @TODO fix
       if (node.ui && node.ui !== this) {
+        // @ts-expect-error @TODO fix
         node.ui.destroy()
       }
 
@@ -217,7 +224,7 @@ export class Container extends Element {
 
     if (this.resizable) {
       this._createResizeHandle()
-      this.dom.appendChild(this.#domResizeHandle)
+      this.dom.appendChild(this.#domResizeHandle!)
     }
   }
 
@@ -238,6 +245,7 @@ export class Container extends Element {
   _createResizeHandle () {
     const handle = document.createElement('div')
     handle.classList.add(CLASS_RESIZABLE_HANDLE)
+    // @ts-expect-error @TODO fix
     handle.ui = this
 
     handle.addEventListener('mousedown', this._onResizeStart)
@@ -333,6 +341,7 @@ export class Container extends Element {
   #getDraggedChildIndex (draggedChild: Element) {
     const { childNodes } = this.dom
     for (let i = 0, l = childNodes.length; i < l; i += 1) {
+      // @ts-expect-error @TODO fix
       if (childNodes[i].ui === draggedChild) {
         return i
       }
@@ -341,7 +350,7 @@ export class Container extends Element {
     return -1
   }
 
-  _onChildDragStart (evt: Event, childPanel: Element) {
+  _onChildDragStart (_evt: Event, childPanel: Element) {
     this.dom.classList.add(CLASS_DRAGGED_CHILD)
 
     this.#draggedStartIndex = this.#getDraggedChildIndex(childPanel)
@@ -363,9 +372,11 @@ export class Container extends Element {
       if (this.#draggedStartIndex !== childPanelIndex) {
         this.remove(childPanel)
         if (this.#draggedStartIndex < childPanelIndex) {
-          this.appendBefore(childPanel, this.dom.childNodes[this.#draggedStartIndex])
+          // @ts-expect-error @TODO fix
+          this.appendBefore(childPanel, this.dom.childNodes[this.#draggedStartIndex].ui)
         } else {
-          this.appendAfter(childPanel, this.dom.childNodes[this.#draggedStartIndex - 1])
+          // @ts-expect-error @TODO fix
+          this.appendAfter(childPanel, this.dom.childNodes[this.#draggedStartIndex - 1].ui)
         }
       }
 
@@ -375,37 +386,40 @@ export class Container extends Element {
     childPanel.dom.classList.add(CLASS_DRAGGED)
 
     const y = evt.clientY - rect.top
-    let ind = null
+    let index = null
 
     // Hovered script
     const { childNodes } = this.dom
     for (let i = 0, l = childNodes.length; i < l; i += 1) {
+      // @ts-expect-error @TODO fix
       const otherPanel = childNodes[i].ui
       const otherTop = otherPanel.dom.offsetTop
       if (i < childPanelIndex) {
         if (y <= otherTop + otherPanel.header.height) {
-          ind = i
+          index = i
           break
         }
       } else if (i > childPanelIndex) {
         if (y + childPanel.height >= otherTop + otherPanel.height) {
-          ind = i
+          index = i
           break
         }
       }
     }
 
-    if (ind !== null && childPanelIndex !== ind) {
+    if (index !== null && childPanelIndex !== index) {
       this.remove(childPanel)
-      if (ind < childPanelIndex) {
-        this.appendBefore(childPanel, childNodes[ind])
+      if (index < childPanelIndex) {
+        // @ts-expect-error @TODO fix
+        this.appendBefore(childPanel, childNodes[index].ui)
       } else {
-        this.appendAfter(childPanel, childNodes[ind - 1])
+        // @ts-expect-error @TODO fix
+        this.appendAfter(childPanel, childNodes[index - 1].ui)
       }
     }
   }
 
-  _onChildDragEnd (evt: Event, childPanel: Element) {
+  _onChildDragEnd (_evt: Event, childPanel: Element) {
     this.dom.classList.remove(CLASS_DRAGGED_CHILD)
 
     childPanel.dom.classList.remove(CLASS_DRAGGED)
@@ -417,8 +431,9 @@ export class Container extends Element {
     this.#draggedStartIndex = -1
   }
 
-  forEachChild (fn) {
-    for (let i = 0; i < this.dom.childNodes.length; i += 1) {
+  forEachChild (fn: (node: Element, i: number) => boolean | void) {
+    for (let i = 0, l = this.dom.childNodes.length; i < l; i += 1) {
+      // @ts-expect-error @TODO fix
       const node = this.dom.childNodes[i].ui
       if (node) {
         const result = fn(node, i)

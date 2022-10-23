@@ -230,6 +230,7 @@ export class TreeView extends Container {
       let endIndex = -1
 
       for (let i = 0, l = filterResults.length; i < l; i += 1) {
+        // @ts-expect-error @TODO fix
         const item = filterResults[i].ui
 
         if (item === startChild) {
@@ -242,6 +243,7 @@ export class TreeView extends Container {
           const start = (startIndex < endIndex ? startIndex : endIndex)
           const end = (startIndex < endIndex ? endIndex : startIndex)
           for (let j = start; j <= end; j += 1) {
+            // @ts-expect-error @TODO fix
             result.push(filterResults[j].ui)
           }
 
@@ -305,7 +307,7 @@ export class TreeView extends Container {
     }
 
     // Do the same for all children of the element
-    element.forEachChild((child: TreeViewItem) => {
+    element.forEachChild((child: Element) => {
       if (child instanceof TreeViewItem) {
         this._onAppendTreeViewItem(child)
       }
@@ -316,7 +318,7 @@ export class TreeView extends Container {
     element.selected = false
 
     // Do the same for all children of the element
-    element.forEachChild((child: TreeViewItem) => {
+    element.forEachChild((child: Element) => {
       if (child instanceof TreeViewItem) {
         this._onRemoveTreeViewItem(child)
       }
@@ -425,12 +427,14 @@ export class TreeView extends Container {
 
       if (item.numChildren) {
         for (let i = 0, l = item.dom.childNodes.length; i < l; i += 1) {
+          // @ts-expect-error @TODO fix
           traverse(item.dom.childNodes[i].ui)
         }
       }
     }
 
     for (let i = 0, l = this.dom.childNodes.length; i < l; i += 1) {
+      // @ts-expect-error @TODO fix
       traverse(this.dom.childNodes[i].ui)
     }
   }
@@ -451,7 +455,7 @@ export class TreeView extends Container {
   }
 
   // Called when we start dragging a TreeViewItem.
-  override _onChildDragStart (evt: MouseEvent, element: TreeViewItem) {
+  override _onChildDragStart (_evt: MouseEvent, element: TreeViewItem) {
     if (!this.allowDrag || this.#dragging) {
       return
     }
@@ -514,7 +518,7 @@ export class TreeView extends Container {
   }
 
   // Called when we stop dragging a TreeViewItem.
-  override _onChildDragEnd (evt: MouseEvent, element: Element) {
+  override _onChildDragEnd (_evt: MouseEvent, _element: Element) {
     if (!this.allowDrag || !this.#dragging) {
       return
     }
@@ -549,7 +553,13 @@ export class TreeView extends Container {
 
       if (dragItems.length > 0) {
         // Reparent items
-        const reparented: { item: TreeViewItem, parent: Element | null }[] = []
+        const reparented: {
+          item: TreeViewItem,
+          parent?: Element | null
+          newParent?: Element | null
+          oldParent?: Element | null
+          newChildIndex?: number
+        }[] = []
 
         // First remove all items from their parent
         for (let i = 0, l = dragItems.length; i < l; i += 1) {
@@ -561,8 +571,8 @@ export class TreeView extends Container {
           reparented.push({
             item,
             oldParent: item.parent,
-          })
-          item.parent?.remove(item)
+          });
+          (item.parent as Container)?.remove(item)
         }
 
         // Now reparent items
@@ -570,9 +580,9 @@ export class TreeView extends Container {
           const r = reparented[i]
           if (this.#dragArea === DRAG_AREA_BEFORE) {
             // If dragged before a TreeViewItem...
-            r.newParent = this.#dragOverItem.parent
-            this.#dragOverItem.parent!.appendBefore(r.item, this.#dragOverItem)
-            r.newChildIndex = getChildIndex(r.item, r.newParent)
+            r.newParent = this.#dragOverItem.parent;
+            (this.#dragOverItem.parent as Container).appendBefore(r.item, this.#dragOverItem)
+            r.newChildIndex = getChildIndex(r.item, r.newParent!)
           } else if (this.#dragArea === DRAG_AREA_INSIDE) {
             // If dragged inside a TreeViewItem...
             r.newParent = this.#dragOverItem
@@ -581,9 +591,9 @@ export class TreeView extends Container {
             r.newChildIndex = getChildIndex(r.item, r.newParent)
           } else if (this.#dragArea === DRAG_AREA_AFTER) {
             // If dragged after a TreeViewItem...
-            r.newParent = this.#dragOverItem.parent
-            this.#dragOverItem.parent!.appendAfter(r.item, i > 0 ? reparented[i - 1].item : this.#dragOverItem)
-            r.newChildIndex = getChildIndex(r.item, r.newParent)
+            r.newParent = this.#dragOverItem.parent;
+            (this.#dragOverItem.parent as Container).appendAfter(r.item, i > 0 ? reparented[i - 1].item : this.#dragOverItem)
+            r.newChildIndex = getChildIndex(r.item, r.newParent!)
           }
         }
 
@@ -617,7 +627,7 @@ export class TreeView extends Container {
   }
 
   // Called when the mouse cursor leaves the tree view.
-  #onMouseLeave = (evt: MouseEvent) => {
+  #onMouseLeave = (_evt: MouseEvent) => {
     if (!this.#allowDrag || !this.#dragging) {
       return
     }
@@ -931,7 +941,8 @@ export class TreeView extends Container {
         continue
       }
 
-      const ui = dom.ui
+      // @ts-expect-error @TODO Fix
+      const { ui } = dom.ui
       if (ui instanceof TreeViewItem) {
         ui.destroy()
       }

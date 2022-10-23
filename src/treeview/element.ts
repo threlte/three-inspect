@@ -148,6 +148,8 @@ export class Element extends Events {
     }
 
     // Add ui reference
+
+    // @ts-expect-error @@TODO fix
     this.dom.ui = this
 
     this.dom.classList.add('pcui-element')
@@ -306,6 +308,8 @@ export class Element extends Events {
 
     if (dom) {
       // Remove ui reference
+
+      // @ts-expect-error @@TODO fix
       delete dom.ui
 
       // @ts-expect-error Destroy!
@@ -463,11 +467,13 @@ export class Element extends Events {
     return this.#readOnly || Boolean(this.#parent && this.#parent.readOnly)
   }
 
+  #hasError = false
+
   set error (value: boolean) {
-    if (this._hasError === value) {
+    if (this.#hasError === value) {
       return
     }
-    this._hasError = value
+    this.#hasError = value
     if (value) {
       this.dom.classList.add(pcuiClass.ERROR)
     } else {
@@ -475,8 +481,8 @@ export class Element extends Events {
     }
   }
 
-  get error () {
-    return this._hasError
+  get error (): boolean {
+    return this.#hasError
   }
 
   set width (value: number) {

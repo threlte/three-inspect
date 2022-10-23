@@ -1,11 +1,15 @@
-import { type Pane, state } from '../pane'
 import { createM4, createQuat, createVec3 } from '../lib/math'
 import { removeUpdate, update } from '../update'
+import type { Pane } from '../pane'
 
 const quatSettings = {
   expanded: false,
   picker: 'inline',
   view: 'rotation',
+}
+
+const state = {
+  controlling: false,
 }
 
 const vec3 = createVec3()

@@ -1,4 +1,4 @@
-import type { Pane } from 'tweakpane'
+import type { Pane } from '../pane'
 
 export const addUserdataInput = (pane: Pane, object: THREE.Object3D) => {
   pane.addSeparator()
