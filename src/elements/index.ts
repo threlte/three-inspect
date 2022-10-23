@@ -8,6 +8,8 @@ import { initStats } from '../pane/stats'
 export const initElements = (scene: THREE.Scene, renderer: THREE.WebGLRenderer, composer?: EffectComposer) => {
   const disposers: Disposer[] = []
   const root = document.createElement('div')
+  root.className = 'w-screen h-screen'
+
   const canvas = createCanvas(renderer)
   const { controls, nav, treeroot, treeview, pane } = createControls()
 
