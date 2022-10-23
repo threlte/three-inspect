@@ -43,12 +43,6 @@
  * PCUI
  */
 
-/* // container element */
-.pcui-container {
-  /* containers should be relative to each other */
-  min-width: fit-content; /* this fixes a lot of flex / grid issues */
-  min-height: fit-content; /* this fixes a lot of flex / grid issues */
-}
 .noSelect,
 .pcui-label.pcui-selectable:hover {
   user-select: none;
