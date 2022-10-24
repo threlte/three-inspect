@@ -27,5 +27,4 @@ export default defineConfig({
     strictPort: true,
   },
   define,
-  envPrefix: 'THREE',
 })
