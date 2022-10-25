@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v3.0.0
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
 
@@ -21,7 +21,7 @@ jobs:
           npm run build-playground
 
       - name: Publish 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           BRANCH: gh-pages
           FOLDER: dist
