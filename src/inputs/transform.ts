@@ -1,114 +1,135 @@
-import { createM4, createQuat, createVec3 } from '../lib/math'
 import { removeUpdate, update } from '../update'
 import type { Pane } from '../pane'
-
-const quatSettings = {
-  expanded: false,
-  picker: 'inline',
-  view: 'rotation',
-}
+import { three } from '../three'
 
 const state = {
   controlling: false,
 }
 
-const vec3 = createVec3()
-const quat = createQuat()
-const m4 = createM4()
+const rotationSettings = {
+  expanded: false,
+  picker: 'inline',
+  rotationMode: 'euler',
+  view: 'rotation',
+}
 
 const addInstancedMeshFolder = (pane: Pane, mesh: THREE.InstancedMesh) => {
+  const THREE = three()
+  const m4 = new THREE.Matrix4()
+
   pane.addSeparator()
 
-  const imeshParams = {
+  const params = {
     index: 0,
-    position: createVec3(),
-    quaternion: createQuat(),
+    position: new THREE.Vector3(),
+    rotation: new THREE.Euler(),
+    scale: new THREE.Vector3(),
   }
 
-  const imeshIndex = pane.addInput(imeshParams, 'index', {
+  const index = pane.addInput(params, 'index', {
     label: 'instance index',
     max: mesh.count - 1,
     min: 0,
     step: 1,
   })
-  const imeshPos = pane.addInput(imeshParams, 'position')
-  const imeshRot = pane.addInput(imeshParams, 'quaternion', quatSettings)
+  const pos = pane.addInput(params, 'position')
+  const rot = pane.addInput(params, 'rotation', rotationSettings)
+  const scale = pane.addInput(params, 'scale')
 
   const instanceIndexChange = () => {
-    mesh.getMatrixAt(imeshParams.index, m4)
-    vec3.setFromMatrixPosition(m4)
-    quat.setFromRotationMatrix(m4)
-    imeshParams.position.copy(vec3)
-    imeshParams.quaternion.copy(quat)
-    imeshPos.refresh()
-    imeshRot.refresh()
+    mesh.getMatrixAt(params.index, m4)
+    params.position.setFromMatrixPosition(m4)
+    params.rotation.setFromRotationMatrix(m4)
+    params.scale.setFromMatrixScale(m4)
+    pos.refresh()
+    rot.refresh()
+    scale.refresh()
   }
 
   const instanceChange = () => {
-    quat.copy(imeshParams.quaternion)
-    vec3.copy(imeshParams.position)
-    m4.makeRotationFromQuaternion(quat)
-    m4.setPosition(vec3)
-    mesh.setMatrixAt(imeshParams.index, m4)
+    m4.makeRotationFromEuler(params.rotation)
+    m4.setPosition(params.position)
+    m4.scale(params.scale)
+    mesh.setMatrixAt(params.index, m4)
     mesh.instanceMatrix.needsUpdate = true
   }
 
-  imeshIndex.on('change', instanceIndexChange)
-  imeshPos.on('change', instanceChange)
-  imeshRot.on('change', instanceChange)
+  index.on('change', instanceIndexChange)
+  pos.on('change', instanceChange)
+  rot.on('change', instanceChange)
+  scale.on('change', instanceChange)
 
   const handleInstancedMeshUpdate = () => {
-    if (pane.expanded && !state.controlling) {
-      imeshParams.quaternion.copy(mesh.quaternion)
-      imeshPos.refresh()
-      imeshRot.refresh()
+    if (!state.controlling) {
+      instanceIndexChange()
     }
   }
 
   update(handleInstancedMeshUpdate)
 
-  return () => {
-    removeUpdate(handleInstancedMeshUpdate)
-  }
+  return () => removeUpdate(handleInstancedMeshUpdate)
 }
 
 export const addTransformInputs = (pane: Pane, object3D: THREE.Object3D) => {
-  const instancedMesh = object3D as THREE.InstancedMesh
+  const THREE = three()
+  const { element } = pane
 
   const params = {
-    quaternion: createQuat(),
+    rotation: new THREE.Euler(),
   }
 
-  const quaternionChange = () => {
+  const rotationChange = () => {
     if (state.controlling) {
-      object3D.quaternion.copy(params.quaternion)
+      object3D.rotation.copy(params.rotation)
     }
   }
 
   pane.addSeparator()
   const posInput = pane.addInput(object3D, 'position', { step: 0.1 })
-  const rotInput = pane.addInput(params, 'quaternion', quatSettings)
-    .on('change', quaternionChange)
+  const rotInput = pane.addInput(params, 'rotation', rotationSettings)
+    .on('change', rotationChange)
+  const scaleInput = pane.addInput(object3D, 'scale', { step: 0.1 })
 
   const handleTransformUpdate = () => {
-    if (pane.expanded && !state.controlling) {
-      params.quaternion.copy(object3D.quaternion)
-      rotInput.refresh()
-      posInput.refresh()
+    if (state.controlling) {
+      return
     }
+
+    if (!object3D.rotation.equals(params.rotation)) {
+      params.rotation.copy(object3D.rotation)
+      rotInput.refresh()
+    }
+
+    posInput.refresh()
+    scaleInput.refresh()
   }
 
   update(handleTransformUpdate)
 
   let imeshDispose: (() => void) | undefined
 
-  if ('isInstancedMesh' in instancedMesh) {
-    imeshDispose = addInstancedMeshFolder(pane, instancedMesh)
+  if ('isInstancedMesh' in object3D) {
+    imeshDispose = addInstancedMeshFolder(pane, object3D as THREE.InstancedMesh)
   }
 
+  const handleDown = () => {
+    state.controlling = true
+  }
+
+  const handleUp = () => {
+    state.controlling = false
+  }
+
+  element.addEventListener('mousedown', handleDown, { passive: true })
+  element.addEventListener('mouseup', handleUp, { passive: true })
+
   return () => {
+    element.removeEventListener('mousedown', handleDown)
+    element.removeEventListener('mouseup', handleUp)
+
     posInput.dispose()
     rotInput.dispose()
+    scaleInput.dispose()
     removeUpdate(handleTransformUpdate)
     imeshDispose?.()
   }

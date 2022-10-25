@@ -76,6 +76,10 @@ box.receiveShadow = true
 box.position.set(0, 1.5, 0)
 scene.add(box)
 
+update(() => {
+  box.rotation.y += 0.01
+})
+
 const count = 30
 {
   const geometry = new THREE.DodecahedronGeometry()
