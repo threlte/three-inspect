@@ -29,7 +29,7 @@ export const addObjectInputs = (pane: Pane, object3D: THREE.Object3D) => {
         disposers.push(addMaterialInputs(pane, mesh))
       }
     }
-  } else if (mesh.material?.isMaterial) {
+  } else if (mesh.material !== undefined && 'isMaterial' in mesh.material) {
     disposers.push(addMaterialInputs(pane, mesh))
   }
 

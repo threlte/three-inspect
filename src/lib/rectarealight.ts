@@ -45,15 +45,15 @@ export const createRectAreaLightHelper = (light: THREE.RectAreaLight, color?: TH
       material.color.copy(light.color).multiplyScalar(light.intensity)
 
       // Prevent hue shift
-      const { color } = material
-      const max = Math.max(color.r, color.g, color.b)
+      const { color: matColor } = material
+      const max = Math.max(matColor.r, matColor.g, matColor.b)
       if (max > 1) {
-        color.multiplyScalar(1 / max)
+        matColor.multiplyScalar(1 / max)
       }
 
       const child = line.children[0] as THREE.Mesh
       const mat = child.material as THREE.MeshBasicMaterial
-      mat.color.copy(material.color)
+      mat.color.copy(matColor)
     } else {
       material.color.set(color)
 

@@ -54,6 +54,7 @@ module.exports = {
     'max-statements': 'off',
     'multiline-ternary': ['error', 'always-multiline'],
     'no-bitwise': 'off',
+    'no-console': ['error', { allow: ['warn', 'error'] }],
     'no-continue': 'off',
     'no-extra-parens': 'off',
     'no-magic-numbers': 'off',

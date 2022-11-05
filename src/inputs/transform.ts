@@ -13,7 +13,7 @@ const rotationSettings = {
   view: 'rotation',
 }
 
-const addInstancedMeshFolder = (pane: Pane, mesh: THREE.InstancedMesh) => {
+const addInstancedMeshInputs = (pane: Pane, mesh: THREE.InstancedMesh) => {
   const THREE = three()
   const m4 = new THREE.Matrix4()
 
@@ -32,9 +32,9 @@ const addInstancedMeshFolder = (pane: Pane, mesh: THREE.InstancedMesh) => {
     min: 0,
     step: 1,
   })
-  const pos = pane.addInput(params, 'position')
+  const pos = pane.addInput(params, 'position', { index: 0 })
   const rot = pane.addInput(params, 'rotation', rotationSettings)
-  const scale = pane.addInput(params, 'scale')
+  const scale = pane.addInput(params, 'scale', { index: 0 })
 
   const instanceIndexChange = () => {
     mesh.getMatrixAt(params.index, m4)
@@ -109,7 +109,7 @@ export const addTransformInputs = (pane: Pane, object3D: THREE.Object3D) => {
   let imeshDispose: (() => void) | undefined
 
   if ('isInstancedMesh' in object3D) {
-    imeshDispose = addInstancedMeshFolder(pane, object3D as THREE.InstancedMesh)
+    imeshDispose = addInstancedMeshInputs(pane, object3D as THREE.InstancedMesh)
   }
 
   const handleDown = () => {

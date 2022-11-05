@@ -237,6 +237,14 @@ export class OrbitControls extends EventDispatcher {
       zoom0 = (camera as THREE.OrthographicCamera).zoom
     }
 
+    const rotateLeft = (angle: number) => {
+      sphericalDelta.theta -= angle
+    }
+
+    const getAutoRotationAngle = () => {
+      return 2 * Math.PI / 60 / 60 * this.autoRotateSpeed
+    }
+
     // This method is exposed, but perhaps it would be better if we can make it private...
     const update = () => {
       offset.copy(camera.position).sub(this.target)
@@ -351,7 +359,7 @@ export class OrbitControls extends EventDispatcher {
       this.target.copy(target0)
       camera.position.copy(position0)
 
-      if ((camera as THREE.OrthographicCamera).isOrthographicCamera) {
+      if ('isOrthographicCamera' in camera) {
         const cam = camera as THREE.OrthographicCamera
         cam.zoom = zoom0
         cam.updateProjectionMatrix()
@@ -366,16 +374,8 @@ export class OrbitControls extends EventDispatcher {
 
     this.update = update
 
-    const getAutoRotationAngle = () => {
-      return 2 * Math.PI / 60 / 60 * this.autoRotateSpeed
-    }
-
     const getZoomScale = () => {
       return 0.95 ** this.zoomSpeed
-    }
-
-    const rotateLeft = (angle: number) => {
-      sphericalDelta.theta -= angle
     }
 
     const rotateUp = (angle: number) => {
@@ -405,7 +405,7 @@ export class OrbitControls extends EventDispatcher {
 
     // DeltaX and deltaY are in pixels; right and down are positive
     const pan = (deltaX: number, deltaY: number) => {
-      if ((camera as THREE.PerspectiveCamera).isPerspectiveCamera) {
+      if ('isPerspectiveCamera' in camera) {
         const { fov } = camera as THREE.PerspectiveCamera
 
         // Perspective
@@ -418,21 +418,17 @@ export class OrbitControls extends EventDispatcher {
         // We use only clientHeight here so aspect ratio does not distort speed
         panLeft(2 * deltaX * targetDistance / domElement.clientHeight, camera.matrix)
         panUp(2 * deltaY * targetDistance / domElement.clientHeight, camera.matrix)
-      } else if ((camera as THREE.OrthographicCamera).isOrthographicCamera) {
+      } else if ('isOrthographicCamera' in camera) {
         const cam = camera as THREE.OrthographicCamera
         panLeft(deltaX * (cam.right - cam.left) / cam.zoom / domElement.clientWidth, cam.matrix)
         panUp(deltaY * (cam.top - cam.bottom) / cam.zoom / domElement.clientHeight, cam.matrix)
-      } else {
-        // Cam neither orthographic nor perspective
-        console.warn('WARNING: OrbitControls.js encountered an unknown camera type - pan disabled.')
-        this.enablePan = false
       }
     }
 
     const dollyOut = (dollyScale: number) => {
-      if ((camera as THREE.PerspectiveCamera).isPerspectiveCamera) {
+      if ('isPerspectiveCamera' in camera) {
         scale /= dollyScale
-      } else if ((camera as THREE.OrthographicCamera).isOrthographicCamera) {
+      } else if ('isOrthographicCamera' in camera) {
         const cam = camera as THREE.OrthographicCamera
         cam.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, cam.zoom * dollyScale))
         cam.updateProjectionMatrix()
@@ -444,9 +440,9 @@ export class OrbitControls extends EventDispatcher {
     }
 
     const dollyIn = (dollyScale: number) => {
-      if ((camera as THREE.PerspectiveCamera).isPerspectiveCamera) {
+      if ('isPerspectiveCamera' in camera) {
         scale *= dollyScale
-      } else if ((camera as THREE.OrthographicCamera).isOrthographicCamera) {
+      } else if ('isOrthographicCamera' in camera) {
         const cam = camera as THREE.OrthographicCamera
         cam.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, cam.zoom / dollyScale))
         cam.updateProjectionMatrix()
@@ -607,6 +603,12 @@ export class OrbitControls extends EventDispatcher {
       if (this.enableRotate) {
         handleTouchStartRotate()
       }
+    }
+
+    const getSecondPointerPosition = (event: PointerEvent) => {
+      const pointer = (event.pointerId === pointers[0].pointerId) ? pointers[1] : pointers[0]
+
+      return pointerPositions[pointer.pointerId]
     }
 
     const handleTouchMoveRotate = (event: PointerEvent) => {
@@ -831,58 +833,6 @@ export class OrbitControls extends EventDispatcher {
       }
     }
 
-    const onPointerMove = (event: PointerEvent) => {
-      if (!this.enabled) {
-        return
-      }
-
-      if (event.pointerType === 'touch') {
-        onTouchMove(event)
-      } else {
-        onMouseMove(event)
-      }
-    }
-
-    const onPointerUp = (event: PointerEvent) => {
-      removePointer(event)
-
-      if (pointers.length === 0) {
-        domElement.releasePointerCapture(event.pointerId)
-
-        domElement.removeEventListener('pointermove', onPointerMove)
-        domElement.removeEventListener('pointerup', onPointerUp)
-      }
-
-      this.dispatchEvent(endEvent)
-
-      state = STATE.NONE
-    }
-
-    const onPointerDown = (event: PointerEvent) => {
-      if (!this.enabled) {
-        return
-      }
-
-      if (pointers.length === 0) {
-        domElement.setPointerCapture(event.pointerId)
-
-        domElement.addEventListener('pointermove', onPointerMove)
-        domElement.addEventListener('pointerup', onPointerUp)
-      }
-
-      addPointer(event)
-
-      if (event.pointerType === 'touch') {
-        onTouchStart(event)
-      } else {
-        onMouseDown(event)
-      }
-    }
-
-    const onPointerCancel = (event: PointerEvent) => {
-      removePointer(event)
-    }
-
     const onMouseDown = (event: MouseEvent) => {
       let mouseAction = -1
 
@@ -983,6 +933,73 @@ export class OrbitControls extends EventDispatcher {
       }
     }
 
+    const onPointerMove = (event: PointerEvent) => {
+      if (!this.enabled) {
+        return
+      }
+
+      if (event.pointerType === 'touch') {
+        onTouchMove(event)
+      } else {
+        onMouseMove(event)
+      }
+    }
+
+    const addPointer = (event: PointerEvent) => {
+      pointers.push(event)
+    }
+
+    const removePointer = (event: PointerEvent) => {
+      delete pointerPositions[event.pointerId]
+
+      for (let i = 0; i < pointers.length; i += 1) {
+        if (pointers[i].pointerId === event.pointerId) {
+          pointers.splice(i, 1)
+          return
+        }
+      }
+    }
+
+    const onPointerUp = (event: PointerEvent) => {
+      removePointer(event)
+
+      if (pointers.length === 0) {
+        domElement.releasePointerCapture(event.pointerId)
+
+        domElement.removeEventListener('pointermove', onPointerMove)
+        domElement.removeEventListener('pointerup', onPointerUp)
+      }
+
+      this.dispatchEvent(endEvent)
+
+      state = STATE.NONE
+    }
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (!this.enabled) {
+        return
+      }
+
+      if (pointers.length === 0) {
+        domElement.setPointerCapture(event.pointerId)
+
+        domElement.addEventListener('pointermove', onPointerMove)
+        domElement.addEventListener('pointerup', onPointerUp)
+      }
+
+      addPointer(event)
+
+      if (event.pointerType === 'touch') {
+        onTouchStart(event)
+      } else {
+        onMouseDown(event)
+      }
+    }
+
+    const onPointerCancel = (event: PointerEvent) => {
+      removePointer(event)
+    }
+
     const onMouseWheel = (event: WheelEvent) => {
       if (!this.enabled || !this.enableZoom || state !== STATE.NONE) {
         return
@@ -1012,27 +1029,6 @@ export class OrbitControls extends EventDispatcher {
       }
 
       event.preventDefault()
-    }
-
-    const addPointer = (event: PointerEvent) => {
-      pointers.push(event)
-    }
-
-    const removePointer = (event: PointerEvent) => {
-      delete pointerPositions[event.pointerId]
-
-      for (let i = 0; i < pointers.length; i += 1) {
-        if (pointers[i].pointerId === event.pointerId) {
-          pointers.splice(i, 1)
-          return
-        }
-      }
-    }
-
-    const getSecondPointerPosition = (event: PointerEvent) => {
-      const pointer = (event.pointerId === pointers[0].pointerId) ? pointers[1] : pointers[0]
-
-      return pointerPositions[pointer.pointerId]
     }
 
     this.dispose = () => {

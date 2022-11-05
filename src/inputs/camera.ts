@@ -42,9 +42,7 @@ export const addCameraInputs = (pane: Pane, camera: Cameras, renderer: THREE.Web
   pane.addInput(camera, 'far').on('change', handleCameraChange)
   const zoomInput = pane.addInput(camera, 'zoom').on('change', handleCameraChange)
 
-  const updateZoomInput = () => {
-    zoomInput.refresh()
-  }
+  const updateZoomInput = () => zoomInput.refresh()
 
   window.addEventListener('wheel', updateZoomInput, { passive: true })
 

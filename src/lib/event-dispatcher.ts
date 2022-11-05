@@ -20,9 +20,7 @@ class EventDispatcher {
   }
 
   hasEventListener (type: string, listener: Listener) {
-    const { listeners } = this
-
-    return listeners[type] !== undefined && listeners[type].includes(listener)
+    return this.listeners[type]?.includes(listener)
   }
 
   removeEventListener (type: string, listener: Listener) {

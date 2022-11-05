@@ -5,7 +5,7 @@
 ![A screenshot of three-debug in action](https://raw.githubusercontent.com/michealparks/three-debug/main/assets/screen.gif)
 
 Currently, it covers:
-* Creating a tree of the scene graph and viewing /editing object properties, such as materials, transforms, etc.
+* Creating a tree of the scene graph and viewing / editing object properties, such as materials, textures, transforms, etc.
 * Scene helpers (Grid / Axes).
 * Performance monitoring (framerate, memory, capabilities, misc. stats).
 * Light helpers, shadow camera helpers.
@@ -81,4 +81,26 @@ const myPlugin = (debug: Debug) => {
 
 // Then, as the consumer of the plugin...
 debug.registerPlugin(myPlugin)
+```
+
+### React Three Fiber Usage
+
+```ts
+import * as THREE from 'three'
+import * as React from 'react'
+import { useThree } from '@react-three/fiber'
+import Debug from 'three-debug'
+
+function App() {
+  const state = useThree()
+
+  const debug = React.useMemo(() => new Debug(
+    THREE, /* the THREE object used in your project */
+    state.scene,
+    state.camera,
+    state.gl,
+    composer /* optional */
+  ))
+
+  ...
 ```

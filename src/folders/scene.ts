@@ -1,5 +1,7 @@
 import type { Pane } from '../pane'
 import { addRendererInputs } from '../inputs/renderer'
+import { addTextureInputs } from '../inputs/texture'
+import { singlePixelImage } from '../lib/image'
 import { storage } from '../lib/storage'
 import { three } from '../three'
 
@@ -16,6 +18,7 @@ const axes = storage.get('axes') !== null
 
 const params = {
   axes,
+  background: singlePixelImage,
   fogColor: '#000000',
   grid,
   gridDivisions: storage.getNumber('gridDivisions') ?? 4,
@@ -104,6 +107,10 @@ export const addSceneInputs = (pane: Pane, scene: THREE.Scene, renderer: THREE.W
       fogFolder.addInput(scene.fog, 'far')
     }
   }
+
+  pane.addSeparator()
+
+  disposers.push(addTextureInputs(pane, scene, 'background'))
 
   pane.addSeparator()
 

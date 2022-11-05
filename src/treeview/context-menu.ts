@@ -12,7 +12,7 @@ const CLASS_ContextMenu_parent_active = `${CLASS_ContextMenu_parent}-active`
 
 interface Item {
   text: string,
-  onClick: (event: MouseEvent) => void
+  onClick?: (event: MouseEvent) => void
   items?: Item[]
 }
 
@@ -26,7 +26,7 @@ interface Args {
  * Represents a context menu.
  */
 export class ContextMenu {
-  _menu: Container
+  #menu: Container
 
   /**
    * Creates a new ContextMenu.
@@ -35,17 +35,12 @@ export class ContextMenu {
    * @param {object} [args.triggerElement] - Will trigger the context menu to open when right clicked. If undefined args.dom will be used.
    */
   constructor (args: Args) {
-    this._menu = new Container(args)
+    this.#menu = new Container(args)
 
     // @ts-expect-error @TODO fix
-    this._menu.contextMenu = this
-    this._menu.dom.classList.add(CLASS_ContextMenu)
-    const menu = this._menu
-
-    const removeMenu = () => {
-      this._menu.dom.classList.remove(CLASS_ContextMenu_active)
-      document.removeEventListener('click', removeMenu)
-    }
+    this.#menu.contextMenu = this
+    this.#menu.dom.classList.add(CLASS_ContextMenu)
+    const menu = this.#menu
 
     const triggerElement = args.triggerElement ?? args.dom?.parentElement
 
@@ -68,76 +63,82 @@ export class ContextMenu {
           clientX -= leftDiff
         }
         menu.dom.setAttribute('style', `left: ${clientX}px; top: ${clientY}px`)
-        document.addEventListener('click', removeMenu)
+        document.addEventListener('click', this.removeMenu)
       })
 
       let mouseLeaveTimeout = -1
       menu.dom.addEventListener('mouseleave', () => {
-        mouseLeaveTimeout = setTimeout(() => {
-          removeMenu()
-        }, 500)
+        mouseLeaveTimeout = setTimeout(this.removeMenu, 500)
       })
       menu.dom.addEventListener('mouseenter', () => {
-        if (mouseLeaveTimeout) {
+        if (mouseLeaveTimeout > -1) {
           clearTimeout(mouseLeaveTimeout)
+          mouseLeaveTimeout = -1
         }
       })
     }
 
-    if (!args.items) {
-      return
+    for (let i = 0, l = args.items.length; i < l; i += 1) {
+      this.addItem(args.items[i], i)
+    }
+  }
+
+  removeMenu = () => {
+    this.#menu.dom.classList.remove(CLASS_ContextMenu_active)
+    document.removeEventListener('click', this.removeMenu)
+  }
+
+  addItem (menuItem: Item, index: number) {
+    const menuItemElement = new Container()
+    menuItemElement.dom.setAttribute('style', `top: ${index * 27.0}px`)
+    if (menuItem.onClick) {
+      menuItemElement.on('click', (event: MouseEvent) => {
+        event.stopPropagation()
+        this.removeMenu()
+        menuItem.onClick?.(event)
+      })
     }
 
-    args.items.forEach((menuItem, i) => {
-      const menuItemElement = new Container()
-      menuItemElement.dom.setAttribute('style', `top: ${i * 27.0}px`)
-      if (menuItem.onClick) {
-        menuItemElement.on('click', (event: MouseEvent) => {
+    const menuItemLabel = new Label({ text: menuItem.text })
+    menuItemElement.append(menuItemLabel)
+    this.#menu.dom.append(menuItemElement.dom)
+    if (menuItem.items) {
+      menuItem.items.forEach((childItem, j) => {
+        const childMenuItemElement = new Container()
+        childMenuItemElement.dom.classList.add(CLASS_ContextMenu_child)
+        childMenuItemElement.dom.setAttribute('style', `top: ${j * 27.0}px; left: 150px;`)
+        childMenuItemElement.on('click', (event: MouseEvent) => {
           event.stopPropagation()
-          removeMenu()
-          menuItem.onClick(event)
+          this.removeMenu()
+          childItem.onClick?.(event)
         })
-      }
-      const menuItemLabel = new Label({ text: menuItem.text })
-      menuItemElement.append(menuItemLabel)
-      this._menu.dom.append(menuItemElement.dom)
-      if (menuItem.items) {
-        menuItem.items.forEach((childItem, j) => {
-          const childMenuItemElement = new Container()
-          childMenuItemElement.dom.classList.add(CLASS_ContextMenu_child)
-          childMenuItemElement.dom.setAttribute('style', `top: ${j * 27.0}px; left: 150px;`)
-          childMenuItemElement.on('click', (event: MouseEvent) => {
-            event.stopPropagation()
-            removeMenu()
-            childItem.onClick(event)
-          })
-          const childMenuItemLabel = new Label({ text: childItem.text })
-          childMenuItemElement.append(childMenuItemLabel)
-          menuItemElement.append(childMenuItemElement)
-        })
-        menuItemElement.dom.classList.add(CLASS_ContextMenu_parent)
-      }
-      menuItemElement.dom.addEventListener('mouseover', (event: MouseEvent) => {
-        // If (!e.fromElement.classList.contains('pcui-contextmenu-parent')) return;
-        this._menu.forEachChild((node: Element) => {
-          node.dom.classList.remove(CLASS_ContextMenu_parent_active)
-        })
-        menuItemElement.dom.classList.add(CLASS_ContextMenu_parent_active)
+        const childMenuItemLabel = new Label({ text: childItem.text })
+        childMenuItemElement.append(childMenuItemLabel)
+        menuItemElement.append(childMenuItemElement)
+      })
+      menuItemElement.dom.classList.add(CLASS_ContextMenu_parent)
+    }
+    menuItemElement.dom.addEventListener('mouseover', (event: MouseEvent) => {
+      // If (!e.fromElement.classList.contains('pcui-contextmenu-parent')) return;
+      this.#menu.forEachChild((node: Element) => {
+        node.dom.classList.remove(CLASS_ContextMenu_parent_active)
+      })
+      menuItemElement.dom.classList.add(CLASS_ContextMenu_parent_active)
 
-        const maxMenuHeight = menuItem.items ? menuItem.items.length * 27.0 : 0.0
-        const maxMenuWidth = 150.0
-        const left = event.clientX + maxMenuWidth > window.innerWidth ? -maxMenuWidth + 2.0 : maxMenuWidth
-        let top = 0
-        if (event.clientY + maxMenuHeight > window.innerHeight) {
-          top = -maxMenuHeight + 27.0
+      const maxMenuHeight = menuItem.items ? menuItem.items.length * 27.0 : 0.0
+      const maxMenuWidth = 150.0
+      const left = event.clientX + maxMenuWidth > window.innerWidth ? -maxMenuWidth + 2.0 : maxMenuWidth
+      let top = 0
+      if (event.clientY + maxMenuHeight > window.innerHeight) {
+        top = -maxMenuHeight + 27.0
+      }
+      menuItemElement.forEachChild((node: Element, j: number) => {
+        if (j === 0) {
+          return
         }
-        menuItemElement.forEachChild((node: Element, j: number) => {
-          if (j === 0) {
-            return
-          }
-          // eslint-disable-next-line no-mixed-operators
-          node.dom.setAttribute('style', `top: ${top + (j - 1) * 27.0}px; left: ${left}px;`)
-        })
+
+        // eslint-disable-next-line no-mixed-operators
+        node.dom.setAttribute('style', `top: ${top + (j - 1) * 27.0}px; left: ${left}px;`)
       })
     })
   }

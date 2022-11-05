@@ -1,5 +1,5 @@
-import { storage } from '../lib/storage'
 import { createPane } from '../pane'
+import { storage } from '../lib/storage'
 
 export const createNav = (controls: HTMLElement, nav: HTMLElement) => {
   let selected = ''

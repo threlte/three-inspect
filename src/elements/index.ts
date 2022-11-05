@@ -12,7 +12,6 @@ export const initElements = (scene: THREE.Scene, renderer: THREE.WebGLRenderer, 
 
   const canvas = createCanvas(renderer)
   const { controls, nav, treeroot, treeview, pane } = createControls()
-
   const { addPane } = createNav(controls, nav)
 
   disposers.push(initStats(controls))

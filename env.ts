@@ -24,7 +24,7 @@ export default {
   kit__PCSS_RINGS: 3,
 
   // https://github.com/pmndrs/postprocessing
-  kit__POSTPROCESSING: true,
+  kit__POSTPROCESSING: false,
   kit__POST_MULTISAMPLING: 2,
   kit__POST_SMAA: true,
   kit__POST_DEPTH_PASS: false,
@@ -45,7 +45,7 @@ export default {
   kit__POST_DOF: false,
   kit__POST_SSR: false,
 
-  kit__CAMERA_PERSPECTIVE: false,
+  kit__CAMERA_PERSPECTIVE: true,
   kit__CAMERA_FOV: 75,
   kit__CAMERA_NEAR: 0.1,
   kit__CAMERA_FAR: 100,
