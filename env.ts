@@ -45,7 +45,7 @@ export default {
   kit__POST_DOF: false,
   kit__POST_SSR: false,
 
-  kit__CAMERA_PERSPECTIVE: true,
+  kit__CAMERA_PERSPECTIVE: false,
   kit__CAMERA_FOV: 75,
   kit__CAMERA_NEAR: 0.1,
   kit__CAMERA_FAR: 100,

@@ -15,6 +15,15 @@
   height: 30px !important
 }
 
+.tp-imgv {
+  height: 20px !important;
+  transition: 200ms !important;
+}
+
+.tp-imgv:hover {
+  height: 80px !important;
+}
+
 .three-debug.visible {
   transform: translate(0, 0);
 }

@@ -135,7 +135,18 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
    */
   } else if (material.type === 'ShaderMaterial') {
     const mat = material as THREE.ShaderMaterial
-    folder.addInput(mat, 'uniforms', { view: 'textarea' }).on('change', updateMaterial)
+    const shaderMatParams = {
+      uniforms: JSON.stringify(mat.uniforms, null, 2),
+    }
+
+    folder.addInput(shaderMatParams, 'uniforms', { view: 'textarea' }).on('change', () => {
+      try {
+        mat.uniforms = JSON.parse(shaderMatParams.uniforms)
+        updateMaterial()
+      } catch {
+        /* Do nothing */
+      }
+    })
     folder.addInput(mat, 'vertexShader', { view: 'textarea' }).on('change', updateMaterial)
     folder.addInput(mat, 'fragmentShader', { view: 'textarea' }).on('change', updateMaterial)
   }

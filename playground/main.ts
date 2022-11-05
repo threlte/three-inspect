@@ -116,23 +116,6 @@ camera.lookAt(0, 0, 0)
 
 run()
 
-let debug: Debug | undefined
-
-const toggle = () => {
-  if (debug) {
-    debug.dispose()
-    debug = undefined
-  } else {
-    debug = new Debug(THREE, scene, camera, renderer, composer)
-  }
-}
-
-toggle()
-// setInterval(toggle, 1_000)
-
-const pane = debug?.addPane('Game')
-pane?.addInput({ test: '' }, 'test')
-
 // const controls = new OrbitControls(camera, renderer.domElement)
 // controls.enableDamping = true
 // controls.enableKeyEvents = true
@@ -170,3 +153,20 @@ pane?.addInput({ test: '' }, 'test')
   mesh.position.set(10, 1, 0)
   scene.add(mesh)
 }
+
+let debug: Debug | undefined
+
+const toggle = () => {
+  if (debug) {
+    debug.dispose()
+    debug = undefined
+  } else {
+    debug = new Debug(THREE, scene, camera, renderer, composer)
+  }
+}
+
+toggle()
+// setInterval(toggle, 1_000)
+
+const pane = debug?.addPane('Game')
+pane?.addInput({ test: '' }, 'test')
