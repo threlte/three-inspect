@@ -5,7 +5,7 @@ export const addForwardHelperInput = (pane: Pane, object3D: THREE.Object3D) => {
   const helper = new (three().ArrowHelper)()
   helper.name = 'Forward helper'
   helper.setLength(1)
-  helper.userData.threeDebugOmit = true
+  helper.userData.THREE_INSPECT_OMIT = true
 
   const params = {
     forwardHelper: false,

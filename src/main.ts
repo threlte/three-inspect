@@ -15,9 +15,9 @@ style.textContent = css
 document.head.append(style)
 
 // eslint-disable-next-line no-use-before-define
-type Plugin = (debug: Debug) => Disposer
+type Plugin = (inspector: Inspector) => Disposer
 
-export default class Debug {
+export default class Inspector {
   disposers: Disposer[] = []
 
   /**
@@ -30,15 +30,15 @@ export default class Debug {
   addPane: (title: string) => Pane
 
   /**
-   * Instantiates Three.js debugging and monitoring tools.
+   * Instantiates the Three.js inspector tools.
    *
    * @param THREE The THREE object used in this project.
-   * @param scene The scene to debug.
+   * @param scene The scene to inspect.
    * @param camera The current camera.
    * @param renderer The rendering instance.
    * @param composer An optional EffectComposer instance.
    *
-   * @returns A cleanup function to unmount and dispose the debugger.
+   * @returns A cleanup function to unmount and dispose the inspector.
    */
   constructor (
     THREE: typeof ThreeLib,
@@ -63,14 +63,14 @@ export default class Debug {
   /**
    * Registers a plugin.
    *
-   * @param plugin A function that has the debugger as a param and returns a disposer.
+   * @param plugin A function that passes the inspector as a param and returns a disposer.
    */
   registerPlugin (plugin: Plugin) {
     this.disposers.push(plugin(this))
   }
 
   /**
-   * Disposes the debugger.
+   * Disposes the inspector.
    */
   dispose () {
     pause()

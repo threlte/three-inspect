@@ -28,7 +28,7 @@ export const addCameraInputs = (pane: Pane, camera: Cameras, renderer: THREE.Web
         value: controlOptions[(y * 3) + x],
       }),
       groupName: 'controls',
-      label: 'debug controls',
+      label: 'inspect controls',
       size: [3, 1],
       view: 'radiogrid',
     })

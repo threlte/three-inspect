@@ -116,7 +116,7 @@ export const addPostInputs = (pane: Pane, composer?: Postprocessing.EffectCompos
      */
     } else {
       // eslint-disable-next-line no-console
-      console.warn(`three-debug does not yet support postprocessing effect: ${effect.name}`)
+      console.warn(`three-inspect does not yet support postprocessing effect: ${effect.name}`)
     }
   }
 

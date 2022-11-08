@@ -1,4 +1,4 @@
-const prefix = 'three-debug'
+const prefix = 'three-inspect'
 
 export const storage = {
   get (key: string) {

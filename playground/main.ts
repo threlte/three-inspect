@@ -1,8 +1,7 @@
 import './main.css'
 import * as THREE from 'three'
 import { scene, camera, renderer, run, lights, composer, update, Trail, createNoise3D, NoiseFunction3D } from 'three-kit'
-import Debug from '../src/main'
-import { OrbitControls } from '../src/lib/orbit-controls'
+import Inspector from '../src/main'
 import vertexShader from './vert.glsl'
 import fragmentShader from './frag.glsl'
 
@@ -116,15 +115,6 @@ camera.lookAt(0, 0, 0)
 
 run()
 
-// const controls = new OrbitControls(camera, renderer.domElement)
-// controls.enableDamping = true
-// controls.enableKeyEvents = true
-
-// update(() => {
-//   controls.update()
-// })
-
-
 {
   const colors = new Float32Array([
     1, 0, 0,
@@ -154,19 +144,19 @@ run()
   scene.add(mesh)
 }
 
-let debug: Debug | undefined
+let inspector: Inspector | undefined
 
 const toggle = () => {
-  if (debug) {
-    debug.dispose()
-    debug = undefined
+  if (inspector) {
+    inspector.dispose()
+    inspector = undefined
   } else {
-    debug = new Debug(THREE, scene, camera, renderer, composer)
+    inspector = new Inspector(THREE, scene, camera, renderer, composer)
   }
 }
 
 toggle()
 // setInterval(toggle, 1_000)
 
-const pane = debug?.addPane('Game')
+const pane = inspector?.addPane('Game')
 pane?.addInput({ test: '' }, 'test')

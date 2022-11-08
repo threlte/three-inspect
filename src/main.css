@@ -24,11 +24,11 @@
   height: 80px !important;
 }
 
-.three-debug.visible {
+.three-inspect.visible {
   transform: translate(0, 0);
 }
 
-.three-debug-nav {
+.three-inspect-nav {
   position: sticky;
   top: 0;
   display: flex;

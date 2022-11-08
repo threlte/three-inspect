@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { run, scene, camera, renderer, update } from 'three-kit'
-import Debug from '../src/main'
+import Inspector from '../src/main'
 
 THREE.ColorManagement.legacyMode = false
 
@@ -168,6 +168,6 @@ update(() => {
   }
 })
 
-new Debug(THREE, scene, camera, renderer)
+new Inspector(THREE, scene, camera, renderer)
 
 run()

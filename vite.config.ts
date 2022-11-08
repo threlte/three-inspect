@@ -9,7 +9,7 @@ export default defineConfig({
     target: 'esnext',
     lib: {
       entry: resolve(__dirname, 'src/main.ts'),
-      name: 'THREE_DEBUG',
+      name: 'THREE_INSPECT',
       // the proper extensions will be added
       fileName: 'main'
     }

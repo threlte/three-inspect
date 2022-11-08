@@ -21,7 +21,7 @@ export const objectFromTreeItem = (item: TreeViewItem) => {
 }
 
 export const deregister = (object3D: THREE.Object3D) => {
-  if (object3D.userData.threeDebugOmit === true) {
+  if (object3D.userData.THREE_INSPECT_OMIT === true) {
     return
   }
 
@@ -38,7 +38,7 @@ export const deregister = (object3D: THREE.Object3D) => {
 }
 
 export const register = (treeroot: TreeViewItem, object3D: THREE.Object3D, parent: THREE.Object3D) => {
-  if (object3D.userData.threeDebugOmit === true) {
+  if (object3D.userData.THREE_INSPECT_OMIT === true) {
     return
   }
 

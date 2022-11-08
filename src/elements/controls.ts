@@ -6,7 +6,7 @@ export const createControls = () => {
   controls.className = 'relative flex flex-col h-screen bg-[#28292e] w-auto'
 
   const nav = document.createElement('nav')
-  nav.className = 'tp-rotv sticky top-0 three-debug-nav'
+  nav.className = 'tp-rotv sticky top-0 three-inspect-nav'
   controls.append(nav)
 
   const worldPane = document.createElement('section')

@@ -30,10 +30,10 @@ export const initSceneHelpers = (scene: THREE.Scene) => {
 
   helpers.axes = new THREE.AxesHelper(1_000)
   helpers.axes.name = 'Axes helper'
-  helpers.axes.userData.threeDebugOmit = true
+  helpers.axes.userData.THREE_INSPECT_OMIT = true
   helpers.grid = new THREE.GridHelper(params.gridSize, params.gridDivisions)
   helpers.grid.name = 'Grid helper'
-  helpers.grid.userData.threeDebugOmit = true
+  helpers.grid.userData.THREE_INSPECT_OMIT = true
 
   if (grid) {
     scene.add(helpers.grid)

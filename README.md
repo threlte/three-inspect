@@ -1,8 +1,8 @@
-# three-debug
+# three-inspect
 
-`three-debug` is a debugger / inspector for THREE.js. It is designed to be minimalistic, powerful, and extensible, with little boilerplate required.
+`three-inspect` is an inspector for Three.js projects. It is designed to be minimalistic, powerful, and extensible, with little boilerplate required.
 
-![A screenshot of three-debug in action](https://raw.githubusercontent.com/michealparks/three-debug/main/assets/screen.gif)
+![A screenshot of three-inspect in action](https://raw.githubusercontent.com/michealparks/three-inspect/main/assets/screen.gif)
 
 Currently, it covers:
 * Creating a tree of the scene graph and viewing / editing object properties, such as materials, textures, transforms, etc.
@@ -11,25 +11,25 @@ Currently, it covers:
 * Light helpers, shadow camera helpers.
 * Postprocessing (only [pmndrs/postprocessing](https://github.com/pmndrs/postprocessing) is supported).
 
-`three-debug` uses [Tweakpane](https://cocopon.github.io/tweakpane/) <3 for its input UI .
+`three-inspect` uses [Tweakpane](https://cocopon.github.io/tweakpane/) <3 for its input UI .
 
 ### Getting started
 
 ```bash
-npm i -D three-debug
+npm i -D three-inspect
 ```
 
-Then, in your project, create the debugger:
+Then, in your project, create the inspector:
 
 ```ts
-import Debug from 'three-debug'
+import Inspector from 'three-inspect'
 
 /**
  * This should be a conditional that is compiled away
  * when building for production to ensure tree-shaking.
  */
 if (devMode) {
-  const debug = new Debug(
+  const inspector = new Inspector(
     THREE, /* the THREE object used in your project */
     scene,
     camera,
@@ -38,26 +38,26 @@ if (devMode) {
   )
 
   /**
-   * To get access to camera debugging features, your camera must be in the scene.
+   * To get access to camera inspection, your camera must be in the scene.
    */
   scene.add(camera)
 
   /**
-   * Call this when you wish to remove the debugger,
+   * Call this when you wish to remove the inspector,
    * or re-init it with a new scene, camera, etc.
    */
-  debug.dispose()
+  inspector.dispose()
 }
 ```
 
-Creating the debugger will add hooks to `THEE.Object3D.add()` and `remove()` methods so that all objects are automatically registered / deregisterd in the debug tools.
+Creating the inspector will add hooks to `THEE.Object3D.add()` and `remove()` methods so that all objects are automatically registered / deregisterd.
 
 ### Extending
 
-By default, the debugger only comes with a "World" pane. Additional panes can be added:
+By default, the inspector only comes with a "World" pane. Additional panes can be added:
 
 ```ts
-const pane = debug.addPane('Game')
+const pane = inspector.addPane('Game')
 
 pane.addInput(parameters, 'scale').on('change', () => {
   mesh.scale.setScalar(parameters.scale)
@@ -68,10 +68,10 @@ This allows you to directly interact with the Tweakpane API.
 
 ### Plugins
 
-It's possible to create a plugin for `three-debug`:
+It's possible to create a plugin for `three-inspect`:
 
 ```ts
-const myPlugin = (debug: Debug) => {
+const myPlugin = (inspector: Inspector) => {
   // Create some inputs and folders...
 
   return () => {
@@ -79,8 +79,8 @@ const myPlugin = (debug: Debug) => {
   }
 }
 
-// Then, as the consumer of the plugin...
-debug.registerPlugin(myPlugin)
+// Then, as the user of the plugin...
+inspector.registerPlugin(myPlugin)
 ```
 
 ### React Three Fiber Usage
@@ -89,12 +89,12 @@ debug.registerPlugin(myPlugin)
 import * as THREE from 'three'
 import * as React from 'react'
 import { useThree } from '@react-three/fiber'
-import Debug from 'three-debug'
+import Inspector from 'three-inspect'
 
 function App() {
   const state = useThree()
 
-  const debug = React.useMemo(() => new Debug(
+  const inspector = React.useMemo(() => new Inspector(
     THREE, /* the THREE object used in your project */
     state.scene,
     state.camera,

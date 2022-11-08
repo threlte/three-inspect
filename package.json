@@ -1,11 +1,11 @@
 {
-  "name": "three-debug",
-  "version": "0.0.28",
+  "name": "three-inspect",
+  "version": "0.1.0",
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/three-debug.umd.cjs",
+  "main": "./dist/three-inspect.umd.cjs",
   "module": "./dist/main.js",
   "types": "./dist/main.d.ts",
   "exports": {
@@ -16,21 +16,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/michealparks/three-debug.git"
+    "url": "git+https://github.com/michealparks/three-inspect.git"
   },
   "keywords": [
     "three",
     "three.js",
     "3d",
-    "debug",
     "inspect",
-    "webgl"
+    "debug",
+    "webgl",
+    "monitoring"
   ],
   "license": "MIT",
   "scripts": {
     "start": "vite -c vite.playground.config.ts --host --open",
     "build": "vite build && tsc --emitDeclarationOnly",
-    "build-playground": "vite build -c vite.playground.config.ts --base=/three-debug/",
+    "build-playground": "vite build -c vite.playground.config.ts --base=/three-inspect/",
     "check": "tsc",
     "lint": "eslint ./src",
     "preview": "vite preview --host",

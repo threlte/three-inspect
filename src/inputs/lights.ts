@@ -123,7 +123,7 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
   }
 
   if (helper !== undefined) {
-    helper.userData.threeDebugOmit = true
+    helper.userData.THREE_INSPECT_OMIT = true
   }
 
   if (light.castShadow) {
@@ -187,7 +187,7 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
     }
 
     shadowHelper = new THREE.CameraHelper(light.shadow.camera)
-    shadowHelper.userData.threeDebugOmit = true
+    shadowHelper.userData.THREE_INSPECT_OMIT = true
   }
 
   pane.on('change', () => {
