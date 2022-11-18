@@ -24,7 +24,6 @@ export const addForwardHelperInput = (pane: Pane, object3D: THREE.Object3D) => {
   return () => {
     input.dispose()
     object3D.remove(helper)
-    // @ts-expect-error exists
     helper.dispose?.()
   }
 }

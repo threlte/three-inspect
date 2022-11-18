@@ -52,7 +52,7 @@ export const addRendererInputs = (pane: Pane, renderer: THREE.WebGLRenderer) => 
   pane.addInput(renderer, 'toneMappingExposure', { label: 'exposure' })
 
   pane.addSeparator()
-  const shortInterval = { interval: 3_000 }
+  const shortInterval = { interval: 2_000 }
   pane.addMonitor(renderer.info.memory, 'geometries', shortInterval)
   pane.addMonitor(renderer.info.memory, 'textures', shortInterval)
   pane.addMonitor(renderer.info.render, 'calls', shortInterval)

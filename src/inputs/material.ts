@@ -22,26 +22,14 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
     TangentSpaceNormalMap: THREE.TangentSpaceNormalMap,
   }
 
-  const params = {
-    color: '',
-    emissive: '',
-  }
-
   const updateMaterial = () => {
     material.needsUpdate = true
   }
 
-  const addColorInput = () => {
-    const mat = material as THREE.MeshBasicMaterial
-    params.color = `#${mat.color.getHexString()}`
-    folder.addInput(params, 'color').on('change', () => mat.color.set(params.color))
-  }
-
-  const addEmissiveInput = () => {
-    const mat = material as THREE.MeshLambertMaterial
-    params.emissive = `#${mat.emissive.getHexString()}`
-    folder.addInput(params, 'emissive').on('change', () => mat.emissive.set(params.emissive))
-    folder.addInput(mat, 'emissiveIntensity', { min: 0 })
+  const addColorInput = (prop: 'color' | 'emissive' | 'attenuationColor') => {
+    const mat = material as THREE.MeshPhysicalMaterial
+    const colorParam = { [prop]: `#${mat[prop].getHexString()}` }
+    folder.addInput(colorParam, prop).on('change', () => mat[prop].set(colorParam.color))
   }
 
   folder.addInput(material, 'visible')
@@ -52,148 +40,151 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
   folder.addSeparator()
 
   /**
+   * PointsMaterial
+   */
+  if (material instanceof THREE.PointsMaterial) {
+    addColorInput('color')
+    folder.addInput(material, 'size')
+    folder.addInput(material, 'sizeAttenuation')
+
+  /**
    * LineBasicMaterial
    */
-  if (material.type === 'LineBasicMaterial' || material.type === 'LineDashedMaterial') {
-    addColorInput()
-
-    const mat = material as THREE.LineBasicMaterial | THREE.LineDashedMaterial
-    folder.addInput(mat, 'fog')
-    folder.addInput(mat, 'linewidth')
+  } else if (material instanceof THREE.LineBasicMaterial || material instanceof THREE.LineDashedMaterial) {
+    addColorInput('color')
+    folder.addInput(material, 'fog')
+    folder.addInput(material, 'linewidth')
 
   /**
    * MeshBasicMaterial
    */
-  } else if (material.type === 'MeshBasicMaterial') {
-    addColorInput()
+  } else if (material instanceof THREE.MeshBasicMaterial) {
+    addColorInput('color')
 
-    const mat = material as THREE.MeshBasicMaterial
-    folder.addInput(mat, 'fog')
-    folder.addInput(mat, 'reflectivity', defaultMinMax)
-    folder.addInput(mat, 'refractionRatio', defaultMinMax)
-    folder.addInput(mat, 'wireframe')
+    folder.addInput(material, 'fog')
+    folder.addInput(material, 'reflectivity', defaultMinMax)
+    folder.addInput(material, 'refractionRatio', defaultMinMax)
+    folder.addInput(material, 'wireframe')
 
   /**
    * MeshDepthMaterial
    */
-  } else if (material.type === 'MeshDepthMaterial') {
-    folder.addInput(material as THREE.MeshDepthMaterial, 'fog')
+  } else if (material instanceof THREE.MeshDepthMaterial) {
+    folder.addInput(material, 'fog')
 
   /**
    * MeshLambertMaterial
    */
-  } else if (material.type === 'MeshLambertMaterial') {
-    addColorInput()
-    addEmissiveInput()
-
-    const mat = material as THREE.MeshLambertMaterial
-    folder.addInput(mat, 'flatShading').on('change', updateMaterial)
-    folder.addInput(mat, 'fog')
-    folder.addInput(mat, 'reflectivity', defaultMinMax)
-    folder.addInput(mat, 'refractionRatio', defaultMinMax)
-    folder.addInput(mat, 'wireframe')
+  } else if (material instanceof THREE.MeshLambertMaterial) {
+    addColorInput('color')
+    addColorInput('emissive')
+    folder.addInput(material, 'emissiveIntensity', { min: 0 })
+    folder.addInput(material, 'flatShading').on('change', updateMaterial)
+    folder.addInput(material, 'fog')
+    folder.addInput(material, 'reflectivity', defaultMinMax)
+    folder.addInput(material, 'refractionRatio', defaultMinMax)
+    folder.addInput(material, 'wireframe')
 
   /**
    * MeshPhongMaterial
    */
-  } else if (material.type === 'MeshPhongMaterial') {
-    addColorInput()
-    addEmissiveInput()
-
-    const mat = material as THREE.MeshPhongMaterial
-    folder.addInput(mat, 'flatShading').on('change', updateMaterial)
-    folder.addInput(mat, 'fog')
-    folder.addInput(mat, 'reflectivity', defaultMinMax)
-    folder.addInput(mat, 'refractionRatio', defaultMinMax)
-    folder.addInput(mat, 'shininess', defaultMinMax)
-    folder.addInput(mat, 'wireframe')
+  } else if (material instanceof THREE.MeshPhongMaterial) {
+    addColorInput('color')
+    addColorInput('emissive')
+    folder.addInput(material, 'emissiveIntensity', { min: 0 })
+    folder.addInput(material, 'flatShading').on('change', updateMaterial)
+    folder.addInput(material, 'fog')
+    folder.addInput(material, 'reflectivity', defaultMinMax)
+    folder.addInput(material, 'refractionRatio', defaultMinMax)
+    folder.addInput(material, 'shininess', defaultMinMax)
+    folder.addInput(material, 'wireframe')
 
   /**
    * MeshStandardMaterial / MeshPhysicalMaterial
    */
-  } else if (material.type === 'MeshStandardMaterial' || material.type === 'MeshPhysicalMaterial') {
-    addColorInput()
-    addEmissiveInput()
+  } else if (material instanceof THREE.MeshStandardMaterial) {
+    addColorInput('color')
+    addColorInput('emissive')
+    folder.addInput(material, 'emissiveIntensity', { min: 0 })
+    folder.addInput(material, 'roughness', defaultMinMax)
+    folder.addInput(material, 'metalness', defaultMinMax)
+    folder.addInput(material, 'flatShading').on('change', updateMaterial)
+    folder.addInput(material, 'fog')
+    folder.addInput(material, 'wireframe')
+    folder.addInput(material, 'envMapIntensity')
 
-    const mat = material as THREE.MeshStandardMaterial
-    folder.addInput(mat, 'roughness', defaultMinMax)
-    folder.addInput(mat, 'metalness', defaultMinMax)
-    folder.addInput(mat, 'flatShading').on('change', updateMaterial)
-    folder.addInput(mat, 'fog')
-    folder.addInput(mat, 'wireframe')
-    folder.addInput(mat, 'envMapIntensity')
-
-    if (material.type === 'MeshPhysicalMaterial') {
-      const mat2 = material as THREE.MeshPhysicalMaterial
-      folder.addInput(mat2, 'reflectivity', defaultMinMax)
-      folder.addInput(mat2, 'clearcoat', defaultMinMax)
-      folder.addInput(mat2, 'clearcoatRoughness', defaultMinMax)
+    if (material instanceof THREE.MeshPhysicalMaterial) {
+      addColorInput('attenuationColor')
+      folder.addInput(material, 'reflectivity', defaultMinMax)
+      folder.addInput(material, 'clearcoat', defaultMinMax)
+      folder.addInput(material, 'clearcoatRoughness', defaultMinMax)
+      folder.addInput(material, 'transmission', defaultMinMax)
     }
 
   /**
    * ShaderMaterial
    */
-  } else if (material.type === 'ShaderMaterial') {
-    const mat = material as THREE.ShaderMaterial
+  } else if (material instanceof THREE.ShaderMaterial) {
     const shaderMatParams = {
-      uniforms: JSON.stringify(mat.uniforms, null, 2),
+      uniforms: JSON.stringify(material.uniforms, null, 2),
     }
 
     folder.addInput(shaderMatParams, 'uniforms', { view: 'textarea' }).on('change', () => {
       try {
-        mat.uniforms = JSON.parse(shaderMatParams.uniforms)
+        material.uniforms = JSON.parse(shaderMatParams.uniforms)
         updateMaterial()
       } catch {
         /* Do nothing */
       }
     })
-    folder.addInput(mat, 'vertexShader', { view: 'textarea' }).on('change', updateMaterial)
-    folder.addInput(mat, 'fragmentShader', { view: 'textarea' }).on('change', updateMaterial)
+    folder.addInput(material, 'vertexShader', { view: 'textarea' }).on('change', updateMaterial)
+    folder.addInput(material, 'fragmentShader', { view: 'textarea' }).on('change', updateMaterial)
   }
 
   /**
    * Textures
    */
   if (
-    material.type === 'MeshBasicMaterial' ||
-    material.type === 'MeshLambertMaterial' ||
-    material.type === 'MeshPhongMaterial' ||
-    material.type === 'MeshStandardMaterial' ||
-    material.type === 'MeshPhysicalMaterial'
+    material instanceof THREE.MeshBasicMaterial ||
+    material instanceof THREE.MeshLambertMaterial ||
+    material instanceof THREE.MeshPhongMaterial ||
+    material instanceof THREE.MeshStandardMaterial ||
+    material instanceof THREE.MeshPhysicalMaterial
   ) {
-    const mat = material as THREE.MeshPhysicalMaterial
-
     /**
      * @TODO add:
      * - envMap
      */
     folder.addSeparator()
-    addTextureInputs(folder, mat, 'map')
-    addTextureInputs(folder, mat, 'alphaMap')
-    addTextureInputs(folder, mat, 'aoMap')
-    folder.addInput(mat, 'aoMapIntensity', defaultMinMax)
-    addTextureInputs(folder, mat, 'lightMap')
-    folder.addInput(mat, 'lightMapIntensity', defaultMinMax)
+    addTextureInputs(folder, material, 'map')
+    addTextureInputs(folder, material, 'alphaMap')
+    addTextureInputs(folder, material, 'aoMap')
+    folder.addInput(material, 'aoMapIntensity', defaultMinMax)
+    addTextureInputs(folder, material, 'lightMap')
+    folder.addInput(material, 'lightMapIntensity', defaultMinMax)
 
     if (
-      material.type === 'MeshLambertMaterial' ||
-      material.type === 'MeshPhongMaterial' ||
-      material.type === 'MeshStandardMaterial' ||
-      material.type === 'MeshPhysicalMaterial'
+      material instanceof THREE.MeshLambertMaterial ||
+      material instanceof THREE.MeshPhongMaterial ||
+      material instanceof THREE.MeshStandardMaterial ||
+      material instanceof THREE.MeshPhysicalMaterial
     ) {
-      addTextureInputs(folder, mat, 'bumpMap')
-      folder.addInput(mat, 'bumpScale', defaultMinMax)
-      addTextureInputs(folder, mat, 'displacementMap')
-      folder.addInput(mat, 'displacementScale')
-      folder.addInput(mat, 'displacementBias')
-      addTextureInputs(folder, mat, 'emissiveMap')
-      addTextureInputs(folder, mat, 'normalMap')
-      folder.addInput(mat, 'normalMapType', { options: normalMapTypeOptions })
+      addTextureInputs(folder, material, 'bumpMap')
+      folder.addInput(material, 'bumpScale', defaultMinMax)
+      addTextureInputs(folder, material, 'displacementMap')
+      folder.addInput(material, 'displacementScale')
+      folder.addInput(material, 'displacementBias')
+      addTextureInputs(folder, material, 'emissiveMap')
+      addTextureInputs(folder, material, 'normalMap')
+      folder.addInput(material, 'normalMapType', { options: normalMapTypeOptions })
     }
 
-    if (material.type === 'MeshStandardMaterial' || material.type === 'MeshPhysicalMaterial') {
-      addTextureInputs(folder, mat, 'metalnessMap')
-      addTextureInputs(folder, mat, 'roughnessMap')
+    if (
+      material instanceof THREE.MeshStandardMaterial ||
+      material instanceof THREE.MeshPhysicalMaterial
+    ) {
+      addTextureInputs(folder, material, 'metalnessMap')
+      addTextureInputs(folder, material, 'roughnessMap')
     }
   }
 

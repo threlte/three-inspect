@@ -37,6 +37,52 @@ scene.add(ambient)
 }
 
 {
+  // Geometry
+  const geo = new THREE.BufferGeometry()
+  const count = 10000
+  const vec3 = new THREE.Vector3()
+
+  const positions = new Float32Array(count * 3) // Multiply by 3 because each position is composed of 3 values (x, y, z)
+
+  // for (let i = 0; i < count * 3; i += 3) {
+  //   let th = Math.random() * 2 * Math.PI
+  //   let n = 1000
+  //   let r = 200
+  //   let x = r * Math.sin(th) * Math.cos(n * th)
+  //   let y = r * Math.sin(th) * Math.sin(n * th)
+  //   let z = r * Math.cos(th)
+    
+  //   positions[i + 0] = x
+  //   positions[i + 1] = y
+  //   positions[i + 2] = z
+  // }
+
+  let radius = 100
+
+  for (let i = 0; i < count * 3; i += 3) {
+    vec3.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize().multiplyScalar(radius)
+    positions[i + 0] = vec3.x
+    positions[i + 1] = vec3.y
+    positions[i + 2] = vec3.z
+  }
+
+  // for(let i = 0; i < count * 3; i++) {
+  //   positions[i] = (Math.random() - 0.5) * 10 // Math.random() - 0.5 to have a random value between -0.5 and +0.5
+  // }
+
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3)) // Create the Three.js BufferAttribute and specify that each information is composed of 3 values
+
+  const mat = new THREE.PointsMaterial({
+    size: 5,
+    sizeAttenuation: true
+  })
+  const points = new THREE.Points(geo, mat)
+  points.position.set(0, 0, 0)
+  points.name = 'points'
+  scene.add(points)
+}
+
+{
   const count = 20
   const trails: { trail: Trail, noise3d: NoiseFunction3D }[] = []
   const v3 = new THREE.Vector3()

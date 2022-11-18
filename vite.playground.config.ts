@@ -8,6 +8,7 @@ export default defineConfig({
     minify: true,
     target: 'esnext',
   },
+  publicDir: 'assets',
   plugins: [glsl()],
   server: {
     fs: {

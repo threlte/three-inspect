@@ -9,7 +9,12 @@ type Textures =
   'emissiveMap' | 'map' | 'metalnessMap' | 'normalMap' | 'roughnessMap' |
   'background'
 
-export const addTextureInputs = (pane: Pane, object: THREE.Scene | THREE.MeshStandardMaterial, property: Textures) => {
+type TextureObjects =
+  | THREE.Scene
+  | THREE.MeshBasicMaterial
+  | THREE.MeshStandardMaterial
+
+export const addTextureInputs = (pane: Pane, object: TextureObjects, property: Textures) => {
   const THREE = three()
   // @ts-expect-error @TODO Type this better
   const tex = object[property] as THREE.Texture | null
@@ -86,7 +91,7 @@ export const addTextureInputs = (pane: Pane, object: THREE.Scene | THREE.MeshSta
     folder.addInput(texture, 'rotation', { step: 0.01 })
     folder.addInput(texture, 'anisotropy', { options: anisotropyOptions }).on('change', updateTexture)
     folder.addInput(texture, 'format', { options: formatOptions }).on('change', updateTexture)
-    folder.addInput(texture, 'repeat', { step: 1 })
+    folder.addInput(texture, 'repeat', { x: { step: 1 }, y: { step: 1 } })
     folder.addInput(texture, 'center')
     folder.addInput(texture, 'flipY')
     folder.addInput(texture, 'encoding', { options: encodingOptions }).on('change', () => {
@@ -104,6 +109,10 @@ export const addTextureInputs = (pane: Pane, object: THREE.Scene | THREE.MeshSta
     view: 'input-image',
   }).on('change', ({ value }) => {
     if (value.src === singlePixelImage.src) {
+      return
+    }
+
+    if (value.src === tex?.image.src) {
       return
     }
 
