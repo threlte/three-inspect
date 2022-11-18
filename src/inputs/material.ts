@@ -26,7 +26,7 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
     material.needsUpdate = true
   }
 
-  const addColorInput = (prop: 'color' | 'emissive' | 'attenuationColor') => {
+  const addColorInput = (prop: 'color' | 'emissive' | 'attenuationColor' | 'sheenColor') => {
     const mat = material as THREE.MeshPhysicalMaterial
     const colorParam = { [prop]: `#${mat[prop].getHexString()}` }
     folder.addInput(colorParam, prop).on('change', () => mat[prop].set(colorParam.color))
@@ -115,10 +115,14 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
 
     if (material instanceof THREE.MeshPhysicalMaterial) {
       addColorInput('attenuationColor')
-      folder.addInput(material, 'reflectivity', defaultMinMax)
       folder.addInput(material, 'clearcoat', defaultMinMax)
       folder.addInput(material, 'clearcoatRoughness', defaultMinMax)
       folder.addInput(material, 'transmission', defaultMinMax)
+      folder.addInput(material, 'ior', { max: 2.333, min: 1.0 })
+      folder.addInput(material, 'reflectivity', defaultMinMax)
+      folder.addInput(material, 'sheen', defaultMinMax)
+      folder.addInput(material, 'sheenRoughness', defaultMinMax)
+      addColorInput('sheenColor')
     }
 
   /**
@@ -185,6 +189,14 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
     ) {
       addTextureInputs(folder, material, 'metalnessMap')
       addTextureInputs(folder, material, 'roughnessMap')
+
+      if (material instanceof THREE.MeshPhysicalMaterial) {
+        addTextureInputs(folder, material, 'clearcoatMap')
+        addTextureInputs(folder, material, 'clearcoatNormalMap')
+        folder.addInput(material, 'clearcoatNormalScale', { x: defaultMinMax, y: defaultMinMax })
+        addTextureInputs(folder, material, 'clearcoatRoughnessMap')
+        addTextureInputs(folder, material, 'sheenRoughnessMap')
+      }
     }
   }
 

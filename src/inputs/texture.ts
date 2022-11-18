@@ -7,6 +7,7 @@ type Textures =
   'alphaMap' | 'aoMap' | 'bumpMap' |
   'displacementMap' | 'lightMap' |
   'emissiveMap' | 'map' | 'metalnessMap' | 'normalMap' | 'roughnessMap' |
+  'clearcoatMap' | 'clearcoatNormalMap' | 'clearcoatRoughnessMap' | 'sheenRoughnessMap' |
   'background'
 
 type TextureObjects =

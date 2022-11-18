@@ -5,6 +5,7 @@ import { addPostInputs } from './postprocessing'
 import { addTransformInputs } from './transform'
 import { addUserdataInput } from './userdata'
 import { storage } from '../lib/storage'
+import { three } from '../three'
 
 export type { Cameras }
 
@@ -19,6 +20,7 @@ const params = {
 }
 
 export const addCameraInputs = (pane: Pane, camera: Cameras, renderer: THREE.WebGLRenderer, composer?: EffectComposer) => {
+  const THREE = three()
   const titles = ['none', 'orbit', 'map']
 
   pane
@@ -46,14 +48,14 @@ export const addCameraInputs = (pane: Pane, camera: Cameras, renderer: THREE.Web
 
   window.addEventListener('wheel', updateZoomInput, { passive: true })
 
-  if ('isOrthographicCamera' in camera) {
+  if (camera instanceof THREE.OrthographicCamera) {
     pane.addInput(camera, 'bottom').on('change', handleCameraChange)
     pane.addInput(camera, 'left').on('change', handleCameraChange)
     pane.addInput(camera, 'right').on('change', handleCameraChange)
     pane.addInput(camera, 'top').on('change', handleCameraChange)
   }
 
-  if ('isPerspectiveCamera' in camera) {
+  if (camera instanceof THREE.PerspectiveCamera) {
     pane.addInput(camera, 'fov').on('change', handleCameraChange)
     pane.addInput(camera, 'filmOffset').on('change', handleCameraChange)
     pane.addInput(camera, 'filmGauge').on('change', handleCameraChange)

@@ -29,11 +29,6 @@ const addTargetInput = (folder: Pane, light: TargetLight) => {
 
 export const addLightInputs = (pane: Pane, light: THREE.Light) => {
   const THREE = three()
-  const dirLight = light as THREE.DirectionalLight
-  const hemiLight = light as THREE.HemisphereLight
-  const pointLight = light as THREE.PointLight
-  const spotLight = light as THREE.SpotLight
-  const rectLight = light as THREE.RectAreaLight
 
   let helper: LightHelper | undefined
   let shadowHelper: THREE.CameraHelper | undefined
@@ -46,10 +41,10 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
     shadowHelper: false,
   }
 
-  if (!('isAmbientLight' in light)) {
+  if (!(light instanceof THREE.AmbientLight)) {
     pane
       .addInput(params, 'helper')
-      .on('change', () => light[params.helper ? 'add' : 'remove'](helper!))
+      .on('change', () => helper && light[params.helper ? 'add' : 'remove'](helper))
   }
 
   pane
@@ -61,65 +56,65 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
   /**
    * Directional
    */
-  if (light.type === 'DirectionalLight') {
+  if (light instanceof THREE.DirectionalLight) {
     pane.addInput(light, 'castShadow')
 
     addTransformInputs(pane, light)
-    addTargetInput(pane, dirLight)
+    addTargetInput(pane, light)
 
-    helper = new THREE.DirectionalLightHelper(dirLight)
+    helper = new THREE.DirectionalLightHelper(light)
 
   /**
    * Hemisphere
    */
-  } else if (light.type === 'HemisphereLight') {
-    pane.addInput(hemiLight, 'groundColor')
+  } else if (light instanceof THREE.HemisphereLight) {
+    pane.addInput(light, 'groundColor')
 
-    helper = new THREE.HemisphereLightHelper(hemiLight, 10)
+    helper = new THREE.HemisphereLightHelper(light, 10)
 
   /**
    * Point
    */
-  } else if (light.type === 'PointLight') {
-    pane.addInput(pointLight, 'decay')
-    pane.addInput(pointLight, 'distance')
-    pane.addInput(pointLight, 'power')
-    pane.addInput(pointLight, 'castShadow')
+  } else if (light instanceof THREE.PointLight) {
+    pane.addInput(light, 'decay')
+    pane.addInput(light, 'distance')
+    pane.addInput(light, 'power')
+    pane.addInput(light, 'castShadow')
 
-    addTransformInputs(pane, pointLight)
+    addTransformInputs(pane, light)
 
-    helper = new THREE.PointLightHelper(pointLight, 10)
+    helper = new THREE.PointLightHelper(light, 10)
 
   /**
    * Spot
    */
-  } else if (light.type === 'SpotLight') {
-    pane.addInput(spotLight, 'angle', {
+  } else if (light instanceof THREE.SpotLight) {
+    pane.addInput(light, 'angle', {
       max: Math.PI / 2,
       min: 0,
     })
-    pane.addInput(spotLight, 'decay')
-    pane.addInput(spotLight, 'distance')
-    pane.addInput(spotLight, 'penumbra', defaultMinMax)
-    pane.addInput(spotLight, 'power')
-    pane.addInput(spotLight, 'castShadow')
+    pane.addInput(light, 'decay')
+    pane.addInput(light, 'distance')
+    pane.addInput(light, 'penumbra', defaultMinMax)
+    pane.addInput(light, 'power')
+    pane.addInput(light, 'castShadow')
 
-    addTransformInputs(pane, spotLight)
-    addTargetInput(pane, spotLight)
+    addTransformInputs(pane, light)
+    addTargetInput(pane, light)
 
-    helper = new THREE.SpotLightHelper(spotLight)
+    helper = new THREE.SpotLightHelper(light)
 
   /**
    * Rect
    */
-  } else if (light.type === 'RectAreaLight') {
-    pane.addInput(rectLight, 'power')
-    pane.addInput(rectLight, 'width')
-    pane.addInput(rectLight, 'height')
+  } else if (light instanceof THREE.RectAreaLight) {
+    pane.addInput(light, 'power')
+    pane.addInput(light, 'width')
+    pane.addInput(light, 'height')
 
-    addTransformInputs(pane, rectLight)
+    addTransformInputs(pane, light)
 
-    helper = createRectAreaLightHelper(rectLight)
+    helper = createRectAreaLightHelper(light)
   }
 
   if (helper !== undefined) {
@@ -133,7 +128,7 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
 
     camFolder
       .addInput(params, 'shadowHelper', { label: 'helper' })
-      .on('change', () => light[params.shadowHelper ? 'add' : 'remove'](shadowHelper!))
+      .on('change', () => shadowHelper && light[params.shadowHelper ? 'add' : 'remove'](shadowHelper))
 
     const shadowMapParams = {
       mapSize: light.shadow.mapSize.x,
@@ -163,8 +158,8 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
     /**
      * Directional
      */
-    if (light.type === 'DirectionalLight') {
-      const { camera } = dirLight.shadow
+    if (light instanceof THREE.DirectionalLight) {
+      const { camera } = light.shadow
       camFolder.addInput(camera, 'near').on('change', handleShadowmapChange)
       camFolder.addInput(camera, 'far').on('change', handleShadowmapChange)
       camFolder.addInput(camera, 'left').on('change', handleShadowmapChange)
@@ -177,8 +172,8 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
     /**
      * Spot
      */
-    } else if (light.type === 'SpotLight') {
-      const { camera } = spotLight.shadow
+    } else if (light instanceof THREE.SpotLight) {
+      const { camera } = light.shadow
       camFolder.addInput(camera, 'near').on('change', handleShadowmapChange)
       camFolder.addInput(camera, 'far').on('change', handleShadowmapChange)
       camFolder.addInput(camera, 'focus', defaultMinMax)

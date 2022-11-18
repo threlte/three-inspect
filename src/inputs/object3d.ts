@@ -3,10 +3,13 @@ import { addForwardHelperInput } from './helper-forward'
 import { addMaterialInputs } from './material'
 import { addTransformInputs } from './transform'
 import { addUserdataInput } from './userdata'
+import { three } from '../three'
 
 type Disposer = () => void
 
 export const addObjectInputs = (pane: Pane, object3D: THREE.Object3D) => {
+  const THREE = three()
+
   pane.addInput(object3D, 'castShadow')
   pane.addInput(object3D, 'receiveShadow')
   pane.addInput(object3D, 'frustumCulled')
@@ -25,11 +28,11 @@ export const addObjectInputs = (pane: Pane, object3D: THREE.Object3D) => {
 
   if (Array.isArray(mesh.material)) {
     for (let i = 0, l = mesh.material.length; i < l; i += 1) {
-      if ('isMaterial' in mesh.material[i]) {
+      if (mesh.material[i] instanceof THREE.Material) {
         disposers.push(addMaterialInputs(pane, mesh))
       }
     }
-  } else if (mesh.material !== undefined && 'isMaterial' in mesh.material) {
+  } else if (mesh.material !== undefined && mesh.material instanceof THREE.Material) {
     disposers.push(addMaterialInputs(pane, mesh))
   }
 
