@@ -1,3 +1,4 @@
+import type { MonitorBindingApi } from 'tweakpane'
 import type { Pane } from '../pane'
 import { three } from '../three'
 
@@ -7,13 +8,12 @@ export const addRendererInputs = (pane: Pane, renderer: THREE.WebGLRenderer) => 
 
   renderer.getClearColor(color)
 
-  const params = {
+  const colorParams = {
     clearColor: `#${color.getHexString().toUpperCase()}`,
-    maxAnisotropy: renderer.capabilities.getMaxAnisotropy(),
   }
 
-  pane.addInput(params, 'clearColor').on('change', () => {
-    renderer.setClearColor(params.clearColor)
+  pane.addInput(colorParams, 'clearColor').on('change', () => {
+    renderer.setClearColor(colorParams.clearColor)
   })
 
   const shadowmapChange = () => {
@@ -39,6 +39,7 @@ export const addRendererInputs = (pane: Pane, renderer: THREE.WebGLRenderer) => 
   })
 
   pane.addSeparator()
+
   pane.addInput(renderer, 'toneMapping', {
     options: {
       ACESFilmic: THREE.ACESFilmicToneMapping,
@@ -52,26 +53,67 @@ export const addRendererInputs = (pane: Pane, renderer: THREE.WebGLRenderer) => 
   pane.addInput(renderer, 'toneMappingExposure', { label: 'exposure' })
 
   pane.addSeparator()
-  const shortInterval = { interval: 2_000 }
-  pane.addMonitor(renderer.info.memory, 'geometries', shortInterval)
-  pane.addMonitor(renderer.info.memory, 'textures', shortInterval)
-  pane.addMonitor(renderer.info.render, 'calls', shortInterval)
-  pane.addMonitor(renderer.info.render, 'lines', shortInterval)
-  pane.addMonitor(renderer.info.render, 'points', shortInterval)
-  pane.addMonitor(renderer.info.render, 'triangles', shortInterval)
+
+  const params = {
+    calls: '',
+    geometries: '',
+    lines: '',
+    points: '',
+    textures: '',
+    triangles: '',
+  }
+
+  const capabilities = {
+    maxAnisotropy: renderer.capabilities.getMaxAnisotropy().toString(),
+    maxAttributes: renderer.capabilities.maxAttributes.toFixed(),
+    maxCubemapSize: `${renderer.capabilities.maxCubemapSize.toFixed()} (h * w)`,
+    maxFragmentUniforms: renderer.capabilities.maxFragmentUniforms.toFixed(),
+    maxTextureSize: `${renderer.capabilities.maxTextureSize.toFixed()} (h * w)`,
+    maxTextures: renderer.capabilities.maxTextures.toFixed(),
+    maxVaryings: renderer.capabilities.maxVaryings.toFixed(),
+    maxVertexTextures: renderer.capabilities.maxVertexTextures.toFixed(),
+    maxVertexUniforms: renderer.capabilities.maxVertexUniforms.toFixed(),
+  }
+
+  const interval = { interval: 1_000_000 }
+  const monitors: MonitorBindingApi<string>[] = []
+
+  monitors.push(pane.addMonitor(params, 'calls', interval))
+  monitors.push(pane.addMonitor(params, 'geometries', interval))
+  monitors.push(pane.addMonitor(params, 'lines', interval))
+  monitors.push(pane.addMonitor(params, 'points', interval))
+  monitors.push(pane.addMonitor(params, 'textures', interval))
+  monitors.push(pane.addMonitor(params, 'triangles', interval))
 
   pane.addSeparator()
-  const longInterval = { interval: 100_000 }
-  pane.addMonitor(params, 'maxAnisotropy', longInterval)
-  pane.addMonitor(renderer.capabilities, 'maxAttributes', longInterval)
-  pane.addMonitor(renderer.capabilities, 'maxCubemapSize', longInterval)
-  pane.addMonitor(renderer.capabilities, 'maxFragmentUniforms', longInterval)
-  pane.addMonitor(renderer.capabilities, 'maxTextureSize', longInterval)
-  pane.addMonitor(renderer.capabilities, 'maxTextures', longInterval)
-  pane.addMonitor(renderer.capabilities, 'maxVaryings', longInterval)
-  pane.addMonitor(renderer.capabilities, 'maxVertexTextures', longInterval)
-  pane.addMonitor(renderer.capabilities, 'maxVertexUniforms', longInterval)
-  pane.addMonitor(renderer.capabilities, 'precision', longInterval)
 
-  return () => null
+  pane.addMonitor(capabilities, 'maxAnisotropy', interval)
+  pane.addMonitor(capabilities, 'maxAttributes', interval)
+  pane.addMonitor(capabilities, 'maxCubemapSize', interval)
+  pane.addMonitor(capabilities, 'maxFragmentUniforms', interval)
+  pane.addMonitor(capabilities, 'maxTextureSize', interval)
+  pane.addMonitor(capabilities, 'maxTextures', interval)
+  pane.addMonitor(capabilities, 'maxVaryings', interval)
+  pane.addMonitor(capabilities, 'maxVertexTextures', interval)
+  pane.addMonitor(capabilities, 'maxVertexUniforms', interval)
+  pane.addMonitor(renderer.capabilities, 'precision', interval)
+
+  const updateStats = () => {
+    const { render, memory } = renderer.info
+    params.calls = render.calls.toFixed(0)
+    params.geometries = memory.geometries.toFixed(0)
+    params.lines = render.lines.toFixed(0)
+    params.points = render.points.toFixed(0)
+    params.textures = memory.textures.toFixed(0)
+    params.triangles = render.triangles.toFixed(0)
+
+    for (let i = 0, l = monitors.length; i < l; i += 1) {
+      monitors[i].refresh()
+    }
+  }
+
+  const intervalId = setInterval(updateStats, 2_000)
+  updateStats()
+
+  return () => clearInterval(intervalId)
 }
