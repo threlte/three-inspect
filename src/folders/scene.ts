@@ -64,7 +64,6 @@ export const addSceneInputs = (pane: Pane, scene: THREE.Scene, renderer: THREE.W
 
   const handleGridChange = (param: 'gridSize' | 'gridDivisions') => {
     scene.remove(helpers.grid)
-    // @ts-expect-error exists
     helpers.grid.dispose?.()
 
     helpers.grid = new THREE.GridHelper(params.gridSize, params.gridDivisions)
@@ -116,7 +115,6 @@ export const addSceneInputs = (pane: Pane, scene: THREE.Scene, renderer: THREE.W
 
   disposers.push(addRendererInputs(pane, renderer))
   disposers.push(() => {
-    // @ts-expect-error exists
     helpers.grid.dispose?.()
     helpers.axes.dispose()
   })

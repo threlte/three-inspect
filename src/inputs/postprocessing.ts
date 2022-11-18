@@ -10,13 +10,13 @@ export const addPostInputs = (pane: Pane, composer?: Postprocessing.EffectCompos
   const postFolder = pane.addFolder({ title: 'Postprocessing' })
   const { passes } = composer
 
-  let effectPass: Postprocessing.EffectPass | undefined
+  let effectPass: Postprocessing.Pass | undefined
 
   for (let i = 0, l = passes.length; i < l; i += 1) {
     const pass = passes[i]
 
     if ('effects' in pass) {
-      effectPass = pass as Postprocessing.EffectPass
+      effectPass = pass as Postprocessing.Pass
       break
     }
   }
@@ -24,8 +24,6 @@ export const addPostInputs = (pane: Pane, composer?: Postprocessing.EffectCompos
   if (effectPass === undefined) {
     return () => postFolder.dispose()
   }
-
-  postFolder.addInput(effectPass, 'dithering')
 
   // This crazy typecasting is done because .effects is private >:|
   const { effects } = (effectPass as unknown as { effects: Postprocessing.Effect[]})
