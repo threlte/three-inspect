@@ -1,6 +1,6 @@
 import { removeUpdate, update } from '../update'
 import type { Pane } from '../pane'
-import { three } from '../three'
+import { refs } from '../refs'
 
 const state = {
   controlling: false,
@@ -14,7 +14,7 @@ const rotationSettings = {
 }
 
 const addInstancedMeshInputs = (pane: Pane, mesh: THREE.InstancedMesh) => {
-  const THREE = three()
+  const { THREE } = refs
   const m4 = new THREE.Matrix4()
 
   pane.addSeparator()
@@ -71,7 +71,7 @@ const addInstancedMeshInputs = (pane: Pane, mesh: THREE.InstancedMesh) => {
 }
 
 export const addTransformInputs = (pane: Pane, object3D: THREE.Object3D) => {
-  const THREE = three()
+  const { THREE } = refs
   const { element } = pane
 
   const params = {

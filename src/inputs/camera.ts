@@ -1,11 +1,10 @@
 import { type Cameras, Controls, setEnabledControls } from '../lib/controls'
-import type { EffectComposer } from 'postprocessing'
 import type { Pane } from '../pane'
 import { addPostInputs } from './postprocessing'
 import { addTransformInputs } from './transform'
 import { addUserdataInput } from './userdata'
+import { refs } from '../refs'
 import { storage } from '../lib/storage'
-import { three } from '../three'
 
 export type { Cameras }
 
@@ -19,8 +18,8 @@ const params = {
   controls: (storage.getNumber('controls') as Controls | null) ?? Controls.NONE,
 }
 
-export const addCameraInputs = (pane: Pane, camera: Cameras, renderer: THREE.WebGLRenderer, composer?: EffectComposer) => {
-  const THREE = three()
+export const addCameraInputs = (pane: Pane, camera: Cameras) => {
+  const { THREE } = refs
   const titles = ['none', 'orbit', 'map']
 
   pane
@@ -34,7 +33,7 @@ export const addCameraInputs = (pane: Pane, camera: Cameras, renderer: THREE.Web
       size: [3, 1],
       view: 'radiogrid',
     })
-    .on('change', () => setEnabledControls(camera, renderer, params.controls))
+    .on('change', () => setEnabledControls(params.controls, camera))
 
   const handleCameraChange = () => {
     camera.updateProjectionMatrix()
@@ -64,7 +63,11 @@ export const addCameraInputs = (pane: Pane, camera: Cameras, renderer: THREE.Web
   const disposers: Disposer[] = []
   disposers.push(addTransformInputs(pane, camera))
   disposers.push(addUserdataInput(pane, camera))
-  disposers.push(addPostInputs(pane, composer))
+
+  if (refs.composer !== null) {
+    disposers.push(addPostInputs(pane, refs.composer))
+  }
+
   disposers.push(() => window.removeEventListener('wheel', updateZoomInput))
   return disposers
 }

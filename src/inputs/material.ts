@@ -1,21 +1,15 @@
 import type { Pane } from '../pane'
 import { addTextureInputs } from '../inputs/texture'
 import { defaultMinMax } from '../constants'
-import { three } from '../three'
+import { refs } from '../refs'
 
 export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
-  const THREE = three()
+  const { THREE } = refs
   const material = mesh.material as THREE.Material
   const folder = pane.addFolder({
     index: mesh.id,
     title: `${material.name} (${material.type})`.trim(),
   })
-
-  const sideOptions = {
-    BackSide: THREE.BackSide,
-    DoubleSide: THREE.DoubleSide,
-    FrontSide: THREE.FrontSide,
-  }
 
   const normalMapTypeOptions = {
     ObjectSpaceNormalMap: THREE.ObjectSpaceNormalMap,
@@ -33,9 +27,26 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
   }
 
   folder.addInput(material, 'visible')
-  folder.addInput(material, 'side', { options: sideOptions })
   folder.addInput(material, 'transparent').on('change', updateMaterial)
   folder.addInput(material, 'opacity', defaultMinMax)
+
+  const sides = [
+    ['Back', THREE.BackSide],
+    ['Double', THREE.DoubleSide],
+    ['Front', THREE.FrontSide],
+  ]
+
+  folder
+    .addInput(material, 'side', {
+      cells: (x: number) => ({
+        title: sides[x][0],
+        value: sides[x][1],
+      }),
+      groupName: 'side',
+      size: [3, 1],
+      view: 'radiogrid',
+    })
+
   folder.addInput(material, 'vertexColors')
   folder.addSeparator()
 
@@ -114,6 +125,7 @@ export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
     folder.addInput(material, 'envMapIntensity')
 
     if (material instanceof THREE.MeshPhysicalMaterial) {
+      folder.addSeparator()
       addColorInput('attenuationColor')
       folder.addInput(material, 'clearcoat', defaultMinMax)
       folder.addInput(material, 'clearcoatRoughness', defaultMinMax)

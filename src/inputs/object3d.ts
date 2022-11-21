@@ -3,12 +3,12 @@ import { addForwardHelperInput } from './helper-forward'
 import { addMaterialInputs } from './material'
 import { addTransformInputs } from './transform'
 import { addUserdataInput } from './userdata'
-import { three } from '../three'
+import { refs } from '../refs'
 
 type Disposer = () => void
 
 export const addObjectInputs = (pane: Pane, object3D: THREE.Object3D) => {
-  const THREE = three()
+  const { THREE } = refs
 
   pane.addInput(object3D, 'castShadow')
   pane.addInput(object3D, 'receiveShadow')

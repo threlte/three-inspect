@@ -1,9 +1,12 @@
 
 import type * as Postprocessing from 'postprocessing'
 import type { Pane } from '../pane'
+import { refs } from '../refs'
 
-export const addPostInputs = (pane: Pane, composer?: Postprocessing.EffectComposer) => {
-  if (composer === undefined) {
+export const addPostInputs = (pane: Pane) => {
+  const { composer } = refs
+
+  if (composer === null) {
     return () => null
   }
 

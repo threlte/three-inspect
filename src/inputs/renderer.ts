@@ -1,9 +1,10 @@
 import type { MonitorBindingApi } from 'tweakpane'
 import type { Pane } from '../pane'
-import { three } from '../three'
+import { refs } from '../refs'
 
-export const addRendererInputs = (pane: Pane, renderer: THREE.WebGLRenderer) => {
-  const THREE = three()
+export const addRendererInputs = (pane: Pane) => {
+  const { THREE, renderer } = refs
+
   const color = new THREE.Color()
 
   renderer.getClearColor(color)

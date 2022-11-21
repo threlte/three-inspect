@@ -1,25 +1,25 @@
 import { type Cameras, addCameraInputs } from './inputs/camera'
-import { deregister, objectFromTreeItem, register } from './objects'
-import type { EffectComposer } from 'postprocessing'
-import type { TreeView } from './treeview'
-import type { TreeViewItem } from './treeview/item'
+import type { TreeView, TreeViewItem } from 'flexible-tree'
+import { deregister, objectFromTreeItem, register, treeItemFromObject } from './objects'
 import { addLightInputs } from './inputs/lights'
 import { addObjectInputs } from './inputs/object3d'
 import { addSceneInputs } from './folders/scene'
 import { createPane } from './pane'
+import { mouseRaycaster } from './lib/raycast'
 import { patchObject3d } from './patch/object3d'
+import { refs } from './refs'
 
 type Disposer = () => void
 
-const handleSelectItem = (root: HTMLElement, object3D: THREE.Object3D, renderer: THREE.WebGLRenderer, composer?: EffectComposer) => {
+const handleSelectItem = (root: HTMLElement, object3D: THREE.Object3D) => {
   const pane = createPane(root)
 
   let disposers: Disposer[]
 
   if ('isPerspectiveCamera' in object3D || 'isOrthographicCamera' in object3D) {
-    disposers = addCameraInputs(pane, object3D as Cameras, renderer, composer)
+    disposers = addCameraInputs(pane, object3D as Cameras)
   } else if ('isScene' in object3D) {
-    disposers = addSceneInputs(pane, object3D as THREE.Scene, renderer)
+    disposers = addSceneInputs(pane)
   } else if ('isLight' in object3D) {
     disposers = addLightInputs(pane, object3D as THREE.Light)
   } else {
@@ -35,31 +35,54 @@ const handleSelectItem = (root: HTMLElement, object3D: THREE.Object3D, renderer:
 export const initScene = (
   tree: TreeView,
   treeroot: TreeViewItem,
-  root: HTMLElement,
-  scene: THREE.Scene,
-  renderer: THREE.WebGLRenderer,
-  composer?: EffectComposer
+  root: HTMLElement
 ) => {
+  const { scene } = refs
   const disposePatcher = patchObject3d(treeroot)
+
+  let selected: TreeViewItem | undefined
+
+  mouseRaycaster((intersects) => {
+    if (intersects.length < 1) {
+      return
+    }
+
+    const treeItem = treeItemFromObject(intersects[0].object)
+
+    if (treeItem) {
+      if (selected) {
+        selected.selected = false
+      }
+      treeItem.selected = true
+    }
+  })
 
   let disposer: null | (() => void) = null
 
   tree.on('deselect', () => {
     disposer?.()
     disposer = null
+    selected = undefined
   })
 
   tree.on('select', (item: TreeViewItem) => {
+    selected = item
+
     const object3D = item.text === 'Scene' ? scene : objectFromTreeItem(item)
-    disposer = handleSelectItem(root, object3D, renderer, composer)
+    if (object3D !== undefined) {
+      disposer = handleSelectItem(root, object3D)
+    }
   })
 
   tree.on('reparent', (items: { item: TreeViewItem, newParent: TreeViewItem }[]) => {
     for (let i = 0, l = items.length; i < l; i += 1) {
       const { item, newParent } = items[i]
-      const object3D = objectFromTreeItem(item)
+      const child = objectFromTreeItem(item)
       const parent = newParent.text === 'Scene' ? scene : objectFromTreeItem(newParent)
-      parent.attach(object3D)
+
+      if (parent !== undefined && child !== undefined) {
+        parent.attach(child)
+      }
     }
   })
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 import type { Pane } from '../pane'
+import { refs } from '../refs'
 import { singlePixelImage } from '../lib/image'
-import { three } from '../three'
 
 type Textures =
   'alphaMap' | 'aoMap' | 'bumpMap' |
@@ -16,7 +16,8 @@ type TextureObjects =
   | THREE.MeshStandardMaterial
 
 export const addTextureInputs = (pane: Pane, object: TextureObjects, property: Textures) => {
-  const THREE = three()
+  const { THREE } = refs
+
   // @ts-expect-error @TODO Type this better
   const tex = object[property] as THREE.Texture | null
 

@@ -1,9 +1,9 @@
 import type { Pane } from '../pane'
 import { addRendererInputs } from '../inputs/renderer'
 import { addTextureInputs } from '../inputs/texture'
+import { refs } from '../refs'
 import { singlePixelImage } from '../lib/image'
 import { storage } from '../lib/storage'
-import { three } from '../three'
 
 const helpers: {
   axes: THREE.AxesHelper
@@ -25,8 +25,8 @@ const params = {
   gridSize: storage.getNumber('gridSize') ?? 10,
 }
 
-export const initSceneHelpers = (scene: THREE.Scene) => {
-  const THREE = three()
+export const initSceneHelpers = () => {
+  const { THREE, scene } = refs
 
   helpers.axes = new THREE.AxesHelper(1_000)
   helpers.axes.name = 'Axes helper'
@@ -48,8 +48,8 @@ export const initSceneHelpers = (scene: THREE.Scene) => {
   }
 }
 
-export const addSceneInputs = (pane: Pane, scene: THREE.Scene, renderer: THREE.WebGLRenderer) => {
-  const THREE = three()
+export const addSceneInputs = (pane: Pane) => {
+  const { THREE, scene } = refs
   const disposers: Disposer[] = []
 
   const toggleHelper = (helper: 'axes' | 'grid') => {
@@ -64,7 +64,7 @@ export const addSceneInputs = (pane: Pane, scene: THREE.Scene, renderer: THREE.W
 
   const handleGridChange = (param: 'gridSize' | 'gridDivisions') => {
     scene.remove(helpers.grid)
-    helpers.grid.dispose?.()
+    helpers.grid.dispose()
 
     helpers.grid = new THREE.GridHelper(params.gridSize, params.gridDivisions)
     scene.add(helpers.grid)
@@ -113,9 +113,9 @@ export const addSceneInputs = (pane: Pane, scene: THREE.Scene, renderer: THREE.W
 
   pane.addSeparator()
 
-  disposers.push(addRendererInputs(pane, renderer))
+  disposers.push(addRendererInputs(pane))
   disposers.push(() => {
-    helpers.grid.dispose?.()
+    helpers.grid.dispose()
     helpers.axes.dispose()
   })
   return disposers

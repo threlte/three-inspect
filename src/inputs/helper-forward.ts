@@ -1,8 +1,8 @@
 import type { Pane } from '../pane'
-import { three } from '../three'
+import { refs } from '../refs'
 
 export const addForwardHelperInput = (pane: Pane, object3D: THREE.Object3D) => {
-  const helper = new (three().ArrowHelper)()
+  const helper = new refs.THREE.ArrowHelper()
   helper.name = 'Forward helper'
   helper.setLength(1)
   helper.userData.THREE_INSPECT_OMIT = true
@@ -24,6 +24,6 @@ export const addForwardHelperInput = (pane: Pane, object3D: THREE.Object3D) => {
   return () => {
     input.dispose()
     object3D.remove(helper)
-    helper.dispose?.()
+    helper.dispose()
   }
 }

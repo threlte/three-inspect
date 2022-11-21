@@ -1,9 +1,9 @@
 import { deregister, register } from '../objects'
-import type { TreeViewItem } from '../treeview/item'
-import { three } from '../three'
+import type { TreeViewItem } from 'flexible-tree'
+import { refs } from '../refs'
 
 export const patchObject3d = (treeroot: TreeViewItem) => {
-  const THREE = three()
+  const { THREE } = refs
   const add = THREE.Object3D.prototype.add
   const remove = THREE.Object3D.prototype.remove
   const clear = THREE.Object3D.prototype.clear

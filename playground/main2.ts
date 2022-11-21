@@ -66,6 +66,7 @@ let materials: THREE.Material[] = []
   directional.castShadow = true
   directional.shadow.mapSize.height = 1024
   directional.shadow.mapSize.width = 1024
+  directional.shadow.camera.far = 30
   directional.intensity = 1.5
   scene.add(directional)
   directional.position.set(3, 5, 3)
@@ -239,6 +240,10 @@ update(() => {
   }
 })
 
-new Inspector(THREE, scene, camera, renderer)
+const inspector = new Inspector(THREE, scene, camera, renderer)
 
 run()
+
+// const pane = inspector.addPane('Game')
+// pane.addInput({ test: '' }, 'test')
+// pane.addInput({ test2: '' }, 'test2')

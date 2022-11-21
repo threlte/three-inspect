@@ -7,7 +7,7 @@ import type { Pane } from './pane'
 import css from './main.css?inline'
 import { initElements } from './elements'
 import { initSceneHelpers } from './folders/scene'
-import { setThree } from './three'
+import { refs } from './refs'
 import { storage } from './lib/storage'
 
 const style = document.createElement('style')
@@ -47,15 +47,23 @@ export default class Inspector {
     renderer: THREE.WebGLRenderer,
     composer?: EffectComposer
   ) {
-    setThree(THREE)
+    refs.THREE = THREE
+    refs.scene = scene
+    refs.camera = camera
+    refs.renderer = renderer
+    refs.composer = composer ?? null
 
-    const { disposers, addPane } = initElements(scene, renderer, composer)
+    const { disposers, addPane } = initElements()
 
     this.addPane = addPane
     this.disposers.push(...disposers)
-    this.disposers.push(initSceneHelpers(scene))
+    this.disposers.push(initSceneHelpers())
 
-    setEnabledControls(camera, renderer, (storage.getNumber('controls') as Controls | null) ?? Controls.NONE)
+    const controls = storage.getNumber('controls')
+
+    if (controls !== null) {
+      setEnabledControls(controls as Controls, camera)
+    }
 
     run()
   }

@@ -1,17 +1,21 @@
-import { Container } from '../treeview/container'
+import { refs } from '../refs'
+import { resizable } from 'flexible-tree'
 
-export const createCanvas = (renderer: THREE.WebGLRenderer) => {
-  const canvas = new Container()
-  canvas.resizable = 'right'
-  canvas.resizeMax = Infinity
-  canvas.dom.classList.add('relative', 'h-screen', 'float-left')
-  canvas.dom.style.width = `${window.innerWidth - 300}px`
-
-  renderer.domElement.setAttribute('style', `
+export const createCanvas = () => {
+  const canvas = refs.renderer.domElement
+  canvas.setAttribute('style', `
     width: 100% !important;
     height: 100% !important;
   `)
-  canvas.dom.append(renderer.domElement)
 
-  return canvas
+  const container = resizable({
+    element: canvas,
+    max: Infinity,
+    side: 'right',
+    width: window.innerWidth - 335,
+  })
+  container.style.cssText += '--color-resize-handle: #222;'
+  container.classList.add('h-screen')
+
+  return container
 }

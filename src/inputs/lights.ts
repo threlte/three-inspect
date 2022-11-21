@@ -1,9 +1,9 @@
-import { defaultMinMax, shadowmapSizes } from '../constants'
 import type { Pane } from '../pane'
 import { addTransformInputs } from './transform'
 import { addUserdataInput } from './userdata'
 import { createRectAreaLightHelper } from '../lib/rectarealight'
-import { three } from '../three'
+import { defaultMinMax } from '../constants'
+import { refs } from '../refs'
 
 type LightHelper =
   | THREE.SpotLightHelper
@@ -28,7 +28,7 @@ const addTargetInput = (folder: Pane, light: TargetLight) => {
 }
 
 export const addLightInputs = (pane: Pane, light: THREE.Light) => {
-  const THREE = three()
+  const { THREE } = refs
 
   let helper: LightHelper | undefined
   let shadowHelper: THREE.CameraHelper | undefined
@@ -142,9 +142,23 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
       light.shadow.map = null
     }
 
+    const mapSizes = [
+      256,
+      512,
+      1024,
+      2048,
+    ]
+
     camFolder
-      .addInput(shadowMapParams, 'mapSize', { options: shadowmapSizes })
-      .on('change', handleShadowmapChange)
+      .addInput(shadowMapParams, 'mapSize', {
+        cells: (x: number) => ({
+          title: mapSizes[x],
+          value: mapSizes[x],
+        }),
+        groupName: 'mapSize',
+        size: [4, 1],
+        view: 'radiogrid',
+      }).on('change', handleShadowmapChange)
 
     camFolder.addInput(light.shadow, 'bias', {
       max: 0.09,
@@ -188,7 +202,7 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
   pane.on('change', () => {
     // @ts-expect-error update() is not correctly typed
     helper?.update?.()
-    shadowHelper?.update?.()
+    shadowHelper?.update()
   })
 
   disposers.push(addUserdataInput(pane, light))

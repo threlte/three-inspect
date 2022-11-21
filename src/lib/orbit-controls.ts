@@ -1,17 +1,17 @@
 /* eslint-disable max-classes-per-file, no-shadow */
 import { EventDispatcher } from './event-dispatcher'
-import { three } from '../three'
+import { refs } from '../refs'
 
 const twoPI = 2 * Math.PI
 const EPS = 0.000001
 
 const enum MOUSE {
-  LEFT = 0,
-  MIDDLE = 1,
-  RIGHT = 2,
-  ROTATE = 0,
-  DOLLY = 1,
-  PAN = 2,
+  LEFT,
+  MIDDLE,
+  RIGHT,
+  ROTATE,
+  DOLLY,
+  PAN,
 }
 
 const enum TOUCH {
@@ -165,53 +165,53 @@ export class OrbitControls extends EventDispatcher {
   dispose: () => void
 
   constructor (camera: THREE.Camera, domElement: HTMLElement) {
-    const THREE = three()
+    const { OrthographicCamera, PerspectiveCamera, Quaternion, Spherical, Vector2, Vector3 } = refs.THREE
 
     super()
 
     // Disable touch scroll
     domElement.style.touchAction = 'none'
 
-    this.target = new THREE.Vector3()
+    this.target = new Vector3()
 
     // For reset
     const target0 = this.target.clone()
     const position0 = camera.position.clone()
 
-    let zoom0 = (camera as THREE.OrthographicCamera).zoom
+    let zoom0 = camera instanceof OrthographicCamera ? camera.zoom : 0
 
-    const offset = new THREE.Vector3()
+    const offset = new Vector3()
 
     // So camera.up is the orbit axis
-    const quat = new THREE.Quaternion().setFromUnitVectors(camera.up, new THREE.Vector3(0, 1, 0))
+    const quat = new Quaternion().setFromUnitVectors(camera.up, new Vector3(0, 1, 0))
     const quatInverse = quat.clone().invert()
 
-    const lastPosition = new THREE.Vector3()
-    const lastQuaternion = new THREE.Quaternion()
+    const lastPosition = new Vector3()
+    const lastQuaternion = new Quaternion()
 
     let state = STATE.NONE
 
-    const v = new THREE.Vector3()
+    const v = new Vector3()
 
     // Current position in spherical coordinates
-    const spherical = new THREE.Spherical()
-    const sphericalDelta = new THREE.Spherical()
+    const spherical = new Spherical()
+    const sphericalDelta = new Spherical()
 
     let scale = 1
-    const panOffset = new THREE.Vector3()
+    const panOffset = new Vector3()
     let zoomChanged = false
 
-    const rotateStart = new THREE.Vector2()
-    const rotateEnd = new THREE.Vector2()
-    const rotateDelta = new THREE.Vector2()
+    const rotateStart = new Vector2()
+    const rotateEnd = new Vector2()
+    const rotateDelta = new Vector2()
 
-    const panStart = new THREE.Vector2()
-    const panEnd = new THREE.Vector2()
-    const panDelta = new THREE.Vector2()
+    const panStart = new Vector2()
+    const panEnd = new Vector2()
+    const panDelta = new Vector2()
 
-    const dollyStart = new THREE.Vector2()
-    const dollyEnd = new THREE.Vector2()
-    const dollyDelta = new THREE.Vector2()
+    const dollyStart = new Vector2()
+    const dollyEnd = new Vector2()
+    const dollyDelta = new Vector2()
 
     const pointers: PointerEvent[] = []
     const pointerPositions: Record<number, THREE.Vector2> = {}
@@ -359,10 +359,9 @@ export class OrbitControls extends EventDispatcher {
       this.target.copy(target0)
       camera.position.copy(position0)
 
-      if ('isOrthographicCamera' in camera) {
-        const cam = camera as THREE.OrthographicCamera
-        cam.zoom = zoom0
-        cam.updateProjectionMatrix()
+      if (camera instanceof OrthographicCamera) {
+        camera.zoom = zoom0
+        camera.updateProjectionMatrix()
       }
 
       this.dispatchEvent(changeEvent)
@@ -405,8 +404,8 @@ export class OrbitControls extends EventDispatcher {
 
     // DeltaX and deltaY are in pixels; right and down are positive
     const pan = (deltaX: number, deltaY: number) => {
-      if ('isPerspectiveCamera' in camera) {
-        const { fov } = camera as THREE.PerspectiveCamera
+      if (camera instanceof PerspectiveCamera) {
+        const { fov } = camera
 
         // Perspective
         offset.copy(camera.position).sub(this.target)
@@ -418,38 +417,29 @@ export class OrbitControls extends EventDispatcher {
         // We use only clientHeight here so aspect ratio does not distort speed
         panLeft(2 * deltaX * targetDistance / domElement.clientHeight, camera.matrix)
         panUp(2 * deltaY * targetDistance / domElement.clientHeight, camera.matrix)
-      } else if ('isOrthographicCamera' in camera) {
-        const cam = camera as THREE.OrthographicCamera
-        panLeft(deltaX * (cam.right - cam.left) / cam.zoom / domElement.clientWidth, cam.matrix)
-        panUp(deltaY * (cam.top - cam.bottom) / cam.zoom / domElement.clientHeight, cam.matrix)
+      } else if (camera instanceof OrthographicCamera) {
+        panLeft(deltaX * (camera.right - camera.left) / camera.zoom / domElement.clientWidth, camera.matrix)
+        panUp(deltaY * (camera.top - camera.bottom) / camera.zoom / domElement.clientHeight, camera.matrix)
       }
     }
 
     const dollyOut = (dollyScale: number) => {
-      if ('isPerspectiveCamera' in camera) {
+      if (camera instanceof PerspectiveCamera) {
         scale /= dollyScale
-      } else if ('isOrthographicCamera' in camera) {
-        const cam = camera as THREE.OrthographicCamera
-        cam.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, cam.zoom * dollyScale))
-        cam.updateProjectionMatrix()
+      } else if (camera instanceof OrthographicCamera) {
+        camera.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, camera.zoom * dollyScale))
+        camera.updateProjectionMatrix()
         zoomChanged = true
-      } else {
-        console.warn('WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.')
-        this.enableZoom = false
       }
     }
 
     const dollyIn = (dollyScale: number) => {
-      if ('isPerspectiveCamera' in camera) {
+      if (camera instanceof PerspectiveCamera) {
         scale *= dollyScale
-      } else if ('isOrthographicCamera' in camera) {
-        const cam = camera as THREE.OrthographicCamera
-        cam.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, cam.zoom / dollyScale))
-        cam.updateProjectionMatrix()
+      } else if (camera instanceof OrthographicCamera) {
+        camera.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, camera.zoom / dollyScale))
+        camera.updateProjectionMatrix()
         zoomChanged = true
-      } else {
-        console.warn('WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.')
-        this.enableZoom = false
       }
     }
 
@@ -690,16 +680,13 @@ export class OrbitControls extends EventDispatcher {
     }
 
     /*
-     *
      * Event handlers - FSM: listen for events and reset state
-     *
      */
-
     const trackPointer = (event: PointerEvent) => {
       let position = pointerPositions[event.pointerId]
 
       if (position === undefined) {
-        position = new THREE.Vector2()
+        position = new Vector2()
         pointerPositions[event.pointerId] = position
       }
 
@@ -952,7 +939,7 @@ export class OrbitControls extends EventDispatcher {
     const removePointer = (event: PointerEvent) => {
       delete pointerPositions[event.pointerId]
 
-      for (let i = 0; i < pointers.length; i += 1) {
+      for (let i = 0, l = pointers.length; i < l; i += 1) {
         if (pointers[i].pointerId === event.pointerId) {
           pointers.splice(i, 1)
           return
@@ -965,7 +952,6 @@ export class OrbitControls extends EventDispatcher {
 
       if (pointers.length === 0) {
         domElement.releasePointerCapture(event.pointerId)
-
         domElement.removeEventListener('pointermove', onPointerMove)
         domElement.removeEventListener('pointerup', onPointerUp)
       }
@@ -982,7 +968,6 @@ export class OrbitControls extends EventDispatcher {
 
       if (pointers.length === 0) {
         domElement.setPointerCapture(event.pointerId)
-
         domElement.addEventListener('pointermove', onPointerMove)
         domElement.addEventListener('pointerup', onPointerUp)
       }

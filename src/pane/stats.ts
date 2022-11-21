@@ -11,7 +11,7 @@ type PerformanceMemory = Performance & {
 
 export const initStats = (root: HTMLElement) => {
   const container = document.createElement('div')
-  container.className = 'sticky bottom-0'
+  container.className = 'stats sticky bottom-0'
   root.append(container)
 
   const stats = new Pane({ container })

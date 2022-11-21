@@ -1,5 +1,7 @@
 import { MapControls, OrbitControls } from './orbit-controls'
+import { refs } from '../refs'
 import { storage } from './storage'
+import { createOrbitControlsGizmo } from '../elements/gizmo'
 
 export type Cameras = THREE.PerspectiveCamera | THREE.OrthographicCamera
 
@@ -12,7 +14,9 @@ export const enum Controls {
 
 let controls: OrbitControls | undefined
 
-export const setEnabledControls = (camera: Cameras, renderer: THREE.WebGLRenderer, type: Controls) => {
+export const setEnabledControls = (type: Controls, camera: Cameras) => {
+  const { renderer } = refs
+
   const savePosition = () => {
     storage.setJSON('camera', {
       position: camera.position.toArray(),
@@ -45,6 +49,8 @@ export const setEnabledControls = (camera: Cameras, renderer: THREE.WebGLRendere
     controls = new OrbitControls(camera, renderer.domElement)
     window.addEventListener('pointerup', savePosition, { passive: true })
     window.addEventListener('wheel', savePosition, { passive: true })
+
+    createOrbitControlsGizmo(renderer.domElement.parentElement!, controls)
 
   /**
    * No controls

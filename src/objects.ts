@@ -1,4 +1,4 @@
-import { TreeViewItem } from './treeview/item'
+import { TreeViewItem } from 'flexible-tree'
 
 const objectToTreeItem = new WeakMap<THREE.Object3D, TreeViewItem>()
 const treeItemToObject = new WeakMap<TreeViewItem, THREE.Object3D>()
@@ -17,7 +17,11 @@ const getObjectType = (object3D: THREE.Object3D) => {
 }
 
 export const objectFromTreeItem = (item: TreeViewItem) => {
-  return treeItemToObject.get(item)!
+  return treeItemToObject.get(item)
+}
+
+export const treeItemFromObject = (object: THREE.Object3D) => {
+  return objectToTreeItem.get(object)
 }
 
 export const deregister = (object3D: THREE.Object3D) => {

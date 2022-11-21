@@ -18,7 +18,7 @@ class EventDispatcher {
   }
 
   hasEventListener (type: string, listener: Listener) {
-    return this.listeners[type]?.includes(listener)
+    return this.listeners[type].includes(listener)
   }
 
   removeEventListener (type: string, listener: Listener) {
@@ -58,3 +58,5 @@ class EventDispatcher {
 }
 
 export { EventDispatcher }
+
+export const dispatcher = new EventDispatcher()
