@@ -1,7 +1,7 @@
 import { MapControls, OrbitControls } from './orbit-controls'
+import { createOrbitControlsGizmo } from '../elements/gizmo'
 import { refs } from '../refs'
 import { storage } from './storage'
-import { createOrbitControlsGizmo } from '../elements/gizmo'
 
 export type Cameras = THREE.PerspectiveCamera | THREE.OrthographicCamera
 

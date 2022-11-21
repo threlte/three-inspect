@@ -65,7 +65,7 @@ export const addCameraInputs = (pane: Pane, camera: Cameras) => {
   disposers.push(addUserdataInput(pane, camera))
 
   if (refs.composer !== null) {
-    disposers.push(addPostInputs(pane, refs.composer))
+    disposers.push(addPostInputs(pane))
   }
 
   disposers.push(() => window.removeEventListener('wheel', updateZoomInput))
