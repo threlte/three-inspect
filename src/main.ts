@@ -2,6 +2,7 @@ import './patch/folders'
 import type * as ThreeLib from 'three'
 import { Controls, setEnabledControls } from './lib/controls'
 import { pause, run } from './update'
+import CameraControls from 'camera-controls'
 import type { EffectComposer } from 'postprocessing'
 import type { Pane } from './pane'
 import css from './main.css?inline'
@@ -52,6 +53,8 @@ export default class Inspector {
     refs.camera = camera
     refs.renderer = renderer
     refs.composer = composer ?? null
+
+    CameraControls.install({ THREE })
 
     const { disposers, addPane } = initElements()
 

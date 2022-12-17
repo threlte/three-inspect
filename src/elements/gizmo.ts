@@ -1,4 +1,5 @@
 import type { OrbitControls } from '../lib/orbit-controls'
+import type CameraControls from 'camera-controls'
 import { refs } from '../refs'
 
 interface Axis {
@@ -11,7 +12,7 @@ interface Axis {
   size: number
 }
 
-export const createOrbitControlsGizmo = (container: HTMLElement, orbitControls: OrbitControls) => {
+export const createOrbitControlsGizmo = (container: HTMLElement, orbitControls: CameraControls) => {
   const { camera } = refs
   const { Matrix4, Vector2, Vector3 } = refs.THREE
 
@@ -153,8 +154,6 @@ export const createOrbitControlsGizmo = (container: HTMLElement, orbitControls: 
     rotateDelta.subVectors(rotateEnd, rotateStart).multiplyScalar(0.5)
 
     rotateStart.copy(rotateEnd)
-
-    orbitControls.update()
   }
 
   const onPointerUp = () => {
@@ -218,6 +217,7 @@ export const createOrbitControlsGizmo = (container: HTMLElement, orbitControls: 
     const duration = 400
     const start = performance.now()
     const maxAlpha = 1
+
     const loop = () => {
       const now = performance.now()
       const delta = now - start

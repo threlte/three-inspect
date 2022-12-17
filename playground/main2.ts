@@ -96,6 +96,7 @@ const size = 1
 
 // Add a box
 {
+  const object = new THREE.Object3D()
   const geometry = new THREE.BoxGeometry(size, size, size)
   const material = new THREE.ShaderMaterial({
     uniforms: {
@@ -109,8 +110,9 @@ const size = 1
 
   const mesh = new THREE.Mesh(geometry, material)
   mesh.name = 'Box'
-  scene.add(mesh)
-  meshes.push(mesh)
+  object.add(mesh)
+  scene.add(object)
+  meshes.push(object)
 }
 
 // Add a cartoonish cone

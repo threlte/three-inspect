@@ -47,13 +47,25 @@ export const initScene = (
       return
     }
 
-    const treeItem = treeItemFromObject(intersects[0].object)
+    let treeItem: TreeViewItem | undefined
 
-    if (treeItem) {
-      if (selected) {
+
+    while (treeItem === undefined) {
+      const intersect = intersects.shift()
+
+      if (intersect === undefined) {
+        break
+      }
+
+      treeItem = treeItemFromObject(intersect.object)
+    }
+
+    if (treeItem !== undefined) {
+      if (selected !== undefined) {
         selected.selected = false
       }
       treeItem.selected = true
+      treeItem.dom.scrollIntoView()
     }
   })
 
