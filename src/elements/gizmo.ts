@@ -1,5 +1,4 @@
 import type { OrbitControls } from '../lib/orbit-controls'
-import type CameraControls from 'camera-controls'
 import { refs } from '../refs'
 
 interface Axis {
@@ -12,7 +11,7 @@ interface Axis {
   size: number
 }
 
-export const createOrbitControlsGizmo = (container: HTMLElement, orbitControls: CameraControls) => {
+export const createOrbitControlsGizmo = (container: HTMLElement, orbitControls: OrbitControls) => {
   const { camera } = refs
   const { Matrix4, Vector2, Vector3 } = refs.THREE
 
