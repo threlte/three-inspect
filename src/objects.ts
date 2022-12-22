@@ -41,23 +41,31 @@ export const deregister = (object3D: THREE.Object3D) => {
   }
 }
 
+const orphaned = new Map()
+
 export const register = (treeroot: TreeViewItem, object3D: THREE.Object3D, parent: THREE.Object3D) => {
   if (object3D.userData.THREE_INSPECT_OMIT === true) {
     return
   }
 
   const parentItem = 'isScene' in parent ? treeroot : objectToTreeItem.get(parent)
-
-  if (parentItem === undefined) {
-    return
-  }
-
   const text = `${object3D.name} (${getObjectType(object3D)})`
   const item = new TreeViewItem({ text })
   item.open = true
   objectToTreeItem.set(object3D, item)
   treeItemToObject.set(item, object3D)
-  parentItem.append(item)
+
+  if (parentItem) {
+    parentItem.append(item)
+  } else if (object3D.parent) {
+    orphaned.set(object3D.parent.uuid, item)
+  }
+
+  const orphan = orphaned.get(object3D.uuid)
+  if (orphan) {
+    item.append(orphan)
+    orphaned.delete(object3D.uuid)
+  }
 
   {
     const { children } = object3D
