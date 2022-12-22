@@ -5,9 +5,11 @@
 ![A screenshot of three-inspect in action](https://raw.githubusercontent.com/michealparks/three-inspect/main/assets/screen.gif)
 
 Currently, it covers:
-* Creating a tree of the scene graph and viewing / editing object properties, such as materials, textures, transforms, etc.
+* Creating a view of the scene graph and editing object properties, such as materials, transforms, etc.
+* Viewing / editing textures.
 * Scene helpers (Grid / Axes).
-* Performance monitoring (framerate, memory, capabilities, misc. stats).
+* Showing and editing shaders.
+* Performance monitoring (resources, framerate, memory, capabilities, misc. stats).
 * Light helpers, shadow camera helpers.
 * Postprocessing (only [pmndrs/postprocessing](https://github.com/pmndrs/postprocessing) is supported).
 

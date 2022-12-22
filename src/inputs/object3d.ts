@@ -10,6 +10,10 @@ type Disposer = () => void
 export const addObjectInputs = (pane: Pane, object3D: THREE.Object3D) => {
   const { THREE } = refs
 
+  if (object3D instanceof THREE.Points) {
+    pane.addMonitor(object3D.geometry.attributes.position, 'count')
+  }
+
   pane.addInput(object3D, 'castShadow')
   pane.addInput(object3D, 'receiveShadow')
   pane.addInput(object3D, 'frustumCulled')
