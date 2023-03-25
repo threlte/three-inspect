@@ -50,7 +50,7 @@ export const setEnabledControls = (type: Controls, camera: Cameras) => {
     window.addEventListener('pointerup', savePosition, { passive: true })
     window.addEventListener('wheel', savePosition, { passive: true })
 
-    createOrbitControlsGizmo(renderer.domElement.parentElement!, controls)
+    createOrbitControlsGizmo(refs.debugRoot, controls)
 
   /**
    * No controls

@@ -1,19 +1,31 @@
 import './main.css'
 import * as THREE from 'three'
-import { scene, camera, renderer, run, lights, composer, update, Trail, createNoise3D, NoiseFunction3D } from 'three-kit'
+import { threeInstance, update } from 'trzy'
+import { Trail } from 'three-kit'
+import { createNoise3D, NoiseFunction3D } from 'simplex-noise'
 import Inspector from '../src/main'
 import vertexShader from './vert.glsl'
 import fragmentShader from './frag.glsl'
 
-camera.parent!.name = 'Camera'
+const { scene, camera, renderer, canvas, run } = threeInstance();
+
+canvas.id = 'canvas'
+
+document.body.append(canvas)
+
+scene.add(camera)
+
 camera.near = -200
 camera.far = 200
 
-const ambient = lights.createAmbient()
+camera.position.set(5, 5, 5)
+camera.lookAt(0, 0, 0)
+
+const ambient = new THREE.AmbientLight()
 scene.add(ambient)
 
 {
-  const directional = lights.createDirectional()
+  const directional = new THREE.DirectionalLight()
   directional.castShadow = true
   directional.shadow.normalBias = -0.1
   directional.shadow.camera.near = 0.4
@@ -27,7 +39,7 @@ scene.add(ambient)
 }
 
 {
-  const rect = lights.createRectArea(0xff0000)
+  const rect = new THREE.RectAreaLight(0xff0000)
   rect.intensity = 0.5
   rect.position.y = 0.1
   rect.rotateX(Math.PI / 2)
@@ -156,11 +168,6 @@ const count = 30
   scene.add(mesh)
 }
 
-camera.position.set(1, 1, 1)
-camera.lookAt(0, 0, 0)
-
-run()
-
 {
   const colors = new Float32Array([
     1, 0, 0,
@@ -197,12 +204,13 @@ const toggle = () => {
     inspector.dispose()
     inspector = undefined
   } else {
-    inspector = new Inspector(THREE, scene, camera, renderer, composer)
+    inspector = new Inspector({ THREE, scene, camera, renderer })
   }
 }
 
 toggle()
-// setInterval(toggle, 1_000)
 
 const pane = inspector?.addPane('Game')
 pane?.addInput({ test: '' }, 'test')
+
+run()

@@ -1,8 +1,10 @@
-import { TreeView, TreeViewItem, resizable } from 'flexible-tree'
+import { TreeViewItem, TreeViewWebComponent } from 'flexible-tree'
+import { refs } from '../refs'
 
 export const createControls = () => {
   const controls = document.createElement('div')
   controls.className = 'relative flex flex-col grow bg-[#28292e]'
+  refs.debugRoot = controls
 
   const nav = document.createElement('nav')
   nav.className = 'tp-rotv z-50 sticky flex top-0 w-full overflow-x-auto z-1 bg-[#28292e] font-mono text-[11px]'
@@ -13,27 +15,19 @@ export const createControls = () => {
   worldPane.dataset.pane = 'World'
   controls.append(worldPane)
 
-  const treeview = new TreeView()
+  const treeview = new TreeViewWebComponent()
   treeview.scrollable = true
   treeview.allowRenaming = false
+  treeview.resizable = 'bottom'
+  treeview.dom.style.cssText = 'font-family: monospace; font-size: 11px;'
 
-  const tree = resizable({
-    element: treeview.domElement,
-    height: 300,
-    max: Infinity,
-    side: 'bottom',
-  })
-  tree.style.cssText += '--color-resize-handle: #222;'
-  tree.style.position = 'sticky'
-  tree.classList.add('top-0', 'z-10')
-
-  worldPane.append(tree)
+  treeview.wc.classList.add('sticky', 'top-0', 'z-10', 'bg-[#333]')
+  worldPane.append(treeview.wc)
 
   const treeroot = new TreeViewItem({ text: 'Scene' })
   treeview.append(treeroot)
 
   const pane = document.createElement('div')
-  pane.classList.add('grow')
   worldPane.append(pane)
 
   return { controls, nav, pane, treeroot, treeview }

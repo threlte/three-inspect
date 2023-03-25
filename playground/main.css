@@ -1,13 +1,14 @@
 body {
   margin: 0;
   overflow: hidden;
+  height: 100vh;
 }
 
-/* canvas {
+#canvas {
   z-index: 1;
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw !important;
-  height: 100vh !important;
-} */
+  width: 100vw;
+  height: 100vh;
+}

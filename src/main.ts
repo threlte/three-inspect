@@ -33,21 +33,40 @@ export default class Inspector {
   /**
    * Instantiates the Three.js inspector tools.
    *
-   * @param THREE The THREE object used in this project.
-   * @param scene The scene to inspect.
-   * @param camera The current camera.
-   * @param renderer The rendering instance.
-   * @param composer An optional EffectComposer instance.
+   * @param args Arguments required by three-inspect
+   * @param args.THREE The THREE object used in this project, usually from `import * as THREE from 'three'`
+   * @param args.scene The scene to inspect.
+   * @param args.camera The current camera.
+   * @param args.renderer The rendering instance.
+   * @param args.composer An optional pmndrs/postprocessing EffectComposer instance.
+   * @param args.options Optional setup and rendering options.
+   * @param args.options.location The location of the inspector. Defaults to 'right'. Options are 'right', 'overlay'.
    *
    * @returns A cleanup function to unmount and dispose the inspector.
    */
-  constructor (
+  constructor ({
+    THREE,
+    scene,
+    camera,
+    renderer,
+    composer,
+    options = {},
+  }: {
     THREE: typeof ThreeLib,
     scene: THREE.Scene,
     camera: THREE.PerspectiveCamera | THREE.OrthographicCamera,
     renderer: THREE.WebGLRenderer,
-    composer?: EffectComposer
-  ) {
+    composer?: EffectComposer,
+    options?: {
+      location?: 'right' | 'overlay'
+    }
+  }) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!THREE) {
+      const msg = 'three-inspect constructor arguments have changed. Consult docs for new args: https://www.npmjs.com/package/three-inspect'
+      throw new Error(msg)
+    }
+
     refs.THREE = THREE
     refs.scene = scene
     refs.camera = camera
@@ -56,7 +75,10 @@ export default class Inspector {
 
     CameraControls.install({ THREE })
 
-    const { disposers, addPane } = initElements()
+    const { disposers, addPane } = initElements({
+      location: 'right',
+      ...options,
+    })
 
     this.addPane = addPane
     this.disposers.push(...disposers)

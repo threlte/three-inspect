@@ -31,13 +31,16 @@ import Inspector from 'three-inspect'
  * when building for production to ensure tree-shaking.
  */
 if (devMode) {
-  const inspector = new Inspector(
+  const inspector = new Inspector({
     THREE, /* the THREE object used in your project */
     scene,
     camera,
     renderer,
     composer /* optional */
-  )
+    options: { /* optional */
+      location: 'right' /* can be 'right' or 'overlay'. Default: 'right' */
+    }
+  })
 
   /**
    * To get access to camera inspection, your camera must be in the scene.

@@ -61,7 +61,11 @@ export const createOrbitControlsGizmo = (container: HTMLElement, orbitControls: 
   canvas.className = 'orbit-controls-gizmo'
   container.append(canvas)
 
-  const context = canvas.getContext('2d')!
+  const context = canvas.getContext('2d')
+
+  if (context === null) {
+    throw new Error('2d canvas context is null!')
+  }
 
   const drawCircle = (point: THREE.Vector3, radius = 10, color = '#FF0000') => {
     context.beginPath()

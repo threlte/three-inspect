@@ -1,10 +1,15 @@
+import './main.css'
 import * as THREE from 'three'
-import { run, scene, camera, renderer, update } from 'three-kit'
+import { threeInstance, update } from 'trzy'
 import Inspector from '../src/main'
 import vertexShader from './vert.glsl'
 import fragmentShader from './frag.glsl'
 
-THREE.ColorManagement.legacyMode = false
+const { scene, camera, renderer, canvas, run, pause } = threeInstance()
+
+canvas.id = 'canvas'
+
+document.body.append(canvas)
 
 camera.far = 300
 camera.position.set(0, 2, 10)
@@ -131,7 +136,7 @@ const size = 1
 // Add a sphere
 {
   const geometry = new THREE.SphereGeometry(size / 2, 100, 100)
-  const material = new THREE.MeshPhongMaterial({ color: 'lightblue' })
+  const material = new THREE.MeshStandardMaterial({ color: 'lightblue' })
   material.envMap = environmentMapTexture
   material.envMapIntensity = 0.1
   materials.push(material)
@@ -242,10 +247,6 @@ update(() => {
   }
 })
 
-const inspector = new Inspector(THREE, scene, camera, renderer)
+new Inspector({ THREE, scene, camera, renderer, options: { location: 'overlay' } })
 
 run()
-
-// const pane = inspector.addPane('Game')
-// pane.addInput({ test: '' }, 'test')
-// pane.addInput({ test2: '' }, 'test2')
