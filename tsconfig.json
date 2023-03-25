@@ -28,7 +28,6 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "importsNotUsedAsValues": "error",
     "outDir": "dist"
   },
   "include": ["src/**/*"]
