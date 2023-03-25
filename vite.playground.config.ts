@@ -7,6 +7,7 @@ export default defineConfig({
   build: {
     minify: true,
     target: 'esnext',
+    outDir: 'dist-playground'
   },
   publicDir: 'assets',
   plugins: [glsl()],
