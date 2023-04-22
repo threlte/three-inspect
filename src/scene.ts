@@ -78,6 +78,8 @@ export const initScene = (
   })
 
   tree.on('select', (item: TreeViewItem) => {
+    disposer?.()
+    disposer = null
     selected = item
 
     const object3D = item.text === 'Scene' ? scene : objectFromTreeItem(item)

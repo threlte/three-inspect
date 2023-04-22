@@ -1,11 +1,11 @@
 import './main.css'
 import * as THREE from 'three'
-import { threeInstance, update } from 'trzy'
+import { three } from 'trzy'
 import Inspector from '../src/main'
 import vertexShader from './vert.glsl'
 import fragmentShader from './frag.glsl'
 
-const { scene, camera, renderer, canvas, run, pause } = threeInstance()
+const { scene, camera, renderer, canvas, update } = three()
 
 canvas.id = 'canvas'
 
@@ -247,6 +247,4 @@ update(() => {
   }
 })
 
-new Inspector({ THREE, scene, camera, renderer, options: { location: 'overlay' } })
-
-run()
+new Inspector({ THREE, scene, camera, renderer })

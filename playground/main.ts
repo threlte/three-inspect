@@ -1,13 +1,12 @@
 import './main.css'
 import * as THREE from 'three'
-import { threeInstance, update } from 'trzy'
-import { Trail } from 'three-kit'
+import { three, Trail } from 'trzy'
 import { createNoise3D, NoiseFunction3D } from 'simplex-noise'
 import Inspector from '../src/main'
 import vertexShader from './vert.glsl'
 import fragmentShader from './frag.glsl'
 
-const { scene, camera, renderer, canvas, run } = threeInstance();
+const { scene, camera, renderer, canvas, update } = three();
 
 canvas.id = 'canvas'
 
@@ -212,5 +211,3 @@ toggle()
 
 const pane = inspector?.addPane('Game')
 pane?.addInput({ test: '' }, 'test')
-
-run()

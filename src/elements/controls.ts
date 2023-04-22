@@ -18,8 +18,7 @@ export const createControls = () => {
   const treeview = new TreeViewWebComponent()
   treeview.scrollable = true
   treeview.allowRenaming = false
-  treeview.resizable = 'bottom'
-  treeview.dom.style.cssText = 'font-family: monospace; font-size: 11px;'
+  treeview.dom.style.cssText = 'font-family: monospace; font-size: 11px; height: 300px;'
 
   treeview.wc.classList.add('sticky', 'top-0', 'z-10', 'bg-[#333]')
   worldPane.append(treeview.wc)
