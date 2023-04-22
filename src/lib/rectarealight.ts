@@ -27,6 +27,7 @@ export const createRectAreaLightHelper = (light: THREE.RectAreaLight, color?: TH
   const material = new THREE.LineBasicMaterial({ fog: false })
   const line = new THREE.Line()
 
+  // @ts-expect-error This is ok :P
   line.type = 'RectAreaLightHelper'
 
   const geometry2 = new THREE.BufferGeometry()
