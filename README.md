@@ -90,7 +90,6 @@ inspector.registerPlugin(myPlugin)
 ### React Three Fiber Usage
 
 ```ts
-import * as THREE from 'three'
 import * as React from 'react'
 import { useThree } from '@react-three/fiber'
 import Inspector from 'three-inspect'
@@ -116,7 +115,6 @@ function App() {
 ```html
 <script lang='ts'>
 
-import * as THREE from 'three'
 import { useThrelte } from '@threlte/core'
 import Inspector from 'three-inspect'
 
@@ -127,7 +125,6 @@ let inspector: Inspector | undefined
 $: {
   inspector?.dispose()
   inspector = new Inspector({
-    THREE,
     scene,
     camera: camera.current as THREE.PerspectiveCamera,
     renderer: renderer!
