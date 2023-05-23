@@ -1,5 +1,5 @@
 import * as Tweakpane from 'tweakpane'
-import { storage } from '../lib/storage'
+import { load, save } from 'trzy'
 
 type Pane = Tweakpane.Pane | Tweakpane.FolderApi
 
@@ -12,7 +12,7 @@ Tweakpane.FolderApi.prototype.addFolder = function (params: Tweakpane.FolderPara
   const id = `${String(params.index ?? -1)}.${params.title}`
 
   const folder = addFolder.call(this, {
-    expanded: storage.get(`pane.${id}`) !== null,
+    expanded: load(`pane.${id}`) !== null,
     ...params,
   })
   folders.push(folder)
@@ -23,9 +23,9 @@ Tweakpane.FolderApi.prototype.addFolder = function (params: Tweakpane.FolderPara
     const key = `pane.${id}`
 
     if (event.expanded) {
-      storage.set(key, '')
+      save(key, true)
     } else {
-      storage.remove(key)
+      save(key, null)
     }
   })
 

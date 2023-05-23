@@ -1,10 +1,9 @@
+import * as THREE from 'three'
 import type { Pane } from '../pane'
 import { addTextureInputs } from '../inputs/texture'
 import { defaultMinMax } from '../constants'
-import { refs } from '../refs'
 
 export const addMaterialInputs = (pane: Pane, mesh: THREE.Mesh) => {
-  const { THREE } = refs
   const material = mesh.material as THREE.Material
   const folder = pane.addFolder({
     index: mesh.id,

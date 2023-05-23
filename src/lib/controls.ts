@@ -1,7 +1,7 @@
-import { MapControls, OrbitControls } from './orbit-controls'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { createOrbitControlsGizmo } from '../elements/gizmo'
 import { refs } from '../refs'
-import { storage } from './storage'
+import { save } from 'trzy'
 
 export type Cameras = THREE.PerspectiveCamera | THREE.OrthographicCamera
 
@@ -9,7 +9,7 @@ export type Cameras = THREE.PerspectiveCamera | THREE.OrthographicCamera
 export const enum Controls {
   NONE,
   ORBIT,
-  MAP,
+  // MAP,
 }
 
 let controls: OrbitControls | undefined
@@ -18,7 +18,7 @@ export const setEnabledControls = (type: Controls, camera: Cameras) => {
   const { renderer } = refs
 
   const savePosition = () => {
-    storage.setJSON('camera', {
+    save('three-inspect.camera', {
       position: camera.position.toArray(),
       quaternion: camera.quaternion.toArray(),
       target: controls?.target.toArray(),
@@ -32,20 +32,8 @@ export const setEnabledControls = (type: Controls, camera: Cameras) => {
     window.removeEventListener('wheel', savePosition)
   }
 
-  /**
-   * Map Controls
-   */
-  if (type === Controls.MAP) {
-    storage.setNumber('controls', Controls.MAP)
-    controls = new MapControls(camera, renderer.domElement)
-    window.addEventListener('pointerup', savePosition, { passive: true })
-    window.addEventListener('wheel', savePosition, { passive: true })
-
-  /**
-   * Orbit Controls
-   */
-  } else if (type === Controls.ORBIT) {
-    storage.setNumber('controls', Controls.ORBIT)
+  if (type === Controls.ORBIT) {
+    save('three-inspect.controls', Controls.ORBIT)
     controls = new OrbitControls(camera, renderer.domElement)
     window.addEventListener('pointerup', savePosition, { passive: true })
     window.addEventListener('wheel', savePosition, { passive: true })
@@ -56,7 +44,7 @@ export const setEnabledControls = (type: Controls, camera: Cameras) => {
    * No controls
    */
   } else {
-    storage.remove('camera')
-    storage.remove('controls')
+    save('three-inspect.camera', null)
+    save('controls', null)
   }
 }

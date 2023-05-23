@@ -1,25 +1,24 @@
+import * as THREE from 'three'
 import { type Cameras, Controls, setEnabledControls } from '../lib/controls'
 import type { Pane } from '../pane'
 import { addPostInputs } from './postprocessing'
 import { addTransformInputs } from './transform'
 import { addUserdataInput } from './userdata'
+import { load } from 'trzy'
 import { refs } from '../refs'
-import { storage } from '../lib/storage'
 
 export type { Cameras }
 
 const controlOptions = [
   Controls.NONE,
   Controls.ORBIT,
-  Controls.MAP,
 ]
 
 const params = {
-  controls: (storage.getNumber('controls') as Controls | null) ?? Controls.NONE,
+  controls: load<Controls>('three-inspect.controls') ?? Controls.NONE,
 }
 
 export const addCameraInputs = (pane: Pane, camera: Cameras) => {
-  const { THREE } = refs
   const titles = ['none', 'orbit', 'map']
 
   pane
@@ -30,7 +29,7 @@ export const addCameraInputs = (pane: Pane, camera: Cameras) => {
       }),
       groupName: 'controls',
       label: 'inspect controls',
-      size: [3, 1],
+      size: [2, 1],
       view: 'radiogrid',
     })
     .on('change', () => setEnabledControls(params.controls, camera))

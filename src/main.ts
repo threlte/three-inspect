@@ -1,15 +1,13 @@
 import './patch/folders'
-import type * as ThreeLib from 'three'
 import { Controls, setEnabledControls } from './lib/controls'
 import { pause, run } from './update'
-import CameraControls from 'camera-controls'
 import type { EffectComposer } from 'postprocessing'
 import type { Pane } from './pane'
 import css from './main.css?inline'
 import { initElements } from './elements'
 import { initSceneHelpers } from './folders/scene'
+import { load } from 'trzy'
 import { refs } from './refs'
-import { storage } from './lib/storage'
 
 const style = document.createElement('style')
 style.textContent = css
@@ -34,7 +32,6 @@ export default class Inspector {
    * Instantiates the Three.js inspector tools.
    *
    * @param args Arguments required by three-inspect
-   * @param args.THREE The THREE object used in this project, usually from `import * as THREE from 'three'`
    * @param args.scene The scene to inspect.
    * @param args.camera The current camera.
    * @param args.renderer The rendering instance.
@@ -45,14 +42,12 @@ export default class Inspector {
    * @returns A cleanup function to unmount and dispose the inspector.
    */
   constructor ({
-    THREE,
     scene,
     camera,
     renderer,
     composer,
     options = {},
   }: {
-    THREE: typeof ThreeLib,
     scene: THREE.Scene,
     camera: THREE.PerspectiveCamera | THREE.OrthographicCamera,
     renderer: THREE.WebGLRenderer,
@@ -62,18 +57,15 @@ export default class Inspector {
     }
   }) {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!THREE) {
+    if (!scene) {
       const msg = 'three-inspect constructor arguments have changed. Consult docs for new args: https://www.npmjs.com/package/three-inspect'
       throw new Error(msg)
     }
 
-    refs.THREE = THREE
     refs.scene = scene
     refs.camera = camera
     refs.renderer = renderer
     refs.composer = composer ?? null
-
-    CameraControls.install({ THREE })
 
     const { disposers, addPane } = initElements({
       location: 'right',
@@ -84,10 +76,10 @@ export default class Inspector {
     this.disposers.push(...disposers)
     this.disposers.push(initSceneHelpers())
 
-    const controls = storage.getNumber('controls')
+    const controls = load<Controls>('three-inspect.controls')
 
     if (controls !== null) {
-      setEnabledControls(controls as Controls, camera)
+      setEnabledControls(controls, camera)
     }
 
     run()
@@ -105,7 +97,7 @@ export default class Inspector {
   /**
    * Disposes the inspector.
    */
-  dispose () {
+  dispose = () => {
     pause()
 
     for (let i = this.disposers.length - 1; i > -1; i -= 1) {

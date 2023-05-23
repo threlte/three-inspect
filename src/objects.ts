@@ -48,8 +48,9 @@ export const register = (treeroot: TreeViewItem, object3D: THREE.Object3D, paren
     return
   }
 
+  const name = object3D.name
   const parentItem = 'isScene' in parent ? treeroot : objectToTreeItem.get(parent)
-  const text = `${object3D.name} (${getObjectType(object3D)})`
+  const text = `${name ? `${name} ` : ''}(${getObjectType(object3D)})`
   const item = new TreeViewItem({ text })
   item.open = true
   objectToTreeItem.set(object3D, item)

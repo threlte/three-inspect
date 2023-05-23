@@ -1,8 +1,9 @@
+import * as THREE from 'three'
 import { dispatcher } from './event-dispatcher'
 import { refs } from '../refs'
 
 export const mouseRaycaster = (onSelect: (intersects: THREE.Intersection[]) => void) => {
-  const { THREE, renderer } = refs
+  const { renderer } = refs
   const canvas = renderer.domElement
   const raycaster = new THREE.Raycaster()
   const pointer = new THREE.Vector2()

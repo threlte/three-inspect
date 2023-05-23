@@ -1,45 +1,46 @@
+import * as THREE from 'three'
+import { GridHelper, load, save } from 'trzy'
 import type { Pane } from '../pane'
 import { addRendererInputs } from '../inputs/renderer'
 import { addTextureInputs } from '../inputs/texture'
 import { refs } from '../refs'
 import { singlePixelImage } from '../lib/image'
-import { storage } from '../lib/storage'
+
+const params = {
+  axes: Boolean(load('three-inspect.axes')),
+  background: singlePixelImage,
+  fogColor: '#000000',
+  grid: Boolean(load('three-inspect.grid')),
+  gridCellSize: load<number>('three-inspect.gridCellSize') ?? 1,
+  gridColor: load<string>('three-inspect.gridColor') ?? '#ffffff',
+  gridDistance: load<number>('three-inspect.gridDistance') ?? 100,
+  gridLargeCellSize: load<number>('three-inspect.largeCellSize') ?? 10,
+}
+
+const color = new THREE.Color()
 
 const helpers: {
   axes: THREE.AxesHelper
-  grid: THREE.GridHelper
+  grid: GridHelper
 } = {
-  axes: undefined!,
-  grid: undefined!,
-}
-
-const grid = storage.get('grid') !== null
-const axes = storage.get('axes') !== null
-
-const params = {
-  axes,
-  background: singlePixelImage,
-  fogColor: '#000000',
-  grid,
-  gridDivisions: storage.getNumber('gridDivisions') ?? 4,
-  gridSize: storage.getNumber('gridSize') ?? 10,
+  axes: new THREE.AxesHelper(1_000),
+  grid: new GridHelper(params.gridCellSize, params.gridLargeCellSize, params.gridColor, params.gridDistance),
 }
 
 export const initSceneHelpers = () => {
-  const { THREE, scene } = refs
+  const { scene } = refs
 
   helpers.axes = new THREE.AxesHelper(1_000)
   helpers.axes.name = 'Axes helper'
   helpers.axes.userData.THREE_INSPECT_OMIT = true
-  helpers.grid = new THREE.GridHelper(params.gridSize, params.gridDivisions)
   helpers.grid.name = 'Grid helper'
   helpers.grid.userData.THREE_INSPECT_OMIT = true
 
-  if (grid) {
+  if (params.grid) {
     scene.add(helpers.grid)
   }
 
-  if (axes) {
+  if (params.axes) {
     scene.add(helpers.axes)
   }
 
@@ -49,27 +50,34 @@ export const initSceneHelpers = () => {
 }
 
 export const addSceneInputs = (pane: Pane) => {
-  const { THREE, scene } = refs
+  const { scene } = refs
   const disposers: Disposer[] = []
 
   const toggleHelper = (helper: 'axes' | 'grid') => {
     scene[params[helper] ? 'add' : 'remove'](helpers[helper])
 
     if (params[helper]) {
-      storage.set(helper, '')
+      save(`three-inspect.${helper}`, true)
     } else {
-      storage.remove(helper)
+      save(`three-inspect.${helper}`, false)
     }
   }
 
-  const handleGridChange = (param: 'gridSize' | 'gridDivisions') => {
-    scene.remove(helpers.grid)
-    helpers.grid.dispose()
+  const handleGridChange = (param: 'gridCellSize' | 'gridLargeCellSize' | 'gridColor' | 'gridDistance') => {
+    color.set(params.gridColor)
 
-    helpers.grid = new THREE.GridHelper(params.gridSize, params.gridDivisions)
-    scene.add(helpers.grid)
+    helpers.grid.cellSize = params.gridCellSize
+    helpers.grid.largeCellSize = params.gridLargeCellSize
 
-    storage.setNumber(param, params[param])
+    if (helpers.grid.color instanceof THREE.Color) {
+      helpers.grid.color.copy(color)
+    } else {
+      helpers.grid.color = color
+    }
+
+    helpers.grid.distance = params.gridDistance
+
+    save(param, params[param])
   }
 
   pane
@@ -81,12 +89,20 @@ export const addSceneInputs = (pane: Pane) => {
     .on('change', () => toggleHelper('grid'))
 
   pane
-    .addInput(params, 'gridSize', { label: 'grid size' })
-    .on('change', () => handleGridChange('gridSize'))
+    .addInput(params, 'gridCellSize', { label: 'cell size' })
+    .on('change', () => handleGridChange('gridCellSize'))
 
   pane
-    .addInput(params, 'gridDivisions', { label: 'grid divisions', step: 1 })
-    .on('change', () => handleGridChange('gridDivisions'))
+    .addInput(params, 'gridLargeCellSize', { label: 'large cell size', step: 1 })
+    .on('change', () => handleGridChange('gridLargeCellSize'))
+
+  pane
+    .addInput(params, 'gridColor', { label: 'color', step: 1 })
+    .on('change', () => handleGridChange('gridColor'))
+
+  pane
+    .addInput(params, 'gridDistance', { label: 'distance', step: 1 })
+    .on('change', () => handleGridChange('gridDistance'))
 
   if (scene.fog !== null) {
     params.fogColor = `#${scene.fog.color.getHexString().toUpperCase()}`
@@ -115,7 +131,7 @@ export const addSceneInputs = (pane: Pane) => {
 
   disposers.push(addRendererInputs(pane))
   disposers.push(() => {
-    helpers.grid.dispose()
+    scene.remove(helpers.grid)
     helpers.axes.dispose()
   })
   return disposers

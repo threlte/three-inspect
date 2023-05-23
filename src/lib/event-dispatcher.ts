@@ -5,20 +5,22 @@
 type Listener = (...args: unknown[]) => void
 
 class EventDispatcher {
-  listeners: Record<string, Listener[]> = {}
+  listeners: Record<string, Listener[] | undefined> = {}
 
   addEventListener (type: string, listener: Listener) {
     const { listeners } = this
 
     listeners[type] ??= []
 
-    if (!listeners[type].includes(listener)) {
-      listeners[type].push(listener)
+    const listenerArray = listeners[type]!
+
+    if (!listenerArray.includes(listener)) {
+      listenerArray.push(listener)
     }
   }
 
   hasEventListener (type: string, listener: Listener) {
-    return this.listeners[type].includes(listener)
+    return this.listeners[type]?.includes(listener)
   }
 
   removeEventListener (type: string, listener: Listener) {

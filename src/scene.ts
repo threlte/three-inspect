@@ -8,10 +8,15 @@ import { createPane } from './pane'
 import { mouseRaycaster } from './lib/raycast'
 import { patchObject3d } from './patch/object3d'
 import { refs } from './refs'
+import { save } from 'trzy'
 
 type Disposer = () => void
 
 const handleSelectItem = (root: HTMLElement, object3D: THREE.Object3D) => {
+  if (object3D.name) {
+    save('three-inspect.selected', object3D.name)
+  }
+
   const pane = createPane(root)
 
   let disposers: Disposer[]
@@ -83,6 +88,7 @@ export const initScene = (
     selected = item
 
     const object3D = item.text === 'Scene' ? scene : objectFromTreeItem(item)
+
     if (object3D !== undefined) {
       disposer = handleSelectItem(root, object3D)
     }

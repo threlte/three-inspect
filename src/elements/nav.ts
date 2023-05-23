@@ -1,6 +1,6 @@
+import { load, save } from 'trzy'
 import { createPane } from '../pane'
 import { dispatcher } from '../lib/event-dispatcher'
-import { storage } from '../lib/storage'
 
 // eslint-disable-next-line max-len
 const mouseSvg = '<svg viewBox="0 0 24 24"><path d="M4.9 4.9 17.2 10l-4.9 1.7a.9.9 0 0 0-.6.6L10 17.2zm8.2 9.6 5.3 5.3a.9.9 0 1 0 1.4-1.4l-5.3-5.3 5.9-2a1 1 0 0 0 0-1.9l-17-7a1 1 0 0 0-1.3 1.3l7 17a1 1 0 0 0 1.9-.1z"/></svg>'
@@ -13,7 +13,7 @@ export const createNav = (controls: HTMLElement, nav: HTMLElement) => {
       return
     }
 
-    storage.set('selectedPane', title)
+    save('three-inspect.selectedPane', title)
 
     controls.querySelector(`[data-pane="${selected}"]`)?.classList.add('hidden')
     const current = nav.querySelector(`[data-nav="${selected}"]`)
@@ -61,7 +61,7 @@ export const createNav = (controls: HTMLElement, nav: HTMLElement) => {
   nav.append(inspectButton)
 
   createNavButton('World')
-  selectPane('World')
+  selectPane(load<string>('three-inspect.selectedPane') ?? 'World')
 
   return { addPane }
 }

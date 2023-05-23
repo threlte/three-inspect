@@ -32,7 +32,6 @@ import Inspector from 'three-inspect'
  */
 if (devMode) {
   const inspector = new Inspector({
-    THREE, /* the THREE object used in your project */
     scene,
     camera,
     renderer,
@@ -99,13 +98,41 @@ import Inspector from 'three-inspect'
 function App() {
   const state = useThree()
 
-  const inspector = React.useMemo(() => new Inspector(
-    THREE, /* the THREE object used in your project */
-    state.scene,
-    state.camera,
-    state.gl,
-    composer /* optional */
-  ))
+  const inspector = React.useEffect(() => {
+    const { dispose } = new Inspector({
+      scene: state.scene,
+      camera: state.camera,
+      renderer: state.gl,
+    })
+
+    return () => dispose()
+  }), [state.scene, state.camera])
 
   ...
+```
+
+### Threlte usage
+
+```html
+<script lang='ts'>
+
+import * as THREE from 'three'
+import { useThrelte } from '@threlte/core'
+import Inspector from 'three-inspect'
+
+const { scene, camera, renderer } = useThrelte()
+
+let inspector: Inspector | undefined
+
+$: {
+  inspector?.dispose()
+  inspector = new Inspector({
+    THREE,
+    scene,
+    camera: camera.current as THREE.PerspectiveCamera,
+    renderer: renderer!
+  })
+}
+
+</script>
 ```

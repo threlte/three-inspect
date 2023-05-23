@@ -1,15 +1,13 @@
+import * as THREE from 'three'
 import type { Pane } from '../pane'
 import { addForwardHelperInput } from './helper-forward'
 import { addMaterialInputs } from './material'
 import { addTransformInputs } from './transform'
 import { addUserdataInput } from './userdata'
-import { refs } from '../refs'
 
 type Disposer = () => void
 
 export const addObjectInputs = (pane: Pane, object3D: THREE.Object3D) => {
-  const { THREE } = refs
-
   if (object3D instanceof THREE.Points) {
     pane.addMonitor(object3D.geometry.attributes.position, 'count')
   }

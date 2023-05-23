@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite'
-import define from './env'
 import glsl from 'vite-plugin-glsl';
 
 // https://vitejs.dev/config/
@@ -23,5 +22,4 @@ export default defineConfig({
     port: 5171,
     strictPort: true,
   },
-  define,
 })

@@ -1,4 +1,4 @@
-import { refs } from '../refs'
+import * as THREE from 'three'
 
 const positions = [
   +1, +1, 0,
@@ -18,8 +18,6 @@ const positions2 = [
 ]
 
 export const createRectAreaLightHelper = (light: THREE.RectAreaLight, color?: THREE.Color) => {
-  const { THREE } = refs
-
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
   geometry.computeBoundingSphere()

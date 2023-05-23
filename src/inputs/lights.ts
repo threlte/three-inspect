@@ -1,9 +1,9 @@
+import * as THREE from 'three'
 import type { Pane } from '../pane'
 import { addTransformInputs } from './transform'
 import { addUserdataInput } from './userdata'
 import { createRectAreaLightHelper } from '../lib/rectarealight'
 import { defaultMinMax } from '../constants'
-import { refs } from '../refs'
 
 type LightHelper =
   | THREE.SpotLightHelper
@@ -28,8 +28,6 @@ const addTargetInput = (folder: Pane, light: TargetLight) => {
 }
 
 export const addLightInputs = (pane: Pane, light: THREE.Light) => {
-  const { THREE } = refs
-
   let helper: LightHelper | undefined
   let shadowHelper: THREE.CameraHelper | undefined
 
@@ -121,7 +119,7 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
     helper.userData.THREE_INSPECT_OMIT = true
   }
 
-  if (light.castShadow) {
+  if (light.castShadow && light.shadow) {
     const camFolder = pane.addFolder({ index: light.id, title: 'Shadow Camera' })
 
     camFolder.addInput(light.shadow, 'autoUpdate')
@@ -135,10 +133,13 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
     }
 
     const handleShadowmapChange = () => {
+      if (!light.shadow) {
+        return
+      }
+
       light.shadow.mapSize.width = shadowMapParams.mapSize
       light.shadow.mapSize.height = shadowMapParams.mapSize
       light.shadow.dispose()
-      // @ts-expect-error This is needed to recalculate the shadow map.
       light.shadow.map = null
     }
 

@@ -1,6 +1,6 @@
 import './main.css'
 import * as THREE from 'three'
-import { three } from 'trzy'
+import { loadTexture, three } from 'trzy'
 import Inspector from '../src/main'
 import vertexShader from './vert.glsl'
 import fragmentShader from './frag.glsl'
@@ -9,13 +9,12 @@ const { scene, camera, renderer, canvas, update } = three()
 
 canvas.id = 'canvas'
 
-document.body.append(canvas)
+const cam = camera.current as THREE.PerspectiveCamera
 
-camera.far = 300
-camera.position.set(0, 2, 10)
+cam.far = 300
+cam.position.set(0, 2, 10)
 
 const cubeTextureLoader = new THREE.CubeTextureLoader()
-const textureLoader = new THREE.TextureLoader()
 
 const environmentMapTexture = cubeTextureLoader.load([
   '/textures/environmentMaps/0/px.jpg',
@@ -159,12 +158,12 @@ const addTorusKnot = async () => {
   const repeatX = 10
 
   const textures = await Promise.all([
-    textureLoader.loadAsync('/textures/metal/weave_COL_1K_METALNESS.jpg'),
-    textureLoader.loadAsync('/textures/metal/weave_AO_1K_METALNESS.jpg'),
-    textureLoader.loadAsync('/textures/metal/weave_DISP_1K_METALNESS.jpg'),
-    textureLoader.loadAsync('/textures/metal/weave_NRM_1K_METALNESS.jpg'),
-    textureLoader.loadAsync('/textures/metal/weave_ROUGHNESS_1K_METALNESS.jpg'),
-    textureLoader.loadAsync('/textures/metal/weave_METALNESS_1K_METALNESS.jpg'),
+    loadTexture('/textures/metal/weave_COL_1K_METALNESS.jpg'),
+    loadTexture('/textures/metal/weave_AO_1K_METALNESS.jpg'),
+    loadTexture('/textures/metal/weave_DISP_1K_METALNESS.jpg'),
+    loadTexture('/textures/metal/weave_NRM_1K_METALNESS.jpg'),
+    loadTexture('/textures/metal/weave_ROUGHNESS_1K_METALNESS.jpg'),
+    loadTexture('/textures/metal/weave_METALNESS_1K_METALNESS.jpg'),
   ])
 
   for (const texture of textures) {
@@ -247,4 +246,4 @@ update(() => {
   }
 })
 
-new Inspector({ THREE, scene, camera, renderer })
+new Inspector({ scene, camera: cam, renderer })
