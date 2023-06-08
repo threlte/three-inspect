@@ -69,6 +69,14 @@ const addInstancedMeshInputs = (pane: Pane, mesh: THREE.InstancedMesh) => {
   return () => removeUpdate(handleInstancedMeshUpdate)
 }
 
+const handleDown = () => {
+  state.controlling = true
+}
+
+const handleUp = () => {
+  state.controlling = false
+}
+
 export const addTransformInputs = (pane: Pane, object3D: THREE.Object3D) => {
   const { element } = pane
 
@@ -108,14 +116,6 @@ export const addTransformInputs = (pane: Pane, object3D: THREE.Object3D) => {
 
   if ('isInstancedMesh' in object3D) {
     imeshDispose = addInstancedMeshInputs(pane, object3D as THREE.InstancedMesh)
-  }
-
-  const handleDown = () => {
-    state.controlling = true
-  }
-
-  const handleUp = () => {
-    state.controlling = false
   }
 
   element.addEventListener('mousedown', handleDown, { passive: true })

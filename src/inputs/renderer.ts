@@ -67,25 +67,27 @@ export const addRendererInputs = (pane: Pane) => {
 
   const capabilities = {
     maxAnisotropy: renderer.capabilities.getMaxAnisotropy().toString(),
-    maxAttributes: renderer.capabilities.maxAttributes.toFixed(),
-    maxCubemapSize: `${renderer.capabilities.maxCubemapSize.toFixed()} (h * w)`,
-    maxFragmentUniforms: renderer.capabilities.maxFragmentUniforms.toFixed(),
-    maxTextureSize: `${renderer.capabilities.maxTextureSize.toFixed()} (h * w)`,
-    maxTextures: renderer.capabilities.maxTextures.toFixed(),
-    maxVaryings: renderer.capabilities.maxVaryings.toFixed(),
-    maxVertexTextures: renderer.capabilities.maxVertexTextures.toFixed(),
-    maxVertexUniforms: renderer.capabilities.maxVertexUniforms.toFixed(),
+    maxAttributes: renderer.capabilities.maxAttributes.toFixed(0),
+    maxCubemapSize: `${renderer.capabilities.maxCubemapSize} (h * w)`,
+    maxFragmentUniforms: renderer.capabilities.maxFragmentUniforms.toFixed(0),
+    maxTextureSize: `${renderer.capabilities.maxTextureSize.toFixed(0)} (h * w)`,
+    maxTextures: renderer.capabilities.maxTextures.toFixed(0),
+    maxVaryings: renderer.capabilities.maxVaryings.toFixed(0),
+    maxVertexTextures: renderer.capabilities.maxVertexTextures.toFixed(0),
+    maxVertexUniforms: renderer.capabilities.maxVertexUniforms.toFixed(0),
   }
 
   const interval = { interval: 1_000_000 }
   const monitors: MonitorBindingApi<string>[] = []
 
-  monitors.push(pane.addMonitor(params, 'calls', interval))
-  monitors.push(pane.addMonitor(params, 'geometries', interval))
-  monitors.push(pane.addMonitor(params, 'lines', interval))
-  monitors.push(pane.addMonitor(params, 'points', interval))
-  monitors.push(pane.addMonitor(params, 'textures', interval))
-  monitors.push(pane.addMonitor(params, 'triangles', interval))
+  monitors.push(
+    pane.addMonitor(params, 'calls', interval),
+    pane.addMonitor(params, 'geometries', interval),
+    pane.addMonitor(params, 'lines', interval),
+    pane.addMonitor(params, 'points', interval),
+    pane.addMonitor(params, 'textures', interval),
+    pane.addMonitor(params, 'triangles', interval)
+  )
 
   pane.addSeparator()
 
@@ -114,7 +116,7 @@ export const addRendererInputs = (pane: Pane) => {
     }
   }
 
-  const intervalId = setInterval(updateStats, 2_000)
+  const intervalId = setInterval(updateStats, 2000)
   updateStats()
 
   return () => clearInterval(intervalId)

@@ -1,5 +1,5 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { createOrbitControlsGizmo } from '../elements/gizmo'
+import { createViewHelper } from '../elements/gizmo'
 import { refs } from '../refs'
 import { save } from 'trzy'
 
@@ -38,7 +38,7 @@ export const setEnabledControls = (type: Controls, camera: Cameras) => {
     window.addEventListener('pointerup', savePosition, { passive: true })
     window.addEventListener('wheel', savePosition, { passive: true })
 
-    createOrbitControlsGizmo(refs.debugRoot, controls)
+    createViewHelper()
 
   /**
    * No controls

@@ -101,7 +101,11 @@ export const addTextureInputs = (pane: Pane, object: TextureObjects, property: T
       }
     })
 
-    disposer.current = () => folder.children.forEach((child) => child.dispose())
+    disposer.current = () => {
+      for (const child of folder.children) {
+        child.dispose()
+      }
+    }
   }
 
   pane.addInput(params, 'map', {

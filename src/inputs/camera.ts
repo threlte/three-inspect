@@ -7,8 +7,6 @@ import { addUserdataInput } from './userdata'
 import { load } from 'trzy'
 import { refs } from '../refs'
 
-export type { Cameras }
-
 const controlOptions = [
   Controls.NONE,
   Controls.ORBIT,
@@ -60,8 +58,10 @@ export const addCameraInputs = (pane: Pane, camera: Cameras) => {
   }
 
   const disposers: Disposer[] = []
-  disposers.push(addTransformInputs(pane, camera))
-  disposers.push(addUserdataInput(pane, camera))
+  disposers.push(
+    addTransformInputs(pane, camera),
+    addUserdataInput(pane, camera)
+  )
 
   if (refs.composer !== null) {
     disposers.push(addPostInputs(pane))
@@ -70,3 +70,5 @@ export const addCameraInputs = (pane: Pane, camera: Cameras) => {
   disposers.push(() => window.removeEventListener('wheel', updateZoomInput))
   return disposers
 }
+
+export { type Cameras } from '../lib/controls'

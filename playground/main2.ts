@@ -5,7 +5,7 @@ import Inspector from '../src/main'
 import vertexShader from './vert.glsl'
 import fragmentShader from './frag.glsl'
 
-const { scene, camera, renderer, canvas, update } = three()
+const { scene, camera, renderer, canvas, update, start, beforeRender } = three({ autostart: false })
 
 canvas.id = 'canvas'
 
@@ -68,8 +68,8 @@ let materials: THREE.Material[] = []
 {
   const directional = new THREE.DirectionalLight()
   directional.castShadow = true
-  directional.shadow.mapSize.height = 1024
-  directional.shadow.mapSize.width = 1024
+  directional.shadow.mapSize.height = 512
+  directional.shadow.mapSize.width = 512
   directional.shadow.camera.far = 30
   directional.intensity = 1.5
   scene.add(directional)
@@ -121,7 +121,7 @@ const size = 1
 
 // Add a cartoonish cone
 {
-  const geometry = new THREE.ConeGeometry(size / 2, size, 50, 50)
+  const geometry = new THREE.ConeGeometry(size / 2, size, 30, 30)
   const material = new THREE.MeshToonMaterial({ color: 'hotpink' })
   materials.push(material)
 
@@ -134,10 +134,12 @@ const size = 1
 
 // Add a sphere
 {
-  const geometry = new THREE.SphereGeometry(size / 2, 100, 100)
+  const geometry = new THREE.SphereGeometry(size / 2, 30, 30)
   const material = new THREE.MeshStandardMaterial({ color: 'lightblue' })
   material.envMap = environmentMapTexture
-  material.envMapIntensity = 0.1
+  material.envMapIntensity = 1
+  material.roughness = 0
+  material.metalness = 1
   materials.push(material)
 
   const mesh = new THREE.Mesh(geometry, material)
@@ -149,7 +151,7 @@ const size = 1
 
 // Add a torus knot
 const addTorusKnot = async () => {
-  const geometry = new THREE.TorusKnotGeometry(size / 2, size / 10, 200, 200)
+  const geometry = new THREE.TorusKnotGeometry(size / 2, size / 10, 70, 70)
   const material = new THREE.MeshStandardMaterial({ color: 'darksalmon' })
   material.envMap = environmentMapTexture
   material.envMapIntensity = 1
@@ -190,13 +192,15 @@ const addTorusKnot = async () => {
   mesh.receiveShadow = true
   scene.add(mesh)
   meshes.push(mesh)
+
+  start()
 }
 
 addTorusKnot()
 
 // Add a torus / donut
 {
-  const geometry = new THREE.TorusGeometry(size / 2, size / 10, 30, 100)
+  const geometry = new THREE.TorusGeometry(size / 2, size / 10, 10, 20)
   const material = new THREE.MeshPhysicalMaterial()
   material.envMap = environmentMapTexture
   material.envMapIntensity = 1
@@ -213,7 +217,7 @@ addTorusKnot()
 
 // Add a Cylinder
 {
-  const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 40)
+  const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 20)
   const edges = new THREE.EdgesGeometry(geometry, 1);
   const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
   line.name = 'Cylinder'

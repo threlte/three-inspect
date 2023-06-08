@@ -1,17 +1,10 @@
 module.exports = {
-  env: {
-    browser: true,
-    es2022: true,
-    node: true,
-    worker: true,
-  },
   extends: [
     'eslint:all',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/strict',
+    'plugin:unicorn/all',
   ],
-  ignorePatterns: ['*.d.ts'],
-  overrides: [],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
@@ -21,6 +14,7 @@ module.exports = {
   },
   plugins: [
     '@typescript-eslint',
+    'unicorn',
   ],
   root: true,
   rules: {
@@ -35,7 +29,7 @@ module.exports = {
       imports: 'never',
       objects: 'always-multiline',
     }],
-    'complexity': ['error', { max: 50 }],
+    'complexity': 'off',
     'default-case': 'off',
     'default-last-param': 'off',
     'dot-location': ['error', 'property'],
@@ -65,9 +59,14 @@ module.exports = {
     'one-var': ['error', 'never'],
     'padded-blocks': ['error', 'never'],
     'prefer-destructuring': 'off',
+    'sort-keys': 'off',
     'quote-props': ['error', 'consistent-as-needed'],
     'quotes': ['error', 'single'],
     'semi': ['error', 'never'],
+
+    'unicorn/prevent-abbreviations': 'off',
+    'unicorn/no-keyword-prefix': ['error', { checkProperties: false }],
+    'unicorn/prefer-at': 'off',
 
     '@typescript-eslint/prefer-for-of': 'off',
   },

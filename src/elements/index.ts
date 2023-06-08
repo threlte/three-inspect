@@ -22,10 +22,10 @@ export const initElements = (options: {
     let width = window.innerWidth
 
     const handleResize = () => {
-      const newWidth = window.innerWidth
-      const delta = newWidth - width
+      const { innerWidth } = window
+      const delta = innerWidth - width
       canvas.style.width = `${canvas.clientWidth + delta}px`
-      width = newWidth
+      width = innerWidth
     }
 
     window.addEventListener('resize', handleResize, { passive: true })
@@ -36,8 +36,7 @@ export const initElements = (options: {
   const { controls, nav, treeroot, treeview, pane } = createControls()
   const { addPane } = createNav(controls, nav)
 
-  disposers.push(initStats(controls))
-  disposers.push(initScene(treeview, treeroot, pane))
+  disposers.push(initStats(controls), initScene(treeview, treeroot, pane))
 
   root.append(controls)
   document.body.append(root)

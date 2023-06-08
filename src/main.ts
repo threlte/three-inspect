@@ -65,7 +65,7 @@ export default class Inspector {
     refs.scene = scene
     refs.camera = camera
     refs.renderer = renderer
-    refs.composer = composer ?? null
+    refs.composer = composer ?? undefined
 
     const { disposers, addPane } = initElements({
       location: 'right',
@@ -73,8 +73,7 @@ export default class Inspector {
     })
 
     this.addPane = addPane
-    this.disposers.push(...disposers)
-    this.disposers.push(initSceneHelpers())
+    this.disposers.push(...disposers, initSceneHelpers())
 
     const controls = load<Controls>('three-inspect.controls')
 

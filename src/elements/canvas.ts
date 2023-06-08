@@ -11,7 +11,7 @@ export const initCanvas = () => {
 
   const container = resizable({
     element: canvas,
-    max: Infinity,
+    max: Number.POSITIVE_INFINITY,
     side: 'right',
     width: window.innerWidth - 335,
   })

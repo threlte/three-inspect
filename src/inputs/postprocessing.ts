@@ -6,8 +6,8 @@ import { refs } from '../refs'
 export const addPostInputs = (pane: Pane) => {
   const { composer } = refs
 
-  if (composer === null) {
-    return () => null
+  if (composer === undefined) {
+    return () => 0
   }
 
   const postFolder = pane.addFolder({ title: 'Postprocessing' })
@@ -85,7 +85,7 @@ export const addPostInputs = (pane: Pane) => {
       ssrFolder.addInput(ssrEffect, 'fade', { max: 20, min: 0, step: 0.01 })
       ssrFolder.addInput(ssrEffect, 'roughnessFade', { max: 1, min: 0, step: 0.01 })
       ssrFolder.addInput(ssrEffect, 'thickness', { max: 10, min: 0, step: 0.01 })
-      ssrFolder.addInput(ssrEffect, 'ior', { max: 2.33333, min: 1, step: 0.01 })
+      ssrFolder.addInput(ssrEffect, 'ior', { max: 2.3333, min: 1, step: 0.01 })
       ssrFolder.addInput(ssrEffect, 'maxRoughness', { max: 1, min: 0, step: 0.01 })
       ssrFolder.addInput(ssrEffect, 'maxDepthDifference', { max: 100, min: 0, step: 0.1 })
 

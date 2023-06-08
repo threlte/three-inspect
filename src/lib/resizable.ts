@@ -13,11 +13,11 @@ interface Args {
 
 const getPosition = (side: Sides) => {
   switch (side) {
-  case 'left': return 'left: 0;'
-  case 'right': return 'left: calc(100% - 3px);'
-  case 'top': return 'top: 0;'
-  case 'bottom': return 'bottom: 0;'
-  default: return ''
+  case 'left': { return 'left: 0;' }
+  case 'right': { return 'left: calc(100% - 3px);' }
+  case 'top': { return 'top: 0;' }
+  case 'bottom': { return 'bottom: 0;' }
+  default: { return '' }
   }
 }
 

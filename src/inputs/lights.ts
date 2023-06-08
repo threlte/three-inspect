@@ -140,6 +140,7 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
       light.shadow.mapSize.width = shadowMapParams.mapSize
       light.shadow.mapSize.height = shadowMapParams.mapSize
       light.shadow.dispose()
+      // eslint-disable-next-line unicorn/no-null
       light.shadow.map = null
     }
 
@@ -206,19 +207,21 @@ export const addLightInputs = (pane: Pane, light: THREE.Light) => {
     shadowHelper?.update()
   })
 
-  disposers.push(addUserdataInput(pane, light))
-  disposers.push(() => {
-    if (helper !== undefined) {
-      light.remove(helper)
-      // @ts-expect-error exists
-      helper.dispose?.()
-    }
+  disposers.push(
+    addUserdataInput(pane, light),
+    () => {
+      if (helper !== undefined) {
+        light.remove(helper)
+        // @ts-expect-error exists
+        helper.dispose?.()
+      }
 
-    if (shadowHelper !== undefined) {
-      light.remove(shadowHelper)
-      shadowHelper.dispose()
+      if (shadowHelper !== undefined) {
+        light.remove(shadowHelper)
+        shadowHelper.dispose()
+      }
     }
-  })
+  )
 
   return disposers
 }

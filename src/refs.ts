@@ -3,7 +3,7 @@ import type { EffectComposer } from 'postprocessing'
 
 interface Refs {
   camera: THREE.Camera
-  composer: EffectComposer | null
+  composer: EffectComposer | undefined
   renderer: THREE.WebGLRenderer
   scene: THREE.Scene
   root: HTMLElement
@@ -11,10 +11,10 @@ interface Refs {
 }
 
 export const refs: Refs = {
-  camera: null!,
-  composer: null,
-  debugRoot: null!,
-  renderer: null!,
-  root: null!,
-  scene: null!,
+  camera: undefined!,
+  composer: undefined,
+  debugRoot: undefined!,
+  renderer: undefined!,
+  root: undefined!,
+  scene: undefined!,
 }

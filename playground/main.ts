@@ -12,13 +12,13 @@ canvas.id = 'canvas'
 
 document.body.append(canvas)
 
-scene.add(camera)
+scene.add(camera.current)
 
-camera.near = -200
-camera.far = 200
+camera.current.near = -200
+camera.current.far = 200
 
-camera.position.set(5, 5, 5)
-camera.lookAt(0, 0, 0)
+camera.current.position.set(5, 5, 5)
+camera.current.lookAt(0, 0, 0)
 
 const ambient = new THREE.AmbientLight()
 scene.add(ambient)
@@ -109,7 +109,11 @@ scene.add(ambient)
     trails.push({ trail, noise3d })
   }
 
-  update((time) => {
+  let time = 0
+
+  update((_, delta) => {
+    time += delta
+
     for (let i = 0, l = trails.length; i < l; i += 1) {
       const { trail, noise3d } = trails[i]
       const x = noise3d(Math.sin(time / 10000) * 10, 0, 0)
@@ -203,7 +207,7 @@ const toggle = () => {
     inspector.dispose()
     inspector = undefined
   } else {
-    inspector = new Inspector({ THREE, scene, camera, renderer })
+    inspector = new Inspector({ THREE, scene, camera: camera.current, renderer })
   }
 }
 

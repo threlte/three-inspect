@@ -23,14 +23,14 @@ const helpers: {
   axes: THREE.AxesHelper
   grid: GridHelper
 } = {
-  axes: new THREE.AxesHelper(1_000),
+  axes: new THREE.AxesHelper(1000),
   grid: new GridHelper(params.gridCellSize, params.gridLargeCellSize, params.gridColor, params.gridDistance),
 }
 
 export const initSceneHelpers = () => {
   const { scene } = refs
 
-  helpers.axes = new THREE.AxesHelper(1_000)
+  helpers.axes = new THREE.AxesHelper(1000)
   helpers.axes.name = 'Axes helper'
   helpers.axes.userData.THREE_INSPECT_OMIT = true
   helpers.grid.name = 'Grid helper'
@@ -129,10 +129,12 @@ export const addSceneInputs = (pane: Pane) => {
 
   pane.addSeparator()
 
-  disposers.push(addRendererInputs(pane))
-  disposers.push(() => {
-    scene.remove(helpers.grid)
-    helpers.axes.dispose()
-  })
+  disposers.push(
+    addRendererInputs(pane),
+    () => {
+      scene.remove(helpers.grid)
+      helpers.axes.dispose()
+    }
+  )
   return disposers
 }

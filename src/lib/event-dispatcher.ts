@@ -49,13 +49,13 @@ class EventDispatcher {
     event.target = this
 
     // Make a copy, in case listeners are removed while iterating.
-    const array = listenerArray.slice(0)
+    const array = [...listenerArray]
 
     for (let i = 0, l = array.length; i < l; i += 1) {
       array[i].call(this, event)
     }
 
-    event.target = null
+    event.target = undefined
   }
 }
 

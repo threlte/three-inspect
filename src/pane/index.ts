@@ -9,10 +9,10 @@ export type Pane = Tweakpane.Pane | Tweakpane.FolderApi
 export let pane: Pane
 
 export const createPane = (container?: HTMLElement) => {
-  const newPane = new Tweakpane.Pane({ container })
-  newPane.registerPlugin(EssentialsPlugin)
-  newPane.registerPlugin(ImagePlugin)
-  newPane.registerPlugin(RotationPlugin)
-  newPane.registerPlugin(TextareaPlugin)
-  return newPane
+  const nextPane = new Tweakpane.Pane({ container })
+  nextPane.registerPlugin(EssentialsPlugin)
+  nextPane.registerPlugin(ImagePlugin)
+  nextPane.registerPlugin(RotationPlugin)
+  nextPane.registerPlugin(TextareaPlugin)
+  return nextPane
 }
