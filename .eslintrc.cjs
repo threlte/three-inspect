@@ -67,7 +67,15 @@ module.exports = {
     'unicorn/prevent-abbreviations': 'off',
     'unicorn/no-keyword-prefix': ['error', { checkProperties: false }],
     'unicorn/prefer-at': 'off',
-
+    'unicorn/no-array-for-each': 'off',
+    'unicorn/no-null': 'off',
+    'unicorn/filename-case': ['error', {
+      'cases': {
+        'camelCase': true,
+        'pascalCase': true
+      }
+    }],
     '@typescript-eslint/prefer-for-of': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
   },
 }

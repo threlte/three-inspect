@@ -1,16 +1,16 @@
 import './main.css'
 import * as THREE from 'three'
-import { three, Trail } from 'trzy'
+import { trzy, useFrame, Trail } from 'trzy'
 import { createNoise3D, NoiseFunction3D } from 'simplex-noise'
 import Inspector from '../src/main'
 import vertexShader from './vert.glsl'
 import fragmentShader from './frag.glsl'
 
-const { scene, camera, renderer, canvas, update } = three();
+const { scene, camera, renderer } = trzy();
 
-canvas.id = 'canvas'
+renderer.domElement.id = 'canvas'
 
-document.body.append(canvas)
+document.body.append(renderer.domElement)
 
 scene.add(camera.current)
 
@@ -111,7 +111,7 @@ scene.add(ambient)
 
   let time = 0
 
-  update((_, delta) => {
+  useFrame((_, delta) => {
     time += delta
 
     for (let i = 0, l = trails.length; i < l; i += 1) {
@@ -140,7 +140,7 @@ box.receiveShadow = true
 box.position.set(0, 1.5, 0)
 scene.add(box)
 
-update(() => {
+useFrame(() => {
   box.rotation.y += 0.01
 })
 

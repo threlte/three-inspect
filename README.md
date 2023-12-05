@@ -54,11 +54,15 @@ if (devMode) {
 }
 ```
 
+You may notice that nothing has happened! That is because the inspector will be triggered by pressing the `i` key. If you wish to re-map this, just send the key you want to the constructor:
+
+new Inspector({ ..., options: { toggle: 'enter' } })
+
 Creating the inspector will add hooks to `THEE.Object3D.add()` and `remove()` methods so that all objects are automatically registered / deregisterd.
 
 ### Extending
 
-By default, the inspector only comes with a "World" pane. Additional panes can be added:
+By default, the inspector only comes with a primary tab, but additional panes can be added:
 
 ```ts
 const pane = inspector.addPane('Game')
@@ -112,24 +116,17 @@ function App() {
 
 ### Threlte usage
 
+This library is build using Threlte, so a component can be directly imported.
+
 ```html
 <script lang='ts'>
 
-import { useThrelte } from '@threlte/core'
-import Inspector from 'three-inspect'
-
-const { scene, camera, renderer } = useThrelte()
-
-let inspector: Inspector | undefined
-
-$: {
-  inspector?.dispose()
-  inspector = new Inspector({
-    scene,
-    camera: camera.current as THREE.PerspectiveCamera,
-    renderer: renderer!
-  })
-}
+import { Canvas } from '@threlte/core'
+import { Inspect } from 'three-inspect'
 
 </script>
+
+<Canvas>
+  <Inspect />
+</Canvas>
 ```

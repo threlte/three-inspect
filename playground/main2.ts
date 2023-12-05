@@ -1,13 +1,13 @@
 import './main.css'
 import * as THREE from 'three'
-import { loadTexture, three } from 'trzy'
+import { loadTexture, trzy, useFrame } from 'trzy'
 import Inspector from '../src/main'
 import vertexShader from './vert.glsl'
 import fragmentShader from './frag.glsl'
 
-const { scene, camera, renderer, canvas, update, start, beforeRender } = three({ autostart: false })
+const { scene, camera, renderer } = trzy()
 
-canvas.id = 'canvas'
+renderer.domElement.id = 'canvas'
 
 const cam = camera.current as THREE.PerspectiveCamera
 
@@ -192,8 +192,6 @@ const addTorusKnot = async () => {
   mesh.receiveShadow = true
   scene.add(mesh)
   meshes.push(mesh)
-
-  start()
 }
 
 addTorusKnot()
@@ -244,7 +242,7 @@ for (const mesh of meshes) {
   mesh.receiveShadow = true
 }
 
-update(() => {
+useFrame(() => {
   for (const mesh of meshes) {
     mesh.rotation.y += 0.01
   }

@@ -1,0 +1,122 @@
+<script lang='ts'>
+
+import * as THREE from 'three'
+import { onMount, tick } from 'svelte'
+import { TreeViewItem, TreeViewWebComponent } from 'flexible-tree'
+import { useOnAdd } from '$lib/hooks/use-on-add'
+import { useOnRemove } from '$lib/hooks/use-on-remove'
+import { useSelectedObject } from '$lib/hooks/use-selected-item'
+import { getInspectorContext } from './context'
+
+const treeview = new TreeViewWebComponent()
+treeview.scrollable = true
+treeview.allowRenaming = false
+treeview.dom.style.cssText = `
+font-family: monospace;
+font-size: 11px;
+height: 280px;
+`
+
+let element: HTMLElement
+
+const { scene } = getInspectorContext()
+const { selectedObject, setSelectedObject } = useSelectedObject()
+
+const treeroot = new TreeViewItem({ text: 'Scene' })
+treeview.append(treeroot)
+
+const objectToTreeItem = new WeakMap<THREE.Object3D, TreeViewItem>()
+const treeItemToObject = new WeakMap<TreeViewItem, THREE.Object3D>()
+
+// @todo reactive
+treeItemToObject.set(treeroot, scene.current)
+
+const getObjectType = (object3D: THREE.Object3D) => {
+  if ('isInstancedMesh' in object3D) {
+    return 'InstancedMesh'
+  }
+
+  if ((object3D as unknown as { geometry: { isMeshLine: boolean }}).geometry?.isMeshLine) {
+    return 'MeshLine'
+  }
+
+  return object3D.type
+}
+
+const deregister = (object3D: THREE.Object3D) => {
+  if (object3D.userData.threeInspectHide === true) {
+    return
+  }
+
+  object3D.traverse((child) => object3D !== child && deregister(child))
+
+  const item = objectToTreeItem.get(object3D)
+  objectToTreeItem.delete(object3D)
+
+  if (object3D === $selectedObject) {
+    setSelectedObject()
+  }
+
+  // @TODO investigate
+  if (item !== undefined) {
+    treeItemToObject.delete(item)
+    item.destroy()
+  }
+}
+
+const orphaned = new Map()
+
+const register = (object3D: THREE.Object3D) => {
+  if (object3D.userData.threeInspectHide === true) {
+    return
+  }
+
+  if (object3D.name === 'Three Inspect Transform Controls') {
+    return
+  }
+
+  console.log(object3D)
+
+  const { parent } = object3D
+  const name = object3D.name
+  const parentItem = parent instanceof THREE.Scene ? treeroot : objectToTreeItem.get(parent!)
+  const text = `${name ? `${name} ` : ''}(${getObjectType(object3D)})`
+  const item = new TreeViewItem({ text })
+  item.open = true
+  item.selected = object3D === $selectedObject
+  objectToTreeItem.set(object3D, item)
+  treeItemToObject.set(item, object3D)
+
+  if (parentItem) {
+    parentItem.append(item)
+  } else if (object3D.parent) {
+    orphaned.set(object3D.parent.uuid, item)
+  }
+
+  const orphan = orphaned.get(object3D.uuid)
+
+  if (orphan) {
+    item.append(orphan)
+    orphaned.delete(object3D.uuid)
+  }
+
+  object3D.children.forEach((child) => register(child))
+}
+
+treeview.on('deselect', () => setSelectedObject())
+treeview.on('select', async (item: TreeViewItem) => {
+  setSelectedObject()
+  await tick()
+  setSelectedObject(treeItemToObject.get(item))
+})
+
+useOnAdd((object) => register(object))
+useOnRemove((object) => deregister(object))
+
+scene.current.children.forEach((child) => register(child))
+
+onMount(() => element.replaceWith(treeview.wc))
+
+</script>
+
+<div bind:this={element} />
