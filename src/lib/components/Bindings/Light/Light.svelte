@@ -13,9 +13,8 @@
   export let object: THREE.Light
 </script>
 
-<Binding bind:object key='intensity' label='intensity' options={{ step: 0.05 }} />
-
 <Color key='color' {object} />
+<Binding bind:object key='intensity' label='intensity' options={{ step: 0.05 }} />
 
 {#if object instanceof THREE.DirectionalLight}
   <Directional {object} />

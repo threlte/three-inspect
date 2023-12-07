@@ -1,19 +1,19 @@
 <script lang='ts'>
   import * as THREE from 'three'
-  import { Folder, Binding } from 'svelte-tweakpane-ui'
+  import { Folder, Binding, Textarea, Separator } from 'svelte-tweakpane-ui'
   import Transform from '../Transform/Transform.svelte'
   import Material from '../Material/Material.svelte'
-  import Misc from './Misc.svelte'
   import TransformControls from './TransformControls.svelte'
   
   export let object: THREE.Object3D
 
-  $: isAmbient = 'isAmbientLight' in object
+  $: isAmbientLight = 'isAmbientLight' in object
+  $: userData = JSON.stringify(object.userData)
 </script>
 
 <Binding bind:object key='visible' label='visible' />
 
-{#if isAmbient === false}
+{#if isAmbientLight === false}
   <Transform {object} />
   <Binding bind:object key='castShadow' label='castShadow' />
 {/if}
@@ -28,6 +28,17 @@
   </Folder>
 {/if}
 
-<Misc {object} />
+{#if object.customDepthMaterial !== undefined}
+  <Folder title={`${object.customDepthMaterial.name} (CustomDepthMaterial)`.trim()}>
+    <Material object={object.customDepthMaterial} />
+  </Folder>
+{/if}
+
+<Binding bind:object key='frustumCulled' label='frustumCulled' />
+<Binding bind:object key='matrixAutoUpdate' label='matrixAutoUpdate' />
+<Binding bind:object key='matrixWorldAutoUpdate' label='matrixWorldAutoUpdate' />
+<Binding bind:object key='renderOrder' label='renderOrder' options={{ step: 1 }} />
+<Separator />
+<Textarea bind:value={userData} label='userData' disabled rows={5} />
 
 <TransformControls {object} />
