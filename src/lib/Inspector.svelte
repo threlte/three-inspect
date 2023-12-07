@@ -1,23 +1,22 @@
 <script lang='ts'>
   import { createEventDispatcher } from 'svelte'
   import Inspector from './components/inspector.svelte'
-  import { storage } from 'trzy'
+  import { persisted } from './internal/persisted'
 
   const dispatch = createEventDispatcher<{ toggle: boolean }>()
 
-  let enabled = storage.load<boolean>('three-inspect.enabled')
+  let enabled = persisted('three-inspect.enabled', true)
 
   const handleKeyup = (event: KeyboardEvent) => {
     if (event.key.toLowerCase() === 'i') {
-      enabled = !enabled
-      dispatch('toggle', enabled)
-      storage.save('three-inspect.enabled', enabled)
+      $enabled = !$enabled
+      dispatch('toggle', $enabled)
     }
   }
 </script>
 
 <svelte:window on:keyup={handleKeyup} />
 
-{#if enabled}
+{#if $enabled}
   <Inspector />
 {/if}

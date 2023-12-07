@@ -3,10 +3,10 @@
 import * as THREE from 'three'
 import { onMount, tick } from 'svelte'
 import { TreeViewItem, TreeViewWebComponent } from 'flexible-tree'
-import { useOnAdd } from '$lib/hooks/use-on-add'
-import { useOnRemove } from '$lib/hooks/use-on-remove'
+import { useOnAdd } from '$lib/hooks/useOnAdd'
+import { useOnRemove } from '$lib/hooks/useOnRemove'
 import { useSelectedObject } from '$lib/hooks/use-selected-item'
-import { getInspectorContext } from './context'
+import { getInspectorContext } from '../context'
 
 const treeview = new TreeViewWebComponent()
 treeview.scrollable = true
@@ -74,8 +74,6 @@ const register = (object3D: THREE.Object3D) => {
   if (object3D.name === 'Three Inspect Transform Controls') {
     return
   }
-
-  console.log(object3D)
 
   const { parent } = object3D
   const name = object3D.name

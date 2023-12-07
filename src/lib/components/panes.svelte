@@ -1,14 +1,9 @@
 <script lang='ts'>
 
 import { Pane, Splitpanes } from 'svelte-splitpanes'
-import * as ImagePlugin from 'tweakpane-image-plugin'
-import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation'
-import * as TextareaPlugin from '@pangenerator/tweakpane-textarea-plugin'
-import { Pane as Tweakpane, RadioGrid } from '$lib/components/tweakpane'
+import { Pane as Tweakpane, RadioGrid } from 'svelte-tweakpane-ui'
 import Treeview from '$lib/components/treeview.svelte'
-import Inputs from '$lib/components/inputs/index.svelte'
-
-// const plugins = [ImagePlugin, RotationPlugin, TextareaPlugin]
+import Inputs from '$lib/components/Bindings/index.svelte'
 
 </script>
 
@@ -18,16 +13,23 @@ import Inputs from '$lib/components/inputs/index.svelte'
   </Pane>
 
   <Pane minSize={26} size={30}>
-    <Tweakpane style='overflow-x: auto; width: fill-content;'>
-      <RadioGrid key='Pane' label={false} value='inspect' options={['inspect', 'world', 'physics']} />
-    </Tweakpane>
+    <div style='overflow-x: auto; width: fill-content;'>
+      <!-- <Tweakpane>
+        <RadioGrid key='Pane' label='' value='inspect' options={['inspect', 'world', 'physics']} />
+      </Tweakpane> -->
+    </div>
+
     <Treeview />
-    <Tweakpane
+
+    <div
       class='tweakpane'
       style='overflow-y: auto; height: calc(100% - 308px)'
     >
-      <Inputs />
-    </Tweakpane>
+      <Tweakpane position='inline'>
+        <Inputs />
+      </Tweakpane>
+    </div>
+    
   </Pane>
 </Splitpanes>
 
