@@ -7,9 +7,6 @@
 
   const options = {
     color: { type: 'float' },
-    onChange() {
-      console.log('hi', object[key])
-    }
   }
 </script>
 

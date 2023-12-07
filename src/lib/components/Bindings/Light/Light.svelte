@@ -11,10 +11,6 @@
   import RectArea from './RectArea.svelte'
 
   export let object: THREE.Light
-
-  let value = object.color
-
-  $: object.color.set(value)
 </script>
 
 <Binding bind:object key='intensity' label='intensity' options={{ step: 0.05 }} />
