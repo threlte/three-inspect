@@ -1,10 +1,9 @@
 <script lang='ts'>
   import * as THREE from 'three'
   import { Folder, Binding, Textarea, Separator } from 'svelte-tweakpane-ui'
-  import Transform from '../Transform/Transform.svelte'
-  import Material from '../Material/Material.svelte'
-  import TransformControls from './TransformControls.svelte'
-  
+  import Transform from './Transform/Transform.svelte'
+  import Material from './Material.svelte'
+
   export let object: THREE.Object3D
 
   $: isAmbientLight = 'isAmbientLight' in object
@@ -40,5 +39,3 @@
 <Binding bind:object key='renderOrder' label='renderOrder' options={{ step: 1 }} />
 <Separator />
 <Textarea bind:value={userData} label='userData' disabled rows={5} />
-
-<TransformControls {object} />

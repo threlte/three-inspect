@@ -7,9 +7,13 @@
   import FreeCamera from './Tools/FreeCamera.svelte'
   import Splitpanes from './Splitpanes.svelte'
   import Tweakpane from './Tweakpane.svelte'
+  import TransformControls from './Tools/TransformControls.svelte'
+  import Helpers from './Tools/Helpers.svelte'
 
   const { position } = useInspector()
-  const { scene, usingFreeCamera } = getInternalContext()
+  const { scene, usingFreeCamera, selectedObject } = getInternalContext()
+
+  $: object = $selectedObject
 </script>
 
 <!-- Ensure that all inspector objects are added to the scene passed to the inspector -->
@@ -35,6 +39,11 @@
   
   {#if $usingFreeCamera}
     <FreeCamera />
+  {/if}
+
+  {#if object}
+    <TransformControls {object} />
+    <Helpers {object} />
   {/if}
 </HierarchicalObject>
 

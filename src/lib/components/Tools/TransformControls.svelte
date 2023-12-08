@@ -1,9 +1,9 @@
 <script lang='ts'>
   import { TransformControls } from '@threlte/extras'
   import type { TransformControls as TransformControlsType } from 'three/examples/jsm/controls/TransformControls'
-  import { getInternalContext } from '../../../internal/context'
-  import { persisted } from '../../../internal/persisted'
-  import { add } from '../../../hooks/useOnAdd'
+  import { getInternalContext } from '../../internal/context'
+  import { persisted } from '../../internal/persisted'
+  import { add } from '../../hooks/useOnAdd'
 
   export let object: THREE.Object3D
 

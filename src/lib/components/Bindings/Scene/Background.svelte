@@ -1,7 +1,7 @@
 <script lang='ts'>
   import * as THREE from 'three'
   import { Binding, Separator, Image } from 'svelte-tweakpane-ui'
-  import Color from '../Material/Color.svelte'
+  import Color from '../Color.svelte'
 
   export let object: THREE.Scene
 </script>

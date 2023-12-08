@@ -6,10 +6,10 @@
   import { AxesHelper } from 'trzy'
   import { persisted } from '../../internal/persisted'
   import { getInternalContext } from '../../internal/context'
-  import Camera from './Camera/Camera.svelte'
-  import Light from './Light/Light.svelte'
+  import Camera from './Camera.svelte'
+  import Light from './Light.svelte'
   import Scene from './Scene/Scene.svelte'
-  import Object from './Object/Object.svelte'
+  import Object from './Object.svelte'
 
   const { selectedObject } = getInternalContext()
 

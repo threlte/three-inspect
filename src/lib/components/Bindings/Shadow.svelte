@@ -2,7 +2,7 @@
   import type * as THREE from 'three'
   import { T } from '@threlte/core'
   import { Binding, Folder, List, type ListOptions } from 'svelte-tweakpane-ui'
-  import Camera from '../Camera/Camera.svelte'
+  import Camera from './Camera.svelte'
 
   export let object: THREE.LightShadow
 
