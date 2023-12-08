@@ -37,5 +37,7 @@
 <Binding bind:object key='matrixAutoUpdate' label='matrixAutoUpdate' />
 <Binding bind:object key='matrixWorldAutoUpdate' label='matrixWorldAutoUpdate' />
 <Binding bind:object key='renderOrder' label='renderOrder' options={{ step: 1 }} />
+
 <Separator />
+
 <Textarea bind:value={userData} label='userData' disabled rows={5} />

@@ -4,7 +4,7 @@
 	import { T, useThrelte } from '@threlte/core'
 	import { OrbitControls } from '@threlte/extras'
 	import Plane from './Plane.svelte'
-	// import Clouds from './Clouds.svelte'
+	import Clouds from './Clouds.svelte'
 
 	const { scene } = useThrelte()
 
@@ -12,7 +12,9 @@
 	scene.fog = new THREE.Fog('#D1E6FA', 18, 25)
 </script>
 
-<Inspector />
+<Inspector>
+	<Plane />
+</Inspector>
 
 <T.OrthographicCamera
 	makeDefault
@@ -30,5 +32,4 @@
 	position={[-10, 10, -10]}
 />
 
-<Plane />
-<!-- <Clouds /> -->
+<Clouds />

@@ -32,6 +32,7 @@
   {#if object.map}
     <Image bind:value={object.map.image.src} fit="cover" label="map" />
   {/if}
+
   {#if object.alphaMap}
     <Image bind:value={object.alphaMap.image.src} fit="cover" label="alphaMap" />
   {/if}
@@ -66,6 +67,7 @@
     <Image bind:value={object.aoMap.image.src} fit="cover" label="alphaMap" />
     <Binding bind:object key='aoMapIntensity' label='aoMapIntensity' />
   {/if}
+
   {#if object.lightMap}
     <Image bind:value={object.lightMap.image.src} fit="cover" label="lightMap" />
     <Binding bind:object key='lightMapIntensity' label='lightMapIntensity' />
@@ -81,12 +83,13 @@
     <Image bind:value={object.bumpMap.image.src} fit="cover" label="bumpMap" />
     <Binding bind:object key='bumpScale' label='bumpScale' />
   {/if}
+
   {#if object.displacementMap}
     <Image bind:value={object.displacementMap.image.src} fit="cover" label="displacementMap" />
     <Binding bind:object key='displacementScale' label='displacementScale' />
     <Binding bind:object key='displacementBias' label='displacementBias' />
-
   {/if}
+
   {#if object.emissiveMap}
     <Image bind:value={object.emissiveMap.image.src} fit="cover" label="emissiveMap" />
     <Binding bind:object key='emissiveIntensity' label='emissiveIntensity' />
@@ -103,6 +106,7 @@
   {#if object.metalnessMap}
     <Image bind:value={object.metalnessMap.image.src} fit="cover" label="metalnessMap" />
   {/if}
+
   {#if object.roughnessMap}
     <Image bind:value={object.roughnessMap.image.src} fit="cover" label="roughnessMap" />
   {/if}

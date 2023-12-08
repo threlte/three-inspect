@@ -10,7 +10,11 @@
 </script>
 
 <Binding bind:object key='visible' label='visible' />
-<Binding bind:object key='transparent' label='transparent' options={{ onChange() { object.needsUpdate = true } }} />
+
+<Binding bind:object key='transparent' label='transparent' options={{
+  onChange() { object.needsUpdate = true }
+}} />
+
 <Binding bind:object key='opacity' label='opacity' options={{ min: 0, max: 1 }} />
 
 {#if 'color' in object}

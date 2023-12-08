@@ -34,7 +34,6 @@
             on:click={() => usingFreeCamera.set(!usingFreeCamera.current)}
           />
         </div>
-        
       </Element>
 
       <Separator />
@@ -43,17 +42,9 @@
         <Tree />
       </Element>
 
-      <!-- <Element>
-        <div style='overflow-y: auto; height: calc(100% - 308px)'>
-          <Pane position='inline' theme={ThemeUtils.presets[themeKey]}>
-            <Bindings />
-          </Pane>
-        </div>
-      </Element> -->
-
       <Bindings />
     </TabPage>
 
-    <TabPage title='world'></TabPage>
+    <slot />
   </TabGroup>
 </Pane>

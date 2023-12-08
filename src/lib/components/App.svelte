@@ -1,5 +1,8 @@
 <script lang='ts'>
-  import { HierarchicalObject } from '@threlte/core'
+  import { T, HierarchicalObject } from '@threlte/core'
+  import { Grid } from '@threlte/extras'
+  import { AxesHelper } from 'trzy'
+  import { persisted } from '../internal/persisted'
   import { getInternalContext, useInspector } from '../internal/context'
   import { add } from '../hooks/useOnAdd'
   import { remove } from '../hooks/useOnRemove'
@@ -13,46 +16,54 @@
   const { position } = useInspector()
   const { scene, usingFreeCamera, selectedObject } = getInternalContext()
 
+  let grid = persisted('grid', true)
+  let axes = persisted('axes', true)
+
   $: object = $selectedObject
 </script>
+
+{#if $position === 'inline'}
+  <Portal style='position:fixed; top:0; left:0; width:100vw; height:100vh;'>
+    <Splitpanes>
+      <slot />
+    </Splitpanes>
+  </Portal>
+{:else}
+  <Portal>
+    <Tweakpane>
+      <slot />
+    </Tweakpane>
+  </Portal>
+{/if}
 
 <!-- Ensure that all inspector objects are added to the scene passed to the inspector -->
 <HierarchicalObject
   onChildMount={(child) => add.call($scene, child)}
   onChildDestroy={(child) => remove.call($scene, child)}
 >
-  {#if $position === 'inline'}
-    <Portal>
-      <div>
-        <Splitpanes>
-          <slot />
-        </Splitpanes>
-      </div>
-    </Portal>
-  {:else}
-    <Portal>
-      <Tweakpane>
-        <slot />
-      </Tweakpane>
-    </Portal>
+  {#if $grid}
+    <Grid
+      infiniteGrid
+      cellSize={1}
+      renderOrder={9999}
+      sectionColor='#555'
+    />
   {/if}
-  
+
+  {#if $axes}
+    <T
+      is={AxesHelper}
+      length={1000}
+      width={0.2}
+    />
+  {/if}
+
   {#if $usingFreeCamera}
     <FreeCamera />
   {/if}
 
-  {#if object}
+  {#if object && !('isScene' in object)}
     <TransformControls {object} />
     <Helpers {object} />
   {/if}
 </HierarchicalObject>
-
-<style>
-  div {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-  }
-</style>

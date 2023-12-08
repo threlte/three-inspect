@@ -1,6 +1,6 @@
 {
   "name": "three-inspect",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "type": "module",
   "files": [
     "dist",
@@ -45,14 +45,12 @@
     "three": ">=0.140"
   },
   "devDependencies": {
-    "@dimforge/rapier3d-compat": "^0.11.2",
     "@mdi/js": "^7.3.67",
     "@sveltejs/adapter-auto": "^2.1.1",
     "@sveltejs/kit": "^1.27.7",
     "@sveltejs/package": "^2.2.3",
     "@threlte/core": "^7.0.9",
     "@threlte/extras": "^8.0.8",
-    "@threlte/rapier": "^1.1.4",
     "@types/three": "^0.159.0",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",

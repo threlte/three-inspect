@@ -52,6 +52,6 @@
   export let target: HTMLElement | string = 'body'
 </script>
 
-<div use:portal={target} hidden>
+<div use:portal={target} hidden {...$$restProps}>
   <slot />
 </div>
