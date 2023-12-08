@@ -1,22 +1,15 @@
 <script lang='ts'>
-  import { onMount } from 'svelte'
   import { HierarchicalObject } from '@threlte/core'
-  import Portal from './Internal/Portal.svelte'
-  import Splitpanes from './Splitpanes.svelte'
-  import { getInternalContext } from '../internal/context'
+  import { getInternalContext, useInspector } from '../internal/context'
   import { add } from '../hooks/useOnAdd'
   import { remove } from '../hooks/useOnRemove'
+  import Portal from './Internal/Portal.svelte'
+  import FreeCamera from './Tools/FreeCamera.svelte'
+  import Splitpanes from './Splitpanes.svelte'
+  import Tweakpane from './Tweakpane.svelte'
 
-  let ref: HTMLElement
-
-  const { scene, renderer } = getInternalContext()
-
-  onMount(() => {
-    const canvas = $renderer.domElement
-    const oldParent = canvas.parentElement ?? document.body
-    ref.replaceWith(canvas)
-    return () => oldParent.append(canvas)
-  })
+  const { position } = useInspector()
+  const { scene, usingFreeCamera } = getInternalContext()
 </script>
 
 <!-- Ensure that all inspector objects are added to the scene passed to the inspector -->
@@ -24,10 +17,33 @@
   onChildMount={(child) => add.call($scene, child)}
   onChildDestroy={(child) => remove.call($scene, child)}
 >
-  <Portal>
-    <Splitpanes>
-      <div slot='canvas' style='height: 100vh' bind:this={ref} />
-      <slot />
-    </Splitpanes>
-  </Portal>
+  {#if $position === 'inline'}
+    <Portal>
+      <div>
+        <Splitpanes>
+          <slot />
+        </Splitpanes>
+      </div>
+    </Portal>
+  {:else}
+    <Portal>
+      <Tweakpane>
+        <slot />
+      </Tweakpane>
+    </Portal>
+  {/if}
+  
+  {#if $usingFreeCamera}
+    <FreeCamera />
+  {/if}
 </HierarchicalObject>
+
+<style>
+  div {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+</style>

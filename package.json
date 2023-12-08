@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@dimforge/rapier3d-compat": "^0.11.2",
+    "@mdi/js": "^7.3.67",
     "@sveltejs/adapter-auto": "^2.1.1",
     "@sveltejs/kit": "^1.27.7",
     "@sveltejs/package": "^2.2.3",

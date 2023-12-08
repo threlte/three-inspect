@@ -2,6 +2,7 @@
   import * as THREE from 'three'
   import { T } from '@threlte/core'
   import { Grid } from '@threlte/extras'
+  import { Separator } from 'svelte-tweakpane-ui'
   import { AxesHelper } from 'trzy'
   import { persisted } from '../../internal/persisted'
   import { getInternalContext } from '../../internal/context'
@@ -17,6 +18,10 @@
 
   $: object = $selectedObject
 </script>
+
+{#if object !== undefined}
+  <Separator />
+{/if}
 
 {#if object instanceof THREE.PerspectiveCamera || object instanceof THREE.OrthographicCamera}
   <Camera {object} />

@@ -1,34 +1,38 @@
 <script lang='ts'>
+  import { onMount } from 'svelte'
   import { Pane, Splitpanes } from 'svelte-splitpanes'
-  import { Pane as Tweakpane, TabGroup, TabPage } from 'svelte-tweakpane-ui'
-  import Tree from './Tree/Tree.svelte'
-  import Bindings from './Bindings/index.svelte'
+  import Tweakpane from './Tweakpane.svelte'
+  import { getInternalContext } from '../internal/context'
+
+  const { renderer } = getInternalContext()
+
+  let ref: HTMLElement
+
+  onMount(() => {
+    const canvas = $renderer.domElement
+    const oldParent = canvas.parentElement ?? document.body
+    ref.replaceWith(canvas)
+    return () => oldParent.append(canvas)
+  })
 </script>
 
-<Splitpanes style="height: 100vh">
+<Splitpanes style="height: 100vh; --tp-base-border-radius: 0px;">
 	<Pane minSize={10}>
-    <slot name='canvas' />
+    <div style='height: 100vh' bind:this={ref} />
   </Pane>
 
   <Pane minSize={26} size={30}>
-    <TabGroup>
-      <TabPage title='inspect'></TabPage>
-    </TabGroup>
-
-    <Tree />
-
-    <div
-      class='tweakpane'
-      style='overflow-y: auto; height: calc(100% - 308px)'
-    >
-      <Tweakpane position='inline'>
-        <Bindings />
-      </Tweakpane>
-    </div>
+    <Tweakpane>
+      <slot />
+    </Tweakpane>
   </Pane>
 </Splitpanes>
 
 <style>
+  :global(.tp-rotv) {
+    overflow: auto !important;
+    max-height: 100dvh !important;
+  }
   /* Firefox */
   :global(*) {
     scrollbar-width: thin;

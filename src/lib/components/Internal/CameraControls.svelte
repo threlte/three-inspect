@@ -1,34 +1,33 @@
-<script lang='ts'>
+<script context='module' lang='ts'>
   import * as THREE from 'three'
   import CameraControls from 'camera-controls'
+
+  CameraControls.install({ THREE })
+</script>
+
+<script lang='ts'>
   import { useTask, watch } from '@threlte/core'
   import { onMount } from 'svelte'
   import { getInternalContext } from '../../internal/context'
 
-  CameraControls.install({ THREE })
+  export let camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
 
-  const { camera, usingTransformControls } = getInternalContext()
+  const { usingTransformControls, renderer } = getInternalContext()
   const clock = new THREE.Clock()
 
   const { start } = useTask(() => {
     const delta = clock.getDelta()
-    const hasControlsUpdated = cameraControls!.update(delta)
-
-    // you can skip this condition to render though
-    if (hasControlsUpdated) {
-      // todo
-    }
+    cameraControls!.update(delta)
   }, { autoStart: false })
 
-  let cameraControls: CameraControls | undefined
+  let cameraControls = new CameraControls(camera, $renderer.domElement)
 
   watch(usingTransformControls, (value) => {
-    if (cameraControls) cameraControls.enabled = !value
+    cameraControls.enabled = !value
   })
 
   onMount(() => {
-    const parent = document.querySelectorAll('.splitpanes__pane')[0] as HTMLElement
-    cameraControls = new CameraControls($camera as THREE.PerspectiveCamera | THREE.OrthographicCamera, parent)
     start()
+    return () => cameraControls?.dispose()
   })
 </script>

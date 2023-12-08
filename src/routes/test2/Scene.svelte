@@ -75,7 +75,7 @@
   const metal = useTexture('/textures/metal/weave_METALNESS_1K_METALNESS.jpg', { transform })
 </script>
 
-<Inspector />
+<Inspector position='draggable' />
 
 <T.AmbientLight intensity={0.8} />
 

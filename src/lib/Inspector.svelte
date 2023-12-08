@@ -1,8 +1,9 @@
 <script lang='ts'>
   import App from './components/App.svelte'
   import { persisted } from './internal/persisted'
-  import { setInternalContext } from './internal/context'
+  import { setPublicContext, setInternalContext } from './internal/context'
 
+  export let position: 'draggable' | 'fixed' | 'inline' = 'inline'
   export let scene: THREE.Scene
   export let camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
   export let renderer: THREE.WebGLRenderer
@@ -15,6 +16,7 @@
     }
   }
 
+  setPublicContext({ position })
   setInternalContext({ scene, camera, renderer })
 </script>
 
