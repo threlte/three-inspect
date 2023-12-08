@@ -1,9 +1,10 @@
 <script lang='ts'>
   import { onMount } from 'svelte'
-  import { T, useThrelte } from '@threlte/core'
+  import { T } from '@threlte/core'
   import CameraControls from '../Internal/CameraControls.svelte'
+  import { getInternalContext } from '$lib/internal/context'
 
-  const { camera } = useThrelte()
+  const { camera } = getInternalContext()
 
   let ready = false
 

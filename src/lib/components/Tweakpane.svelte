@@ -12,7 +12,7 @@
 </script>
 
 <Pane
-  title={$position === 'draggable' ? '' : undefined}
+  title={$position === 'draggable' ? 'Three Inspect' : undefined}
   position={$position}
   theme={ThemeUtils.presets[themeKey]}
   localStoreId='three-inspect-pane'
@@ -43,6 +43,10 @@
       </Element>
 
       <Bindings />
+    </TabPage>
+
+    <TabPage title='monitor'>
+      
     </TabPage>
 
     <slot />

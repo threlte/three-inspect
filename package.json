@@ -44,8 +44,10 @@
   "peerDependencies": {
     "three": ">=0.140"
   },
+  "dependencies": {
+    "@mdi/js": "^7.3.67"
+  },
   "devDependencies": {
-    "@mdi/js": "^7.3.67",
     "@sveltejs/adapter-auto": "^2.1.1",
     "@sveltejs/kit": "^1.27.7",
     "@sveltejs/package": "^2.2.3",
@@ -68,6 +70,7 @@
     "svelte-tweakpane-ui": "^1.0.0",
     "tailwindcss": "^3.3.6",
     "three": "^0.159.0",
+    "three-perf": "^1.0.10",
     "trzy": "^0.3.17",
     "tslib": "^2.6.2",
     "typescript": "^5.3.3",

@@ -1,6 +1,5 @@
 <script lang='ts'>
   import { Binding } from 'svelte-tweakpane-ui'
-  import Object3D from './Object.svelte'
 
   export let object: THREE.PerspectiveCamera | THREE.OrthographicCamera
 
@@ -26,5 +25,3 @@
   <Binding bind:object key='right' label='right' {options} />
   <Binding bind:object key='top' label='top' {options} />
 {/if}
-
-<Object3D {object} />

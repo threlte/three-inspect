@@ -2,7 +2,6 @@
   import * as THREE from 'three'
   import { Binding, Folder } from 'svelte-tweakpane-ui'
   import Color from './Color.svelte'
-  import Object3D from './Object.svelte'
   import Shadow from './Shadow.svelte'
 
   export let object: THREE.Light
@@ -38,10 +37,8 @@
 
 {/if}
 
-<Object3D {object} />
-
-{#if object.shadow}
-  <Folder disabled={!object.castShadow} title='shadow'>
+{#if object.shadow && object.castShadow}
+  <Folder expanded={false} title='shadow'>
     <Shadow object={object.shadow} />
   </Folder>
 {/if}

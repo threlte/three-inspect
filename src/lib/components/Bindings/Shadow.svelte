@@ -1,6 +1,5 @@
 <script lang='ts'>
   import type * as THREE from 'three'
-  import { T } from '@threlte/core'
   import { Binding, Folder, List } from 'svelte-tweakpane-ui'
   import Camera from './Camera.svelte'
 
@@ -34,9 +33,7 @@
 <Binding bind:object key='radius' label='radius' />
 
 {#if 'isPerspectiveCamera' in camera || 'isOrthographicCamera' in camera}
-  <Folder title='shadow camera'>
+  <Folder title='shadow camera' expanded={false}>
     <Camera object={camera} />
   </Folder>
 {/if}
-
-<T.CameraHelper args={[camera]} />

@@ -1,7 +1,9 @@
 <script lang='ts'>
+  import * as THREE from 'three'
   import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
-  import { T, useTask } from '@threlte/core'
-  import { getInternalContext } from '$lib/internal/context'
+  import { T } from '@threlte/core'
+  import { getInternalContext } from '../../internal/context'
+  import { useUpdate } from '../../hooks/useUpdate'
 
   const { usingFreeCamera } = getInternalContext()
 
@@ -9,7 +11,7 @@
 
   let ref: THREE.CameraHelper | undefined
 
-  useTask(() => ref?.update())
+  useUpdate(() => ref?.update())
 </script>
 
 {#if 'isCamera' in object}
@@ -17,19 +19,25 @@
     <T.CameraHelper bind:ref args={[object]} />
   {/if}
 
-{:else if 'isDirectionalLight' in object}
-  <T.DirectionalLightHelper args={[object, 10]} />
+{:else if object instanceof THREE.Light}
+  {#if object.shadow}
+    <T.CameraHelper args={[object.shadow.camera]} />
+  {/if}
 
-{:else if 'isSpotLight' in object}
-  <T.SpotLightHelper args={[object]} />
+  {#if 'isDirectionalLight' in object}
+    <T.DirectionalLightHelper args={[object, 10]} />
 
-{:else if 'isPointLight' in object}
-  <T.PointLightHelper args={[object, 10]} />
+  {:else if 'isSpotLight' in object}
+    <T.SpotLightHelper args={[object]} />
 
-{:else if 'isHemisphereLight' in object}
-  <T.HemisphereLightHelper args={[object, 10]} />
+  {:else if 'isPointLight' in object}
+    <T.PointLightHelper args={[object, 10]} />
 
-{:else if 'isRectAreaLight' in object}
-  <T is={RectAreaLightHelper} args={[object]} />
+  {:else if 'isHemisphereLight' in object}
+    <T.HemisphereLightHelper args={[object, 10]} />
 
+  {:else if 'isRectAreaLight' in object}
+    <T is={RectAreaLightHelper} args={[object]} />
+
+  {/if}
 {/if}
