@@ -1,0 +1,40 @@
+{
+	"name": "Three Inspect",
+	"short_name": "TI",
+	"version": "0.4.0",
+	"minimum_chrome_version": "90",
+	"devtools_page": "devtools.html",
+	"description": "Inspector for Three.js apps",
+	"author": "Micheal Parks (https://parks.lol)",
+	"icons": {
+		"16": "icons/icon16.png",
+		"48": "icons/icon48.png",
+		"128": "icons/icon128.png"
+	},
+	"background": {
+		"service_worker": "service-worker.js"
+	},
+	"permissions": ["storage", "scripting"],
+	"host_permissions": ["http://*/*", "https://*/*"],
+	"content_scripts": [
+		{
+			"matches": ["http://*/*", "https://*/*"],
+			"js": ["content.js"],
+			"run_at": "document_start",
+			"all_frames": true
+		}
+	],
+	"action": {
+		"default_icon": {
+			"16": "icons/icon16.png",
+			"48": "icons/icon48.png",
+			"128": "icons/icon128.png"
+		},
+		"default_popup": "popup.html"
+	},
+	"manifest_version": 3,
+	"web_accessible_resources": [],
+	"content_security_policy": {
+		"extension_pages": "script-src 'self'; object-src 'self'"
+	}
+}
