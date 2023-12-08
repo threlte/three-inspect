@@ -4,6 +4,8 @@
   import Portal from './Internal/Portal.svelte'
   import Splitpanes from './Splitpanes.svelte'
   import { getInternalContext } from '../internal/context'
+  import { add } from '../hooks/useOnAdd'
+  import { remove } from '../hooks/useOnRemove'
 
   let ref: HTMLElement
 
@@ -19,8 +21,11 @@
 
 <!-- Ensure that all inspector objects are added to the scene passed to the inspector -->
 <HierarchicalObject
-  onChildMount={(child) => $scene.add(child)}
-  onChildDestroy={(child) => $scene.remove(child)}
+  onChildMount={(child) => {
+    console.log(child)
+    add.call($scene, child)
+  }}
+  onChildDestroy={(child) => remove.call($scene, child)}
 >
   <Portal>
     <Splitpanes>

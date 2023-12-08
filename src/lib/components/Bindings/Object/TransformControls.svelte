@@ -6,7 +6,6 @@
 
   const { usingTransformControls } = getInternalContext()
 
-  let enableControls = true
   let mode: 'translate' | 'rotate' | 'scale' = 'translate'
 
   const keydown = (_event: KeyboardEvent) => {
@@ -23,20 +22,18 @@
   on:keyup={keyup}
 />
 
-{#if enableControls}
-  <TransformControls
-    {object}
-    {mode}
-    userData.threeInspectHide
-    autoPauseOrbitControls
-    on:create={({ ref, cleanup }) => {
-      ref.addEventListener('mouseDown', () => ($usingTransformControls = true))
-      ref.addEventListener('mouseUp', () => ($usingTransformControls = false))
+<TransformControls
+  {object}
+  {mode}
+  userData.threeInspectHide
+  autoPauseOrbitControls
+  on:create={({ ref, cleanup }) => {
+    ref.addEventListener('mouseDown', () => ($usingTransformControls = true))
+    ref.addEventListener('mouseUp', () => ($usingTransformControls = false))
 
-      cleanup(() => {
-        ref.removeEventListener('mouseDown', () => ($usingTransformControls = true))
-        ref.removeEventListener('mouseUp', () => ($usingTransformControls = false))
-      })
-    }}
-  />
-{/if}
+    cleanup(() => {
+      ref.removeEventListener('mouseDown', () => ($usingTransformControls = true))
+      ref.removeEventListener('mouseUp', () => ($usingTransformControls = false))
+    })
+  }}
+/>
