@@ -1,15 +1,21 @@
 <script lang='ts'>
   import type * as THREE from 'three'
-  import { useThrelte } from '@threlte/core'
+  import { useThrelte, type CurrentWritable } from '@threlte/core'
   import Inspector from './Inspector.svelte'
 
-  const { scene, renderer, camera: cam } = useThrelte()
+  export let scene: undefined | THREE.Scene = undefined
+  export let camera: undefined | THREE.PerspectiveCamera | THREE.OrthographicCamera = undefined
+  export let renderer: undefined | THREE.WebGLRenderer = undefined
 
-  $: camera = $cam as THREE.PerspectiveCamera | THREE.OrthographicCamera
+  const context = useThrelte()
+
+  $: cam = context.camera as CurrentWritable<THREE.PerspectiveCamera | THREE.OrthographicCamera>
 </script>
 
 <Inspector
-  {scene}
-  {renderer}
-  {camera}
-/>
+  scene={scene ?? context.scene}
+  renderer={renderer ?? context.renderer}
+  camera={camera ?? $cam}
+>
+  <slot />
+</Inspector>

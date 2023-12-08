@@ -1,10 +1,10 @@
 <script lang='ts'>
   import { TransformControls } from '@threlte/extras'
-  import { useInteracting } from '$lib/hooks/use-interacting'
+  import { getInternalContext } from '../../../internal/context'
 
   export let object: THREE.Object3D
 
-  const interacting = useInteracting()
+  const { usingTransformControls } = getInternalContext()
 
   let enableControls = true
   let mode: 'translate' | 'rotate' | 'scale' = 'translate'
@@ -30,12 +30,12 @@
     userData.threeInspectHide
     autoPauseOrbitControls
     on:create={({ ref, cleanup }) => {
-      ref.addEventListener('mouseDown', () => ($interacting = true))
-      ref.addEventListener('mouseUp', () => ($interacting = false))
+      ref.addEventListener('mouseDown', () => ($usingTransformControls = true))
+      ref.addEventListener('mouseUp', () => ($usingTransformControls = false))
 
       cleanup(() => {
-        ref.removeEventListener('mouseDown', () => ($interacting = true))
-        ref.removeEventListener('mouseUp', () => ($interacting = false))
+        ref.removeEventListener('mouseDown', () => ($usingTransformControls = true))
+        ref.removeEventListener('mouseUp', () => ($usingTransformControls = false))
       })
     }}
   />

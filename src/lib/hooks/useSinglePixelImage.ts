@@ -1,7 +1,9 @@
+import { browser } from '../internal/browser'
+
 let img: HTMLImageElement | undefined
 
 const initialize = () => {
-  if (typeof document === 'undefined') {
+  if (!browser) {
     return
   }
 

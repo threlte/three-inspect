@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import { onDestroy } from 'svelte'
 
-const remove = THREE.Object3D.prototype.remove
-const clear = THREE.Object3D.prototype.clear
+export const remove = THREE.Object3D.prototype.remove
+export const clear = THREE.Object3D.prototype.clear
 
 type Callback = (object: THREE.Object3D) => void
 

@@ -1,7 +1,7 @@
 <script lang='ts'>
   import * as THREE from 'three'
   import { T, useThrelte, useTask } from '@threlte/core'
-  import { ThrelteInspector } from '$lib'
+  import { Inspector } from '$lib'
   import { Edges, useTexture } from '@threlte/extras';
 
   const { scene, camera, renderer } = useThrelte()
@@ -75,7 +75,7 @@
   const metal = useTexture('/textures/metal/weave_METALNESS_1K_METALNESS.jpg', { transform })
 </script>
 
-<ThrelteInspector />
+<Inspector />
 
 <T.AmbientLight intensity={0.8} />
 

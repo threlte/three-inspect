@@ -3,7 +3,7 @@
   import { T, useTask, useThrelte } from '@threlte/core'
   import { OrbitControls, InstancedMesh, Instance } from '@threlte/extras'
   import { createNoise3D, type NoiseFunction3D } from 'simplex-noise'
-  import { ThrelteInspector } from '$lib'
+  import { Inspector } from '$lib'
 
   const { scene, renderer, camera } = useThrelte()
 
@@ -48,7 +48,7 @@
   const rotation = () => Math.random() * Math.PI * 2
 </script>
 
-<ThrelteInspector />
+<Inspector />
 
 <T.OrthographicCamera
 	makeDefault

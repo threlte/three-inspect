@@ -1,6 +1,6 @@
 <script lang='ts'>
   import { T } from '@threlte/core'
-  import CameraControls from './CameraControls.svelte'
+  import CameraControls from '../Internal/CameraControls.svelte'
 </script>
 
 <T.PerspectiveCamera

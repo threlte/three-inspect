@@ -1,13 +1,13 @@
 <script lang='ts'>
   import { Pane, Splitpanes } from 'svelte-splitpanes'
   import { Pane as Tweakpane, TabGroup, TabPage } from 'svelte-tweakpane-ui'
-  import Treeview from '$lib/components/treeview.svelte'
-  import Bindings from '$lib/components/Bindings/index.svelte'
+  import Tree from './Tree/Tree.svelte'
+  import Bindings from './Bindings/index.svelte'
 </script>
 
 <Splitpanes style="height: 100vh">
 	<Pane minSize={10}>
-    <slot />
+    <slot name='canvas' />
   </Pane>
 
   <Pane minSize={26} size={30}>
@@ -15,7 +15,7 @@
       <TabPage title='inspect'></TabPage>
     </TabGroup>
 
-    <Treeview />
+    <Tree />
 
     <div
       class='tweakpane'

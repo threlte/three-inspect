@@ -91,29 +91,6 @@ const myPlugin = (inspector: Inspector) => {
 inspector.registerPlugin(myPlugin)
 ```
 
-### React Three Fiber Usage
-
-```ts
-import * as React from 'react'
-import { useThree } from '@react-three/fiber'
-import Inspector from 'three-inspect'
-
-function App() {
-  const state = useThree()
-
-  const inspector = React.useEffect(() => {
-    const { dispose } = new Inspector({
-      scene: state.scene,
-      camera: state.camera,
-      renderer: state.gl,
-    })
-
-    return () => dispose()
-  }), [state.scene, state.camera])
-
-  ...
-```
-
 ### Threlte usage
 
 This library is build using Threlte, so a component can be directly imported.
@@ -129,4 +106,25 @@ import { Inspect } from 'three-inspect'
 <Canvas>
   <Inspect />
 </Canvas>
+```
+
+### React Three Fiber Usage
+
+```ts
+import * as React from 'react'
+import { useThree } from '@react-three/fiber'
+import { createInspector } from 'three-inspect'
+
+function App() {
+  const state = useThree()
+
+  React.useEffect(() => {
+    return () => createInspector({
+      scene: state.scene,
+      camera: state.camera,
+      renderer: state.gl,
+    })
+  }), [state.scene, state.camera])
+
+  ...
 ```

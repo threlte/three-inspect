@@ -1,4 +1,5 @@
 import { type Writable, writable } from 'svelte/store'
+import { browser } from './browser'
 
 /**
  * This singleton's purpose is for caching stores only during a browser session.
@@ -6,7 +7,6 @@ import { type Writable, writable } from 'svelte/store'
  */
 const stores: Record<string, Writable<unknown> | undefined> = {}
 
-const browser = () => typeof window !== 'undefined'
 
 let prefix = ''
 
@@ -22,7 +22,7 @@ const parse = <T>(value: string | null): T | null => {
   }
 }
 
-if (browser()) {
+if (browser) {
   window.addEventListener('storage', ({ key, newValue }: StorageEvent) => {
     if (key === null) {
       return
@@ -78,7 +78,7 @@ export const persisted = <T>(
   initialValue: T,
   storageType: 'local' | 'session' = 'local'
 ): Writable<T> => {
-  if (!browser()) {
+  if (!browser) {
     return writable<T>(initialValue)
   }
 

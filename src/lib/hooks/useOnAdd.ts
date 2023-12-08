@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { onDestroy } from 'svelte'
 
-const add = THREE.Object3D.prototype.add
+export const add = THREE.Object3D.prototype.add
 
 type Callback = (object: THREE.Object3D) => void
 

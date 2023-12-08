@@ -3,14 +3,14 @@
   import { T } from '@threlte/core'
   import { Grid } from '@threlte/extras'
   import { AxesHelper } from 'trzy'
-  import { useSelectedObject } from '$lib/hooks/use-selected-item'
-  import { persisted } from '$lib/internal/persisted'
+  import { persisted } from '../../internal/persisted'
+  import { getInternalContext } from '../../internal/context'
   import Camera from './Camera/Camera.svelte'
   import Light from './Light/Light.svelte'
   import Scene from './Scene/Scene.svelte'
   import Object from './Object/Object.svelte'
 
-  const { selectedObject } = useSelectedObject()
+  const { selectedObject } = getInternalContext()
 
   let grid = persisted('grid', true)
   let axes = persisted('axes', true)

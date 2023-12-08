@@ -3,13 +3,11 @@
   import CameraControls from 'camera-controls'
   import { useTask, watch } from '@threlte/core'
   import { onMount } from 'svelte'
-  import { useInteracting } from '$lib/hooks/use-interacting'
-  import { getInspectorContext } from '../../context'
+  import { getInternalContext } from '../../internal/context'
 
   CameraControls.install({ THREE })
 
-  const { camera } = getInspectorContext()
-  const interacting = useInteracting()
+  const { camera, usingTransformControls } = getInternalContext()
   const clock = new THREE.Clock()
 
   const { start } = useTask(() => {
@@ -24,7 +22,7 @@
 
   let cameraControls: CameraControls | undefined
 
-  watch(interacting, (value) => {
+  watch(usingTransformControls, (value) => {
     if (cameraControls) cameraControls.enabled = !value
   })
 

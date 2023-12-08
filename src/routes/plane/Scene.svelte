@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { ThrelteInspector } from '$lib'
+  import { Inspector } from '$lib'
   import * as THREE from 'three'
 	import { T, useThrelte } from '@threlte/core'
 	import { OrbitControls } from '@threlte/extras'
@@ -12,7 +12,7 @@
 	scene.fog = new THREE.Fog('#D1E6FA', 18, 25)
 </script>
 
-<ThrelteInspector />
+<Inspector />
 
 <T.OrthographicCamera
 	makeDefault
