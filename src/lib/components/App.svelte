@@ -21,10 +21,7 @@
 
 <!-- Ensure that all inspector objects are added to the scene passed to the inspector -->
 <HierarchicalObject
-  onChildMount={(child) => {
-    console.log(child)
-    add.call($scene, child)
-  }}
+  onChildMount={(child) => add.call($scene, child)}
   onChildDestroy={(child) => remove.call($scene, child)}
 >
   <Portal>

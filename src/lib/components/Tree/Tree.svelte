@@ -41,10 +41,6 @@
   }
   
   const deregister = (object3D: THREE.Object3D) => {
-    if (object3D.userData.threeInspectHide === true) {
-      return
-    }
-  
     object3D.traverse((child) => object3D !== child && deregister(child))
   
     const item = objectToTreeItem.get(object3D)
@@ -64,14 +60,6 @@
   const orphaned = new Map()
   
   const register = (object3D: THREE.Object3D) => {
-    if (object3D.userData.threeInspectHide === true) {
-      return
-    }
-  
-    if (object3D.name === 'Three Inspect Transform Controls') {
-      return
-    }
-  
     const { parent } = object3D
     const name = object3D.name
     const parentItem = parent instanceof THREE.Scene ? treeroot : objectToTreeItem.get(parent!)

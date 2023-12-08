@@ -1,26 +1,29 @@
 <script lang='ts'>
   import * as THREE from 'three'
-  import { Slider, Point } from 'svelte-tweakpane-ui'
+  import { Binding, Slider, type BindingRef } from 'svelte-tweakpane-ui'
 
   export let object: THREE.InstancedMesh
 
+  const mat4 = new THREE.Matrix4()
+
   let instance = 0
+  let lastInstance = -1
+  let refs: BindingRef[] = []
+  let dummy = new THREE.Object3D()
 
-  const matrix4 = new THREE.Matrix4()
-  const quat = new THREE.Quaternion()
-  let position = new THREE.Vector3()
-  let rotation = new THREE.Euler()
-  let scale = new THREE.Vector3()
-
-  $: {
-    object.getMatrixAt(instance, matrix4)
-    matrix4.decompose(position, quat, scale)
-    rotation.setFromQuaternion(quat)
+  $: if (instance !== lastInstance) {
+    object.getMatrixAt(instance, mat4)
+    mat4.decompose(dummy.position, dummy.quaternion, dummy.scale)
+    refs.forEach(ref => ref.refresh())
+    lastInstance = instance
+  } else {
+    mat4.compose(dummy.position, dummy.quaternion, dummy.scale)
+    object.setMatrixAt(instance, mat4)
     object.instanceMatrix.needsUpdate = true
   }
 </script>
 
-<Slider bind:value={instance} label='instance' min={0} max={1} step={1} />
-<Point bind:value={position} label='position' />
-<Point bind:value={rotation} label='rotation' />
-<Point bind:value={scale} label='scale' />
+<Slider bind:value={instance} label='instance' min={0} max={object.count} step={1} />
+<Binding bind:object={dummy} bind:ref={refs[0]} key='position' label='position' />
+<Binding bind:object={dummy} bind:ref={refs[1]} key='rotation' label='rotation' />
+<Binding bind:object={dummy} bind:ref={refs[2]} key='scale' label='scale' />

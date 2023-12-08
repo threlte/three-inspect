@@ -40,7 +40,4 @@
   </Folder>
 {/if}
 
-<T.CameraHelper
-  args={[camera]}
-  userData.threeInspectHide
-/>
+<T.CameraHelper args={[camera]} />

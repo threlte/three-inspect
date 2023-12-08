@@ -23,5 +23,4 @@
 <T.CameraHelper
   bind:ref
   args={[object]}
-  userData.threeInspectHide
 />

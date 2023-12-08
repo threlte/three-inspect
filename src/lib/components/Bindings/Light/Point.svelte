@@ -11,5 +11,4 @@
 
 <T.PointLightHelper
   args={[object, 10]}
-  userData.threeInspectHide
 />

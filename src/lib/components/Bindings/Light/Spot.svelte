@@ -3,10 +3,9 @@
   import { Binding } from 'svelte-tweakpane-ui'
 
   export let object: THREE.SpotLight
-
-  const options = { onChange() { object.target.updateMatrixWorld() } }
 </script>
 
+<Binding bind:object={object.target} key='position' label='target' />
 <Binding bind:object key='angle' label='angle' options={{ min: 0, max: Math.PI / 2 }} />
 <Binding bind:object key='decay' label='decay' />
 <Binding bind:object key='distance' label='distance' />
@@ -16,5 +15,4 @@
 
 <T.SpotLightHelper
   args={[object]}
-  userData.threeInspectHide
 />

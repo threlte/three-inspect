@@ -34,7 +34,6 @@
   cellSize={1}
   renderOrder={9999}
   sectionColor='#555'
-  userData.threeInspectHide
 />
 
 <T
@@ -42,5 +41,4 @@
   visible={$axes}
   length={1000}
   width={0.2}
-  userData.threeInspectHide
 />

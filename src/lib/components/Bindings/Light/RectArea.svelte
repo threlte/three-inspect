@@ -13,5 +13,4 @@
 <T
   is={RectAreaLightHelper}
   args={[object]}
-  userData.threeInspectHide
 />

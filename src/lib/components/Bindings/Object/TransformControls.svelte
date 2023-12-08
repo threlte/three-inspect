@@ -1,19 +1,38 @@
 <script lang='ts'>
   import { TransformControls } from '@threlte/extras'
+  import type { TransformControls as TransformControlsType } from 'three/examples/jsm/controls/TransformControls'
   import { getInternalContext } from '../../../internal/context'
+  import { persisted } from '../../../internal/persisted'
+  import { add } from '../../../hooks/useOnAdd'
 
   export let object: THREE.Object3D
 
-  const { usingTransformControls } = getInternalContext()
+  const { scene, usingTransformControls } = getInternalContext()
 
-  let mode: 'translate' | 'rotate' | 'scale' = 'translate'
+  type Modes = 'translate' | 'rotate' | 'scale'
 
-  const keydown = (_event: KeyboardEvent) => {
+  const mode = persisted<Modes>('three-inspect-transform-mode', 'translate')
 
+  const keydown = (event: KeyboardEvent) => {
+    const key = event.key.toLowerCase()
+
+    switch(key) {
+      case 't': return mode.set('translate')
+      case 'r': return mode.set('rotate')
+      case 's': return mode.set('scale')
+    }
   }
 
   const keyup = (_event: KeyboardEvent) => {
     
+  }
+
+  let controls: TransformControlsType
+
+  // Prevent controls from being shown in the Treeview
+  $: if (controls) {
+    $scene.remove(controls)
+    add.call($scene, controls)
   }
 </script>
 
@@ -23,17 +42,10 @@
 />
 
 <TransformControls
+  bind:controls
   {object}
-  {mode}
-  userData.threeInspectHide
+  mode={$mode}
   autoPauseOrbitControls
-  on:create={({ ref, cleanup }) => {
-    ref.addEventListener('mouseDown', () => ($usingTransformControls = true))
-    ref.addEventListener('mouseUp', () => ($usingTransformControls = false))
-
-    cleanup(() => {
-      ref.removeEventListener('mouseDown', () => ($usingTransformControls = true))
-      ref.removeEventListener('mouseUp', () => ($usingTransformControls = false))
-    })
-  }}
+  on:mouseDown={() => usingTransformControls.set(true)}
+  on:mouseUp={() => usingTransformControls.set(false)}
 />

@@ -8,7 +8,6 @@
   fov={50}
   position={[1, 1, 1]}
   on:create={({ ref }) => ref.lookAt(0, 0, 0)}
-  userData.threeInspectHide
 >
   <CameraControls />
 </T.PerspectiveCamera>

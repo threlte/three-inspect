@@ -3,13 +3,10 @@
   import { Binding } from 'svelte-tweakpane-ui'
 
   export let object: THREE.DirectionalLight
-
-  const options = { onChange() { object.target.updateMatrixWorld() } }
 </script>
 
-<Binding bind:object key='position' label='position' {options} />
+<Binding bind:object={object.target} key='position' label='target' />
 
 <T.DirectionalLightHelper
   args={[object, 10]}
-  userData.threeInspectHide
 />

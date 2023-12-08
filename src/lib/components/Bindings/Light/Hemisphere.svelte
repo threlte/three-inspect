@@ -9,5 +9,4 @@
 
 <T.HemisphereLightHelper
   args={[object, 10]}
-  userData.threeInspectHide
 />

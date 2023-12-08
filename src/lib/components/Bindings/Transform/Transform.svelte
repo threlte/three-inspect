@@ -5,22 +5,18 @@
 
   export let object: THREE.Object3D
   
-  let position: BindingRef
-  let rotation: BindingRef
-  let scale : BindingRef
+  let refs: BindingRef[] = []
 
   useTask(() => {
-    position.refresh()
-    rotation.refresh()
-    scale.refresh()
+    refs.forEach(ref => ref.refresh())
   })
 
   $: instancedMesh = object as THREE.InstancedMesh
 </script>
 
-<Binding bind:ref={position} bind:object key='position' label='position' />
-<Binding bind:ref={rotation} bind:object key='rotation' label='rotation' />
-<Binding bind:ref={scale} bind:object key='scale' label='scale' />
+<Binding bind:ref={refs[0]} bind:object key='position' label='position' />
+<Binding bind:ref={refs[1]} bind:object key='rotation' label='rotation' />
+<Binding bind:ref={refs[2]} bind:object key='scale' label='scale' />
 
 {#if 'isInstancedMesh' in instancedMesh}
   <Separator />
