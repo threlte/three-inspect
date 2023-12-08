@@ -35,3 +35,5 @@
     <Shadow object={object.shadow} />
   </Folder>
 {/if}
+
+<!-- @TODO: target and transform controls -->

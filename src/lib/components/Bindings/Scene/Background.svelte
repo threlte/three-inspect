@@ -1,19 +1,21 @@
 <script lang='ts'>
-  // import { useSinglePixelImage } from '$lib/hooks/use-single-pixel-image';
-  import { Binding, Separator } from 'svelte-tweakpane-ui'
+  import * as THREE from 'three'
+  import { Binding, Separator, Image } from 'svelte-tweakpane-ui'
+  import Color from '../Material/Color.svelte'
 
   export let object: THREE.Scene
-
-  // const params = {
-  //   background: useSinglePixelImage(),
-  //   fogColor: '#000000',
-  //   gridDistance: load<number>('three-inspect.gridDistance') ?? 100,
-  //   gridLargeCellSize: load<number>('three-inspect.largeCellSize') ?? 10,
-  // }
 </script>
 
 <Separator />
 <Binding bind:object key='backgroundBlurriness' label='backgroundBlurriness' />
 <Binding bind:object key='backgroundIntensity' label='backgroundIntensity' />
 
-<!-- <Input key='background' {object} /> -->
+{#if object.background instanceof THREE.Color}
+  <Color key='background' label='background' {object} />
+{:else if object.background instanceof THREE.Texture}
+  <Image bind:value={object.background.image.src} fit="cover" label="background" />
+{/if}
+
+{#if object.environment}
+  <Image bind:value={object.environment.image.src} fit="cover" label="environment" />
+{/if}
