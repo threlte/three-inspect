@@ -2,15 +2,18 @@
 <script lang='ts'>
   import { T } from '@threlte/core'
   import { Binding } from 'svelte-tweakpane-ui'
+  import { getInternalContext } from '$lib/internal/context'
 
   export let object: THREE.OrthographicCamera
 
-  let ref: THREE.CameraHelper
+  const { usingFreeCamera } = getInternalContext()
+
+  let ref: THREE.CameraHelper | undefined
 
   const options = {
     onChange() {
       object.updateProjectionMatrix()
-      ref.update()
+      ref?.update()
     }
   }
 </script>
@@ -20,7 +23,6 @@
 <Binding bind:object key='right' label='right' {options} />
 <Binding bind:object key='top' label='top' {options} />
 
-<T.CameraHelper
-  bind:ref
-  args={[object]}
-/>
+{#if $usingFreeCamera}
+  <T.CameraHelper bind:ref args={[object]} />
+{/if}

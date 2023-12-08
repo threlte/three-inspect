@@ -8,16 +8,16 @@
   export let camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
   export let renderer: THREE.WebGLRenderer
 
-  let enabled = persisted('three-inspect.enabled', true)
+  let enabled = persisted('enabled', true)
+
+  setPublicContext({ position })
+  setInternalContext({ scene, camera, renderer })
 
   const handleKeyup = (event: KeyboardEvent) => {
     if (event.key.toLowerCase() === 'i') {
       $enabled = !$enabled
     }
   }
-
-  setPublicContext({ position })
-  setInternalContext({ scene, camera, renderer })
 </script>
 
 <svelte:window on:keyup={handleKeyup} />

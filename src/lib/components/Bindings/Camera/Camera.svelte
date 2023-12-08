@@ -5,10 +5,16 @@
   import Orthographic from './Orthographic.svelte'
 
   export let object: THREE.PerspectiveCamera | THREE.OrthographicCamera
+
+  const options = {
+    onChange() {
+      object.updateProjectionMatrix()
+    }
+  }
 </script>
 
-<Binding bind:object key='near' label='near' />
-<Binding bind:object key='far' label='far' />
+<Binding bind:object key='near' label='near' {options} />
+<Binding bind:object key='far' label='far' {options} />
 <Binding bind:object key='zoom' label='zoom' />
 
 {#if 'isPerspectiveCamera' in object}

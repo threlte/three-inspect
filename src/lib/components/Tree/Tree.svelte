@@ -78,7 +78,7 @@
   
     const orphan = orphaned.get(object3D.uuid)
   
-    if (orphan) {
+    if (orphan && !orphan._destroyed) {
       item.append(orphan)
       orphaned.delete(object3D.uuid)
     }

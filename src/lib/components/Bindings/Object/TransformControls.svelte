@@ -11,9 +11,11 @@
 
   type Modes = 'translate' | 'rotate' | 'scale'
 
-  const mode = persisted<Modes>('three-inspect-transform-mode', 'translate')
+  const mode = persisted<Modes>('transform-mode', 'translate')
 
   const keydown = (event: KeyboardEvent) => {
+    if (event.metaKey) return
+  
     const key = event.key.toLowerCase()
 
     switch(key) {

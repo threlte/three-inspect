@@ -21,6 +21,7 @@
     margin: 0;
     background-color: var(--tp-button-background-color);
     color: var(--tp-button-foreground-color);
+    border-radius: var(--bs-br);
   }
 
   button:hover {
