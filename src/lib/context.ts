@@ -1,16 +1,26 @@
+import { type CurrentWritable, currentWritable } from '@threlte/core'
 import { getContext, setContext } from 'svelte'
-import type { CurrentWritable } from '@threlte/core'
 
 const key = Symbol('three-inspect-context')
 
-type InspectorContext = {
+interface InspectorContext {
   scene: CurrentWritable<THREE.Scene>
   renderer: CurrentWritable<THREE.Renderer>
-  camera: CurrentWritable<THREE.Camera>
+  camera: CurrentWritable<THREE.PerspectiveCamera | THREE.OrthographicCamera>
 }
 
-export const setInspectorContext = (context: InspectorContext) => {
-  setContext(key, context)
+interface setInspectorContextOptions {
+  scene: THREE.Scene
+  renderer: THREE.Renderer
+  camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
+}
+
+export const setInspectorContext = (options: setInspectorContextOptions) => {
+  setContext<InspectorContext>(key, {
+    scene: currentWritable(options.scene),
+    renderer: currentWritable(options.renderer),
+    camera: currentWritable(options.camera),
+  })
 }
 
 export const getInspectorContext = () => {
