@@ -1,12 +1,12 @@
 <script lang='ts'>
+  import { onMount } from 'svelte'
 
-import { onMount, onDestroy } from 'svelte'
+  let ref: HTMLElement
 
-let ref: HTMLElement
-
-onMount(() => document.body.append(ref))
-onDestroy(() => ref.remove())
-
+  onMount(() => {
+    document.body.append(ref)
+    return () => ref.remove()
+  })
 </script>
 
 <div bind:this={ref}>

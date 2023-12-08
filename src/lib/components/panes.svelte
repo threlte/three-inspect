@@ -1,10 +1,8 @@
 <script lang='ts'>
-
-import { Pane, Splitpanes } from 'svelte-splitpanes'
-import { Pane as Tweakpane, RadioGrid } from 'svelte-tweakpane-ui'
-import Treeview from '$lib/components/treeview.svelte'
-import Inputs from '$lib/components/Bindings/index.svelte'
-
+  import { Pane, Splitpanes } from 'svelte-splitpanes'
+  import { Pane as Tweakpane, TabGroup, TabPage } from 'svelte-tweakpane-ui'
+  import Treeview from '$lib/components/treeview.svelte'
+  import Bindings from '$lib/components/Bindings/index.svelte'
 </script>
 
 <Splitpanes style="height: 100vh">
@@ -13,11 +11,9 @@ import Inputs from '$lib/components/Bindings/index.svelte'
   </Pane>
 
   <Pane minSize={26} size={30}>
-    <div style='overflow-x: auto; width: fill-content;'>
-      <!-- <Tweakpane>
-        <RadioGrid key='Pane' label='' value='inspect' options={['inspect', 'world', 'physics']} />
-      </Tweakpane> -->
-    </div>
+    <TabGroup>
+      <TabPage title='inspect'></TabPage>
+    </TabGroup>
 
     <Treeview />
 
@@ -26,10 +22,9 @@ import Inputs from '$lib/components/Bindings/index.svelte'
       style='overflow-y: auto; height: calc(100% - 308px)'
     >
       <Tweakpane position='inline'>
-        <Inputs />
+        <Bindings />
       </Tweakpane>
     </div>
-    
   </Pane>
 </Splitpanes>
 

@@ -4,7 +4,7 @@
   import { useTask, watch } from '@threlte/core'
   import { onMount } from 'svelte'
   import { useInteracting } from '$lib/hooks/use-interacting'
-  import { getInspectorContext } from '../context'
+  import { getInspectorContext } from '../../context'
 
   CameraControls.install({ THREE })
 

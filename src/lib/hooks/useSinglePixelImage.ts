@@ -1,8 +1,7 @@
 let img: HTMLImageElement | undefined
 
 const initialize = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, no-constant-binary-expression
-  if (typeof document === undefined) {
+  if (typeof document === 'undefined') {
     return
   }
 
