@@ -2,11 +2,12 @@
   import * as THREE from 'three'
   import { T, useThrelte, useTask } from '@threlte/core'
   import { Inspector } from '$lib'
-  import { Edges, useTexture } from '@threlte/extras';
+  import { Edges, useTexture } from '@threlte/extras'
 
   const { scene, camera, renderer } = useThrelte()
 
   scene.background = new THREE.Color('#222')
+  scene.add(camera.current)
 
   camera.current.far = 300
   camera.current.position.set(0, 2, 10)
@@ -40,9 +41,8 @@
       vertices[i + 1] = vec3.y
       vertices[i + 2] = vec3.z
     }
-    
-    // itemSize = 3 because there are 3 values (components) per vertex
-    geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+
+    geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) )
     geometry.translate(0, 0.5, 0)
 
     const material = new THREE.PointsMaterial()

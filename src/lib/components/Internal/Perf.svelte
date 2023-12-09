@@ -1,35 +1,29 @@
 <script lang='ts'>
+  import { useTask, useThrelte } from '@threlte/core'
   import { ThreePerf } from 'three-perf'
-  import { getInternalContext } from '../../internal/context'
-  import { useUpdate } from '../../hooks/useUpdate'
   import { onMount } from 'svelte';
   
-  const { renderer } = getInternalContext()
+  const { renderer } = useThrelte()
 
-
+  let ref: HTMLElement
+  let perf: ThreePerf
 
   onMount(() => {
-    const perf = new ThreePerf({
+    perf = new ThreePerf({
+      scale: 0.85,
       anchorX: 'left',
       anchorY: 'top',
-      domElement: document.body, // or other canvas rendering wrapper
-      renderer: $renderer // three js renderer instance you use for rendering
-  })
-  })
-
-  useUpdate(() => {
-    perf.end()
-    perf.begin()
+      domElement: ref,
+      renderer
+    })
+    perf.ui.wrapper.style.position = 'relative'
+    return () => perf.dispose()
   })
 
-  function () {
-
-      perf.begin();
-
-      // supports composer or multy-pass rendering
-      renderer.render( scene, camera );
-
-      perf.end();
-
-  }
+  useTask(() => {
+    perf?.end()
+    perf?.begin()
+  })
 </script>
+
+<div bind:this={ref} />

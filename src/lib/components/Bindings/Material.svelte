@@ -6,18 +6,14 @@
   
   export let object: THREE.Material
 
-  const options = {
-    onChange() { object.needsUpdate = true }
-  }
-
-  $: console.log(object.opacity)
+  $: object.needsUpdate = true
 </script>
 
 <Binding bind:object key='visible' label='visible' />
 
-<Binding bind:object key='transparent' label='transparent' {options} />
+<Binding bind:object key='transparent' label='transparent' />
 
-<Binding bind:object key='opacity' label='opacity' options={{ min: 0, max: 1, ...options }} />
+<Binding bind:object key='opacity' label='opacity' options={{ min: 0, max: 1 }} />
 
 {#if 'color' in object}
   <Color label='color' {object} />
@@ -140,7 +136,7 @@
 <Binding bind:object key='toneMapped' label='toneMapped' />
 
 {#if 'flatShading' in object}
-  <Binding bind:object key='flatShading' label='flatShading' {options} />
+  <Binding bind:object key='flatShading' label='flatShading' />
 {/if}
 
 {#if 'wireframe' in object}

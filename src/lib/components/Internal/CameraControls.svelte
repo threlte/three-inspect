@@ -6,19 +6,20 @@
 </script>
 
 <script lang='ts'>
+  import { useTask, useThrelte } from '@threlte/core'
   import { getInternalContext } from '../../internal/context'
-  import { useUpdate } from '$lib/hooks/useUpdate';
 
   export let camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
 
-  const { usingTransformControls, renderer } = getInternalContext()
+  const { renderer } = useThrelte()
+  const { usingTransformControls } = getInternalContext()
   const clock = new THREE.Clock()
-  const cameraControls = new CameraControls(camera, $renderer.domElement)
+  const cameraControls = new CameraControls(camera, renderer.domElement)
 
-  useUpdate(() => {
+  useTask(() => {
     const delta = clock.getDelta()
     cameraControls.update(delta)
   })
 
-  cameraControls.enabled = $usingTransformControls === false
+  $: cameraControls.enabled = !$usingTransformControls
 </script>

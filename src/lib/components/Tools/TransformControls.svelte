@@ -1,4 +1,5 @@
 <script lang='ts'>
+  import { useThrelte } from '@threlte/core'
   import { TransformControls } from '@threlte/extras'
   import type { TransformControls as TransformControlsType } from 'three/examples/jsm/controls/TransformControls'
   import { getInternalContext } from '../../internal/context'
@@ -7,7 +8,8 @@
 
   export let object: THREE.Object3D
 
-  const { scene, usingTransformControls } = getInternalContext()
+  const { scene } = useThrelte()
+  const { usingTransformControls } = getInternalContext()
 
   type Modes = 'translate' | 'rotate' | 'scale'
 
@@ -33,8 +35,8 @@
 
   // Prevent controls from being shown in the Treeview
   $: if (controls) {
-    $scene.remove(controls)
-    add.call($scene, controls)
+    scene.remove(controls)
+    add.call(scene, controls)
   }
 </script>
 

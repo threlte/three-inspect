@@ -1,6 +1,7 @@
 <script lang='ts'>
   import * as THREE from 'three'
   import { onMount, tick } from 'svelte'
+  import { useThrelte } from '@threlte/core'
   import { TreeViewItem, TreeViewWebComponent } from 'flexible-tree'
   import { useOnAdd } from '$lib/hooks/useOnAdd'
   import { useOnRemove } from '$lib/hooks/useOnRemove'
@@ -17,7 +18,8 @@
   
   let element: HTMLElement
   
-  const { scene, selectedObject } = getInternalContext()
+  const { scene } = useThrelte()
+  const { selectedObject } = getInternalContext()
   
   const treeroot = new TreeViewItem({ text: 'Scene' })
   treeview.append(treeroot)
@@ -26,7 +28,7 @@
   const treeItemToObject = new WeakMap<TreeViewItem, THREE.Object3D>()
   
   // @todo reactive
-  treeItemToObject.set(treeroot, scene.current)
+  treeItemToObject.set(treeroot, scene)
   
   const getObjectType = (object3D: THREE.Object3D) => {
     if ('isInstancedMesh' in object3D) {
@@ -96,7 +98,7 @@
   useOnAdd((object) => register(object))
   useOnRemove((object) => deregister(object))
   
-  scene.current.children.forEach((child) => register(child))
+  scene.children.forEach((child) => register(child))
   
   onMount(() => element.replaceWith(treeview.wc))
 </script>

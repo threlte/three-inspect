@@ -64,6 +64,7 @@ module.exports = {
     'quotes': ['error', 'single'],
     'semi': ['error', 'never'],
 
+    'unicorn/no-useless-undefined': 'off',
     'unicorn/prevent-abbreviations': 'off',
     'unicorn/no-keyword-prefix': ['error', { checkProperties: false }],
     'unicorn/prefer-at': 'off',
@@ -75,6 +76,7 @@ module.exports = {
         'pascalCase': true
       }
     }],
+
     '@typescript-eslint/prefer-for-of': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
   },

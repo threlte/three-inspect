@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { T, HierarchicalObject } from '@threlte/core'
+  import { T, HierarchicalObject, useThrelte } from '@threlte/core'
   import { Grid } from '@threlte/extras'
   import { AxesHelper } from 'trzy'
   import { persisted } from '../internal/persisted'
@@ -14,7 +14,8 @@
   import Helpers from './Tools/Helpers.svelte'
 
   const { position } = useInspector()
-  const { scene, usingFreeCamera, selectedObject } = getInternalContext()
+  const { scene } = useThrelte()
+  const { usingFreeCamera, selectedObject } = getInternalContext()
 
   let grid = persisted('grid', true)
   let axes = persisted('axes', true)
@@ -38,8 +39,8 @@
 
 <!-- Ensure that all inspector objects are added to the scene passed to the inspector -->
 <HierarchicalObject
-  onChildMount={(child) => add.call($scene, child)}
-  onChildDestroy={(child) => remove.call($scene, child)}
+  onChildMount={(child) => add.call(scene, child)}
+  onChildDestroy={(child) => remove.call(scene, child)}
 >
   {#if $grid}
     <Grid

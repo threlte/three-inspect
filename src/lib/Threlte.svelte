@@ -10,14 +10,18 @@
 
   const context = useThrelte()
 
+  if (scene) context.scene = scene
+  if (camera) context.camera.set(camera)
+  if (renderer) context.renderer = renderer
+
   $: cam = context.camera as CurrentWritable<THREE.PerspectiveCamera | THREE.OrthographicCamera>
 </script>
 
 <Inspector
   {position}
-  scene={scene ?? context.scene}
-  renderer={renderer ?? context.renderer}
-  camera={camera ?? $cam}
+  scene={context.scene}
+  renderer={context.renderer}
+  camera={$cam}
 >
   <slot />
 </Inspector>

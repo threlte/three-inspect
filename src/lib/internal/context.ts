@@ -9,9 +9,6 @@ interface InternalContext {
   usingTransformControls: CurrentWritable<boolean>
   usingFreeCamera: CurrentWritable<boolean>
   usingRaycast: CurrentWritable<boolean>
-  scene: CurrentWritable<THREE.Scene>
-  renderer: CurrentWritable<THREE.Renderer>
-  camera: CurrentWritable<THREE.PerspectiveCamera | THREE.OrthographicCamera>
   selectedObject: CurrentWritable<THREE.Object3D | undefined>
 }
 
@@ -19,27 +16,16 @@ interface PublicContext {
   position: Writable<'inline' | 'draggable' | 'fixed'>
 }
 
-interface SetInternalContextOptions {
-  position?: 'inline' | 'draggable' | 'fixed'
-  scene: THREE.Scene
-  renderer: THREE.Renderer
-  camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
-  selectedObject?: THREE.Object3D
-}
-
 interface SetPublicContextOptions {
   position?: 'inline' | 'draggable' | 'fixed'
 }
 
-export const setInternalContext = (options: SetInternalContextOptions) => {
+export const setInternalContext = () => {
   setContext<InternalContext>(internalKey, {
     usingTransformControls: currentWritable(false),
     usingFreeCamera: currentWritable(false),
     usingRaycast: currentWritable(false),
-    scene: currentWritable(options.scene),
-    renderer: currentWritable(options.renderer),
-    camera: currentWritable(options.camera),
-    selectedObject: currentWritable<THREE.Object3D | undefined>(options.selectedObject),
+    selectedObject: currentWritable<THREE.Object3D | undefined>(undefined),
   })
 }
 

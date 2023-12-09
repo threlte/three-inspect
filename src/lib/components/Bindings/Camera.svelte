@@ -3,25 +3,21 @@
 
   export let object: THREE.PerspectiveCamera | THREE.OrthographicCamera
 
-  const options = {
-    onChange() {
-      object.updateProjectionMatrix()
-    }
-  }
+  $: object.updateProjectionMatrix()
 </script>
 
-<Binding bind:object key='near' label='near' {options} />
-<Binding bind:object key='far' label='far' {options} />
+<Binding bind:object key='near' label='near' />
+<Binding bind:object key='far' label='far' />
 <Binding bind:object key='zoom' label='zoom' />
 
 {#if 'isPerspectiveCamera' in object}
-  <Binding bind:object key='fov' label='fov' {options} />
-  <Binding bind:object key='filmOffset' label='filmOffset' {options} />
-  <Binding bind:object key='filmGauge' label='filmGauge' {options} />
+  <Binding bind:object key='fov' label='fov' />
+  <Binding bind:object key='filmOffset' label='filmOffset' />
+  <Binding bind:object key='filmGauge' label='filmGauge' />
 
 {:else if 'isOrthographicCamera' in object}
-  <Binding bind:object key='bottom' label='bottom' {options} />
-  <Binding bind:object key='left' label='left' {options} />
-  <Binding bind:object key='right' label='right' {options} />
-  <Binding bind:object key='top' label='top' {options} />
+  <Binding bind:object key='bottom' label='bottom' />
+  <Binding bind:object key='left' label='left' />
+  <Binding bind:object key='right' label='right' />
+  <Binding bind:object key='top' label='top' />
 {/if}

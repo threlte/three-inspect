@@ -1,8 +1,8 @@
-<script>
+<script lang='ts'>
 	import { T, useTask } from '@threlte/core'
 	import { InstancedMesh, Instance } from '@threlte/extras'
 
-	const randomPointOnCircle = (radius) => {
+	const randomPointOnCircle = (radius: number) => {
 	  const theta = 2 * Math.PI * Math.random()
 	  return [radius * Math.cos(theta), radius * Math.sin(theta)]
 	}
@@ -10,7 +10,7 @@
 	let maxZ = 25
 	let count = 3
 	let clusters = 20
-	let clouds = []
+	let clouds: [number, number, number][] = []
 
 	const r = (m = 0.6) => (Math.random() - 0.5) * m
 
@@ -38,7 +38,7 @@
 	<T.BoxGeometry />
 	<T.MeshStandardMaterial color='white' />
 
-	{#each clouds as position, index}
+	{#each clouds as position, index (index)}
 		<T.Group
 			{position}
 			scale={[0.5, 0.5, 1]}

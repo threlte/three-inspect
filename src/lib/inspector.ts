@@ -1,4 +1,4 @@
-import Inspector from './Inspector.svelte'
+import Inspector from './Vanilla.svelte'
 
 export interface CreateInspectorOptions {
   scene: THREE.Scene

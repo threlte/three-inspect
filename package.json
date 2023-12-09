@@ -67,14 +67,14 @@
     "svelte": "^4.2.8",
     "svelte-check": "^3.6.2",
     "svelte-splitpanes": "^0.8.0",
-    "svelte-tweakpane-ui": "^1.0.0",
+    "svelte-tweakpane-ui": "^1.0.1",
     "tailwindcss": "^3.3.6",
     "three": "^0.159.0",
     "three-perf": "^1.0.10",
     "trzy": "^0.3.17",
     "tslib": "^2.6.2",
     "typescript": "^5.3.3",
-    "vite": "^5.0.6",
+    "vite": "^5.0.7",
     "vite-plugin-glsl": "^1.2.0"
   },
   "svelte": "./dist/index.js"

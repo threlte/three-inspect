@@ -1,15 +1,15 @@
 <script lang='ts'>
+  import { useThrelte } from '@threlte/core'
   import { onMount } from 'svelte'
   import { Pane, Splitpanes } from 'svelte-splitpanes'
   import Tweakpane from './Tweakpane.svelte'
-  import { getInternalContext } from '../internal/context'
 
-  const { renderer } = getInternalContext()
+  const { renderer } = useThrelte()
 
   let ref: HTMLElement
 
   onMount(() => {
-    const canvas = $renderer.domElement
+    const canvas = renderer.domElement
     const oldParent = canvas.parentElement ?? document.body
     ref.replaceWith(canvas)
     return () => oldParent.append(canvas)

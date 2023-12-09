@@ -1,9 +1,8 @@
 <script lang='ts'>
   import * as THREE from 'three'
   import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
-  import { T } from '@threlte/core'
+  import { T, useTask } from '@threlte/core'
   import { getInternalContext } from '../../internal/context'
-  import { useUpdate } from '../../hooks/useUpdate'
 
   const { usingFreeCamera } = getInternalContext()
 
@@ -11,7 +10,7 @@
 
   let ref: THREE.CameraHelper | undefined
 
-  useUpdate(() => ref?.update())
+  useTask(() => ref?.update())
 </script>
 
 {#if 'isCamera' in object}

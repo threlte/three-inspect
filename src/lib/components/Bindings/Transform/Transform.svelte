@@ -1,14 +1,14 @@
 <script lang='ts'>
   import * as THREE from 'three'
+  import { useTask } from '@threlte/core'
   import { Binding, Separator, type BindingRef } from 'svelte-tweakpane-ui'
   import Instance from './Instance.svelte'
-  import { useUpdate } from '../../../hooks/useUpdate'
 
   export let object: THREE.Object3D
   
   let refs: BindingRef[] = []
 
-  useUpdate(() => {
+  useTask(() => {
     refs.forEach(ref => ref.refresh())
   })
 </script>

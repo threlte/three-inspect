@@ -1,8 +1,8 @@
 <script>
   const links = [
-    ['Test1', '/test1'],
-    ['Test2', '/test2'],
-    ['Test3', '/plane'],
+    ['Threlte Test 1', '/test1'],
+    ['Threlte Test 2', '/test2'],
+    ['Threlte Test 3', '/test3'],
     ['Vanilla Test', '/vanilla'],
   ]
 </script>
@@ -15,3 +15,6 @@
   </ul>
 </nav>
 
+<style>
+
+</style>
