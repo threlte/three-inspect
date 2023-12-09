@@ -45,6 +45,7 @@
     "three": ">=0.140"
   },
   "dependencies": {
+    "@changesets/cli": "^2.27.1",
     "@floating-ui/dom": "^1.5.3",
     "@mdi/js": "^7.3.67"
   },
