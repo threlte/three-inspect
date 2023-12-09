@@ -8,6 +8,7 @@
   import { remove } from '../hooks/useOnRemove'
   import Portal from './Internal/Portal.svelte'
   import FreeCamera from './Tools/FreeCamera.svelte'
+  import Raycast from './Tools/Raycast.svelte'
   import Splitpanes from './Splitpanes.svelte'
   import Tweakpane from './Tweakpane.svelte'
   import TransformControls from './Tools/TransformControls.svelte'
@@ -15,7 +16,7 @@
 
   const { position } = useInspector()
   const { scene } = useThrelte()
-  const { usingFreeCamera, selectedObject } = getInternalContext()
+  const { usingFreeCamera, usingRaycast, selectedObject } = getInternalContext()
 
   let grid = persisted('grid', true)
   let axes = persisted('axes', true)
@@ -63,8 +64,14 @@
     <FreeCamera />
   {/if}
 
+  {#if $usingRaycast}
+    <Raycast />
+  {/if}
+
   {#if object && !('isScene' in object)}
-    <TransformControls {object} />
+    {#key object}
+      <TransformControls {object} />
+    {/key}
     <Helpers {object} />
   {/if}
 </HierarchicalObject>

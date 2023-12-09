@@ -35,27 +35,27 @@
 <Binding bind:object key='matrixWorldAutoUpdate' label='matrixWorldAutoUpdate' />
 <Binding bind:object key='renderOrder' label='renderOrder' options={{ step: 1 }} />
 
-<Folder title='userData' expanded={false}>
-  <Textarea bind:value={userData} disabled rows={5} />
-</Folder>
-
 {#if 'isPerspectiveCamera' in camera || 'isOrthographicCamera' in camera}
-  <Folder title="Camera">
+  <Folder title="Camera" expanded={false}>
     <Camera object={camera} />
   </Folder>
 
 {:else if light.isLight}
-  <Folder title="Light">
+  <Folder title="Light" expanded={false}>
     <Light object={light} />
   </Folder>
 
 {:else if 'material' in object && object.material instanceof THREE.Material}
-  <Folder title="Material">
+  <Folder title="Material" expanded={false}>
     <Material object={object.material} />
   </Folder>
 
 {:else if scene.isScene}
-  <Folder title="Material">
+  <Folder title="Material" expanded={false}>
     <Scene object={scene} />
   </Folder>
 {/if}
+
+<Folder title='userData' expanded={false}>
+  <Textarea bind:value={userData} disabled rows={5} />
+</Folder>

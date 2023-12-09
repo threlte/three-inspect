@@ -27,7 +27,6 @@
   const objectToTreeItem = new WeakMap<THREE.Object3D, TreeViewItem>()
   const treeItemToObject = new WeakMap<TreeViewItem, THREE.Object3D>()
   
-  // @todo reactive
   treeItemToObject.set(treeroot, scene)
   
   const getObjectType = (object3D: THREE.Object3D) => {
@@ -88,7 +87,10 @@
     object3D.children.forEach((child) => register(child))
   }
   
-  treeview.on('deselect', () => selectedObject.set(undefined))
+  treeview.on('deselect', () => {
+    selectedObject.set(undefined)
+  })
+
   treeview.on('select', async (item: TreeViewItem) => {
     selectedObject.set(undefined)
     await tick()
@@ -100,7 +102,9 @@
   
   scene.children.forEach((child) => register(child))
   
-  onMount(() => element.replaceWith(treeview.wc))
+  onMount(() => {
+    element.replaceWith(treeview.wc)
+  })
 </script>
 
 <div bind:this={element} />

@@ -56,6 +56,7 @@
     const geometry = new THREE.BoxGeometry()
     const material = new THREE.MeshStandardMaterial({ color: colors[index] })
     const cube = new THREE.Mesh(geometry, material)
+    cube.name = `Cube ${index}`
     cube.castShadow = true
     cube.receiveShadow = true
 
