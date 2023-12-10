@@ -2,14 +2,15 @@
 	import { useThrelte } from '@threlte/core'
 	import { onMount } from 'svelte'
 	import { Pane as SplitPane, Splitpanes } from 'svelte-splitpanes'
-	import { Pane, Element, Separator } from 'svelte-tweakpane-ui'
-	import { getInternalContext } from '../../internal/context'
+	import { Pane, Element, Separator, ThemeUtils } from 'svelte-tweakpane-ui'
+	import { getInternalContext, useInspector } from '../../internal/context'
 	import Bindings from '../Bindings/Bindings.svelte'
 	import Tools from '../Tools/Tools.svelte'
 	import Tree from '../Tree/Tree.svelte'
 	import Perf from '../Internal/Perf.svelte'
 
 	const { renderer } = useThrelte()
+	const { theme } = useInspector()
 	const { selectedObject } = getInternalContext()
 
 	let ref: HTMLElement
@@ -24,12 +25,25 @@
 	})
 </script>
 
-<Splitpanes style="height: 100vh; --tp-base-border-radius: 0px;">
+<Splitpanes
+	style="
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		--tp-base-border-radius: 0px;
+	"
+>
 	<SplitPane
 		minSize={15}
 		size={20}
 	>
-		<Pane title="">
+		<Pane
+			title=""
+			position="inline"
+			theme={ThemeUtils.presets[$theme]}
+		>
 			<Element>
 				<Tools />
 			</Element>
@@ -41,7 +55,7 @@
 			</Element>
 
 			<Element>
-				<Perf />
+				<Perf scale={0.7} />
 			</Element>
 		</Pane>
 	</SplitPane>
@@ -58,7 +72,11 @@
 		size={20}
 	>
 		{#if $selectedObject}
-			<Pane title="">
+			<Pane
+				title=""
+				position="inline"
+				theme={ThemeUtils.presets[$theme]}
+			>
 				<Bindings object={$selectedObject} />
 			</Pane>
 		{/if}

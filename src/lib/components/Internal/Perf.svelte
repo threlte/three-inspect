@@ -3,6 +3,8 @@
 	import { ThreePerf } from 'three-perf'
 	import { onMount } from 'svelte'
 
+	export let scale = 0.85
+
 	const { renderer } = useThrelte()
 
 	let ref: HTMLElement
@@ -10,11 +12,11 @@
 
 	onMount(() => {
 		perf = new ThreePerf({
-			scale: 0.85,
+			renderer,
+			scale,
 			anchorX: 'left',
 			anchorY: 'top',
 			domElement: ref,
-			renderer,
 		})
 
 		perf.ui.wrapper.style.position = 'relative'

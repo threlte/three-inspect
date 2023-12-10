@@ -3,7 +3,7 @@
 	import { Canvas } from '@threlte/core'
 	import Threlte from './Threlte.svelte'
 
-	export let position: 'draggable' | 'fixed' | 'inline' = 'draggable'
+	export let position: 'draggable' | 'inline' = 'draggable'
 	export let scene: THREE.Scene
 	export let camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
 	export let renderer: THREE.WebGLRenderer

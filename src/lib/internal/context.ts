@@ -1,6 +1,7 @@
 import { type CurrentWritable, currentWritable } from '@threlte/core'
 import { type Writable, writable } from 'svelte/store'
 import { getContext, setContext } from 'svelte'
+import { ThemeUtils } from 'svelte-tweakpane-ui'
 
 const internalKey = Symbol('three-inspect-internal-context')
 const publicKey = Symbol('three-inspect-context')
@@ -13,11 +14,13 @@ interface InternalContext {
 }
 
 interface PublicContext {
-	position: Writable<'inline' | 'draggable' | 'fixed'>
+	position: Writable<'inline' | 'draggable'>
+	theme: Writable<keyof typeof ThemeUtils.presets>
 }
 
 interface SetPublicContextOptions {
-	position?: 'inline' | 'draggable' | 'fixed'
+	position?: 'inline' | 'draggable'
+	theme?: keyof typeof ThemeUtils.presets
 }
 
 export const setInternalContext = () => {
@@ -32,6 +35,7 @@ export const setInternalContext = () => {
 export const setPublicContext = (options: SetPublicContextOptions) => {
 	setContext<PublicContext>(publicKey, {
 		position: writable(options.position ?? 'inline'),
+		theme: writable(options.theme ?? 'light'),
 	})
 }
 

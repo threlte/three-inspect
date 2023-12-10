@@ -12,7 +12,7 @@
 	scene.fog = new THREE.Fog('#D1E6FA', 18, 25)
 </script>
 
-<Inspector>
+<Inspector position='inline'>
 	<Plane />
 </Inspector>
 

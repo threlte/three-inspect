@@ -1,15 +1,14 @@
 <script lang="ts">
 	import { Pane, ThemeUtils, Element, Separator } from 'svelte-tweakpane-ui'
-	import { getInternalContext } from '../../internal/context'
+	import { getInternalContext, useInspector } from '../../internal/context'
 	import { browser } from '../../internal/browser'
 	import Tree from '../Tree/Tree.svelte'
 	import Bindings from '../Bindings/Bindings.svelte'
 	import Tools from '../Tools/Tools.svelte'
 	import Perf from '../Internal/Perf.svelte'
 
+	const { theme } = useInspector()
 	const { selectedObject } = getInternalContext()
-
-	const themeKey: keyof typeof ThemeUtils.presets = 'light'
 
 	$: object = $selectedObject
 </script>
@@ -17,7 +16,7 @@
 <Pane
 	title=""
 	position="draggable"
-	theme={ThemeUtils.presets[themeKey]}
+	theme={ThemeUtils.presets[$theme]}
 	localStoreId="three-inspect-pane-inspect"
 	storePositionLocally
 	width={250}
@@ -40,7 +39,7 @@
 <Pane
 	title=""
 	position="draggable"
-	theme={ThemeUtils.presets[themeKey]}
+	theme={ThemeUtils.presets[$theme]}
 	localStoreId="three-inspect-pane-monitor"
 	storePositionLocally
 	width={325}
@@ -56,7 +55,7 @@
 	<Pane
 		title={`${object.name} (${object.type})`}
 		position="draggable"
-		theme={ThemeUtils.presets[themeKey]}
+		theme={ThemeUtils.presets[$theme]}
 		localStoreId="three-inspect-pane-selected-object"
 		storePositionLocally
 		width={320}

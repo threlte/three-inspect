@@ -3,7 +3,7 @@
 	import { useThrelte } from '@threlte/core'
 	import Inspector from './Inspector.svelte'
 
-	export let position: 'draggable' | 'fixed' | 'inline' = 'draggable'
+	export let position: 'draggable' | 'inline' = 'draggable'
 	export let scene: undefined | THREE.Scene = undefined
 	export let camera: undefined | THREE.PerspectiveCamera | THREE.OrthographicCamera = undefined
 	export let renderer: undefined | THREE.WebGLRenderer = undefined
