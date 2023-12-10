@@ -54,6 +54,8 @@
 				<Tree />
 			</Element>
 
+			<slot />
+
 			<Element>
 				<Perf scale={0.7} />
 			</Element>

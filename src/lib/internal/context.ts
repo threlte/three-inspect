@@ -1,7 +1,7 @@
 import { type CurrentWritable, currentWritable } from '@threlte/core'
 import { type Writable, writable } from 'svelte/store'
 import { getContext, setContext } from 'svelte'
-import { ThemeUtils } from 'svelte-tweakpane-ui'
+import type { ThemeUtils } from 'svelte-tweakpane-ui'
 
 const internalKey = Symbol('three-inspect-internal-context')
 const publicKey = Symbol('three-inspect-context')

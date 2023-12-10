@@ -3,6 +3,7 @@
 	import * as THREE from 'three'
 	import { T, useThrelte } from '@threlte/core'
 	import { OrbitControls } from '@threlte/extras'
+	import { Slider, TabPage } from 'svelte-tweakpane-ui'
 	import Plane from './Plane.svelte'
 	import Clouds from './Clouds.svelte'
 
@@ -10,11 +11,148 @@
 
 	scene.background = new THREE.Color('#D1E6FA')
 	scene.fog = new THREE.Fog('#D1E6FA', 18, 25)
+
+	let floatIntensity = 3
+	let rotationSpeed = 10
+	let sway = 0.2
 </script>
 
 <Inspector position='inline'>
-	<Plane />
+	<TabPage title="world">
+		<Slider
+			bind:value={rotationSpeed}
+			label="rotation speed"
+			min={1}
+			max={30}
+		/>
+		<Slider
+			bind:value={sway}
+			label="sway"
+			min={0}
+			max={1}
+		/>
+		<Slider
+			bind:value={floatIntensity}
+			label="float intensity"
+			min={0}
+			max={8}
+		/>
+		<Slider
+			bind:value={rotationSpeed}
+			label="rotation speed"
+			min={1}
+			max={30}
+		/>
+		<Slider
+			bind:value={sway}
+			label="sway"
+			min={0}
+			max={1}
+		/>
+		<Slider
+			bind:value={floatIntensity}
+			label="float intensity"
+			min={0}
+			max={8}
+		/>
+		<Slider
+			bind:value={rotationSpeed}
+			label="rotation speed"
+			min={1}
+			max={30}
+		/>
+		<Slider
+			bind:value={sway}
+			label="sway"
+			min={0}
+			max={1}
+		/>
+		<Slider
+			bind:value={floatIntensity}
+			label="float intensity"
+			min={0}
+			max={8}
+		/>
+		<Slider
+			bind:value={rotationSpeed}
+			label="rotation speed"
+			min={1}
+			max={30}
+		/>
+		<Slider
+			bind:value={sway}
+			label="sway"
+			min={0}
+			max={1}
+		/>
+		<Slider
+			bind:value={floatIntensity}
+			label="float intensity"
+			min={0}
+			max={8}
+		/>
+		<Slider
+			bind:value={rotationSpeed}
+			label="rotation speed"
+			min={1}
+			max={30}
+		/>
+		<Slider
+			bind:value={sway}
+			label="sway"
+			min={0}
+			max={1}
+		/>
+		<Slider
+			bind:value={floatIntensity}
+			label="float intensity"
+			min={0}
+			max={8}
+		/>
+		<Slider
+			bind:value={rotationSpeed}
+			label="rotation speed"
+			min={1}
+			max={30}
+		/>
+		<Slider
+			bind:value={sway}
+			label="sway"
+			min={0}
+			max={1}
+		/>
+		<Slider
+			bind:value={floatIntensity}
+			label="float intensity"
+			min={0}
+			max={8}
+		/>
+		<Slider
+			bind:value={rotationSpeed}
+			label="rotation speed"
+			min={1}
+			max={30}
+		/>
+		<Slider
+			bind:value={sway}
+			label="sway"
+			min={0}
+			max={1}
+		/>
+		<Slider
+			bind:value={floatIntensity}
+			label="float intensity"
+			min={0}
+			max={8}
+		/>
+	</TabPage>
 </Inspector>
+
+<Plane
+	{floatIntensity}
+	{rotationSpeed}
+	{sway}
+/>
 
 <T.OrthographicCamera
 	makeDefault

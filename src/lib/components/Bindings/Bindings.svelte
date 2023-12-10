@@ -70,6 +70,7 @@
 	>
 		<Camera object={camera} />
 	</Folder>
+
 {:else if light.isLight}
 	<Folder
 		title="Light"
@@ -77,6 +78,7 @@
 	>
 		<Light object={light} />
 	</Folder>
+
 {:else if 'material' in object && object.material instanceof THREE.Material}
 	<Folder
 		title="Material"
@@ -84,6 +86,7 @@
 	>
 		<Material object={object.material} />
 	</Folder>
+
 {:else if scene.isScene}
 	<Folder
 		title="Scene"
@@ -91,6 +94,7 @@
 	>
 		<Scene object={scene} />
 	</Folder>
+
 {/if}
 
 <Folder

@@ -11,6 +11,7 @@
 	key="color"
 	{object}
 />
+
 <Binding
 	bind:object
 	key="intensity"
