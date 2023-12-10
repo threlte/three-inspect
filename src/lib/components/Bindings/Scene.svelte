@@ -1,54 +1,97 @@
-<script lang='ts'>
-  import * as THREE from 'three'
-  import { Binding, Separator, Image } from 'svelte-tweakpane-ui'
-  import Color from './Color.svelte'
-  import { persisted } from '../../internal/persisted'
+<script lang="ts">
+import * as THREE from 'three'
+import { Binding, Separator, Image } from 'svelte-tweakpane-ui'
+import Color from './Color.svelte'
+import { persisted } from '../../internal/persisted'
 
-  export let object: THREE.Scene
-  
-  const grid = persisted('grid', true)
-  const gridColor = persisted('gridColor', '#ddd')
-  const axes = persisted('axes', true)
+export let object: THREE.Scene
 
-  let params = {
-    grid: $grid,
-    gridColor: $gridColor,
-    axes: $axes,
-  }
+const grid = persisted('grid', true)
+const gridColor = persisted('gridColor', '#ddd')
+const axes = persisted('axes', true)
 
-  $: $grid = params.grid
-  $: $gridColor = params.gridColor
-  $: $axes = params.axes
+let params = {
+	grid: $grid,
+	gridColor: $gridColor,
+	axes: $axes,
+}
 
-  $: fog = object.fog as THREE.Fog
+$: $grid = params.grid
+$: $gridColor = params.gridColor
+$: $axes = params.axes
+
+$: fog = object.fog as THREE.Fog
 </script>
 
-<Binding bind:object={params} key='grid' label='grid' />
-<Binding bind:object={params} key='gridColor' label='gridColor' />
-<Binding bind:object={params} key='axes' label='axes' />
+<Binding
+	bind:object={params}
+	key="grid"
+	label="grid"
+/>
+<Binding
+	bind:object={params}
+	key="gridColor"
+	label="gridColor"
+/>
+<Binding
+	bind:object={params}
+	key="axes"
+	label="axes"
+/>
 
 {#if object.background}
-  <Separator />
+	<Separator />
 
-  <Binding bind:object key='backgroundBlurriness' label='backgroundBlurriness' />
-  <Binding bind:object key='backgroundIntensity' label='backgroundIntensity' />
+	<Binding
+		bind:object
+		key="backgroundBlurriness"
+		label="backgroundBlurriness"
+	/>
+	<Binding
+		bind:object
+		key="backgroundIntensity"
+		label="backgroundIntensity"
+	/>
 
-  {#if 'isColor' in object.background}
-    <Color key='background' label='background' {object} />
+	{#if 'isColor' in object.background}
+		<Color
+			key="background"
+			label="background"
+			{object}
+		/>
+	{:else if object.background instanceof THREE.Texture}
+		<Image
+			bind:value={object.background.image.src}
+			fit="cover"
+			label="background"
+		/>
+	{/if}
 
-  {:else if object.background instanceof THREE.Texture}
-    <Image bind:value={object.background.image.src} fit="cover" label="background" />
-  {/if}
-
-  {#if object.environment}
-    <Image bind:value={object.environment.image.src} fit="cover" label="environment" />
-  {/if}
+	{#if object.environment}
+		<Image
+			bind:value={object.environment.image.src}
+			fit="cover"
+			label="environment"
+		/>
+	{/if}
 {/if}
 
 {#if fog}
-  <Separator />
+	<Separator />
 
-  <Binding bind:object={fog} key='color' label='color' />
-  <Binding bind:object={fog} key='near' label='near' />
-  <Binding bind:object={fog} key='far' label='far' />
+	<Binding
+		bind:object={fog}
+		key="color"
+		label="color"
+	/>
+	<Binding
+		bind:object={fog}
+		key="near"
+		label="near"
+	/>
+	<Binding
+		bind:object={fog}
+		key="far"
+		label="far"
+	/>
 {/if}

@@ -1,65 +1,67 @@
-<script lang='ts'>
-  import type * as THREE from 'three'
-  import { useThrelte } from '@threlte/core'
-  import { TransformControls } from '@threlte/extras'
-  import type { TransformControls as TransformControlsType } from 'three/examples/jsm/controls/TransformControls'
-  import { getInternalContext } from '../../internal/context'
-  import { persisted } from '../../internal/persisted'
-  import { add } from '../../hooks/useOnAdd'
+<script lang="ts">
+import type * as THREE from 'three'
+import { useThrelte } from '@threlte/core'
+import { TransformControls } from '@threlte/extras'
+import type { TransformControls as TransformControlsType } from 'three/examples/jsm/controls/TransformControls'
+import { getInternalContext } from '../../internal/context'
+import { persisted } from '../../internal/persisted'
+import { add } from '../../hooks/useOnAdd'
 
-  export let object: THREE.Object3D
+export let object: THREE.Object3D
 
-  const { scene } = useThrelte()
-  const { usingTransformControls } = getInternalContext()
+const { scene } = useThrelte()
+const { usingTransformControls } = getInternalContext()
 
-  type Modes = 'translate' | 'rotate' | 'scale'
+type Modes = 'translate' | 'rotate' | 'scale'
 
-  const mode = persisted<Modes>('transform-mode', 'translate')
+const mode = persisted<Modes>('transform-mode', 'translate')
 
-  const keydown = (event: KeyboardEvent) => {
-    if (event.metaKey) return
-  
-    const key = event.key.toLowerCase()
+const keydown = (event: KeyboardEvent) => {
+	if (event.metaKey) return
 
-    switch(key) {
-      case 't': {
-        mode.set('translate')
-        break
-      }
-      case 'r': {
-        mode.set('rotate')
-        break
-      }
-      case 's': {
-        mode.set('scale')
-        break
-      }
-    }
-  }
+	const key = event.key.toLowerCase()
 
-  let controls: TransformControlsType
-  let group: THREE.Group
+	switch (key) {
+		case 't': {
+			mode.set('translate')
+			break
+		}
+		case 'r': {
+			mode.set('rotate')
+			break
+		}
+		case 's': {
+			mode.set('scale')
+			break
+		}
+	}
+}
 
-  // Prevent controls from being shown in the Treeview
-  $: if (controls && group) {
-    scene.remove(controls)
-    scene.remove(group)
+let controls: TransformControlsType
+let group: THREE.Group
 
-    add.call(scene, controls)
-    add.call(scene, group)
-  }
+// Prevent controls from being shown in the Treeview
+$: if (controls && group) {
+	scene.remove(controls)
+	scene.remove(group)
+
+	add.call(scene, controls)
+	add.call(scene, group)
+}
 </script>
 
-<svelte:window
-  on:keydown={keydown}
-/>
+<svelte:window on:keydown={keydown} />
 
 <TransformControls
-  bind:controls
-  bind:group
-  {object}
-  mode={$mode}
-  autoPauseOrbitControls
-  on:mouseDown={() => { usingTransformControls.set(true) }}
-  on:mouseUp={() => { usingTransformControls.set(false) }}
+	bind:controls
+	bind:group
+	{object}
+	mode={$mode}
+	autoPauseOrbitControls
+	on:mouseDown={() => {
+		usingTransformControls.set(true)
+	}}
+	on:mouseUp={() => {
+		usingTransformControls.set(false)
+	}}
 />

@@ -1,21 +1,21 @@
 {
-  "singleQuote": true,
-  "jsxSingleQuote": true,
-  "singleAttributePerLine": true,
-  "trailingComma": "es5",
+	"singleQuote": true,
+	"jsxSingleQuote": true,
+	"singleAttributePerLine": true,
+	"trailingComma": "es5",
 
-  "tabWidth": 2,
-  "useTabs": true,
-  "semi": false,
-  "quoteProps": "as-needed",
-  "bracketSpacing": true,
-  "bracketSameLine": false,
-  "arrowParens": "always",
-  "proseWrap": "preserve",
-  "htmlWhitespaceSensitivity": "css",
-  "endOfLine": "lf",
-  "embeddedLanguageFormatting": "auto",
+	"tabWidth": 2,
+	"useTabs": true,
+	"semi": false,
+	"quoteProps": "as-needed",
+	"bracketSpacing": true,
+	"bracketSameLine": false,
+	"arrowParens": "always",
+	"proseWrap": "preserve",
+	"htmlWhitespaceSensitivity": "css",
+	"endOfLine": "lf",
+	"embeddedLanguageFormatting": "auto",
 
-  "plugins": ["prettier-plugin-svelte"],
-  "svelteIndentScriptAndStyle": false
+	"plugins": ["prettier-plugin-svelte"],
+	"svelteIndentScriptAndStyle": false
 }

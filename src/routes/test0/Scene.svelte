@@ -1,8 +1,8 @@
-<script lang='ts'>
-  import { useThrelte } from '@threlte/core'
-  import { Inspector } from '$lib'
+<script lang="ts">
+import { useThrelte } from '@threlte/core'
+import { Inspector } from '$lib'
 
-  const { scene } = useThrelte()
+const { scene } = useThrelte()
 </script>
 
 <Inspector />

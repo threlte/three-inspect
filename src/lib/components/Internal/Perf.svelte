@@ -1,35 +1,38 @@
-<script lang='ts'>
-  import { useTask, useThrelte } from '@threlte/core'
-  import { ThreePerf } from 'three-perf'
-  import { onMount } from 'svelte'
-  
-  const { renderer } = useThrelte()
+<script lang="ts">
+import { useTask, useThrelte } from '@threlte/core'
+import { ThreePerf } from 'three-perf'
+import { onMount } from 'svelte'
 
-  let ref: HTMLElement
-  let perf: ThreePerf
+const { renderer } = useThrelte()
 
-  onMount(() => {
-    perf = new ThreePerf({
-      scale: 0.85,
-      anchorX: 'left',
-      anchorY: 'top',
-      domElement: ref,
-      renderer,
-    })
+let ref: HTMLElement
+let perf: ThreePerf
 
-    perf.ui.wrapper.style.position = 'relative'
+onMount(() => {
+	perf = new ThreePerf({
+		scale: 0.85,
+		anchorX: 'left',
+		anchorY: 'top',
+		domElement: ref,
+		renderer,
+	})
 
-    start()
+	perf.ui.wrapper.style.position = 'relative'
 
-    return () => {
-      perf.dispose()
-    }
-  })
+	start()
 
-  const { start } = useTask(() => {
-    perf.end()
-    perf.begin()
-  }, { autoStart: false })
+	return () => {
+		perf.dispose()
+	}
+})
+
+const { start } = useTask(
+	() => {
+		perf.end()
+		perf.begin()
+	},
+	{ autoStart: false }
+)
 </script>
 
 <div bind:this={ref} />
