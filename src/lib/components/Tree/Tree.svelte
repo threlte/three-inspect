@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type * as THREE from 'three'
 	import { onMount, tick } from 'svelte'
-	import { useThrelte } from '@threlte/core'
+	import { useThrelte, watch } from '@threlte/core'
 	import { TreeViewItem, TreeViewWebComponent } from 'flexible-tree'
 	import { useOnAdd } from '$lib/hooks/useOnAdd'
 	import { useOnRemove } from '$lib/hooks/useOnRemove'
@@ -30,7 +30,11 @@
 	treeItemToObject.set(treeroot, scene)
 
 	const deregister = (object3D: THREE.Object3D) => {
-		object3D.traverse((child) => object3D !== child && deregister(child))
+		object3D.traverse((child) => {
+      if (object3D !== child) {
+        deregister(child)
+      }
+    })
 
 		const item = objectToTreeItem.get(object3D)
 		objectToTreeItem.delete(object3D)
@@ -47,6 +51,8 @@
 	}
 
 	const orphaned = new Map()
+
+  let observeChanges = true
 
 	const register = (object3D: THREE.Object3D) => {
 		const { parent } = object3D
@@ -78,13 +84,17 @@
 	}
 
 	treeview.on('deselect', () => {
+    observeChanges = false
 		selectedObject.set(undefined)
+    observeChanges = true
 	})
 
 	treeview.on('select', async (item: TreeViewItem) => {
+    observeChanges = false
 		selectedObject.set(undefined)
 		await tick()
 		selectedObject.set(treeItemToObject.get(item))
+    observeChanges = true
 	})
 
 	useOnAdd((object) => {
@@ -98,6 +108,20 @@
 	for (const child of scene.children) {
 		register(child)
 	}
+
+  watch(selectedObject, (object) => {
+    if (!observeChanges) return
+
+    if (object) {
+      const treeitem = objectToTreeItem.get(object)
+
+      if (treeitem) treeitem.selected = true
+
+      return () => {
+        if (treeitem) treeitem.selected = false
+      }
+    }
+  })
 
 	onMount(() => {
 		element.replaceWith(treeview.wc)

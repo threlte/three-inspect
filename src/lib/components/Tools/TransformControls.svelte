@@ -2,7 +2,6 @@
 	import type * as THREE from 'three'
 	import { useThrelte } from '@threlte/core'
 	import { TransformControls } from '@threlte/extras'
-	import type { TransformControls as TransformControlsType } from 'three/examples/jsm/controls/TransformControls'
 	import { getInternalContext } from '../../internal/context'
 	import { persisted } from '../../internal/persisted'
 	import { add } from '../../hooks/useOnAdd'
@@ -37,8 +36,11 @@
 		}
 	}
 
-	let controls: TransformControlsType
+	let controls: THREE.Object3D
 	let group: THREE.Group
+
+	$: controls?.traverse((node) => { node.raycast = () => null })
+	$: group?.traverse((node) => { node.raycast = () => null })
 
 	// Prevent controls from being shown in the Treeview
 	$: if (controls && group) {

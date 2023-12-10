@@ -31,6 +31,10 @@ THREE.Object3D.prototype.remove = function (...objects: THREE.Object3D[]) {
 THREE.Object3D.prototype.clear = function () {
 	clear.call(this)
 
+	for (const object of this.children) {
+		intersectObjects.splice(intersectObjects.indexOf(object), 1)
+	}
+
 	for (const fn of removeFns) {
 		for (const child of this.children) {
 			fn(child)

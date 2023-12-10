@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as THREE from 'three'
-	import { onMount, tick } from 'svelte'
+	import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
+	import { onMount } from 'svelte'
 	import { useThrelte } from '@threlte/core'
 	import { getInternalContext } from '../../internal/context'
 	import { intersectObjects } from '../../internal/intersectObjects'
@@ -20,13 +21,7 @@
 
 		const [intersection] = raycaster.intersectObjects(intersectObjects)
 
-		selectedObject.set(undefined)
-
-		if (intersection === undefined) return
-
-		tick().then(() => {
-			selectedObject.set(intersection.object)
-		})
+		selectedObject.set(intersection?.object)
 	}
 
 	onMount(() => {
