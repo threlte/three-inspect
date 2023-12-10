@@ -15,6 +15,8 @@
 	}
 
 	$: camera = object.camera as THREE.PerspectiveCamera | THREE.OrthographicCamera
+
+	const keys = ['autoUpdate', 'bias', 'blurSamples', 'normalBias', 'radius'] as const
 </script>
 
 <List
@@ -30,31 +32,13 @@
 	}}
 />
 
-<Binding
-	bind:object
-	key="autoUpdate"
-	label="autoUpdate"
-/>
-<Binding
-	bind:object
-	key="bias"
-	label="bias"
-/>
-<Binding
-	bind:object
-	key="blurSamples"
-	label="blurSamples"
-/>
-<Binding
-	bind:object
-	key="normalBias"
-	label="normalBias"
-/>
-<Binding
-	bind:object
-	key="radius"
-	label="radius"
-/>
+{#each keys as key (key)}
+	<Binding
+		bind:object
+		{key}
+		label={key}
+	/>
+{/each}
 
 {#if 'isPerspectiveCamera' in camera || 'isOrthographicCamera' in camera}
 	<Folder

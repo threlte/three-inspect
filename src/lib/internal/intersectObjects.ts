@@ -1,1 +1,3 @@
-export const intersectObjects = new Set()
+import type * as THREE from 'three'
+
+export const intersectObjects: THREE.Object3D[] = []

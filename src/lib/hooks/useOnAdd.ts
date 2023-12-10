@@ -13,7 +13,7 @@ THREE.Object3D.prototype.add = function (...objects: THREE.Object3D[]) {
 	add.call(this, ...objects)
 
 	for (const object of objects) {
-		intersectObjects.add(object)
+		intersectObjects.push(object)
 	}
 
 	for (const fn of addFns) {

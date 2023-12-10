@@ -1,10 +1,11 @@
 <script lang="ts">
 	import * as THREE from 'three'
+	import { onMount, tick } from 'svelte'
 	import { useThrelte } from '@threlte/core'
 	import { getInternalContext } from '../../internal/context'
-	import { onMount, tick } from 'svelte'
+	import { intersectObjects } from '../../internal/intersectObjects'
 
-	const { renderer, scene, camera } = useThrelte()
+	const { renderer, camera } = useThrelte()
 	const { selectedObject } = getInternalContext()
 	const raycaster = new THREE.Raycaster()
 	const pointer = new THREE.Vector2()
@@ -17,7 +18,7 @@
 		// Update the picking ray with the camera and pointer position
 		raycaster.setFromCamera(pointer, camera.current)
 
-		const [intersection] = raycaster.intersectObjects(scene.children)
+		const [intersection] = raycaster.intersectObjects(intersectObjects)
 
 		selectedObject.set(undefined)
 
