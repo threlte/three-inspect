@@ -1,8 +1,8 @@
 <script lang="ts">
-import * as THREE from 'three'
-import { Binding, Image, Point } from 'svelte-tweakpane-ui'
+	import * as THREE from 'three'
+	import { Binding, Image, Point } from 'svelte-tweakpane-ui'
 
-export let object: THREE.Material
+	export let object: THREE.Material
 </script>
 
 {#if object instanceof THREE.MeshBasicMaterial || object instanceof THREE.MeshLambertMaterial || object instanceof THREE.MeshPhongMaterial}

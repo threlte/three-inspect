@@ -1,9 +1,9 @@
 <script lang="ts">
-import { getInternalContext } from '../../internal/context'
-import IconButton from '../Internal/IconButton.svelte'
-import Tooltip from '../Internal/Tooltip.svelte'
+	import { getInternalContext } from '../../internal/context'
+	import IconButton from '../Internal/IconButton.svelte'
+	import Tooltip from '../Internal/Tooltip.svelte'
 
-const { usingFreeCamera, usingRaycast } = getInternalContext()
+	const { usingFreeCamera, usingRaycast } = getInternalContext()
 </script>
 
 <div>
@@ -31,9 +31,9 @@ const { usingFreeCamera, usingRaycast } = getInternalContext()
 </div>
 
 <style>
-div {
-	display: flex;
-	gap: 0.25rem;
-	margin-bottom: 0.25rem;
-}
+	div {
+		display: flex;
+		gap: 0.25rem;
+		margin-bottom: 0.25rem;
+	}
 </style>

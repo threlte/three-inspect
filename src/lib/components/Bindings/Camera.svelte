@@ -1,10 +1,10 @@
 <script lang="ts">
-import type * as THREE from 'three'
-import { Binding } from 'svelte-tweakpane-ui'
+	import type * as THREE from 'three'
+	import { Binding } from 'svelte-tweakpane-ui'
 
-export let object: THREE.PerspectiveCamera | THREE.OrthographicCamera
+	export let object: THREE.PerspectiveCamera | THREE.OrthographicCamera
 
-$: object.updateProjectionMatrix()
+	$: object.updateProjectionMatrix()
 </script>
 
 <Binding

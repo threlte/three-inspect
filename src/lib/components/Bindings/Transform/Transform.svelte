@@ -1,16 +1,16 @@
 <script lang="ts">
-import * as THREE from 'three'
-import { useTask } from '@threlte/core'
-import { Binding, Separator, type BindingRef } from 'svelte-tweakpane-ui'
-import Instance from './Instance.svelte'
+	import * as THREE from 'three'
+	import { useTask } from '@threlte/core'
+	import { Binding, Separator, type BindingRef } from 'svelte-tweakpane-ui'
+	import Instance from './Instance.svelte'
 
-export let object: THREE.Object3D
+	export let object: THREE.Object3D
 
-const refs: BindingRef[] = []
+	const refs: BindingRef[] = []
 
-useTask(() => {
-	for (const ref of refs) ref.refresh()
-})
+	useTask(() => {
+		for (const ref of refs) ref.refresh()
+	})
 </script>
 
 <Binding

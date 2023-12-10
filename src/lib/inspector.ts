@@ -6,10 +6,7 @@ export interface CreateInspectorOptions {
 	renderer: THREE.WebGLRenderer
 }
 
-export const createInspector = (
-	target: HTMLElement,
-	options: CreateInspectorOptions
-) => {
+export const createInspector = (target: HTMLElement, options: CreateInspectorOptions) => {
 	const inspector = new Inspector({ target, props: options })
 	return () => {
 		inspector.$destroy()

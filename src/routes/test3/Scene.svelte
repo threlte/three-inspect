@@ -1,15 +1,15 @@
 <script lang="ts">
-import { Inspector } from '$lib'
-import * as THREE from 'three'
-import { T, useThrelte } from '@threlte/core'
-import { OrbitControls } from '@threlte/extras'
-import Plane from './Plane.svelte'
-import Clouds from './Clouds.svelte'
+	import { Inspector } from '$lib'
+	import * as THREE from 'three'
+	import { T, useThrelte } from '@threlte/core'
+	import { OrbitControls } from '@threlte/extras'
+	import Plane from './Plane.svelte'
+	import Clouds from './Clouds.svelte'
 
-const { scene } = useThrelte()
+	const { scene } = useThrelte()
 
-scene.background = new THREE.Color('#D1E6FA')
-scene.fog = new THREE.Fog('#D1E6FA', 18, 25)
+	scene.background = new THREE.Color('#D1E6FA')
+	scene.fog = new THREE.Fog('#D1E6FA', 18, 25)
 </script>
 
 <Inspector>

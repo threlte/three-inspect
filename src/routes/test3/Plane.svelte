@@ -1,29 +1,29 @@
 <script>
-import { T, useTask } from '@threlte/core'
-import { useGltf, Float } from '@threlte/extras'
-import { Slider, TabPage } from 'svelte-tweakpane-ui'
+	import { T, useTask } from '@threlte/core'
+	import { useGltf, Float } from '@threlte/extras'
+	import { Slider, TabPage } from 'svelte-tweakpane-ui'
 
-const gltf = useGltf('glb/plane.glb')
+	const gltf = useGltf('glb/plane.glb')
 
-$: scene = $gltf?.scene
-$: prop = scene?.getObjectByName('Prop')
+	$: scene = $gltf?.scene
+	$: prop = scene?.getObjectByName('Prop')
 
-$: scene?.traverse((node) => {
-	node.castShadow = true
-	node.receiveShadow = true
-})
+	$: scene?.traverse((node) => {
+		node.castShadow = true
+		node.receiveShadow = true
+	})
 
-let time = 0
-let floatIntensity = 3
-let rotationSpeed = 10
-let sway = 0.2
+	let time = 0
+	let floatIntensity = 3
+	let rotationSpeed = 10
+	let sway = 0.2
 
-useTask((delta) => {
-	if (!prop || !scene) return
-	prop.rotation.z -= delta * rotationSpeed
-	time += delta
-	scene.rotation.z = Math.sin(time) * sway
-})
+	useTask((delta) => {
+		if (!prop || !scene) return
+		prop.rotation.z -= delta * rotationSpeed
+		time += delta
+		scene.rotation.z = Math.sin(time) * sway
+	})
 </script>
 
 <TabPage title="world">

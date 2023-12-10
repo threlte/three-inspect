@@ -1,26 +1,26 @@
 <script lang="ts">
-import * as THREE from 'three'
-import { Binding, Separator, Image } from 'svelte-tweakpane-ui'
-import Color from './Color.svelte'
-import { persisted } from '../../internal/persisted'
+	import * as THREE from 'three'
+	import { Binding, Separator, Image } from 'svelte-tweakpane-ui'
+	import Color from './Color.svelte'
+	import { persisted } from '../../internal/persisted'
 
-export let object: THREE.Scene
+	export let object: THREE.Scene
 
-const grid = persisted('grid', true)
-const gridColor = persisted('gridColor', '#ddd')
-const axes = persisted('axes', true)
+	const grid = persisted('grid', true)
+	const gridColor = persisted('gridColor', '#ddd')
+	const axes = persisted('axes', true)
 
-let params = {
-	grid: $grid,
-	gridColor: $gridColor,
-	axes: $axes,
-}
+	let params = {
+		grid: $grid,
+		gridColor: $gridColor,
+		axes: $axes,
+	}
 
-$: $grid = params.grid
-$: $gridColor = params.gridColor
-$: $axes = params.axes
+	$: $grid = params.grid
+	$: $gridColor = params.gridColor
+	$: $axes = params.axes
 
-$: fog = object.fog as THREE.Fog
+	$: fog = object.fog as THREE.Fog
 </script>
 
 <Binding

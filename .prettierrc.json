@@ -1,8 +1,8 @@
 {
 	"singleQuote": true,
-	"jsxSingleQuote": true,
 	"singleAttributePerLine": true,
 	"trailingComma": "es5",
+	"printWidth": 100,
 
 	"tabWidth": 2,
 	"useTabs": true,
@@ -17,5 +17,13 @@
 	"embeddedLanguageFormatting": "auto",
 
 	"plugins": ["prettier-plugin-svelte"],
-	"svelteIndentScriptAndStyle": false
+	"svelteIndentScriptAndStyle": true,
+	"overrides": [
+		{
+			"files": "*.svelte",
+			"options": {
+				"parser": "svelte"
+			}
+		}
+	]
 }

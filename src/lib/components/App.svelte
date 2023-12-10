@@ -1,27 +1,27 @@
 <script lang="ts">
-import { T, HierarchicalObject, useThrelte } from '@threlte/core'
-import { Grid } from '@threlte/extras'
-import { AxesHelper } from 'trzy'
-import { persisted } from '../internal/persisted'
-import { getInternalContext, useInspector } from '../internal/context'
-import { add } from '../hooks/useOnAdd'
-import { remove } from '../hooks/useOnRemove'
-import Portal from './Internal/Portal.svelte'
-import FreeCamera from './Tools/FreeCamera.svelte'
-import Raycast from './Tools/Raycast.svelte'
-import Inline from './Positions/Inline.svelte'
-import Draggable from './Positions/Draggable.svelte'
-import TransformControls from './Tools/TransformControls.svelte'
-import Helpers from './Tools/Helpers.svelte'
+	import { T, HierarchicalObject, useThrelte } from '@threlte/core'
+	import { Grid } from '@threlte/extras'
+	import { AxesHelper } from 'trzy'
+	import { persisted } from '../internal/persisted'
+	import { getInternalContext, useInspector } from '../internal/context'
+	import { add } from '../hooks/useOnAdd'
+	import { remove } from '../hooks/useOnRemove'
+	import Portal from './Internal/Portal.svelte'
+	import FreeCamera from './Tools/FreeCamera.svelte'
+	import Raycast from './Tools/Raycast.svelte'
+	import Inline from './Positions/Inline.svelte'
+	import Draggable from './Positions/Draggable.svelte'
+	import TransformControls from './Tools/TransformControls.svelte'
+	import Helpers from './Tools/Helpers.svelte'
 
-const { position } = useInspector()
-const { scene } = useThrelte()
-const { usingFreeCamera, usingRaycast, selectedObject } = getInternalContext()
+	const { position } = useInspector()
+	const { scene } = useThrelte()
+	const { usingFreeCamera, usingRaycast, selectedObject } = getInternalContext()
 
-const grid = persisted('grid', true)
-const axes = persisted('axes', true)
+	const grid = persisted('grid', true)
+	const axes = persisted('axes', true)
 
-$: object = $selectedObject
+	$: object = $selectedObject
 </script>
 
 <Portal style="position:fixed; top:0; left:0; width:100vw; height:100vh;">

@@ -1,10 +1,10 @@
 <script>
-const links = [
-	['Threlte Test 1', '/test1'],
-	['Threlte Test 2', '/test2'],
-	['Threlte Test 3', '/test3'],
-	['Vanilla Test', '/vanilla'],
-]
+	const links = [
+		['Threlte Test 1', '/test1'],
+		['Threlte Test 2', '/test2'],
+		['Threlte Test 3', '/test3'],
+		['Vanilla Test', '/vanilla'],
+	]
 </script>
 
 <nav>

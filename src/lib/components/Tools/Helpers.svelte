@@ -1,16 +1,16 @@
 <script lang="ts">
-import * as THREE from 'three'
-import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
-import { T, useTask } from '@threlte/core'
-import { getInternalContext } from '../../internal/context'
+	import * as THREE from 'three'
+	import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
+	import { T, useTask } from '@threlte/core'
+	import { getInternalContext } from '../../internal/context'
 
-const { usingFreeCamera } = getInternalContext()
+	const { usingFreeCamera } = getInternalContext()
 
-export let object: THREE.Object3D
+	export let object: THREE.Object3D
 
-let ref: THREE.CameraHelper | undefined
+	let ref: THREE.CameraHelper | undefined
 
-useTask(() => ref?.update())
+	useTask(() => ref?.update())
 </script>
 
 {#if 'isCamera' in object}

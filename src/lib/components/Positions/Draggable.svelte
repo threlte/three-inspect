@@ -1,17 +1,17 @@
 <script lang="ts">
-import { Pane, ThemeUtils, Element, Separator } from 'svelte-tweakpane-ui'
-import { getInternalContext } from '../../internal/context'
-import { browser } from '../../internal/browser'
-import Tree from '../Tree/Tree.svelte'
-import Bindings from '../Bindings/Bindings.svelte'
-import Tools from '../Tools/Tools.svelte'
-import Perf from '../Internal/Perf.svelte'
+	import { Pane, ThemeUtils, Element, Separator } from 'svelte-tweakpane-ui'
+	import { getInternalContext } from '../../internal/context'
+	import { browser } from '../../internal/browser'
+	import Tree from '../Tree/Tree.svelte'
+	import Bindings from '../Bindings/Bindings.svelte'
+	import Tools from '../Tools/Tools.svelte'
+	import Perf from '../Internal/Perf.svelte'
 
-const { selectedObject } = getInternalContext()
+	const { selectedObject } = getInternalContext()
 
-const themeKey: keyof typeof ThemeUtils.presets = 'light'
+	const themeKey: keyof typeof ThemeUtils.presets = 'light'
 
-$: object = $selectedObject
+	$: object = $selectedObject
 </script>
 
 <Pane

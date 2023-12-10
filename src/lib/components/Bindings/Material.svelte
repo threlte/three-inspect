@@ -1,12 +1,12 @@
 <script lang="ts">
-import * as THREE from 'three'
-import { Binding, Folder, List } from 'svelte-tweakpane-ui'
-import Color from './Color.svelte'
-import Textures from './Textures.svelte'
+	import * as THREE from 'three'
+	import { Binding, Folder, List } from 'svelte-tweakpane-ui'
+	import Color from './Color.svelte'
+	import Textures from './Textures.svelte'
 
-export let object: THREE.Material
+	export let object: THREE.Material
 
-$: object.needsUpdate = true
+	$: object.needsUpdate = true
 </script>
 
 <Binding

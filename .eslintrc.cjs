@@ -85,10 +85,7 @@ module.exports = {
 		'no-undefined': 'off',
 		'no-undef-init': 'off',
 		'object-curly-spacing': ['error', 'always'],
-		'object-property-newline': [
-			'error',
-			{ allowAllPropertiesOnSameLine: true },
-		],
+		'object-property-newline': ['error', { allowAllPropertiesOnSameLine: true }],
 		'one-var': ['error', 'never'],
 		'padded-blocks': ['error', 'never'],
 		'prefer-destructuring': 'off',

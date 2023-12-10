@@ -1,18 +1,18 @@
 <script lang="ts">
-import * as THREE from 'three'
-import { Binding, Textarea, Folder } from 'svelte-tweakpane-ui'
-import Transform from './Transform/Transform.svelte'
-import Camera from './Camera.svelte'
-import Light from './Light.svelte'
-import Scene from './Scene.svelte'
-import Material from './Material.svelte'
+	import * as THREE from 'three'
+	import { Binding, Textarea, Folder } from 'svelte-tweakpane-ui'
+	import Transform from './Transform/Transform.svelte'
+	import Camera from './Camera.svelte'
+	import Light from './Light.svelte'
+	import Scene from './Scene.svelte'
+	import Material from './Material.svelte'
 
-export let object: THREE.Object3D
+	export let object: THREE.Object3D
 
-$: scene = object as THREE.Scene
-$: light = object as THREE.Light
-$: camera = object as THREE.PerspectiveCamera | THREE.OrthographicCamera
-$: userData = JSON.stringify(object.userData)
+	$: scene = object as THREE.Scene
+	$: light = object as THREE.Light
+	$: camera = object as THREE.PerspectiveCamera | THREE.OrthographicCamera
+	$: userData = JSON.stringify(object.userData)
 </script>
 
 <Binding

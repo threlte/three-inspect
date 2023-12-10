@@ -1,20 +1,20 @@
 <script lang="ts">
-import type * as THREE from 'three'
-import { Binding, Folder, List } from 'svelte-tweakpane-ui'
-import Camera from './Camera.svelte'
+	import type * as THREE from 'three'
+	import { Binding, Folder, List } from 'svelte-tweakpane-ui'
+	import Camera from './Camera.svelte'
 
-export let object: THREE.LightShadow
+	export let object: THREE.LightShadow
 
-let mapSize = object.mapSize.width
+	let mapSize = object.mapSize.width
 
-$: {
-	object.mapSize.width = mapSize
-	object.mapSize.height = mapSize
-	object.dispose()
-	object.map = null
-}
+	$: {
+		object.mapSize.width = mapSize
+		object.mapSize.height = mapSize
+		object.dispose()
+		object.map = null
+	}
 
-$: camera = object.camera as THREE.PerspectiveCamera | THREE.OrthographicCamera
+	$: camera = object.camera as THREE.PerspectiveCamera | THREE.OrthographicCamera
 </script>
 
 <List

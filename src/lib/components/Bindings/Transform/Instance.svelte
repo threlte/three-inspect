@@ -1,26 +1,26 @@
 <script lang="ts">
-import * as THREE from 'three'
-import { Binding, Slider, type BindingRef } from 'svelte-tweakpane-ui'
+	import * as THREE from 'three'
+	import { Binding, Slider, type BindingRef } from 'svelte-tweakpane-ui'
 
-export let object: THREE.InstancedMesh
+	export let object: THREE.InstancedMesh
 
-const mat4 = new THREE.Matrix4()
+	const mat4 = new THREE.Matrix4()
 
-let instance = 0
-let lastInstance = -1
-const refs: BindingRef[] = []
-let dummy = new THREE.Object3D()
+	let instance = 0
+	let lastInstance = -1
+	const refs: BindingRef[] = []
+	let dummy = new THREE.Object3D()
 
-$: if (instance === lastInstance) {
-	mat4.compose(dummy.position, dummy.quaternion, dummy.scale)
-	object.setMatrixAt(instance, mat4)
-	object.instanceMatrix.needsUpdate = true
-} else {
-	object.getMatrixAt(instance, mat4)
-	mat4.decompose(dummy.position, dummy.quaternion, dummy.scale)
-	for (const ref of refs) ref.refresh()
-	lastInstance = instance
-}
+	$: if (instance === lastInstance) {
+		mat4.compose(dummy.position, dummy.quaternion, dummy.scale)
+		object.setMatrixAt(instance, mat4)
+		object.instanceMatrix.needsUpdate = true
+	} else {
+		object.getMatrixAt(instance, mat4)
+		mat4.decompose(dummy.position, dummy.quaternion, dummy.scale)
+		for (const ref of refs) ref.refresh()
+		lastInstance = instance
+	}
 </script>
 
 <Slider

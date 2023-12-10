@@ -1,10 +1,10 @@
 <script lang="ts">
-import * as THREE from 'three'
-import { Binding, Folder } from 'svelte-tweakpane-ui'
-import Color from './Color.svelte'
-import Shadow from './Shadow.svelte'
+	import * as THREE from 'three'
+	import { Binding, Folder } from 'svelte-tweakpane-ui'
+	import Color from './Color.svelte'
+	import Shadow from './Shadow.svelte'
 
-export let object: THREE.Light
+	export let object: THREE.Light
 </script>
 
 <Color

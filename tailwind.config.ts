@@ -9,9 +9,7 @@ export default {
 			},
 		},
 		fontFamily: {
-			mono: [
-				'var(--tp-font-family, Roboto Mono, Source Code Pro, Menlo, Courier, monospace)',
-			],
+			mono: ['var(--tp-font-family, Roboto Mono, Source Code Pro, Menlo, Courier, monospace)'],
 		},
 	},
 	plugins: [],
