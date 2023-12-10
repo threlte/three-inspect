@@ -2,8 +2,19 @@
   "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
     "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+
+    "verbatimModuleSyntax": true,
+
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+  
     "allowJs": true,
     "checkJs": true,
+
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
@@ -15,22 +26,17 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "useDefineForClassFields": true,
-    "strict": true,
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "useUnknownInCatchVariables": true,
     
-    "module": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "moduleResolution": "Node",
     "removeComments": false,
     "declaration": true, // generates declaration files
     "sourceMap": true,
-    "resolveJsonModule": true,
     "isolatedModules": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
     "outDir": "dist"
   },

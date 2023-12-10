@@ -1,11 +1,11 @@
 <script lang='ts'>
   import { Pane, ThemeUtils, Element, Separator } from 'svelte-tweakpane-ui'
+  import { getInternalContext } from '../../internal/context'
+  import { browser } from '../../internal/browser'
   import Tree from '../Tree/Tree.svelte'
-  import Bindings from '../Bindings/index.svelte'
+  import Bindings from '../Bindings/Bindings.svelte'
   import Tools from '../Tools/Tools.svelte'
   import Perf from '../Internal/Perf.svelte'
-  import { getInternalContext } from '../../internal/context'
-  import { browser } from '$lib/internal/browser'
 
   const { selectedObject } = getInternalContext()
 
@@ -61,6 +61,6 @@
     x={browser ? window.innerWidth - 6 - 320 : 6}
     y={6}
   >
-    <Bindings />
+    <Bindings object={$selectedObject} />
   </Pane>
 {/if}

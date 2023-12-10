@@ -2,14 +2,14 @@
   import * as THREE from 'three'
   import { useThrelte } from '@threlte/core'
   import { getInternalContext } from '../../internal/context'
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
 
   const { renderer, scene, camera } = useThrelte()
   const { selectedObject } = getInternalContext()
   const raycaster = new THREE.Raycaster()
   const pointer = new THREE.Vector2()
 
-  const raycast = (event: MouseEvent) => {
+  const raycast = async (event: MouseEvent) => {
     // Calculate pointer position in normalized device coordinates
     pointer.x = ((event.clientX / renderer.domElement.clientWidth) * 2) - 1
     pointer.y = -((event.clientY / renderer.domElement.clientHeight) * 2) + 1
@@ -19,7 +19,11 @@
 
     const [intersection] = raycaster.intersectObjects(scene.children)
 
+    selectedObject.set(undefined)
+
     if (intersection === undefined) return
+
+    await tick()
 
     selectedObject.set(intersection.object)
   }

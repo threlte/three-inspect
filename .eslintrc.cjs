@@ -1,27 +1,51 @@
 module.exports = {
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint'],
   extends: [
     'eslint:all',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/strict',
+    'plugin:@typescript-eslint/strict-type-checked',
+    'plugin:@typescript-eslint/stylistic-type-checked',
     'plugin:unicorn/all',
+    'prettier',
+    'plugin:svelte/recommended',
+    'plugin:svelte/prettier',
   ],
-  parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 'latest',
-    project: ['./tsconfig.json'],
     sourceType: 'module',
-    tsconfigRootDir: __dirname,
+    ecmaVersion: 'latest',
+    extraFileExtensions: ['.svelte'],
+    project: ['./tsconfig.json']
   },
-  plugins: [
-    '@typescript-eslint',
-    'unicorn',
-  ],
   root: true,
+  overrides: [
+    // CommonJS files are scripts that are allowed to use `require`
+    {
+      files: ['**/*.cjs'],
+      parserOptions: {
+        sourceType: 'script',
+      },
+      env: {
+        commonjs: true,
+      },
+      rules: {
+        '@typescript-eslint/no-var-requires': 'off',
+      },
+    }, {
+      files: ['*.svelte'],
+      parser: 'svelte-eslint-parser',
+      parserOptions: {
+        parser: '@typescript-eslint/parser',
+      },
+    },
+  ],
   rules: {
     'array-bracket-newline': ['error', 'consistent'],
     'array-element-newline': 'off',
     'arrow-body-style': 'off',
     'camelcase': ['error', { properties: 'never' }],
+    'capitalized-comments': 'off',
     'comma-dangle': ['error', {
       arrays: 'always-multiline',
       exports: 'never',
@@ -46,6 +70,7 @@ module.exports = {
     'max-lines-per-function': 'off',
     'max-params': 'off',
     'max-statements': 'off',
+    'multiline-comment-style': 'off',
     'multiline-ternary': ['error', 'always-multiline'],
     'no-bitwise': 'off',
     'no-console': ['error', { allow: ['warn', 'error'] }],
@@ -60,6 +85,7 @@ module.exports = {
     'padded-blocks': ['error', 'never'],
     'prefer-destructuring': 'off',
     'sort-keys': 'off',
+    'sort-imports': 'off',
     'quote-props': ['error', 'consistent-as-needed'],
     'quotes': ['error', 'single'],
     'semi': ['error', 'never'],
@@ -67,7 +93,6 @@ module.exports = {
     'unicorn/no-useless-undefined': 'off',
     'unicorn/prevent-abbreviations': 'off',
     'unicorn/no-keyword-prefix': ['error', { checkProperties: false }],
-    'unicorn/prefer-at': 'off',
     'unicorn/no-array-for-each': 'off',
     'unicorn/no-null': 'off',
     'unicorn/filename-case': ['error', {

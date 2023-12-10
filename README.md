@@ -2,129 +2,73 @@
 
 `three-inspect` is an inspector for Three.js projects. It is designed to be minimalistic, powerful, and extensible, with little boilerplate required.
 
+```bash
+npm i --save-dev three-inspect
+```
+
 ![A screenshot of three-inspect in action](https://raw.githubusercontent.com/michealparks/three-inspect/main/assets/screen.gif)
 
 Currently, it covers:
 * Creating a view of the scene graph and editing object properties, such as materials, transforms, etc.
 * Viewing / editing textures.
-* Scene helpers (Grid / Axes).
-* Showing and editing shaders.
+* Scene helpers (Grid / Axes), light helpers, shadow camera helpers.
 * Performance monitoring (resources, framerate, memory, capabilities, misc. stats).
-* Light helpers, shadow camera helpers.
-* Postprocessing (only [pmndrs/postprocessing](https://github.com/pmndrs/postprocessing) is supported).
 
 `three-inspect` uses [Tweakpane](https://cocopon.github.io/tweakpane/) <3 for its input UI .
 
 ### Getting started
 
-```bash
-npm i -D three-inspect
-```
+`three-inspect` is built with first-class support for [Threlte](https://threlte.xyz), but can be used with most Three.js apps (see Getting started (Vanilla, R3F, TresJS, etc.) below).
 
-Then, in your project, create the inspector:
-
-```ts
-import Inspector from 'three-inspect'
-
-/**
- * This should be a conditional that is compiled away
- * when building for production to ensure tree-shaking.
- */
-if (devMode) {
-  const inspector = new Inspector({
-    scene,
-    camera,
-    renderer,
-    composer /* optional */
-    options: { /* optional */
-      location: 'right' /* can be 'right' or 'overlay'. Default: 'right' */
-    }
-  })
-
-  /**
-   * To get access to camera inspection, your camera must be in the scene.
-   */
-  scene.add(camera)
-
-  /**
-   * Call this when you wish to remove the inspector,
-   * or re-init it with a new scene, camera, etc.
-   */
-  inspector.dispose()
-}
-```
-
-You may notice that nothing has happened! That is because the inspector will be triggered by pressing the `i` key. If you wish to re-map this, just send the key you want to the constructor:
-
-new Inspector({ ..., options: { toggle: 'enter' } })
-
-Creating the inspector will add hooks to `THEE.Object3D.add()` and `remove()` methods so that all objects are automatically registered / deregisterd.
-
-### Extending
-
-By default, the inspector only comes with a primary tab, but additional panes can be added:
-
-```ts
-const pane = inspector.addPane('Game')
-
-pane.addInput(parameters, 'scale').on('change', () => {
-  mesh.scale.setScalar(parameters.scale)
-})
-```
-
-This allows you to directly interact with the Tweakpane API.
-
-### Plugins
-
-It's possible to create a plugin for `three-inspect`:
-
-```ts
-const myPlugin = (inspector: Inspector) => {
-  // Create some inputs and folders...
-
-  return () => {
-    // A dispose function.
-  }
-}
-
-// Then, as the user of the plugin...
-inspector.registerPlugin(myPlugin)
-```
-
-### Threlte usage
-
-This library is build using Threlte, so a component can be directly imported.
+If you are using Threlte, simply create the inspector by importing the `<Inspector>` component:
 
 ```html
-<script lang='ts'>
-
-import { Canvas } from '@threlte/core'
-import { Inspect } from 'three-inspect'
-
+<script>
+  import { Canvas } from '@threlte/core'
+  import { Inspector } from 'three-inspect'
 </script>
 
 <Canvas>
-  <Inspect />
+  <Inspector />
 </Canvas>
 ```
 
-### React Three Fiber Usage
+Once running, the inspector can be toggled with the `i` key.
+
+### Extending
+
+`three-inspect` uses [`svelte-tweakpane-ui`](https://kitschpatrol.com/svelte-tweakpane-ui) under the hood, and can be extended by adding additional tweakpane tabs or panes.
+
+```html
+<script>
+  import { Canvas } from '@threlte/core'
+  import { Inspector } from 'three-inspect'
+
+  let foo = 1
+  let bar = 0
+</script>
+
+<Canvas>
+  <Inspector>
+    <TabPage slot='inspector' title='world'>
+      <Slider bind:value={foo} label='Foo' min={1} max={30} />
+      <Slider bind:value={bar} label='Bar' min={0} max={1} />
+    </TabPage>
+  </Inspector>
+</Canvas>
+```
+
+### Getting started (Vanilla, R3F, TresJS, etc.)
+
+`three-inspect` can be used in any Three.js-based environment by importing the `createInspector` function.
 
 ```ts
-import * as React from 'react'
-import { useThree } from '@react-three/fiber'
 import { createInspector } from 'three-inspect'
 
-function App() {
-  const state = useThree()
+const inspector = createInspector({ scene, camera, renderer })
 
-  React.useEffect(() => {
-    return () => createInspector({
-      scene: state.scene,
-      camera: state.camera,
-      renderer: state.gl,
-    })
-  }), [state.scene, state.camera])
-
-  ...
+// When you're finished with the inspector...
+inspector.dispose()
 ```
+
+Note that some features, such as extending the UI, are not possible using this function.

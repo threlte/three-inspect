@@ -127,11 +127,13 @@
   DoubleSide: THREE.DoubleSide,
 }} />
 
-<List bind:value={object.shadowSide} label="shadowSide" options={{
-  FrontSide: THREE.FrontSide,
-  BackSide: THREE.BackSide,
-  DoubleSide: THREE.DoubleSide,
-}} />
+{#if 'shadowSide' in object}
+  <List bind:value={object.shadowSide} label="shadowSide" options={{
+    FrontSide: THREE.FrontSide,
+    BackSide: THREE.BackSide,
+    DoubleSide: THREE.DoubleSide,
+  }} />
+{/if}
 
 <Binding bind:object key='toneMapped' label='toneMapped' />
 

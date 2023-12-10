@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { onDestroy } from 'svelte'
+import { intersectObjects } from '../internal/intersectObjects'
 
 export const remove = THREE.Object3D.prototype.remove
 export const clear = THREE.Object3D.prototype.clear
@@ -10,6 +11,7 @@ export const removeFns = new Set<Callback>()
 
 THREE.Object3D.prototype.remove = function (...objects: THREE.Object3D[]) {
   remove.call(this, ...objects)
+  objects.forEach((object) => intersectObjects.delete(object))
   removeFns.forEach((fn) => objects.forEach((object) => fn(object)))
   return this
 }

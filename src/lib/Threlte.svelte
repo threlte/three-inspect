@@ -1,6 +1,6 @@
 <script lang='ts'>
   import type * as THREE from 'three'
-  import { useThrelte, type CurrentWritable } from '@threlte/core'
+  import { useThrelte } from '@threlte/core'
   import Inspector from './Inspector.svelte'
 
   export let position: 'draggable' | 'fixed' | 'inline' = 'draggable'
@@ -13,15 +13,8 @@
   if (scene) context.scene = scene
   if (camera) context.camera.set(camera)
   if (renderer) context.renderer = renderer
-
-  $: cam = context.camera as CurrentWritable<THREE.PerspectiveCamera | THREE.OrthographicCamera>
 </script>
 
-<Inspector
-  {position}
-  scene={context.scene}
-  renderer={context.renderer}
-  camera={$cam}
->
+<Inspector {position}>
   <slot />
 </Inspector>

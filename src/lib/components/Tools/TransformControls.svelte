@@ -27,26 +27,26 @@
     }
   }
 
-  const keyup = (_event: KeyboardEvent) => {
-    
-  }
-
   let controls: TransformControlsType
+  let group: THREE.Group
 
   // Prevent controls from being shown in the Treeview
-  $: if (controls) {
+  $: if (controls && group) {
     scene.remove(controls)
+    scene.remove(group)
+
     add.call(scene, controls)
+    add.call(scene, group)
   }
 </script>
 
 <svelte:window
   on:keydown={keydown}
-  on:keyup={keyup}
 />
 
 <TransformControls
   bind:controls
+  bind:group
   {object}
   mode={$mode}
   autoPauseOrbitControls

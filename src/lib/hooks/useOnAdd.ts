@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { intersectObjects } from '../internal/intersectObjects'
 import { onDestroy } from 'svelte'
 
 export const add = THREE.Object3D.prototype.add
@@ -9,7 +10,17 @@ export const addFns = new Set<Callback>()
 
 THREE.Object3D.prototype.add = function (...objects: THREE.Object3D[]) {
   add.call(this, ...objects)
-  addFns.forEach((fn) => objects.forEach((object) => fn(object)))
+
+  for (const object of objects) {
+    intersectObjects.add(object)
+  }
+
+  for (const fn of addFns) {
+    for (const object of objects) {
+      fn(object)
+    }
+  }
+
   return this
 }
 

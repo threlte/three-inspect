@@ -9,8 +9,8 @@
   import Portal from './Internal/Portal.svelte'
   import FreeCamera from './Tools/FreeCamera.svelte'
   import Raycast from './Tools/Raycast.svelte'
-  import Splitpanes from './Splitpanes.svelte'
-  import Tweakpane from './Tweakpane.svelte'
+  import Inline from './Positions/Inline.svelte'
+  import Draggable from './Positions/Draggable.svelte'
   import TransformControls from './Tools/TransformControls.svelte'
   import Helpers from './Tools/Helpers.svelte'
 
@@ -24,19 +24,17 @@
   $: object = $selectedObject
 </script>
 
-{#if $position === 'inline'}
-  <Portal style='position:fixed; top:0; left:0; width:100vw; height:100vh;'>
-    <Splitpanes>
+<Portal style='position:fixed; top:0; left:0; width:100vw; height:100vh;'>
+  {#if $position === 'inline'}
+    <Inline>
       <slot />
-    </Splitpanes>
-  </Portal>
-{:else}
-  <Portal>
-    <Tweakpane>
+    </Inline>
+  {:else}
+    <Draggable>
       <slot />
-    </Tweakpane>
-  </Portal>
-{/if}
+    </Draggable>
+  {/if}
+</Portal>
 
 <!-- Ensure that all inspector objects are added to the scene passed to the inspector -->
 <HierarchicalObject
@@ -72,6 +70,7 @@
     {#key object}
       <TransformControls {object} />
     {/key}
+
     <Helpers {object} />
   {/if}
 </HierarchicalObject>

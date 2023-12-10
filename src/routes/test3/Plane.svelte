@@ -2,7 +2,6 @@
 	import { T, useTask } from '@threlte/core'
 	import { useGltf, Float } from '@threlte/extras'
 	import { Slider, TabPage } from 'svelte-tweakpane-ui'
-	import { Inspector } from '$lib'
 
 	const gltf = useGltf('glb/plane.glb')
 
@@ -27,14 +26,11 @@
 	})
 </script>
 
-<Inspector>
-	<TabPage title='world'>
-		<Slider bind:value={rotationSpeed} label='rotation speed' min={1} max={30} />
-		<Slider bind:value={sway} label='sway' min={0} max={1} />
-		<Slider bind:value={floatIntensity} label='float intensity' min={0} max={8} />
-	</TabPage>
-</Inspector>
-
+<TabPage title='world'>
+	<Slider bind:value={rotationSpeed} label='rotation speed' min={1} max={30} />
+	<Slider bind:value={sway} label='sway' min={0} max={1} />
+	<Slider bind:value={floatIntensity} label='float intensity' min={0} max={8} />
+</TabPage>
 
 {#if $gltf}
 	<Float {floatIntensity} speed={12}>

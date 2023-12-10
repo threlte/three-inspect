@@ -4,14 +4,11 @@
   import { setPublicContext, setInternalContext } from './internal/context'
 
   export let position: 'draggable' | 'fixed' | 'inline' = 'inline'
-  export let scene: THREE.Scene
-  export let camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
-  export let renderer: THREE.WebGLRenderer
 
   let enabled = persisted('enabled', true)
 
   setPublicContext({ position })
-  setInternalContext({ scene, camera, renderer })
+  setInternalContext()
 
   const handleKeyup = (event: KeyboardEvent) => {
     if (event.key.toLowerCase() === 'i') {
