@@ -11,7 +11,7 @@
     <IconButton
       label='Raycast'
       icon='mdiCursorDefault'
-      on:click={() => usingRaycast.set(!$usingRaycast)}
+      on:click={() => { usingRaycast.set(!$usingRaycast) }}
     />
     <span slot='tooltip'>Select {$usingRaycast ? 'on' : 'off'}</span>
   </Tooltip>
@@ -20,7 +20,7 @@
     <IconButton
       label='Free camera'
       icon='mdiCameraOutline'
-      on:click={() => usingFreeCamera.set(!$usingFreeCamera)}
+      on:click={() => { usingFreeCamera.set(!$usingFreeCamera) }}
     />
     <span slot='tooltip'>Free camera {$usingFreeCamera ? 'on' : 'off'}</span>
   </Tooltip>

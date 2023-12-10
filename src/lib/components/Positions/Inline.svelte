@@ -18,7 +18,9 @@
     const canvas = renderer.domElement
     const oldParent = canvas.parentElement ?? document.body
     ref.replaceWith(canvas)
-    return () => oldParent.append(canvas)
+    return () => {
+      oldParent.append(canvas)
+    }
   })
 </script>
 

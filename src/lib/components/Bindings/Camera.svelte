@@ -1,4 +1,5 @@
 <script lang='ts'>
+  import type * as THREE from 'three'
   import { Binding } from 'svelte-tweakpane-ui'
 
   export let object: THREE.PerspectiveCamera | THREE.OrthographicCamera

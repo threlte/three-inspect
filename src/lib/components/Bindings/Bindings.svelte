@@ -9,7 +9,6 @@
 
   export let object: THREE.Object3D
 
-  $: mesh = object as THREE.Mesh
   $: scene = object as THREE.Scene
   $: light = object as THREE.Light 
   $: camera = object as THREE.PerspectiveCamera | THREE.OrthographicCamera
@@ -18,15 +17,15 @@
 
 <Binding bind:object key='visible' label='visible' />
 
-{#if ('isAmbientLight' in object) === false}
+{#if !('isAmbientLight' in object)}
   <Transform {object} />
 {/if}
 
-{#if mesh.isMesh || 'isPointLight' in object || 'isSpotLight' in object || 'isDirectionalLight' in object}
+{#if 'isMesh' in object || 'isPointLight' in object || 'isSpotLight' in object || 'isDirectionalLight' in object}
   <Binding bind:object key='castShadow' label='castShadow' />
 {/if}
 
-{#if mesh.isMesh}
+{#if 'isMesh' in object}
   <Binding bind:object key='receiveShadow' label='receiveShadow' />
 {/if}
 

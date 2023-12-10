@@ -6,6 +6,7 @@
 </script>
 
 <script lang='ts'>
+  import { onDestroy } from 'svelte'
   import { useTask, useThrelte } from '@threlte/core'
   import { getInternalContext } from '../../internal/context'
 
@@ -19,6 +20,10 @@
   useTask(() => {
     const delta = clock.getDelta()
     cameraControls.update(delta)
+  })
+
+  onDestroy(() => {
+    cameraControls.dispose()
   })
 
   $: cameraControls.enabled = !$usingTransformControls

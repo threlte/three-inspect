@@ -6,9 +6,9 @@
 
   export let object: THREE.Scene
   
-  let grid = persisted('grid', true)
-  let gridColor = persisted('gridColor', '#ddd')
-  let axes = persisted('axes', true)
+  const grid = persisted('grid', true)
+  const gridColor = persisted('gridColor', '#ddd')
+  const axes = persisted('axes', true)
 
   let params = {
     grid: $grid,

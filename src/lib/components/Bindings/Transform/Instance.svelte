@@ -8,18 +8,18 @@
 
   let instance = 0
   let lastInstance = -1
-  let refs: BindingRef[] = []
+  const refs: BindingRef[] = []
   let dummy = new THREE.Object3D()
 
-  $: if (instance !== lastInstance) {
-    object.getMatrixAt(instance, mat4)
-    mat4.decompose(dummy.position, dummy.quaternion, dummy.scale)
-    refs.forEach(ref => ref.refresh())
-    lastInstance = instance
-  } else {
+  $: if (instance === lastInstance) {
     mat4.compose(dummy.position, dummy.quaternion, dummy.scale)
     object.setMatrixAt(instance, mat4)
     object.instanceMatrix.needsUpdate = true
+  } else {
+    object.getMatrixAt(instance, mat4)
+    mat4.decompose(dummy.position, dummy.quaternion, dummy.scale)
+    for (const ref of refs) ref.refresh()
+    lastInstance = instance
   }
 </script>
 

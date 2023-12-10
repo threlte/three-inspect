@@ -7,7 +7,7 @@
    * @param {HTMLElement} el
    * @param {HTMLElement|string} target DOM Element or CSS Selector
    */
-  export function portal(el: HTMLElement, target: HTMLElement | string = 'body') {
+  function portal(el: HTMLElement, target: HTMLElement | string = 'body') {
     let targetEl: HTMLElement | null
 
     async function update(newTarget: HTMLElement | string) {
@@ -27,20 +27,17 @@
         targetEl = target
       }
 
-      targetEl.appendChild(el)
+      targetEl.append(el)
       el.hidden = false
     }
 
-    function destroy() {
-      if (el.parentNode) {
-        el.parentNode.removeChild(el)
-      }
-    }
-
     update(target)
+
     return {
       update,
-      destroy,
+      destroy() {
+        el.remove()
+      },
     }
   }
 </script>

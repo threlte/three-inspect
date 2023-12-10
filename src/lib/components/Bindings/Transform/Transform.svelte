@@ -6,10 +6,10 @@
 
   export let object: THREE.Object3D
   
-  let refs: BindingRef[] = []
+  const refs: BindingRef[] = []
 
   useTask(() => {
-    refs.forEach(ref => ref.refresh())
+    for (const ref of refs) ref.refresh()
   })
 </script>
 

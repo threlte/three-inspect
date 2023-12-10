@@ -1,22 +1,22 @@
 <script lang='ts'>
-	import { computePosition, flip, shift, offset, arrow } from "@floating-ui/dom"
+	import { computePosition, flip, shift, offset, arrow } from '@floating-ui/dom'
 
   let ref: HTMLElement
   let tooltipEl: HTMLElement
   let arrowEl: HTMLElement
 
   function showTooltip() {
-    tooltipEl.style.display = "block"
+    tooltipEl.style.display = 'block'
     update()
   }
 
   function hideTooltip() {
-    tooltipEl.style.display = ""
+    tooltipEl.style.display = ''
   }
 
   async function update() {
     const { x, y, placement, middlewareData } = await computePosition(ref, tooltipEl, {
-      placement: "top",
+      placement: 'top',
       middleware: [
         offset(6),
         flip(),
@@ -33,20 +33,20 @@
     const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {}
     
     const staticSide = {
-      top: "bottom",
-      right: "left",
-      bottom: "top",
-      left: "right",
-    }[placement.split("-")[0]]
+      top: 'bottom',
+      right: 'left',
+      bottom: 'top',
+      left: 'right',
+    }[placement.split('-')[0]]
 
     if (!staticSide) return
 
     Object.assign(arrowEl.style, {
-      left: arrowX != null ? `${arrowX}px` : "",
-      top: arrowY != null ? `${arrowY}px` : "",
-      right: "",
-      bottom: "",
-      [staticSide]: "-4px",
+      left: arrowX == null ? '' : `${arrowX}px`,
+      top: arrowY == null ? '' : `${arrowY}px`,
+      right: '',
+      bottom: '',
+      [staticSide]: '-4px',
     })
   }
 </script>

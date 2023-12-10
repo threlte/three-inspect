@@ -8,5 +8,5 @@ export interface CreateInspectorOptions {
 
 export const createInspector = (target: HTMLElement, options: CreateInspectorOptions) => {
   const inspector = new Inspector({ target, props: options })
-  return () => inspector.$destroy()
+  return () => { inspector.$destroy() }
 }

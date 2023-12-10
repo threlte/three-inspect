@@ -3,8 +3,6 @@
   import { Inspector } from '$lib'
 
   const { scene } = useThrelte()
-
-  console.log(scene)
 </script>
 
 <Inspector />

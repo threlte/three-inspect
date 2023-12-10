@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { intersectObjects } from '../internal/intersectObjects'
 import { onDestroy } from 'svelte'
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
 export const add = THREE.Object3D.prototype.add
 
 type Callback = (object: THREE.Object3D) => void

@@ -1,7 +1,7 @@
 <script lang='ts'>
   import { useTask, useThrelte } from '@threlte/core'
   import { ThreePerf } from 'three-perf'
-  import { onMount } from 'svelte';
+  import { onMount } from 'svelte'
   
   const { renderer } = useThrelte()
 
@@ -14,16 +14,22 @@
       anchorX: 'left',
       anchorY: 'top',
       domElement: ref,
-      renderer
+      renderer,
     })
+
     perf.ui.wrapper.style.position = 'relative'
-    return () => perf.dispose()
+
+    start()
+
+    return () => {
+      perf.dispose()
+    }
   })
 
-  useTask(() => {
-    perf?.end()
-    perf?.begin()
-  })
+  const { start } = useTask(() => {
+    perf.end()
+    perf.begin()
+  }, { autoStart: false })
 </script>
 
 <div bind:this={ref} />

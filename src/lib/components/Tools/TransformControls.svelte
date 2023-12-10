@@ -1,4 +1,5 @@
 <script lang='ts'>
+  import type * as THREE from 'three'
   import { useThrelte } from '@threlte/core'
   import { TransformControls } from '@threlte/extras'
   import type { TransformControls as TransformControlsType } from 'three/examples/jsm/controls/TransformControls'
@@ -21,9 +22,18 @@
     const key = event.key.toLowerCase()
 
     switch(key) {
-      case 't': return mode.set('translate')
-      case 'r': return mode.set('rotate')
-      case 's': return mode.set('scale')
+      case 't': {
+        mode.set('translate')
+        break
+      }
+      case 'r': {
+        mode.set('rotate')
+        break
+      }
+      case 's': {
+        mode.set('scale')
+        break
+      }
     }
   }
 
@@ -50,6 +60,6 @@
   {object}
   mode={$mode}
   autoPauseOrbitControls
-  on:mouseDown={() => usingTransformControls.set(true)}
-  on:mouseUp={() => usingTransformControls.set(false)}
+  on:mouseDown={() => { usingTransformControls.set(true) }}
+  on:mouseUp={() => { usingTransformControls.set(false) }}
 />

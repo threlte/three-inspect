@@ -1,6 +1,5 @@
 <script lang='ts'>
-  import type { Icons } from './Icon.svelte'
-  import Icon from './Icon.svelte'
+  import Icon, { type Icons } from './Icon.svelte'
 
   export let icon: Icons
   export let label: string

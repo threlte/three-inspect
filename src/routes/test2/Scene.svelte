@@ -20,38 +20,38 @@
     '/textures/environmentMaps/0/py.jpg',
     '/textures/environmentMaps/0/ny.jpg',
     '/textures/environmentMaps/0/pz.jpg',
-    '/textures/environmentMaps/0/nz.jpg'
+    '/textures/environmentMaps/0/nz.jpg',
   ])
 
-  let meshes: THREE.Object3D[] = []
+  const meshes: THREE.Object3D[] = []
 
   // Create starfield
-  {
-    const geometry = new THREE.BufferGeometry();
-    const vec3 = new THREE.Vector3();
+{
+  const geometry = new THREE.BufferGeometry()
+  const vec3 = new THREE.Vector3()
 
-    const count = 10_000
-    const radius = 100
+  const count = 10_000
+  const radius = 100
 
-    const vertices = new Float32Array(count * 3);
+  const vertices = new Float32Array(count * 3)
 
-    for (let i = 0; i < count * 3; i += 3) {
-      vec3.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize().multiplyScalar(radius)
-      vertices[i + 0] = vec3.x
-      vertices[i + 1] = vec3.y
-      vertices[i + 2] = vec3.z
-    }
-
-    geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) )
-    geometry.translate(0, 0.5, 0)
-
-    const material = new THREE.PointsMaterial()
-    material.size = 0.2
-    material.sizeAttenuation = true
-    const points = new THREE.Points(geometry, material)
-    points.name = 'Stars'
-    scene.add(points)
+  for (let i = 0; i < count * 3; i += 3) {
+    vec3.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize().multiplyScalar(radius)
+    vertices[i + 0] = vec3.x
+    vertices[i + 1] = vec3.y
+    vertices[i + 2] = vec3.z
   }
+
+  geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) )
+  geometry.translate(0, 0.5, 0)
+
+  const material = new THREE.PointsMaterial()
+  material.size = 0.2
+  material.sizeAttenuation = true
+  const points = new THREE.Points(geometry, material)
+  points.name = 'Stars'
+  scene.add(points)
+}
 
   useTask((delta) => {
     for (const mesh of meshes) {

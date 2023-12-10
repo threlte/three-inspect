@@ -9,7 +9,9 @@
 
   const { selectedObject } = getInternalContext()
 
-  let themeKey: keyof typeof ThemeUtils.presets = 'light'
+  const themeKey: keyof typeof ThemeUtils.presets = 'light'
+
+  $: object = $selectedObject
 </script>
 
 <Pane
@@ -50,9 +52,9 @@
   </Element>
 </Pane>
 
-{#if $selectedObject}
+{#if object}
   <Pane
-    title={$selectedObject.name}
+    title={`${object.name} (${object.type})`}
     position='draggable'
     theme={ThemeUtils.presets[themeKey]}
     localStoreId='three-inspect-pane-selected-object'
@@ -61,6 +63,6 @@
     x={browser ? window.innerWidth - 6 - 320 : 6}
     y={6}
   >
-    <Bindings object={$selectedObject} />
+    <Bindings {object} />
   </Pane>
 {/if}

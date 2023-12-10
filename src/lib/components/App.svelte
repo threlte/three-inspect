@@ -18,8 +18,8 @@
   const { scene } = useThrelte()
   const { usingFreeCamera, usingRaycast, selectedObject } = getInternalContext()
 
-  let grid = persisted('grid', true)
-  let axes = persisted('axes', true)
+  const grid = persisted('grid', true)
+  const axes = persisted('axes', true)
 
   $: object = $selectedObject
 </script>

@@ -98,7 +98,7 @@
     const dispose = createInspector(target, {
       renderer,
       scene,
-      camera
+      camera,
     })
 
     div.append(renderer.domElement)

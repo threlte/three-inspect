@@ -5,7 +5,7 @@
 
   export let position: 'draggable' | 'fixed' | 'inline' = 'inline'
 
-  let enabled = persisted('enabled', true)
+  const enabled = persisted('enabled', true)
 
   setPublicContext({ position })
   setInternalContext()

@@ -9,8 +9,8 @@
 	$: prop = scene?.getObjectByName('Prop')
 
 	$: scene?.traverse((node) => {
-		node.castShadow = true
-		node.receiveShadow = true
+	  node.castShadow = true
+	  node.receiveShadow = true
 	})
 
 	let time = 0
@@ -19,10 +19,10 @@
 	let sway = 0.2
 
 	useTask((delta) => {
-		if (!prop || !scene) return
-		prop.rotation.z -= (delta * rotationSpeed)
-		time += delta
-		scene.rotation.z = Math.sin(time) * sway
+	  if (!prop || !scene) return
+	  prop.rotation.z -= (delta * rotationSpeed)
+	  time += delta
+	  scene.rotation.z = Math.sin(time) * sway
 	})
 </script>
 

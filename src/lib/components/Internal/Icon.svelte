@@ -1,7 +1,7 @@
 <script context='module' lang='ts'>
   import {
     mdiCursorDefault,
-    mdiCameraOutline,
+    mdiCameraOutline
   } from '@mdi/js'
 
   export const paths = {
@@ -21,7 +21,7 @@
 
 	$: sx = ['both', 'horizontal'].includes(flip) ? '-1' : '1'
 	$: sy = ['both', 'vertical'].includes(flip) ? '-1' : '1'
-	$: r = Number.isNaN(rotate) ? rotate : rotate + 'deg'
+	$: r = Number.isNaN(rotate) ? rotate : `${rotate  }deg`
 </script>
 
 <svg width={size} height={size} {viewBox} style="--sx:{sx}; --sy:{sy}; --r:{r}" {...$$restProps}>

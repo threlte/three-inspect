@@ -79,6 +79,7 @@ module.exports = {
     'no-magic-numbers': 'off',
     'no-ternary': 'off',
     'no-undefined': 'off',
+    'no-undef-init': 'off',
     'object-curly-spacing': ['error', 'always'],
     'object-property-newline': ['error', { allowAllPropertiesOnSameLine: true }],
     'one-var': ['error', 'never'],
