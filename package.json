@@ -64,6 +64,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.1.1",
+		"@sveltejs/adapter-static": "^2.0.3",
 		"@sveltejs/kit": "^1.27.7",
 		"@sveltejs/package": "^2.2.3",
 		"@types/three": "^0.159.0",
