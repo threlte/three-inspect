@@ -1,70 +1,89 @@
 {
-  "name": "three-inspect",
-  "version": "0.3.4",
-  "type": "module",
-  "files": [
-    "dist"
-  ],
-  "main": "./dist/three-inspect.umd.cjs",
-  "module": "./dist/main.js",
-  "types": "./dist/main.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/main.js",
-      "require": "./dist/main.umd.cjs"
-    }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/michealparks/three-inspect.git"
-  },
-  "keywords": [
-    "three",
-    "three.js",
-    "3d",
-    "inspect",
-    "debug",
-    "webgl",
-    "monitoring",
-    "threlte",
-    "r3f"
-  ],
-  "license": "MIT",
-  "scripts": {
-    "start": "vite -c vite.playground.config.ts --host --open",
-    "build": "vite build && tsc --emitDeclarationOnly",
-    "build-playground": "vite build -c vite.playground.config.ts --base=/three-inspect/",
-    "check": "tsc",
-    "lint": "eslint ./src",
-    "preview": "vite preview --host",
-    "typecheck": "tsc --noEmit"
-  },
-  "peerDependencies": {
-    "three": "*"
-  },
-  "devDependencies": {
-    "@0b5vr/tweakpane-plugin-rotation": "^0.1.1",
-    "@pangenerator/tweakpane-textarea-plugin": "^1.0.4",
-    "@tweakpane/core": "^1.1.9",
-    "@tweakpane/plugin-essentials": "^0.1.8",
-    "@types/three": "^0.152.1",
-    "@typescript-eslint/eslint-plugin": "^5.60.1",
-    "@typescript-eslint/parser": "^5.60.1",
-    "camera-controls": "^2.7.0",
-    "eslint": "^8.44.0",
-    "eslint-plugin-unicorn": "^47.0.0",
-    "flexible-tree": "^0.1.5",
-    "postcss": "^8.4.24",
-    "postprocessing": "^6.32.1",
-    "simplex-noise": "^4.0.1",
-    "tailwindcss": "^3.3.2",
-    "three": "0.154.0",
-    "three-good-godrays": "^0.4.1",
-    "trzy": "^0.0.54",
-    "tweakpane": "^3.1.10",
-    "tweakpane-image-plugin": "^1.1.3",
-    "typescript": "^5.1.6",
-    "vite": "^4.3.9",
-    "vite-plugin-glsl": "^1.1.2"
-  }
+	"name": "three-inspect",
+	"version": "0.3.4",
+	"type": "module",
+	"files": [
+		"dist",
+		"!dist/**/*.test.*",
+		"!dist/**/*.spec.*"
+	],
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"svelte": "./dist/index.js",
+			"import": "./dist/index.js"
+		}
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/michealparks/three-inspect.git"
+	},
+	"keywords": [
+		"three",
+		"three.js",
+		"3d",
+		"inspect",
+		"debug",
+		"webgl",
+		"monitoring",
+		"threlte",
+		"r3f"
+	],
+	"license": "MIT",
+	"scripts": {
+		"start": "vite --host --open",
+		"build": "vite build && npm run package",
+		"package": "svelte-kit sync && svelte-package && publint",
+		"prepublishOnly": "npm run package",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:format": "prettier --check .",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "eslint ./src",
+		"format": "prettier --write .",
+		"preview": "vite preview --host",
+		"typecheck": "tsc --noEmit"
+	},
+	"peerDependencies": {
+		"three": ">=0.140"
+	},
+	"dependencies": {
+		"@changesets/cli": "^2.27.1",
+		"@floating-ui/dom": "^1.5.3",
+		"@mdi/js": "^7.3.67",
+		"@threlte/core": "^7.0.10",
+		"@threlte/extras": "^8.0.8",
+		"camera-controls": "^2.7.3",
+		"flexible-tree": "^0.1.6",
+		"svelte": "^4.2.8",
+		"svelte-splitpanes": "^0.8.0",
+		"svelte-tweakpane-ui": "^1.0.1",
+		"three-perf": "^1.0.10",
+		"trzy": "^0.3.17"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^2.1.1",
+		"@sveltejs/kit": "^1.27.7",
+		"@sveltejs/package": "^2.2.3",
+		"@types/three": "^0.159.0",
+		"@typescript-eslint/eslint-plugin": "^6.13.2",
+		"@typescript-eslint/parser": "^6.13.2",
+		"eslint": "^8.55.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-svelte": "^2.35.1",
+		"eslint-plugin-unicorn": "^49.0.0",
+		"postcss": "^8.4.32",
+		"postprocessing": "^6.33.4",
+		"prettier-plugin-svelte": "^3.1.2",
+		"publint": "^0.2.6",
+		"simplex-noise": "^4.0.1",
+		"svelte-check": "^3.6.2",
+		"tailwindcss": "^3.3.6",
+		"three": "^0.159.0",
+		"tslib": "^2.6.2",
+		"typescript": "^5.3.3",
+		"vite": "^5.0.7",
+		"vite-plugin-glsl": "^1.2.1"
+	},
+	"svelte": "./dist/index.js"
 }
