@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Pane, ThemeUtils, Element, Separator } from 'svelte-tweakpane-ui'
+	import { Pane, ThemeUtils, Element, Separator, TabGroup, TabPage } from 'svelte-tweakpane-ui'
 	import { getInternalContext, useInspector } from '../../internal/context'
 	import { browser } from '../../internal/browser'
 	import Tree from '../Tree/Tree.svelte'
@@ -23,17 +23,32 @@
 	x={6}
 	y={6}
 >
-	<Element>
-		<Tools />
-	</Element>
+	{#if $$slots.default}
+	<TabGroup>
+		<TabPage title='inspector'>
+			<Element>
+				<Tools />
+			</Element>
+	
+			<Separator />
+	
+			<Element>
+				<Tree />
+			</Element>
+		</TabPage>
+		<slot />
+	</TabGroup>
+	{:else}
+		<Element>
+			<Tools />
+		</Element>
 
-	<Separator />
+		<Separator />
 
-	<Element>
-		<Tree />
-	</Element>
-
-	<slot />
+		<Element>
+			<Tree />
+		</Element>
+	{/if}
 </Pane>
 
 <Pane
@@ -62,6 +77,8 @@
 		x={browser ? window.innerWidth - 6 - 320 : 6}
 		y={6}
 	>
-		<Bindings {object} />
+		{#key object}
+			<Bindings {object} />
+		{/key}
 	</Pane>
 {/if}

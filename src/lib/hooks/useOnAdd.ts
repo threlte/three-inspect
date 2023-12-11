@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { intersectObjects } from '../internal/intersectObjects'
+import { intersectObjects } from '../internal/raycast'
 import { onDestroy } from 'svelte'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method

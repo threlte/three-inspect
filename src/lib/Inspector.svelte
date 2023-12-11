@@ -20,7 +20,9 @@
 <svelte:window on:keyup={handleKeyup} />
 
 {#if $enabled}
-	<App>
-		<slot />
-	</App>
+	{#if $$slots.default}
+		<App><slot /></App>
+	{:else}
+		<App />
+	{/if}
 {/if}

@@ -39,8 +39,8 @@
 	let controls: THREE.Object3D
 	let group: THREE.Group
 
-	$: controls?.traverse((node) => { node.raycast = () => null })
-	$: group?.traverse((node) => { node.raycast = () => null })
+	$: controls?.traverse((node) => { node.userData.threeInspectSkipRaycast = true })
+	$: group?.traverse((node) => { node.userData.threeInspectSkipRaycast = true })
 
 	// Prevent controls from being shown in the Treeview
 	$: if (controls && group) {

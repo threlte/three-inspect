@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { onDestroy } from 'svelte'
-import { intersectObjects } from '../internal/intersectObjects'
+import { intersectObjects } from '../internal/raycast'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 export const remove = THREE.Object3D.prototype.remove

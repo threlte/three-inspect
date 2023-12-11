@@ -83,19 +83,17 @@
 		}
 	}
 
+	const handleSelect = async (item: TreeViewItem) => {
+    if (!observeChanges) return
+		selectedObject.set(treeItemToObject.get(item))
+	}
+
 	treeview.on('deselect', () => {
-    observeChanges = false
+    if (!observeChanges) return
 		selectedObject.set(undefined)
-    observeChanges = true
 	})
 
-	treeview.on('select', async (item: TreeViewItem) => {
-    observeChanges = false
-		selectedObject.set(undefined)
-		await tick()
-		selectedObject.set(treeItemToObject.get(item))
-    observeChanges = true
-	})
+	treeview.on('select', handleSelect)
 
 	useOnAdd((object) => {
 		register(object)
@@ -110,17 +108,25 @@
 	}
 
   watch(selectedObject, (object) => {
-    if (!observeChanges) return
+		observeChanges = false
 
     if (object) {
       const treeitem = objectToTreeItem.get(object)
 
       if (treeitem) treeitem.selected = true
+			observeChanges = true
 
       return () => {
-        if (treeitem) treeitem.selected = false
+        if (treeitem) {
+					observeChanges = false
+					treeitem.selected = false
+					observeChanges = true
+				}
       }
     }
+
+		observeChanges = true
+		return () => {}
   })
 
 	onMount(() => {

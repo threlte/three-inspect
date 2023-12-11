@@ -22,17 +22,16 @@
 	const axes = persisted('axes', true)
 
 	$: object = $selectedObject
+	$: component= $position === 'inline' ? Inline : Draggable
 </script>
 
 <Portal>
-	{#if $position === 'inline'}
-		<Inline>
+	{#if $$slots.default}
+		<svelte:component this={component}>
 			<slot />
-		</Inline>
+		</svelte:component>
 	{:else}
-		<Draggable>
-			<slot />
-		</Draggable>
+		<svelte:component this={component} />
 	{/if}
 </Portal>
 

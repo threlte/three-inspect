@@ -15,6 +15,10 @@
 	if (renderer) context.renderer = renderer
 </script>
 
-<Inspector {position}>
-	<slot />
-</Inspector>
+{#if $$slots.default}
+	<Inspector {position}>
+		<slot />
+	</Inspector>
+{:else}
+	<Inspector {position} />
+{/if}

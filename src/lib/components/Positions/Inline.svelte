@@ -2,7 +2,7 @@
 	import { useThrelte } from '@threlte/core'
 	import { onMount } from 'svelte'
 	import { Pane as SplitPane, Splitpanes } from 'svelte-splitpanes'
-	import { Pane, Element, Separator, ThemeUtils } from 'svelte-tweakpane-ui'
+	import { Pane, Element, Separator, ThemeUtils, TabGroup, TabPage } from 'svelte-tweakpane-ui'
 	import { getInternalContext, useInspector } from '../../internal/context'
 	import Bindings from '../Bindings/Bindings.svelte'
 	import Tools from '../Tools/Tools.svelte'
@@ -23,6 +23,8 @@
 			oldParent.append(canvas)
 		}
 	})
+
+	$: object = $selectedObject
 </script>
 
 <Splitpanes
@@ -39,27 +41,26 @@
 		minSize={15}
 		size={20}
 	>
-		<Pane
-			title=""
-			position="inline"
-			theme={ThemeUtils.presets[$theme]}
-		>
-			<Element>
-				<Tools />
-			</Element>
+		<TabGroup theme={ThemeUtils.presets[$theme]}>
+			<TabPage title='inspector'>
+				<Element>
+					<Tools />
+				</Element>
 
-			<Separator />
+				<Separator />
 
-			<Element>
-				<Tree />
-			</Element>
+				<Element>
+					<Tree />
+				</Element>
+
+				<Element>
+					<Perf scale={0.7} />
+				</Element>
+			</TabPage>
 
 			<slot />
+		</TabGroup>
 
-			<Element>
-				<Perf scale={0.7} />
-			</Element>
-		</Pane>
 	</SplitPane>
 
 	<SplitPane minSize={10}>
@@ -73,13 +74,15 @@
 		minSize={15}
 		size={20}
 	>
-		{#if $selectedObject}
+		{#if object}
 			<Pane
 				title=""
 				position="inline"
 				theme={ThemeUtils.presets[$theme]}
 			>
-				<Bindings object={$selectedObject} />
+				{#key object}
+					<Bindings object={object} />
+				{/key}
 			</Pane>
 		{/if}
 	</SplitPane>
