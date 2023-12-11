@@ -1,16 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>three-debug</title>
+	<head>
+		<meta charset="utf-8" />
+		<link
+			rel="icon"
+			href="./favicon.png"
+		/>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1"
+		/>
+		<style>
+			body {
+				margin: 0;
+				font-family: system-ui;
+			}
+		</style>
+		
+		<link rel="modulepreload" href="./_app/immutable/entry/start.LY1XWHNb.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/scheduler.9h8Gne0h.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.AAR-X7pl.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index.LlmmEgPd.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.SrizXlId.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index.lZ1VfIVx.js">
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="height: 100vh">
+			<script>
+				{
+					__sveltekit_11pgl9y = {
+						assets: "/three-inspect",
+						base: new URL(".", location).pathname.slice(0, -1),
+						env: {}
+					};
 
-    <style>body { background-color: #000; }</style>
-    <script type="module" crossorigin src="/three-inspect/assets/index-f513eaf8.js"></script>
-    <link rel="stylesheet" href="/three-inspect/assets/index-7b5bcb4f.css">
-  </head>
-  <body>
-    
-  </body>
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("./_app/immutable/entry/start.LY1XWHNb.js"),
+						import("./_app/immutable/entry/app.SrizXlId.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element);
+					});
+				}
+			</script>
+		</div>
+	</body>
 </html>
