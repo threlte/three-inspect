@@ -42,7 +42,8 @@
 		"lint": "eslint ./src",
 		"format": "prettier --write .",
 		"preview": "vite preview --host",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"release": "changeset publish"
 	},
 	"peerDependencies": {
 		"three": ">=0.140"

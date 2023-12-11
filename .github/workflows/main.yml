@@ -24,18 +24,22 @@ jobs:
         run: |
           npm ci --audit=false --legacy-peer-deps
           npm run build
-          npm run build-playground
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           BRANCH: gh-pages
-          FOLDER: dist-playground
+          FOLDER: build
           CLEAN: true
           clean-exclude: |
             .nojekyll
 
-      - name: Publish 🚀
-        uses: JS-DevTools/npm-publish@v2.1
+      - name: Create Release Pull Request or Publish to npm
+        id: changesets
+        uses: changesets/action@v1
         with:
-          token: ${{ secrets.NPM_TOKEN }}
+          # This expects you to have a script called release which does a build for your packages and calls changeset publish
+          publish: npm release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

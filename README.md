@@ -9,13 +9,13 @@
 npm i --save-dev three-inspect
 ```
 
-<div style='display:flex; gap: 1rem;'>
+<div style='display:flex; gap: 1rem; justify-content: space-between'>
   <a target='_tab' href='https://michealparks.github.io/threlte-xr/bonksaber'>
-    <img width='350' src='https://raw.githubusercontent.com/threlte/three-inspect/main/static/screen1.gif'>
+    <img width='400' src='https://raw.githubusercontent.com/threlte/three-inspect/main/static/screen1.gif'>
   </a>
 
   <a target='_tab' href='https://michealparks.github.io/threlte-xr/hand-physics'>
-    <img width='350' src='https://raw.githubusercontent.com/threlte/three-inspect/main/static/screen2.gif'>
+    <img width='400' src='https://raw.githubusercontent.com/threlte/three-inspect/main/static/screen2.gif'>
   </a>
 </div>
 
