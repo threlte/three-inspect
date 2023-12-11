@@ -1,7 +1,7 @@
 # three-inspect
 
 > [!WARNING]  
-> `three-inspect` is a Young project, and breaking changes will likely happen before 1.0.0. If you encounter problems please report them!
+> `three-inspect` is a young project, and breaking changes will likely happen before 1.0.0. If you encounter problems please report them!
 
 `three-inspect` is an inspector for Three.js projects. It is designed to be minimalistic, powerful, and extensible, with little boilerplate required.
 
