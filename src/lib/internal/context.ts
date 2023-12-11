@@ -9,6 +9,7 @@ const publicKey = Symbol('three-inspect-context')
 interface InternalContext {
 	usingTransformControls: CurrentWritable<boolean>
 	usingFreeCamera: CurrentWritable<boolean>
+	defaultCamera: CurrentWritable<THREE.Camera | undefined>
 	usingRaycast: CurrentWritable<boolean>
 	selectedObject: CurrentWritable<THREE.Object3D | undefined>
 }
@@ -27,6 +28,7 @@ export const setInternalContext = () => {
 	setContext<InternalContext>(internalKey, {
 		usingTransformControls: currentWritable(false),
 		usingFreeCamera: currentWritable(false),
+		defaultCamera: currentWritable(undefined),
 		usingRaycast: currentWritable(false),
 		selectedObject: currentWritable<THREE.Object3D | undefined>(undefined),
 	})
