@@ -9,6 +9,16 @@
 npm i --save-dev three-inspect
 ```
 
+<div style='display:flex; gap: 1rem;'>
+  <a target='_tab' href='https://michealparks.github.io/threlte-xr/bonksaber'>
+    <img width='350' src='https://raw.githubusercontent.com/threlte/three-inspect/main/static/screen1.gif'>
+  </a>
+
+  <a target='_tab' href='https://michealparks.github.io/threlte-xr/hand-physics'>
+    <img width='350' src='https://raw.githubusercontent.com/threlte/three-inspect/main/static/screen2.gif'>
+  </a>
+</div>
+
 ![A screenshot of three-inspect in action](https://raw.githubusercontent.com/michealparks/three-inspect/main/assets/screen.gif)
 
 Currently, it covers:
