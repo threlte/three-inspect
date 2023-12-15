@@ -10,13 +10,22 @@
 </script>
 
 <script lang="ts">
+	import { T, useThrelte, watch } from '@threlte/core'
 	import { onDestroy } from 'svelte'
-	import { T, useThrelte } from '@threlte/core'
 	import CameraControls from '../Internal/CameraControls.svelte'
+	import { getInternalContext } from '../../internal/context'
 
 	const { camera } = useThrelte()
-	const lastCamera = camera.current
+	const { defaultCamera } = getInternalContext()
 	const freeCamera = new THREE.PerspectiveCamera()
+
+	defaultCamera.set(camera.current)
+	watch(camera, (newCamera) => {
+		if (newCamera !== freeCamera) {
+			defaultCamera.set(newCamera)
+			camera.set(freeCamera)
+		}
+	})
 
 	freeCamera.position.copy(object.position)
 	freeCamera.quaternion.copy(object.quaternion)
@@ -24,7 +33,7 @@
 	onDestroy(() => {
 		object.position.copy(freeCamera.position)
 		object.quaternion.copy(freeCamera.quaternion)
-		camera.set(lastCamera)
+		if (defaultCamera.current) camera.set(defaultCamera.current)
 	})
 </script>
 

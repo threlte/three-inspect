@@ -22,7 +22,7 @@
 	const axes = persisted('axes', true)
 
 	$: object = $selectedObject
-	$: component= $position === 'inline' ? Inline : Draggable
+	$: component = $position === 'inline' ? Inline : Draggable
 </script>
 
 <Portal>
