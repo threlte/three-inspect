@@ -6,9 +6,10 @@
 	import Bindings from '../Bindings/Bindings.svelte'
 	import Tools from '../Tools/Tools.svelte'
 	import Perf from '../Internal/Perf.svelte'
+	import DefaultCameraView from '../Tools/DefaultCameraView.svelte'
 
 	const { theme } = useInspector()
-	const { selectedObject } = getInternalContext()
+	const { selectedObject, usingFreeCamera } = getInternalContext()
 
 	$: object = $selectedObject
 </script>
@@ -24,20 +25,20 @@
 	y={6}
 >
 	{#if $$slots.default}
-	<TabGroup>
-		<TabPage title='inspector'>
-			<Element>
-				<Tools />
-			</Element>
-	
-			<Separator />
-	
-			<Element>
-				<Tree />
-			</Element>
-		</TabPage>
-		<slot />
-	</TabGroup>
+		<TabGroup>
+			<TabPage title="inspector">
+				<Element>
+					<Tools />
+				</Element>
+
+				<Separator />
+
+				<Element>
+					<Tree />
+				</Element>
+			</TabPage>
+			<slot />
+		</TabGroup>
 	{:else}
 		<Element>
 			<Tools />
@@ -80,5 +81,24 @@
 		{#key object}
 			<Bindings {object} />
 		{/key}
+	</Pane>
+{/if}
+
+{#if $usingFreeCamera}
+	<Pane
+		title="Default Camera"
+		position="draggable"
+		theme={ThemeUtils.presets[$theme]}
+		localStoreId="three-inspect-pane-game-view"
+		storePositionLocally
+		userExpandable={false}
+		width={308}
+		x={browser ? window.innerWidth - 6 - 308 : 6}
+		y={browser ? window.innerHeight - 6 - 196 : 6}
+	>
+		<DefaultCameraView
+			width={300}
+			height={160}
+		/>
 	</Pane>
 {/if}

@@ -7,10 +7,6 @@
 	const { scene, camera, renderer } = useThrelte()
 
 	scene.background = new THREE.Color('#222')
-	scene.add(camera.current)
-
-	camera.current.far = 300
-	camera.current.position.set(0, 2, 10)
 
 	const cubeTextureLoader = new THREE.CubeTextureLoader()
 
@@ -93,6 +89,13 @@
 <Inspector position="draggable" />
 
 <T.AmbientLight intensity={0.8} />
+
+<T.PerspectiveCamera
+	fov={80}
+	far={300}
+	position={[0, 2, 10]}
+	makeDefault
+/>
 
 <T.DirectionalLight
 	castShadow
