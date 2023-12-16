@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { T, HierarchicalObject, useThrelte } from '@threlte/core'
 	import { Grid } from '@threlte/extras'
-	import { AxesHelper } from 'trzy'
+
 	import { persisted } from '../internal/persisted'
 	import { getInternalContext, useInspector } from '../internal/context'
 	import { add } from '../hooks/useOnAdd'
 	import { remove } from '../hooks/useOnRemove'
 	import Portal from './Internal/Portal.svelte'
+	import AxesHelper from './Internal/AxesHelper.svelte'
 	import FreeCamera from './Tools/FreeCamera.svelte'
 	import Raycast from './Tools/Raycast.svelte'
 	import Inline from './Positions/Inline.svelte'
@@ -50,8 +51,7 @@
 	{/if}
 
 	{#if $axes}
-		<T
-			is={AxesHelper}
+		<AxesHelper
 			length={1000}
 			width={0.2}
 		/>
