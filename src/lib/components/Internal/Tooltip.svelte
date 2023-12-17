@@ -91,8 +91,4 @@
 		height: 8px;
 		transform: rotate(45deg);
 	}
-	:global(body) {
-		position: relative;
-		margin: 15px;
-	}
 </style>
