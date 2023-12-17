@@ -1,5 +1,11 @@
 # three-inspect
 
+## 0.4.1
+
+### Patch Changes
+
+- 3c83df6: Add default camera panel when using free camera, remove style that touched <body> tag.
+
 ## 0.4.0
 
 ### Minor Changes
