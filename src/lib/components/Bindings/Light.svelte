@@ -4,7 +4,7 @@
 	import Color from './Color.svelte'
 	import Shadow from './Shadow.svelte'
 
-	export let object: THREE.Light
+	export let object: THREE.DirectionalLight | THREE.PointLight | THREE.SpotLight | THREE.HemisphereLight | THREE.RectAreaLight
 </script>
 
 <Color
@@ -19,13 +19,13 @@
 	options={{ step: 0.05 }}
 />
 
-{#if object instanceof THREE.DirectionalLight}
+{#if 'isDirectionalLight' in object}
 	<Binding
 		bind:object={object.target}
 		key="position"
 		label="target"
 	/>
-{:else if object instanceof THREE.PointLight}
+{:else if 'isPointLight' in object}
 	<Binding
 		bind:object
 		key="decay"
@@ -41,7 +41,7 @@
 		key="power"
 		label="power"
 	/>
-{:else if object instanceof THREE.SpotLight}
+{:else if 'isSpotLight' in object}
 	<Binding
 		bind:object={object.target}
 		key="position"
@@ -79,13 +79,13 @@
 		key="position"
 		label="position"
 	/>
-{:else if object instanceof THREE.HemisphereLight}
+{:else if 'isHemisphereLight' in object}
 	<Binding
 		bind:object
 		key="groundColor"
 		label="groundColor"
 	/>
-{:else if object instanceof THREE.RectAreaLight}
+{:else if 'isRectAreaLight' in object}
 	<Binding
 		bind:object
 		key="power"

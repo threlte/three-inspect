@@ -7,11 +7,8 @@
 	import Scene from './Scene.svelte'
 	import Material from './Material.svelte'
 
-	export let object: THREE.Object3D
+	export let object: THREE.Scene | THREE.Light | THREE.PerspectiveCamera | THREE.OrthographicCamera
 
-	$: scene = object as THREE.Scene
-	$: light = object as THREE.Light
-	$: camera = object as THREE.PerspectiveCamera | THREE.OrthographicCamera
 	$: userData = JSON.stringify(object.userData)
 </script>
 
@@ -63,20 +60,20 @@
 	options={{ step: 1 }}
 />
 
-{#if 'isPerspectiveCamera' in camera || 'isOrthographicCamera' in camera}
+{#if 'isPerspectiveCamera' in object || 'isOrthographicCamera' in object}
 	<Folder
 		title="Camera"
 		expanded={false}
 	>
-		<Camera object={camera} />
+		<Camera {object} />
 	</Folder>
 
-{:else if light.isLight}
+{:else if 'isDirectionalLight' in object || 'isPointLight' in object || 'isSpotLight' in object || 'isHemisphereLight' in object || 'isRectAreaLight' in object}
 	<Folder
 		title="Light"
 		expanded={false}
 	>
-		<Light object={light} />
+		<Light {object} />
 	</Folder>
 
 {:else if 'material' in object && object.material instanceof THREE.Material}
@@ -87,12 +84,12 @@
 		<Material object={object.material} />
 	</Folder>
 
-{:else if scene.isScene}
+{:else if 'isScene' in object}
 	<Folder
 		title="Scene"
 		expanded={false}
 	>
-		<Scene object={scene} />
+		<Scene {object} />
 	</Folder>
 
 {/if}

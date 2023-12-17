@@ -79,7 +79,7 @@
 	/>
 {/if}
 
-{#if object instanceof THREE.MeshStandardMaterial}
+{#if 'isMeshStandardMaterial' in object}
 	<Binding
 		bind:object
 		key="roughness"
@@ -94,7 +94,7 @@
 	/>
 {/if}
 
-{#if object instanceof THREE.MeshPhysicalMaterial}
+{#if 'isMeshPhysicalMaterial' in object}
 	<Binding
 		bind:object
 		key="clearcoat"
