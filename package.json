@@ -58,7 +58,7 @@
 		"flexible-tree": "^0.1.6",
 		"svelte": "^4.2.8",
 		"svelte-splitpanes": "^0.8.0",
-		"svelte-tweakpane-ui": "^1.0.2",
+		"svelte-tweakpane-ui": "^1.1.0",
 		"three-perf": "^1.0.10"
 	},
 	"devDependencies": {

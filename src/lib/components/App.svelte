@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { T, HierarchicalObject, useThrelte } from '@threlte/core'
+	import { HierarchicalObject, useThrelte } from '@threlte/core'
 	import { Grid } from '@threlte/extras'
 
 	import { persisted } from '../internal/persisted'
