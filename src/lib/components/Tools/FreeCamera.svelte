@@ -2,18 +2,17 @@
 	context="module"
 	lang="ts"
 >
-	import * as THREE from 'three'
-
-	const object = new THREE.Object3D()
-	object.position.set(1, 1, 1)
-	object.lookAt(0, 0, 0)
+	const freeCamPosition = persisted('freeCamPosition', [0, 0, 5])
+	const freeCamQuat = persisted('freeCamQuat', [0, 0, 0, 1])
 </script>
 
 <script lang="ts">
+	import * as THREE from 'three'
 	import { T, useThrelte, watch } from '@threlte/core'
 	import { onDestroy } from 'svelte'
 	import CameraControls from '../Internal/CameraControls.svelte'
 	import { getInternalContext } from '../../internal/context'
+	import { persisted } from '$lib/internal/persisted'
 
 	const { camera } = useThrelte()
 	const { defaultCamera } = getInternalContext()
@@ -27,15 +26,22 @@
 		}
 	})
 
-	freeCamera.position.copy(object.position)
-	freeCamera.quaternion.copy(object.quaternion)
+	freeCamera.position.fromArray($freeCamPosition)
+	freeCamera.quaternion.fromArray($freeCamQuat)
 
 	onDestroy(() => {
-		object.position.copy(freeCamera.position)
-		object.quaternion.copy(freeCamera.quaternion)
+		freeCamPosition.set([0, 0, 5])
+		freeCamQuat.set([0, 0, 0, 1])
 		if (defaultCamera.current) camera.set(defaultCamera.current)
 	})
 </script>
+
+<svelte:window
+	on:beforeunload={() => {
+		freeCamPosition.set(freeCamera.position.toArray())
+		freeCamQuat.set(freeCamera.position.toArray())
+	}}
+/>
 
 <T
 	is={freeCamera}
