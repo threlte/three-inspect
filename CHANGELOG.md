@@ -1,5 +1,11 @@
 # three-inspect
 
+## 0.4.2
+
+### Patch Changes
+
+- 6386082: Preserve free camera state between reloads.
+
 ## 0.4.1
 
 ### Patch Changes
