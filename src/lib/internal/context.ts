@@ -7,12 +7,14 @@ import { persisted } from './persisted'
 const internalKey = Symbol('three-inspect-internal-context')
 const publicKey = Symbol('three-inspect-context')
 
+export type Objects = THREE.Scene | THREE.Light | THREE.PerspectiveCamera | THREE.OrthographicCamera
+
 interface InternalContext {
 	usingTransformControls: CurrentWritable<boolean>
 	usingFreeCamera: Writable<boolean>
 	defaultCamera: CurrentWritable<THREE.Camera | undefined>
 	usingRaycast: CurrentWritable<boolean>
-	selectedObject: CurrentWritable<THREE.Object3D | undefined>
+	selectedObject: CurrentWritable<Objects | undefined>
 }
 
 interface PublicContext {
@@ -31,7 +33,7 @@ export const setInternalContext = () => {
 		usingFreeCamera: persisted('usingFreeCamera', false),
 		defaultCamera: currentWritable(undefined),
 		usingRaycast: currentWritable(false),
-		selectedObject: currentWritable<THREE.Object3D | undefined>(undefined),
+		selectedObject: currentWritable<Objects | undefined>(undefined),
 	})
 }
 

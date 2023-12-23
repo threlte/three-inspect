@@ -67,7 +67,6 @@
 	>
 		<Camera {object} />
 	</Folder>
-
 {:else if 'isDirectionalLight' in object || 'isPointLight' in object || 'isSpotLight' in object || 'isHemisphereLight' in object || 'isRectAreaLight' in object}
 	<Folder
 		title="Light"
@@ -75,7 +74,6 @@
 	>
 		<Light {object} />
 	</Folder>
-
 {:else if 'material' in object && object.material instanceof THREE.Material}
 	<Folder
 		title="Material"
@@ -83,7 +81,6 @@
 	>
 		<Material object={object.material} />
 	</Folder>
-
 {:else if 'isScene' in object}
 	<Folder
 		title="Scene"
@@ -91,7 +88,6 @@
 	>
 		<Scene {object} />
 	</Folder>
-
 {/if}
 
 <Folder

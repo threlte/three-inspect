@@ -17,7 +17,7 @@
 	let sway = 0.2
 </script>
 
-<Inspector position='draggable'>
+<Inspector position="draggable">
 	<TabPage title="world">
 		<Slider
 			bind:value={rotationSpeed}

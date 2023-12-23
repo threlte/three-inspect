@@ -47,7 +47,7 @@
 </script>
 
 <div
-	role='tooltip'
+	role="tooltip"
 	bind:this={ref}
 	on:mouseenter={showTooltip}
 	on:mouseleave={hideTooltip}

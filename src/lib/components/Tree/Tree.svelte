@@ -31,10 +31,10 @@
 
 	const deregister = (object3D: THREE.Object3D) => {
 		object3D.traverse((child) => {
-      if (object3D !== child) {
-        deregister(child)
-      }
-    })
+			if (object3D !== child) {
+				deregister(child)
+			}
+		})
 
 		const item = objectToTreeItem.get(object3D)
 		objectToTreeItem.delete(object3D)
@@ -52,7 +52,7 @@
 
 	const orphaned = new Map()
 
-  let observeChanges = true
+	let observeChanges = true
 
 	const register = (object3D: THREE.Object3D) => {
 		const { parent } = object3D
@@ -84,12 +84,12 @@
 	}
 
 	const handleSelect = async (item: TreeViewItem) => {
-    if (!observeChanges) return
+		if (!observeChanges) return
 		selectedObject.set(treeItemToObject.get(item))
 	}
 
 	treeview.on('deselect', () => {
-    if (!observeChanges) return
+		if (!observeChanges) return
 		selectedObject.set(undefined)
 	})
 
@@ -107,27 +107,27 @@
 		register(child)
 	}
 
-  watch(selectedObject, (object) => {
+	watch(selectedObject, (object) => {
 		observeChanges = false
 
-    if (object) {
-      const treeitem = objectToTreeItem.get(object)
+		if (object) {
+			const treeitem = objectToTreeItem.get(object)
 
-      if (treeitem) treeitem.selected = true
+			if (treeitem) treeitem.selected = true
 			observeChanges = true
 
-      return () => {
-        if (treeitem) {
+			return () => {
+				if (treeitem) {
 					observeChanges = false
 					treeitem.selected = false
 					observeChanges = true
 				}
-      }
-    }
+			}
+		}
 
 		observeChanges = true
 		return () => {}
-  })
+	})
 
 	onMount(() => {
 		element.replaceWith(treeview.wc)
