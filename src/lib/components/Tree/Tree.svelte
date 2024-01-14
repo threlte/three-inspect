@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type * as THREE from 'three'
-	import { onMount, tick } from 'svelte'
+	import { onMount } from 'svelte'
 	import { useThrelte, watch } from '@threlte/core'
 	import { TreeViewItem, TreeViewWebComponent } from 'flexible-tree'
-	import { useOnAdd } from '$lib/hooks/useOnAdd'
-	import { useOnRemove } from '$lib/hooks/useOnRemove'
+	import { useOnAdd } from '../../hooks/useOnAdd'
+	import { useOnRemove } from '../../hooks/useOnRemove'
 	import { getInternalContext } from '../../internal/context'
 
 	const treeview = new TreeViewWebComponent()

@@ -68,6 +68,14 @@
 		<Camera {object} />
 	</Folder>
 
+{:else if 'isScene' in object}
+	<Folder
+		title="Scene"
+		expanded={false}
+	>
+		<Scene {object} />
+	</Folder>
+
 {:else if 'isDirectionalLight' in object || 'isPointLight' in object || 'isSpotLight' in object || 'isHemisphereLight' in object || 'isRectAreaLight' in object}
 	<Folder
 		title="Light"
@@ -82,14 +90,6 @@
 		expanded={false}
 	>
 		<Material object={object.material} />
-	</Folder>
-
-{:else if 'isScene' in object}
-	<Folder
-		title="Scene"
-		expanded={false}
-	>
-		<Scene {object} />
 	</Folder>
 
 {/if}
