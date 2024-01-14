@@ -12,7 +12,7 @@
 	import { onDestroy } from 'svelte'
 	import CameraControls from '../Internal/CameraControls.svelte'
 	import { getInternalContext } from '../../internal/context'
-	import { persisted } from '$lib/internal/persisted'
+	import { persisted } from '../../internal/persisted'
 
 	const { camera } = useThrelte()
 	const { defaultCamera } = getInternalContext()
