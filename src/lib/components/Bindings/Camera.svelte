@@ -27,7 +27,6 @@
 			label={key}
 		/>
 	{/each}
-
 {:else if 'isOrthographicCamera' in object}
 	{#each orthographicKeys as key (key)}
 		<Binding

@@ -4,7 +4,12 @@
 	import Color from './Color.svelte'
 	import Shadow from './Shadow.svelte'
 
-	export let object: THREE.DirectionalLight | THREE.PointLight | THREE.SpotLight | THREE.HemisphereLight | THREE.RectAreaLight
+	export let object:
+		| THREE.DirectionalLight
+		| THREE.PointLight
+		| THREE.SpotLight
+		| THREE.HemisphereLight
+		| THREE.RectAreaLight
 </script>
 
 <Color

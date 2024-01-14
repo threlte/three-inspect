@@ -5,7 +5,6 @@
 	import { getInternalContext } from '../../internal/context'
 	import { intersectObjects } from '../../internal/raycast'
 
-
 	const { renderer, camera } = useThrelte()
 	const { selectedObject } = getInternalContext()
 	const down = new THREE.Vector2()
@@ -35,7 +34,7 @@
 		while (hit?.object.userData.threeInspectSkipRaycast) {
 			hit = hits.shift()
 		}
-	
+
 		selectedObject.set(hit?.object)
 	}
 

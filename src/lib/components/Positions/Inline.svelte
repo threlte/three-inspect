@@ -42,7 +42,7 @@
 		size={20}
 	>
 		<TabGroup theme={ThemeUtils.presets[$theme]}>
-			<TabPage title='inspector'>
+			<TabPage title="inspector">
 				<Element>
 					<Tools />
 				</Element>
@@ -60,7 +60,6 @@
 
 			<slot />
 		</TabGroup>
-
 	</SplitPane>
 
 	<SplitPane minSize={10}>
@@ -81,7 +80,7 @@
 				theme={ThemeUtils.presets[$theme]}
 			>
 				{#key object}
-					<Bindings object={object} />
+					<Bindings {object} />
 				{/key}
 			</Pane>
 		{/if}
