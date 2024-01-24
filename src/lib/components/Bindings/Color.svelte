@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type * as THREE from 'three'
-	import { Binding } from 'svelte-tweakpane-ui'
+	import SerializedBinding from './SerializedBinding.svelte'
 
 	export let label = 'color'
 	export let key = 'color'
@@ -14,7 +14,7 @@
 	$: k = key as keyof object
 </script>
 
-<Binding
+<SerializedBinding
 	bind:object
 	key={k}
 	{label}

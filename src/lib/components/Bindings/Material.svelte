@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { Folder, List } from 'svelte-tweakpane-ui'
 	import * as THREE from 'three'
-	import { Binding, Folder, List } from 'svelte-tweakpane-ui'
 	import Color from './Color.svelte'
+	import SerializedBinding from './SerializedBinding.svelte'
 	import Textures from './Textures.svelte'
 
 	export let object: THREE.Material
@@ -9,19 +10,19 @@
 	$: object.needsUpdate = true
 </script>
 
-<Binding
+<SerializedBinding
 	bind:object
 	key="visible"
 	label="visible"
 />
 
-<Binding
+<SerializedBinding
 	bind:object
 	key="transparent"
 	label="transparent"
 />
 
-<Binding
+<SerializedBinding
 	bind:object
 	key="opacity"
 	label="opacity"
@@ -36,7 +37,7 @@
 {/if}
 
 {#if 'emissive' in object}
-	<Binding
+	<Color
 		bind:object
 		key="emissive"
 		label="emissive"
@@ -44,7 +45,7 @@
 {/if}
 
 {#if 'emissiveIntensity' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="emissiveIntensity"
 		label="emissiveIntensity"
@@ -53,7 +54,7 @@
 {/if}
 
 {#if 'reflectivity' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="reflectivity"
 		label="reflectivity"
@@ -62,7 +63,7 @@
 {/if}
 
 {#if 'refractionRatio' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="refractionRatio"
 		label="refractionRatio"
@@ -71,7 +72,7 @@
 {/if}
 
 {#if 'shininess' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="shininess"
 		label="shininess"
@@ -80,13 +81,13 @@
 {/if}
 
 {#if 'isMeshStandardMaterial' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="roughness"
 		label="roughness"
 		options={{ min: 0, max: 1 }}
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="metalness"
 		label="metalness"
@@ -95,43 +96,37 @@
 {/if}
 
 {#if 'isMeshPhysicalMaterial' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="clearcoat"
 		label="clearcoat"
 		options={{ min: 0, max: 1 }}
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="clearcoatRoughness"
 		label="clearcoatRoughness"
 		options={{ min: 0, max: 1 }}
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="transmission"
 		label="transmission"
 		options={{ min: 0, max: 1 }}
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="ior"
 		label="ior"
 		options={{ min: 0, max: 1 }}
 	/>
-	<Binding
-		bind:object
-		key="reflectivity"
-		label="reflectivity"
-		options={{ min: 0, max: 1 }}
-	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="sheen"
 		label="sheen"
 		options={{ min: 0, max: 1 }}
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="sheenRoughness"
 		label="sheenRoughness"
@@ -156,17 +151,17 @@
 	<Textures {object} />
 </Folder>
 
-<Binding
+<SerializedBinding
 	bind:object
 	key="alphaHash"
 	label="alphaHash"
 />
-<Binding
+<SerializedBinding
 	bind:object
 	key="alphaTest"
 	label="alphaTest"
 />
-<Binding
+<SerializedBinding
 	bind:object
 	key="alphaToCoverage"
 	label="alphaToCoverage"
@@ -176,7 +171,7 @@
 	title="blending"
 	expanded={false}
 >
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="blendAlpha"
 		label="blendAlpha"
@@ -186,14 +181,14 @@
 		label="blendColor"
 		{object}
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="blendDst"
 		label="blendDst"
 	/>
 
 	{#if object.blendDstAlpha}
-		<Binding
+		<SerializedBinding
 			bind:object
 			key="blendDstAlpha"
 			label="blendDstAlpha"
@@ -201,26 +196,26 @@
 	{/if}
 
 	{#if object.blendEquationAlpha}
-		<Binding
+		<SerializedBinding
 			bind:object
 			key="blendEquationAlpha"
 			label="blendEquationAlpha"
 		/>
 	{/if}
 
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="blending"
 		label="blending"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="blendSrc"
 		label="blendSrc"
 	/>
 
 	{#if object.blendSrcAlpha}
-		<Binding
+		<SerializedBinding
 			bind:object
 			key="blendSrcAlpha"
 			label="blendSrcAlpha"
@@ -228,17 +223,17 @@
 	{/if}
 </Folder>
 
-<Binding
+<SerializedBinding
 	bind:object
 	key="clipIntersection"
 	label="clipIntersection"
 />
-<Binding
+<SerializedBinding
 	bind:object
 	key="clipShadows"
 	label="clipShadows"
 />
-<Binding
+<SerializedBinding
 	bind:object
 	key="colorWrite"
 	label="colorWrite"
@@ -260,22 +255,22 @@
 	title="depth"
 	expanded={false}
 >
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="depthFunc"
 		label="depthFunc"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="depthTest"
 		label="depthTest"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="depthWrite"
 		label="depthWrite"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="forceSinglePass"
 		label="forceSinglePass"
@@ -286,69 +281,69 @@
 	title="stencil"
 	expanded={false}
 >
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="stencilWrite"
 		label="stencilWrite"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="stencilWriteMask"
 		label="stencilWriteMask"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="stencilFunc"
 		label="stencilFunc"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="stencilRef"
 		label="stencilRef"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="stencilFuncMask"
 		label="stencilFuncMask"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="stencilFail"
 		label="stencilFail"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="stencilZFail"
 		label="stencilZFail"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="stencilZPass"
 		label="stencilZPass"
 	/>
 </Folder>
 
-<Binding
+<SerializedBinding
 	bind:object
 	key="polygonOffset"
 	label="polygonOffset"
 />
-<Binding
+<SerializedBinding
 	bind:object
 	key="polygonOffsetFactor"
 	label="polygonOffsetFactor"
 />
-<Binding
+<SerializedBinding
 	bind:object
 	key="polygonOffsetUnits"
 	label="polygonOffsetUnits"
 />
-<Binding
+<SerializedBinding
 	bind:object
 	key="premultipliedAlpha"
 	label="premultipliedAlpha"
 />
-<Binding
+<SerializedBinding
 	bind:object
 	key="dithering"
 	label="dithering"
@@ -376,14 +371,14 @@
 	/>
 {/if}
 
-<Binding
+<SerializedBinding
 	bind:object
 	key="toneMapped"
 	label="toneMapped"
 />
 
 {#if 'flatShading' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="flatShading"
 		label="flatShading"
@@ -391,7 +386,7 @@
 {/if}
 
 {#if 'wireframe' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="wireframe"
 		label="wireframe"
@@ -399,7 +394,7 @@
 {/if}
 
 {#if 'fog' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="fog"
 		label="fog"
@@ -407,19 +402,19 @@
 {/if}
 
 {#if 'size' in object && 'sizeAttenuation' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="size"
 		label="size"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="sizeAttenuation"
 		label="sizeAttenuation"
 	/>
 {/if}
 
-<Binding
+<SerializedBinding
 	bind:object
 	key="vertexColors"
 	label="vertexColors"

@@ -6,13 +6,14 @@
 	import Light from './Light.svelte'
 	import Scene from './Scene.svelte'
 	import Material from './Material.svelte'
+	import SerializedBinding from './SerializedBinding.svelte'
 
 	export let object: THREE.Scene | THREE.Light | THREE.PerspectiveCamera | THREE.OrthographicCamera
 
 	$: userData = JSON.stringify(object.userData)
 </script>
 
-<Binding
+<SerializedBinding
 	bind:object
 	key="visible"
 	label="visible"
@@ -23,7 +24,7 @@
 {/if}
 
 {#if 'isMesh' in object || 'isPointLight' in object || 'isSpotLight' in object || 'isDirectionalLight' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="castShadow"
 		label="castShadow"
@@ -31,29 +32,29 @@
 {/if}
 
 {#if 'isMesh' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="receiveShadow"
 		label="receiveShadow"
 	/>
 {/if}
 
-<Binding
+<SerializedBinding
 	bind:object
 	key="frustumCulled"
 	label="frustumCulled"
 />
-<Binding
+<SerializedBinding
 	bind:object
 	key="matrixAutoUpdate"
 	label="matrixAutoUpdate"
 />
-<Binding
+<SerializedBinding
 	bind:object
 	key="matrixWorldAutoUpdate"
 	label="matrixWorldAutoUpdate"
 />
-<Binding
+<SerializedBinding
 	bind:object
 	key="renderOrder"
 	label="renderOrder"

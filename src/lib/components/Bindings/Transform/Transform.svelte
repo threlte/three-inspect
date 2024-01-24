@@ -1,32 +1,23 @@
 <script lang="ts">
+	import { Separator } from 'svelte-tweakpane-ui'
 	import * as THREE from 'three'
-	import { useTask } from '@threlte/core'
-	import { Binding, Separator, type BindingRef } from 'svelte-tweakpane-ui'
+	import SerializedBinding from '../SerializedBinding.svelte'
 	import Instance from './Instance.svelte'
 
 	export let object: THREE.Object3D
-
-	const refs: BindingRef[] = []
-
-	useTask(() => {
-		for (const ref of refs) ref.refresh()
-	})
 </script>
 
-<Binding
-	bind:ref={refs[0]}
+<SerializedBinding
 	bind:object
 	key="position"
 	label="position"
 />
-<Binding
-	bind:ref={refs[1]}
+<SerializedBinding
 	bind:object
 	key="rotation"
 	label="rotation"
 />
-<Binding
-	bind:ref={refs[2]}
+<SerializedBinding
 	bind:object
 	key="scale"
 	label="scale"

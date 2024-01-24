@@ -1,0 +1,324 @@
+{
+  "html": {
+    "start": 101,
+    "end": 218,
+    "type": "Fragment",
+    "children": [
+      {
+        "start": 99,
+        "end": 101,
+        "type": "Text",
+        "raw": "\n\n",
+        "data": "\n\n"
+      },
+      {
+        "start": 101,
+        "end": 218,
+        "type": "InlineComponent",
+        "name": "T.Mesh",
+        "attributes": [
+          {
+            "start": 109,
+            "end": 123,
+            "type": "Attribute",
+            "name": "visible",
+            "value": [
+              {
+                "start": 117,
+                "end": 123,
+                "type": "MustacheTag",
+                "expression": {
+                  "type": "Literal",
+                  "start": 118,
+                  "end": 122,
+                  "loc": {
+                    "start": {
+                      "line": 6,
+                      "column": 17
+                    },
+                    "end": {
+                      "line": 6,
+                      "column": 21
+                    }
+                  },
+                  "value": true,
+                  "raw": "true"
+                }
+              }
+            ]
+          }
+        ],
+        "children": [
+          {
+            "start": 124,
+            "end": 126,
+            "type": "Text",
+            "raw": "\n\t",
+            "data": "\n\t"
+          },
+          {
+            "start": 126,
+            "end": 143,
+            "type": "InlineComponent",
+            "name": "T.BoxGeometry",
+            "attributes": [],
+            "children": []
+          },
+          {
+            "start": 143,
+            "end": 145,
+            "type": "Text",
+            "raw": "\n\t",
+            "data": "\n\t"
+          },
+          {
+            "start": 145,
+            "end": 208,
+            "type": "InlineComponent",
+            "name": "T.MeshStandardMaterial",
+            "attributes": [
+              {
+                "start": 171,
+                "end": 184,
+                "type": "Attribute",
+                "name": "color",
+                "value": [
+                  {
+                    "start": 178,
+                    "end": 183,
+                    "type": "Text",
+                    "raw": "white",
+                    "data": "white"
+                  }
+                ]
+              },
+              {
+                "start": 187,
+                "end": 204,
+                "type": "Attribute",
+                "name": "side",
+                "value": [
+                  {
+                    "start": 192,
+                    "end": 204,
+                    "type": "MustacheTag",
+                    "expression": {
+                      "type": "Identifier",
+                      "start": 193,
+                      "end": 203,
+                      "loc": {
+                        "start": {
+                          "line": 10,
+                          "column": 8
+                        },
+                        "end": {
+                          "line": 10,
+                          "column": 18
+                        }
+                      },
+                      "name": "DoubleSide"
+                    }
+                  }
+                ]
+              }
+            ],
+            "children": []
+          },
+          {
+            "start": 208,
+            "end": 209,
+            "type": "Text",
+            "raw": "\n",
+            "data": "\n"
+          }
+        ]
+      }
+    ]
+  },
+  "instance": {
+    "type": "Script",
+    "start": 0,
+    "end": 99,
+    "context": "default",
+    "content": {
+      "type": "Program",
+      "start": 18,
+      "end": 90,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 4,
+          "column": 0
+        }
+      },
+      "body": [
+        {
+          "type": "ImportDeclaration",
+          "start": 20,
+          "end": 53,
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 1
+            },
+            "end": {
+              "line": 2,
+              "column": 34
+            }
+          },
+          "specifiers": [
+            {
+              "type": "ImportSpecifier",
+              "start": 29,
+              "end": 30,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 10
+                },
+                "end": {
+                  "line": 2,
+                  "column": 11
+                }
+              },
+              "imported": {
+                "type": "Identifier",
+                "start": 29,
+                "end": 30,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 10
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 11
+                  }
+                },
+                "name": "T"
+              },
+              "local": {
+                "type": "Identifier",
+                "start": 29,
+                "end": 30,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 10
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 11
+                  }
+                },
+                "name": "T"
+              }
+            }
+          ],
+          "source": {
+            "type": "Literal",
+            "start": 38,
+            "end": 53,
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 19
+              },
+              "end": {
+                "line": 2,
+                "column": 34
+              }
+            },
+            "value": "@threlte/core",
+            "raw": "'@threlte/core'"
+          }
+        },
+        {
+          "type": "ImportDeclaration",
+          "start": 55,
+          "end": 89,
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 1
+            },
+            "end": {
+              "line": 3,
+              "column": 35
+            }
+          },
+          "specifiers": [
+            {
+              "type": "ImportSpecifier",
+              "start": 64,
+              "end": 74,
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 10
+                },
+                "end": {
+                  "line": 3,
+                  "column": 20
+                }
+              },
+              "imported": {
+                "type": "Identifier",
+                "start": 64,
+                "end": 74,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 10
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 20
+                  }
+                },
+                "name": "DoubleSide"
+              },
+              "local": {
+                "type": "Identifier",
+                "start": 64,
+                "end": 74,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 10
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 20
+                  }
+                },
+                "name": "DoubleSide"
+              }
+            }
+          ],
+          "source": {
+            "type": "Literal",
+            "start": 82,
+            "end": 89,
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 28
+              },
+              "end": {
+                "line": 3,
+                "column": 35
+              }
+            },
+            "value": "three",
+            "raw": "'three'"
+          }
+        }
+      ],
+      "sourceType": "module"
+    }
+  }
+}

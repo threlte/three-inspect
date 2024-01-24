@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as THREE from 'three'
-	import { T, useThrelte, useTask } from '@threlte/core'
 	import { Inspector } from '$lib'
+	import { T, useTask, useThrelte } from '@threlte/core'
 	import { Edges, useTexture } from '@threlte/extras'
+	import * as THREE from 'three'
 
-	const { scene, camera, renderer } = useThrelte()
+	const { scene, renderer } = useThrelte()
 
 	scene.background = new THREE.Color('#222')
 
@@ -196,6 +196,7 @@
 </T.Mesh>
 
 <T.Mesh
+	[serializeable]
 	bind:ref={meshes[4]}
 	name="Donut"
 	position.x={4}

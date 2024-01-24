@@ -1,0 +1,61 @@
+{
+  "name": "root",
+  "children": [
+    {
+      "name": "T.Mesh",
+      "start": 101,
+      "end": 218,
+      "module": "Mesh",
+      "properties": [
+        {
+          "name": "visible",
+          "start": 109,
+          "end": 123,
+          "value": {
+            "start": 118,
+            "end": 122,
+            "value": true
+          }
+        }
+      ],
+      "children": [
+        {
+          "name": "T.BoxGeometry",
+          "start": 126,
+          "end": 143,
+          "module": "BoxGeometry",
+          "properties": []
+        },
+        {
+          "name": "T.MeshStandardMaterial",
+          "start": 145,
+          "end": 208,
+          "module": "MeshStandardMaterial",
+          "properties": [
+            {
+              "name": "color",
+              "start": 171,
+              "end": 184,
+              "value": {
+                "start": 178,
+                "end": 183,
+                "value": "white"
+              }
+            },
+            {
+              "name": "side",
+              "start": 187,
+              "end": 204,
+              "value": {
+                "start": 193,
+                "end": 203,
+                "value": "DoubleSide",
+                "error": "invalid-property"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

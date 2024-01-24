@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type * as THREE from 'three'
-	import { Binding } from 'svelte-tweakpane-ui'
+	import SerializedBinding from './SerializedBinding.svelte'
 
 	export let object: THREE.PerspectiveCamera | THREE.OrthographicCamera
 
@@ -12,7 +12,7 @@
 </script>
 
 {#each keys as key (key)}
-	<Binding
+	<SerializedBinding
 		bind:object
 		{key}
 		label={key}
@@ -21,7 +21,7 @@
 
 {#if 'isPerspectiveCamera' in object}
 	{#each perspectiveKeys as key (key)}
-		<Binding
+		<SerializedBinding
 			bind:object
 			{key}
 			label={key}
@@ -29,7 +29,7 @@
 	{/each}
 {:else if 'isOrthographicCamera' in object}
 	{#each orthographicKeys as key (key)}
-		<Binding
+		<SerializedBinding
 			bind:object
 			{key}
 			label={key}

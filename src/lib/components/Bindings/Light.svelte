@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { Folder } from 'svelte-tweakpane-ui'
 	import * as THREE from 'three'
-	import { Binding, Folder } from 'svelte-tweakpane-ui'
 	import Color from './Color.svelte'
+	import SerializedBinding from './SerializedBinding.svelte'
 	import Shadow from './Shadow.svelte'
 
 	export let object:
@@ -17,7 +18,7 @@
 	{object}
 />
 
-<Binding
+<SerializedBinding
 	bind:object
 	key="intensity"
 	label="intensity"
@@ -25,83 +26,83 @@
 />
 
 {#if 'isDirectionalLight' in object}
-	<Binding
+	<SerializedBinding
 		bind:object={object.target}
 		key="position"
 		label="target"
 	/>
 {:else if 'isPointLight' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="decay"
 		label="decay"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="distance"
 		label="distance"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="power"
 		label="power"
 	/>
 {:else if 'isSpotLight' in object}
-	<Binding
+	<SerializedBinding
 		bind:object={object.target}
 		key="position"
 		label="target"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="angle"
 		label="angle"
 		options={{ min: 0, max: Math.PI / 2 }}
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="decay"
 		label="decay"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="distance"
 		label="distance"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="penumbra"
 		label="penumbra"
 		options={{ min: 0, max: 1 }}
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="power"
 		label="power"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="position"
 		label="position"
 	/>
 {:else if 'isHemisphereLight' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="groundColor"
 		label="groundColor"
 	/>
 {:else if 'isRectAreaLight' in object}
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="power"
 		label="power"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="width"
 		label="width"
 	/>
-	<Binding
+	<SerializedBinding
 		bind:object
 		key="height"
 		label="height"
