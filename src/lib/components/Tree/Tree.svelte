@@ -28,6 +28,7 @@
 	const treeItemToObject = new WeakMap<TreeViewItem, THREE.Object3D>()
 
 	treeItemToObject.set(treeroot, scene)
+	objectToTreeItem.set(scene, treeroot)
 
 	const deregister = (object3D: THREE.Object3D) => {
 		object3D.traverse((child) => {

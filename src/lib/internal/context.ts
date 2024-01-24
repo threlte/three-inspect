@@ -3,18 +3,50 @@ import { type Writable, writable } from 'svelte/store'
 import { getContext, setContext } from 'svelte'
 import type { ThemeUtils } from 'svelte-tweakpane-ui'
 import { persisted } from './persisted'
+import { Object3D } from 'three'
 
 const internalKey = Symbol('three-inspect-internal-context')
 const publicKey = Symbol('three-inspect-context')
 
-export type Objects = THREE.Scene | THREE.Light | THREE.PerspectiveCamera | THREE.OrthographicCamera
+export type SelectedObject =
+	| THREE.Scene
+	| THREE.Light
+	| THREE.PerspectiveCamera
+	| THREE.OrthographicCamera
+
+export type DefaultPane = 'Toolbar' | 'SceneGraph' | 'Inspector'
+export type OptionalPane = 'Console' | 'Monitor'
+
+export interface ToolSettings {
+	transformControls: {
+		enabled: boolean
+		inUse: boolean
+	}
+	freeCamera: {
+		enabled: boolean
+	}
+}
+
+export interface GizmoSettings {
+	grid: {
+		visible: boolean
+	}
+	axes: {
+		visible: boolean
+	}
+	helpers: {
+		visible: boolean
+	}
+}
 
 interface InternalContext {
-	usingTransformControls: CurrentWritable<boolean>
-	usingFreeCamera: Writable<boolean>
 	defaultCamera: CurrentWritable<THREE.Camera | undefined>
 	usingRaycast: CurrentWritable<boolean>
-	selectedObject: CurrentWritable<Objects | undefined>
+	selectedObject: CurrentWritable<SelectedObject | undefined>
+	studioObjects: CurrentWritable<Set<Object3D>>
+	optionalPanes: Writable<Record<OptionalPane, boolean>>
+	gizmoSettings: Writable<GizmoSettings>
+	toolSettings: Writable<ToolSettings>
 }
 
 interface PublicContext {
@@ -29,11 +61,34 @@ interface SetPublicContextOptions {
 
 export const setInternalContext = () => {
 	setContext<InternalContext>(internalKey, {
-		usingTransformControls: currentWritable(false),
-		usingFreeCamera: persisted('usingFreeCamera', false),
 		defaultCamera: currentWritable(undefined),
 		usingRaycast: currentWritable(false),
-		selectedObject: currentWritable<Objects | undefined>(undefined),
+		selectedObject: currentWritable<SelectedObject | undefined>(undefined),
+		studioObjects: currentWritable(new Set()),
+		optionalPanes: persisted('internalContext.optionalPanes', {
+			Console: false,
+			Monitor: false,
+		}),
+		gizmoSettings: persisted('internalContext.gizmoSettings', {
+			grid: {
+				visible: true,
+			},
+			axes: {
+				visible: true,
+			},
+			helpers: {
+				visible: true,
+			},
+		}),
+		toolSettings: persisted('internalContext.toolSettings', {
+			transformControls: {
+				enabled: true,
+				inUse: false,
+			},
+			freeCamera: {
+				enabled: true,
+			},
+		}),
 	})
 }
 

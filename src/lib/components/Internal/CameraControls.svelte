@@ -39,17 +39,25 @@
 
 	export let camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
 
-	const { renderer } = useThrelte()
-	const { usingTransformControls } = getInternalContext()
+	const { renderer, invalidate } = useThrelte()
+	const { toolSettings } = getInternalContext()
 	const cameraControls = new CameraControls(camera, renderer.domElement)
 
-	useTask((delta) => {
-		cameraControls.update(delta)
-	})
+	cameraControls.addEventListener('update', invalidate)
+
+	useTask(
+		(delta) => {
+			cameraControls.update(delta)
+		},
+		{
+			autoInvalidate: false,
+		}
+	)
 
 	onDestroy(() => {
 		cameraControls.dispose()
+		cameraControls.removeEventListener('update', invalidate)
 	})
 
-	$: cameraControls.enabled = !$usingTransformControls
+	$: cameraControls.enabled = !$toolSettings.transformControls.inUse
 </script>

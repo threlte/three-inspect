@@ -1,12 +1,11 @@
 <script lang="ts">
-	import * as THREE from 'three'
-	import { onMount } from 'svelte'
 	import { useThrelte } from '@threlte/core'
+	import { onMount } from 'svelte'
+	import * as THREE from 'three'
 	import { getInternalContext } from '../../internal/context'
-	import { intersectObjects } from '../../internal/raycast'
 
-	const { renderer, camera } = useThrelte()
-	const { selectedObject } = getInternalContext()
+	const { renderer, camera, scene } = useThrelte()
+	const { selectedObject, studioObjects } = getInternalContext()
 	const down = new THREE.Vector2()
 	const up = new THREE.Vector2()
 	const raycaster = new THREE.Raycaster()
@@ -28,22 +27,38 @@
 		// Update the picking ray with the camera and pointer position
 		raycaster.setFromCamera(pointer, camera.current)
 
-		let hits = raycaster.intersectObjects(intersectObjects)
+		let hits = raycaster.intersectObject(scene, true)
 		let hit = hits.shift()
 
-		while (hit?.object.userData.threeInspectSkipRaycast) {
+		const isOrIsChildOfStudioObject = (object: THREE.Object3D): boolean => {
+			if (studioObjects.current.has(object)) return true
+			if (object.parent) return isOrIsChildOfStudioObject(object.parent)
+			return false
+		}
+
+		const isScene = (object: any): boolean => {
+			return object.isScene
+		}
+
+		while (hit && (isOrIsChildOfStudioObject(hit.object) || isScene(hit.object))) {
 			hit = hits.shift()
 		}
 
-		selectedObject.set(hit?.object)
+		if (!hit || !hit.object) {
+			selectedObject.set(undefined)
+		} else {
+			selectedObject.set(hit.object as any)
+		}
 	}
 
 	onMount(() => {
 		renderer.domElement.addEventListener('pointerdown', recordDown)
 		renderer.domElement.addEventListener('pointerup', raycast)
+		renderer.domElement.style.cursor = 'crosshair'
 		return () => {
 			renderer.domElement.removeEventListener('pointerdown', recordDown)
 			renderer.domElement.removeEventListener('pointerup', raycast)
+			renderer.domElement.style.cursor = 'auto'
 		}
 	})
 </script>

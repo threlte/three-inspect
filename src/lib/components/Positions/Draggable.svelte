@@ -1,38 +1,48 @@
 <script lang="ts">
-	import { Pane, ThemeUtils, Element, Separator, TabGroup, TabPage } from 'svelte-tweakpane-ui'
-	import { getInternalContext, useInspector } from '../../internal/context'
+	import { useThrelte } from '@threlte/core'
+	import { Element, Pane, TabGroup, TabPage, ThemeUtils } from 'svelte-tweakpane-ui'
 	import { browser } from '../../internal/browser'
-	import Tree from '../Tree/Tree.svelte'
+	import { getInternalContext, useInspector } from '../../internal/context'
 	import Bindings from '../Bindings/Bindings.svelte'
-	import Tools from '../Tools/Tools.svelte'
-	import Perf from '../Internal/Perf.svelte'
+	import Console from '../Tools/Console.svelte'
 	import DefaultCameraView from '../Tools/DefaultCameraView.svelte'
+	import Tools from '../Tools/Tools.svelte'
+	import Tree from '../Tree/Tree.svelte'
+	import RenderIndicator from '../Tools/RenderIndicator.svelte'
+	import Perf from '../Internal/Perf.svelte'
 
 	const { theme } = useInspector()
-	const { selectedObject, usingFreeCamera } = getInternalContext()
+	const { selectedObject, toolSettings, optionalPanes } = getInternalContext()
+	const { size } = useThrelte()
 
 	$: object = $selectedObject
 </script>
 
 <Pane
-	title=""
-	position="draggable"
+	title="Tools"
+	userExpandable={false}
+	position="fixed"
+	width={$size.width - 12}
 	theme={ThemeUtils.presets[$theme]}
-	localStoreId="three-inspect-pane-inspect"
-	storePositionLocally
-	width={250}
 	x={6}
 	y={6}
+>
+	<Element>
+		<Tools />
+	</Element>
+</Pane>
+
+<Pane
+	title=""
+	position="fixed"
+	theme={ThemeUtils.presets[$theme]}
+	width={250}
+	x={6}
+	y={6 + 56 + 6}
 >
 	{#if $$slots.default}
 		<TabGroup>
 			<TabPage title="inspector">
-				<Element>
-					<Tools />
-				</Element>
-
-				<Separator />
-
 				<Element>
 					<Tree />
 				</Element>
@@ -41,42 +51,50 @@
 		</TabGroup>
 	{:else}
 		<Element>
-			<Tools />
-		</Element>
-
-		<Separator />
-
-		<Element>
 			<Tree />
 		</Element>
 	{/if}
 </Pane>
 
-<Pane
-	title=""
-	position="draggable"
-	theme={ThemeUtils.presets[$theme]}
-	localStoreId="three-inspect-pane-monitor"
-	storePositionLocally
-	width={325}
-	x={6}
-	y={browser ? window.innerHeight - 6 - 125 : 6}
->
-	<Element>
-		<Perf />
-	</Element>
-</Pane>
+{#if $optionalPanes.Console}
+	<Pane
+		title="Console"
+		expanded
+		theme={ThemeUtils.presets[$theme]}
+		position="draggable"
+		storePositionLocally
+		localStoreId="threlte-studio-console-pane"
+	>
+		<Element>
+			<Console />
+		</Element>
+	</Pane>
+{/if}
+
+{#if $optionalPanes.Monitor}
+	<Pane
+		title="Monitor"
+		expanded
+		theme={ThemeUtils.presets[$theme]}
+		position="draggable"
+		storePositionLocally
+		localStoreId="threlte-studio-monitor-pane"
+	>
+		<Element>
+			<RenderIndicator />
+			<Perf />
+		</Element>
+	</Pane>
+{/if}
 
 {#if object}
 	<Pane
 		title={`${object.name} (${object.type})`}
-		position="draggable"
+		position="fixed"
 		theme={ThemeUtils.presets[$theme]}
-		localStoreId="three-inspect-pane-selected-object"
-		storePositionLocally
 		width={320}
 		x={browser ? window.innerWidth - 6 - 320 : 6}
-		y={6}
+		y={6 + 56 + 6}
 	>
 		{#key object}
 			<Bindings {object} />
@@ -84,13 +102,11 @@
 	</Pane>
 {/if}
 
-{#if $usingFreeCamera}
+{#if $toolSettings.freeCamera.enabled}
 	<Pane
 		title="Default Camera"
-		position="draggable"
+		position="fixed"
 		theme={ThemeUtils.presets[$theme]}
-		localStoreId="three-inspect-pane-game-view"
-		storePositionLocally
 		userExpandable={false}
 		width={308}
 		x={browser ? window.innerWidth - 6 - 308 : 6}

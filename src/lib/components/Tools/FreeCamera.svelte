@@ -2,8 +2,11 @@
 	context="module"
 	lang="ts"
 >
-	const freeCamPosition = persisted('freeCamPosition', [0, 0, 5])
-	const freeCamQuat = persisted('freeCamQuat', [0, 0, 0, 1])
+	const freeCamPosition = persisted('freeCamPosition', [5, 5, 5])
+	const freeCamQuat = persisted(
+		'freeCamQuat',
+		[-0.2798481423331213, 0.3647051996310008, 0.11591689595929511, 0.8804762392171493]
+	)
 </script>
 
 <script lang="ts">
@@ -30,8 +33,8 @@
 	freeCamera.quaternion.fromArray($freeCamQuat)
 
 	onDestroy(() => {
-		freeCamPosition.set([0, 0, 5])
-		freeCamQuat.set([0, 0, 0, 1])
+		freeCamPosition.set(freeCamera.position.toArray())
+		freeCamQuat.set(freeCamera.position.toArray())
 		if (defaultCamera.current) camera.set(defaultCamera.current)
 	})
 </script>

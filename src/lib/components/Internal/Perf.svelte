@@ -17,6 +17,7 @@
 			anchorX: 'left',
 			anchorY: 'top',
 			domElement: ref,
+			showGraph: false,
 		})
 
 		perf.ui.wrapper.style.position = 'relative'
@@ -33,7 +34,7 @@
 			perf.end()
 			perf.begin()
 		},
-		{ autoStart: false }
+		{ autoStart: false, autoInvalidate: false }
 	)
 </script>
 

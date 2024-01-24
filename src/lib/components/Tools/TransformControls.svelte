@@ -9,11 +9,17 @@
 	export let object: THREE.Object3D
 
 	const { scene } = useThrelte()
-	const { usingTransformControls } = getInternalContext()
+	const { toolSettings, studioObjects } = getInternalContext()
 
 	type Modes = 'translate' | 'rotate' | 'scale'
+	type Spaces = 'local' | 'world'
 
 	const mode = persisted<Modes>('transform-mode', 'translate')
+	const space = persisted<Spaces>('transform-space', 'local')
+
+	const toggleSpace = () => {
+		$space = $space === 'local' ? 'world' : 'local'
+	}
 
 	const keydown = (event: KeyboardEvent) => {
 		if (event.metaKey) return
@@ -22,15 +28,27 @@
 
 		switch (key) {
 			case 't': {
-				mode.set('translate')
+				if ($mode === 'translate') {
+					toggleSpace()
+				} else {
+					mode.set('translate')
+				}
 				break
 			}
 			case 'r': {
-				mode.set('rotate')
+				if ($mode === 'rotate') {
+					toggleSpace()
+				} else {
+					mode.set('rotate')
+				}
 				break
 			}
 			case 's': {
-				mode.set('scale')
+				if ($mode === 'scale') {
+					toggleSpace()
+				} else {
+					mode.set('scale')
+				}
 				break
 			}
 		}
@@ -63,11 +81,24 @@
 	bind:group
 	{object}
 	mode={$mode}
+	space={$space}
 	autoPauseOrbitControls
+	on:create={({ ref, cleanup }) => {
+		studioObjects.update((objects) => {
+			objects.add(ref)
+			return objects
+		})
+		cleanup(() => {
+			studioObjects.update((objects) => {
+				objects.delete(ref)
+				return objects
+			})
+		})
+	}}
 	on:mouseDown={() => {
-		usingTransformControls.set(true)
+		$toolSettings.transformControls.inUse = true
 	}}
 	on:mouseUp={() => {
-		usingTransformControls.set(false)
+		$toolSettings.transformControls.inUse = false
 	}}
 />

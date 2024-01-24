@@ -2,11 +2,28 @@
 	context="module"
 	lang="ts"
 >
-	import { mdiCursorDefault, mdiCameraOutline } from '@mdi/js'
+	import {
+		mdiCursorDefault,
+		mdiCameraOutline,
+		mdiConsole,
+		mdiGraphOutline,
+		mdiAxis,
+		mdiGrid,
+		mdiAngleRight,
+		mdiBorderOutside,
+		mdiVideoVintage,
+	} from '@mdi/js'
 
 	export const paths = {
 		mdiCursorDefault,
 		mdiCameraOutline,
+		mdiConsole,
+		mdiGraphOutline,
+		mdiAxis,
+		mdiGrid,
+		mdiAngleRight,
+		mdiBorderOutside,
+		mdiVideoVintage,
 	}
 
 	export type Icons = keyof typeof paths

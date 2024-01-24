@@ -8,7 +8,7 @@
 	export let height = 90
 
 	const { autoRenderTask, renderer, scene } = useThrelte()
-	const { defaultCamera } = getInternalContext()
+	const { defaultCamera, studioObjects } = getInternalContext()
 
 	let canvasEl: HTMLCanvasElement
 
@@ -87,12 +87,21 @@
 			// set viewport
 			renderer.setViewport(0, 0, width, height)
 
+			studioObjects.current.forEach((obj) => {
+				obj.visible = false
+			})
+
 			renderer.render(scene, defaultCamera.current)
+
+			studioObjects.current.forEach((obj) => {
+				obj.visible = true
+			})
 
 			// reset viewport
 			renderer.setViewport(viewport)
 
 			// draw to canvas
+			context.clearRect(0, 0, width * dpr, height * dpr)
 			context.drawImage(
 				renderer.domElement,
 				0,
