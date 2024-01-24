@@ -23,7 +23,7 @@
 />
 
 <T.Mesh
-	position={[0, -1.8058, -1.7616]}
+	position={[0, 0.812, 0]}
 	castShadow={true}
 	name="Box"
 >
@@ -36,7 +36,7 @@
 	matrixWorldAutoUpdate={true}
 	matrixAutoUpdate={true}
 	frustumCulled={true}
-	position={[0, -2.5666, 0]}
+	position={[0, 0, 0]}
 	receiveShadow={false}
 	name="Floor"
 >

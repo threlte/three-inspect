@@ -16,6 +16,8 @@
 	const { size } = useThrelte()
 
 	$: object = $selectedObject
+
+	const toolbarHeight = 60
 </script>
 
 <Pane
@@ -38,7 +40,7 @@
 	theme={ThemeUtils.presets[$theme]}
 	width={250}
 	x={6}
-	y={6 + 56 + 6}
+	y={6 + toolbarHeight + 6}
 >
 	{#if $$slots.default}
 		<TabGroup>
@@ -94,7 +96,7 @@
 		theme={ThemeUtils.presets[$theme]}
 		width={320}
 		x={browser ? window.innerWidth - 6 - 320 : 6}
-		y={6 + 56 + 6}
+		y={6 + toolbarHeight + 6}
 	>
 		{#key object}
 			<Bindings {object} />

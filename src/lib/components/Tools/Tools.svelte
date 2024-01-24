@@ -12,6 +12,7 @@
 		<IconButton
 			label="Raycast"
 			icon="mdiCursorDefault"
+			backgroundColor={$usingRaycast ? 'green' : 'default'}
 			on:click={() => {
 				usingRaycast.set(!$usingRaycast)
 			}}
@@ -23,6 +24,7 @@
 		<IconButton
 			label="Free camera"
 			icon="mdiVideoVintage"
+			backgroundColor={$toolSettings.freeCamera.enabled ? 'green' : 'default'}
 			on:click={() => {
 				$toolSettings.freeCamera.enabled = !$toolSettings.freeCamera.enabled
 			}}
@@ -34,6 +36,7 @@
 		<IconButton
 			label="TransformControls"
 			icon="mdiAngleRight"
+			backgroundColor={$toolSettings.transformControls.enabled ? 'green' : 'default'}
 			on:click={() => {
 				$toolSettings.transformControls.enabled = !$toolSettings.transformControls.enabled
 			}}
@@ -49,6 +52,7 @@
 		<IconButton
 			label="Console"
 			icon="mdiConsole"
+			backgroundColor={$optionalPanes.Console ? 'green' : 'default'}
 			on:click={() => {
 				$optionalPanes.Console = !$optionalPanes.Console
 			}}
@@ -60,6 +64,7 @@
 		<IconButton
 			label="Monitor"
 			icon="mdiGraphOutline"
+			backgroundColor={$optionalPanes.Monitor ? 'green' : 'default'}
 			on:click={() => {
 				$optionalPanes.Monitor = !$optionalPanes.Monitor
 			}}
@@ -73,6 +78,7 @@
 		<IconButton
 			label="Axis"
 			icon="mdiAxis"
+			backgroundColor={$gizmoSettings.axes.visible ? 'green' : 'default'}
 			on:click={() => {
 				$gizmoSettings.axes.visible = !$gizmoSettings.axes.visible
 			}}
@@ -84,6 +90,7 @@
 		<IconButton
 			label="Grid"
 			icon="mdiGrid"
+			backgroundColor={$gizmoSettings.grid.visible ? 'green' : 'default'}
 			on:click={() => {
 				$gizmoSettings.grid.visible = !$gizmoSettings.grid.visible
 			}}
@@ -95,6 +102,7 @@
 		<IconButton
 			label="Helpers"
 			icon="mdiBorderOutside"
+			backgroundColor={$gizmoSettings.helpers.visible ? 'green' : 'default'}
 			on:click={() => {
 				$gizmoSettings.helpers.visible = !$gizmoSettings.helpers.visible
 			}}
@@ -108,5 +116,6 @@
 		display: flex;
 		gap: 0.25rem;
 		align-items: stretch;
+		padding-top: 4px;
 	}
 </style>
