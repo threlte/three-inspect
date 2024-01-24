@@ -28,8 +28,14 @@ export interface ToolSettings {
 }
 
 export interface GizmoSettings {
+	viewportGizmo: {
+		visible: boolean
+	}
 	grid: {
 		visible: boolean
+		color: string
+		units: number
+		plane: 'xz' | 'xy' | 'zy'
 	}
 	axes: {
 		visible: boolean
@@ -75,8 +81,14 @@ export const setInternalContext = () => {
 			Monitor: false,
 		}),
 		gizmoSettings: persisted('internalContext.gizmoSettings', {
+			viewportGizmo: {
+				visible: true,
+			},
 			grid: {
 				visible: true,
+				color: '#5f5f5f',
+				units: 1,
+				plane: 'xz',
 			},
 			axes: {
 				visible: true,

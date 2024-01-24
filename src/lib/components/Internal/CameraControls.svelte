@@ -43,6 +43,8 @@
 	const { toolSettings } = getInternalContext()
 	const cameraControls = new CameraControls(camera, renderer.domElement)
 
+	cameraControls.dollyToCursor = true
+
 	cameraControls.addEventListener('update', invalidate)
 
 	useTask(

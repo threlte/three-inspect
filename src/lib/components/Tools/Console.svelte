@@ -86,7 +86,8 @@
 
 	.message {
 		font-family: monospace;
-		color: var(--tp-button-foreground-color);
+		font-size: 11px;
+		color: #aaaaaa;
 		border-bottom: 1px solid var(--tp-button-background-color);
 	}
 

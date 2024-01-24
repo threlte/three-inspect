@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { HierarchicalObject, useThrelte } from '@threlte/core'
-	import { Grid } from '@threlte/extras'
+	import { Grid, Gizmo } from '@threlte/extras'
 	import { add } from '../hooks/useOnAdd'
 	import { remove } from '../hooks/useOnRemove'
 	import { getInternalContext, useInspector } from '../internal/context'
@@ -50,19 +50,32 @@
 	onChildMount={(child) => add.call(scene, child)}
 	onChildDestroy={(child) => remove.call(scene, child)}
 >
+	{#if $gizmoSettings.viewportGizmo.visible && $toolSettings.freeCamera.enabled}
+		<Gizmo
+			size={100}
+			horizontalPlacement="left"
+			verticalPlacement="bottom"
+			paddingX={6}
+			paddingY={6}
+			toneMapped={false}
+		/>
+	{/if}
+
 	{#if $gizmoSettings.grid.visible}
 		<Grid
 			infiniteGrid
-			cellSize={1}
+			cellSize={$gizmoSettings.grid.units}
 			renderOrder={9999}
-			sectionColor="#555"
+			sectionColor={$gizmoSettings.grid.color}
+			cellColor={$gizmoSettings.grid.color}
 			on:create={onCreate}
+			plane={$gizmoSettings.grid.plane}
 		/>
 	{/if}
 
 	{#if $gizmoSettings.axes.visible}
 		<AxesHelper
-			length={1000}
+			length={2}
 			width={0.2}
 			on:create={onCreate}
 		/>
@@ -88,3 +101,10 @@
 		{/if}
 	{/if}
 </HierarchicalObject>
+
+<style>
+	/* tweakpane checkbox value wrapper */
+	:global(.tp-lblv_v:has(.tp-ckbv)) {
+		width: auto !important;
+	}
+</style>

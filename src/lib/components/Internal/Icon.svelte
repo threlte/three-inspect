@@ -11,7 +11,9 @@
 		mdiGrid,
 		mdiAngleRight,
 		mdiBorderOutside,
+		mdiChevronDown,
 		mdiVideoVintage,
+		mdiContentSave,
 	} from '@mdi/js'
 
 	export const paths = {
@@ -23,7 +25,9 @@
 		mdiGrid,
 		mdiAngleRight,
 		mdiBorderOutside,
+		mdiChevronDown,
 		mdiVideoVintage,
+		mdiContentSave,
 	}
 
 	export type Icons = keyof typeof paths

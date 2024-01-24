@@ -5,55 +5,54 @@
 	export let label: string
 
 	export let activityColor: 'transparent' | 'red' | 'orange' | 'green' = 'transparent'
-	export let backgroundColor: 'default' | 'red' | 'orange' | 'green' = 'default'
+	export let active: boolean = false
 
 	const activityColors: Record<Exclude<typeof activityColor, undefined>, string> = {
-		red: 'red',
+		red: '#dc2626',
 		orange: '#f97316',
 		green: '#22c55e',
 		transparent: 'transparent',
 	}
 
-	const backgroundColors: Record<Exclude<typeof backgroundColor, undefined>, string> = {
-		red: '#fca5a5',
-		orange: '#fdba74',
-		green: '#4BDE80',
+	const backgroundColors: Record<'active' | 'default', string> = {
+		active: '#2563eb',
 		default: 'var(--btn-bg);',
 	}
 
-	const backgroundColorsHover: Record<Exclude<typeof backgroundColor, undefined>, string> = {
-		red: '#f87171',
-		orange: '#fb923c',
-		green: '#22c55e',
+	const backgroundColorsHover: Record<'active' | 'default', string> = {
+		active: '#1d4ed8',
 		default: 'var(--btn-bg-h)',
 	}
 
-	const backgroundColorsFocus: Record<Exclude<typeof backgroundColor, undefined>, string> = {
-		red: '#ef4444',
-		orange: '#f97316',
-		green: '#22c55e',
+	const backgroundColorsFocus: Record<'active' | 'default', string> = {
+		active: '#1d4ed8',
 		default: 'var(--btn-bg-f);',
 	}
 
-	const backgroundColorsActive: Record<Exclude<typeof backgroundColor, undefined>, string> = {
-		red: '#ef4444',
-		orange: '#f97316',
-		green: '#16a34a',
+	const backgroundColorsActive: Record<'active' | 'default', string> = {
+		active: '#1d4ed8',
 		default: 'var(--btn-bg-a);',
+	}
+
+	const textColor: Record<'active' | 'default', string> = {
+		active: 'white',
+		default: 'black',
 	}
 </script>
 
 <button
 	aria-label={label}
-	{...$$restProps}
 	on:click
 	style="--activityColor: {activityColors[activityColor]}; --background-color: {backgroundColors[
-		backgroundColor
+		active ? 'active' : 'default'
 	]}; --background-color-hover: {backgroundColorsHover[
-		backgroundColor
+		active ? 'active' : 'default'
 	]}; --background-color-focus: {backgroundColorsFocus[
-		backgroundColor
-	]}; --background-color-active: {backgroundColorsActive[backgroundColor]}"
+		active ? 'active' : 'default'
+	]}; --background-color-active: {backgroundColorsActive[
+		active ? 'active' : 'default'
+	]}; --text-color: {textColor[active ? 'active' : 'default']};"
+	{...$$restProps}
 >
 	<Icon
 		size="15"
@@ -71,7 +70,7 @@
 		padding: 0;
 		margin: 0;
 		background-color: var(--background-color);
-		color: var(--tp-button-foreground-color);
+		color: var(--text-color);
 		border-radius: var(--bs-br);
 		position: relative;
 	}

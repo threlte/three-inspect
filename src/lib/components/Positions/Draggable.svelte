@@ -66,6 +66,7 @@
 		position="draggable"
 		storePositionLocally
 		localStoreId="threlte-studio-console-pane"
+		userExpandable={false}
 	>
 		<Element>
 			<Console />
@@ -81,6 +82,7 @@
 		position="draggable"
 		storePositionLocally
 		localStoreId="threlte-studio-monitor-pane"
+		userExpandable={false}
 	>
 		<Element>
 			<RenderIndicator />

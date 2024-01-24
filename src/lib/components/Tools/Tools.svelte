@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { Button } from 'svelte-tweakpane-ui'
+	import { Checkbox, Color, RadioGrid, Slider } from 'svelte-tweakpane-ui'
 	import { getInternalContext } from '../../internal/context'
 	import IconButton from '../Internal/IconButton.svelte'
 	import Tooltip from '../Internal/Tooltip.svelte'
+	import HorizontalButtonGroup from './HorizontalButtonGroup.svelte'
+	import PopUpPane from './PopUpPane.svelte'
 	import VerticalSeparator from './VerticalSeparator.svelte'
 
 	const { usingRaycast, optionalPanes, gizmoSettings, toolSettings, syncSettings } =
@@ -24,7 +26,7 @@
 			<IconButton
 				label="Raycast"
 				icon="mdiCursorDefault"
-				backgroundColor={$usingRaycast ? 'green' : 'default'}
+				active={$usingRaycast}
 				on:click={() => {
 					usingRaycast.set(!$usingRaycast)
 				}}
@@ -35,7 +37,7 @@
 			<IconButton
 				label="Free camera"
 				icon="mdiVideoVintage"
-				backgroundColor={$toolSettings.freeCamera.enabled ? 'green' : 'default'}
+				active={$toolSettings.freeCamera.enabled}
 				on:click={() => {
 					$toolSettings.freeCamera.enabled = !$toolSettings.freeCamera.enabled
 				}}
@@ -46,7 +48,7 @@
 			<IconButton
 				label="TransformControls"
 				icon="mdiAngleRight"
-				backgroundColor={$toolSettings.transformControls.enabled ? 'green' : 'default'}
+				active={$toolSettings.transformControls.enabled}
 				on:click={() => {
 					$toolSettings.transformControls.enabled = !$toolSettings.transformControls.enabled
 				}}
@@ -60,52 +62,96 @@
 			<IconButton
 				label="Console"
 				icon="mdiConsole"
-				backgroundColor={$optionalPanes.Console ? 'green' : 'default'}
+				active={$optionalPanes.Console}
 				on:click={() => {
 					$optionalPanes.Console = !$optionalPanes.Console
 				}}
 			/>
-			<span slot="tooltip">Console {$optionalPanes.Console ? 'off' : 'on'}</span>
+			<span slot="tooltip">{$optionalPanes.Console ? 'Close' : 'Open'} Console</span>
 		</Tooltip>
 		<Tooltip>
 			<IconButton
 				label="Monitor"
 				icon="mdiGraphOutline"
-				backgroundColor={$optionalPanes.Monitor ? 'green' : 'default'}
+				active={$optionalPanes.Monitor}
 				on:click={() => {
 					$optionalPanes.Monitor = !$optionalPanes.Monitor
 				}}
 			/>
-			<span slot="tooltip">Monitor {$optionalPanes.Monitor ? 'off' : 'on'}</span>
+			<span slot="tooltip">{$optionalPanes.Monitor ? 'Close' : 'Open'} Monitor</span>
 		</Tooltip>
+
 		<VerticalSeparator />
-		<Tooltip>
-			<IconButton
-				label="Axis"
-				icon="mdiAxis"
-				backgroundColor={$gizmoSettings.axes.visible ? 'green' : 'default'}
-				on:click={() => {
-					$gizmoSettings.axes.visible = !$gizmoSettings.axes.visible
-				}}
-			/>
-			<span slot="tooltip">Axes {$gizmoSettings.axes.visible ? 'off' : 'on'}</span>
-		</Tooltip>
-		<Tooltip>
-			<IconButton
-				label="Grid"
-				icon="mdiGrid"
-				backgroundColor={$gizmoSettings.grid.visible ? 'green' : 'default'}
-				on:click={() => {
-					$gizmoSettings.grid.visible = !$gizmoSettings.grid.visible
-				}}
-			/>
-			<span slot="tooltip">Grid {$gizmoSettings.grid.visible ? 'off' : 'on'}</span>
-		</Tooltip>
+
+		<HorizontalButtonGroup>
+			<Tooltip>
+				<IconButton
+					label="Axis"
+					icon="mdiAxis"
+					active={$gizmoSettings.axes.visible}
+					on:click={() => {
+						$gizmoSettings.axes.visible = !$gizmoSettings.axes.visible
+					}}
+				/>
+				<span slot="tooltip">Axes {$gizmoSettings.axes.visible ? 'off' : 'on'}</span>
+			</Tooltip>
+
+			<PopUpPane
+				placement="bottom"
+				title="Axis"
+			>
+				<svelte:fragment slot="pane">
+					<Checkbox
+						label="Viewport Gizmo"
+						bind:value={$gizmoSettings.viewportGizmo.visible}
+					/>
+				</svelte:fragment>
+			</PopUpPane>
+		</HorizontalButtonGroup>
+
+		<HorizontalButtonGroup>
+			<Tooltip>
+				<IconButton
+					label="Grid"
+					icon="mdiGrid"
+					active={$gizmoSettings.grid.visible}
+					on:click={() => {
+						$gizmoSettings.grid.visible = !$gizmoSettings.grid.visible
+					}}
+				/>
+				<span slot="tooltip">Grid {$gizmoSettings.grid.visible ? 'off' : 'on'}</span>
+			</Tooltip>
+
+			<PopUpPane
+				placement="bottom"
+				title="Grid"
+			>
+				<svelte:fragment slot="pane">
+					<Color
+						bind:value={$gizmoSettings.grid.color}
+						label="Color"
+						picker="inline"
+					/>
+					<Slider
+						bind:value={$gizmoSettings.grid.units}
+						label="Units"
+						min={0.00000000001}
+					/>
+					<RadioGrid
+						label="Plane"
+						columns={3}
+						values={['xy', 'xz', 'zy']}
+						bind:value={$gizmoSettings.grid.plane}
+					/>
+				</svelte:fragment>
+			</PopUpPane>
+		</HorizontalButtonGroup>
+
 		<Tooltip>
 			<IconButton
 				label="Helpers"
 				icon="mdiBorderOutside"
-				backgroundColor={$gizmoSettings.helpers.visible ? 'green' : 'default'}
+				active={$gizmoSettings.helpers.visible}
 				on:click={() => {
 					$gizmoSettings.helpers.visible = !$gizmoSettings.helpers.visible
 				}}

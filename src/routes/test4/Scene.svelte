@@ -1,19 +1,27 @@
 <script lang="ts">
 	import { Inspector } from '$lib'
-	import { T, injectPlugin } from '@threlte/core'
+	import { T, injectPlugin, useThrelte } from '@threlte/core'
+	import { RoundedBoxGeometry } from '@threlte/extras'
+	import { Color } from 'three'
 
 	injectPlugin('inspector', ({ props, ref }) => {
 		if (!props.inspectorOptions) return
 		ref.userData.inspectorOptions = props.inspectorOptions
 	})
+
+	const { scene } = useThrelte()
+
+	scene.background = new Color('#18191C')
 </script>
 
 <Inspector position="draggable" />
 
 <T.PerspectiveCamera
-	rotation={[-0.4133, -0.7942, -0.3032, 'XYZ']}
+	position={[-3.6341, 2.0513, 3.2701]}
+	near={0.1}
+	far={2000}
+	rotation={[-0.4169, -0.8022, -0.3083, 'XYZ']}
 	fov={60}
-	position={[-2.8546, 1.8376, 2.64]}
 	makeDefault
 />
 
@@ -22,14 +30,20 @@
 	position={[1.7319, 3.4897, 1.5203]}
 />
 
+<T.AmbientLight intensity={0.2} />
+
 <T.Mesh
 	scale={[1, 1.2197, 1]}
-	position={[-1.5335, 0.812, 2.0922]}
+	position={[0, 0.8, 0]}
 	castShadow={true}
 	name="Box"
 >
-	<T.BoxGeometry args={[1, 1, 1]} />
-	<T.MeshStandardMaterial color={'#fb7676'} />
+	<RoundedBoxGeometry
+		args={[1, 1, 1]}
+		radius={0.2}
+		smoothness={12}
+	/>
+	<T.MeshStandardMaterial wireframe={false} color={'#aaff9b'} />
 </T.Mesh>
 
 <T.Mesh
@@ -37,7 +51,7 @@
 	matrixWorldAutoUpdate={true}
 	matrixAutoUpdate={true}
 	frustumCulled={true}
-	position={[0, -0.3607, -1.8369]}
+	position={[0, 0, 0]}
 	receiveShadow={true}
 	name="Floor"
 >
