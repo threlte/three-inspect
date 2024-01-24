@@ -6,6 +6,7 @@
 
 	export let activityColor: 'transparent' | 'red' | 'orange' | 'green' = 'transparent'
 	export let active: boolean = false
+	export let disabled: boolean = false
 
 	const activityColors: Record<Exclude<typeof activityColor, undefined>, string> = {
 		red: '#dc2626',
@@ -52,6 +53,7 @@
 	]}; --background-color-active: {backgroundColorsActive[
 		active ? 'active' : 'default'
 	]}; --text-color: {textColor[active ? 'active' : 'default']};"
+	{disabled}
 	{...$$restProps}
 >
 	<Icon

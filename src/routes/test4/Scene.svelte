@@ -17,7 +17,7 @@
 <Inspector position="draggable" />
 
 <T.PerspectiveCamera
-	position={[-3.6341, 2.0513, 3.2701]}
+	position={[-3.6341, 2.3358, 3.2701]}
 	near={0.1}
 	far={2000}
 	rotation={[-0.4169, -0.8022, -0.3083, 'XYZ']}
@@ -43,10 +43,14 @@
 		radius={0.2}
 		smoothness={12}
 	/>
-	<T.MeshStandardMaterial wireframe={false} color={'#aaff9b'} />
+	<T.MeshStandardMaterial
+		wireframe={false}
+		color={'#aaff9b'}
+	/>
 </T.Mesh>
 
 <T.Mesh
+	visible={true}
 	castShadow={false}
 	matrixWorldAutoUpdate={true}
 	matrixAutoUpdate={true}
@@ -56,5 +60,5 @@
 	name="Floor"
 >
 	<T.BoxGeometry args={[5, 0.01, 5]} />
-	<T.MeshStandardMaterial transparent={false} />
+	<T.MeshStandardMaterial visible={true} transparent={true} />
 </T.Mesh>

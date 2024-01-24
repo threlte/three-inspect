@@ -45,8 +45,17 @@ export interface GizmoSettings {
 	}
 }
 
+interface Transaction {
+	fileId: string
+	componentIndex: number
+	attributeName: string
+	attributeValue: unknown
+}
+
 export interface SyncSettings {
 	mode: 'manual' | 'auto'
+	saving: boolean
+	transactions: Transaction[]
 }
 
 interface InternalContext {
@@ -108,6 +117,8 @@ export const setInternalContext = () => {
 		}),
 		syncSettings: persisted('internalContext.syncSettings', {
 			mode: 'auto',
+			saving: false,
+			transactions: [],
 		}),
 	})
 }

@@ -159,6 +159,54 @@
 			<span slot="tooltip">Helpers {$gizmoSettings.helpers.visible ? 'off' : 'on'}</span>
 		</Tooltip>
 	</div>
+
+	<div>
+		<HorizontalButtonGroup>
+			<Tooltip>
+				<IconButton
+					label="Sync"
+					icon="mdiContentSave"
+					disabled={$syncSettings.transactions.length === 0 || $syncSettings.mode === 'auto'}
+					on:click={() => {
+						if ($syncSettings.mode === 'manual') {
+							// run save
+						} else {
+							// do nothing
+						}
+					}}
+				/>
+				<span slot="tooltip">
+					{#if $syncSettings.mode === 'manual'}
+						{#if $syncSettings.saving && $syncSettings.transactions.length === 0}
+							Saving …
+						{:else if $syncSettings.transactions.length > 0}
+							Save {$syncSettings.transactions.length} changes
+						{:else}
+							Up-to-date
+						{/if}
+					{:else if $syncSettings.saving}
+						Saving …
+					{:else}
+						Up-to-date
+					{/if}
+				</span>
+			</Tooltip>
+
+			<PopUpPane
+				placement="bottom"
+				title="Grid"
+			>
+				<svelte:fragment slot="pane">
+					<RadioGrid
+						label="Mode"
+						columns={2}
+						values={['manual', 'auto']}
+						bind:value={$syncSettings.mode}
+					/>
+				</svelte:fragment>
+			</PopUpPane>
+		</HorizontalButtonGroup>
+	</div>
 </div>
 
 <style>

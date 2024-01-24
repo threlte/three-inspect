@@ -14,6 +14,7 @@
 		mdiChevronDown,
 		mdiVideoVintage,
 		mdiContentSave,
+		mdiLoading,
 	} from '@mdi/js'
 
 	export const paths = {
@@ -28,6 +29,7 @@
 		mdiChevronDown,
 		mdiVideoVintage,
 		mdiContentSave,
+		mdiLoading,
 	}
 
 	export type Icons = keyof typeof paths
@@ -50,6 +52,7 @@
 	height={size}
 	{viewBox}
 	style="--sx:{sx}; --sy:{sy}; --r:{r}"
+	class:spin={name === 'mdiLoading'}
 	{...$$restProps}
 >
 	<path d={paths[name]} />
@@ -62,5 +65,18 @@
 
 	path {
 		fill: currentColor;
+	}
+
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.spin {
+		animation: spin 1s linear infinite;
 	}
 </style>

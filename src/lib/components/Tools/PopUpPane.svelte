@@ -35,7 +35,7 @@
 			middlewareData,
 		} = await computePosition(ref, tooltipEl, {
 			placement,
-			middleware: [offset(2), shift({ padding: 1 }), arrow({ element: arrowEl })],
+			middleware: [offset(2), shift({ padding: 6 }), arrow({ element: arrowEl })],
 		})
 
 		Object.assign(tooltipEl.style, {
