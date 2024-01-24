@@ -18,28 +18,28 @@
 		red: '#fca5a5',
 		orange: '#fdba74',
 		green: '#4BDE80',
-		default: 'var(--tp-button-background-color)',
+		default: 'var(--btn-bg);',
 	}
 
 	const backgroundColorsHover: Record<Exclude<typeof backgroundColor, undefined>, string> = {
 		red: '#f87171',
 		orange: '#fb923c',
 		green: '#22c55e',
-		default: 'var(--tp-button-background-color-hover)',
+		default: 'var(--btn-bg-h)',
 	}
 
 	const backgroundColorsFocus: Record<Exclude<typeof backgroundColor, undefined>, string> = {
 		red: '#ef4444',
 		orange: '#f97316',
 		green: '#22c55e',
-		default: 'var(--tp-button-background-color-focus)',
+		default: 'var(--btn-bg-f);',
 	}
 
 	const backgroundColorsActive: Record<Exclude<typeof backgroundColor, undefined>, string> = {
 		red: '#ef4444',
 		orange: '#f97316',
 		green: '#16a34a',
-		default: 'var(--tp-button-background-color-active)',
+		default: 'var(--btn-bg-a);',
 	}
 </script>
 

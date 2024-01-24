@@ -39,6 +39,10 @@ export interface GizmoSettings {
 	}
 }
 
+export interface SyncSettings {
+	mode: 'manual' | 'auto'
+}
+
 interface InternalContext {
 	defaultCamera: CurrentWritable<THREE.Camera | undefined>
 	usingRaycast: CurrentWritable<boolean>
@@ -47,6 +51,7 @@ interface InternalContext {
 	optionalPanes: Writable<Record<OptionalPane, boolean>>
 	gizmoSettings: Writable<GizmoSettings>
 	toolSettings: Writable<ToolSettings>
+	syncSettings: Writable<SyncSettings>
 }
 
 interface PublicContext {
@@ -89,13 +94,16 @@ export const setInternalContext = () => {
 				enabled: true,
 			},
 		}),
+		syncSettings: persisted('internalContext.syncSettings', {
+			mode: 'auto',
+		}),
 	})
 }
 
 export const setPublicContext = (options: SetPublicContextOptions) => {
 	setContext<PublicContext>(publicKey, {
 		position: writable(options.position ?? 'inline'),
-		theme: writable(options.theme ?? 'light'),
+		theme: writable(options.theme ?? 'standard'),
 	})
 }
 

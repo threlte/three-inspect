@@ -3,7 +3,7 @@
 	import { ThreePerf } from 'three-perf'
 	import { onMount } from 'svelte'
 
-	export let scale = 0.85
+	export let scale = 0.9
 
 	const { renderer } = useThrelte()
 

@@ -23,7 +23,8 @@
 />
 
 <T.Mesh
-	position={[0, 0.812, 0]}
+	scale={[1, 1.2197, 1]}
+	position={[-1.5335, 0.812, 2.0922]}
 	castShadow={true}
 	name="Box"
 >
