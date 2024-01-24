@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { useTask, useThrelte } from '@threlte/core'
+	import { useThrelte } from '@threlte/core'
+	import { onDestroy } from 'svelte'
 	import { Binding, type BindingRef } from 'svelte-tweakpane-ui'
 
 	export let object: any
@@ -83,21 +84,31 @@
 		})
 	}
 
-	let previousValue: any = transformAttributeValue(object[key])
-	useTask(
-		() => {
-			const currentValue = transformAttributeValue(object[key])
-			if (didChange(currentValue, previousValue)) {
-				mutateComponent(key, currentValue)
-				invalidate()
-			}
-			previousValue = currentValue
+	export const refresh = () => {
+		if (!ref) return
+		ref.refresh()
+	}
 
-			if (!ref) return
-			ref.refresh()
-		},
-		{ autoInvalidate: false, autoStart: !!object.inspectorOptions && !!import.meta.hot }
-	)
+	let previousValue: any = transformAttributeValue(object[key])
+	const onChange = () => {
+		const currentValue = transformAttributeValue(object[key])
+		if (didChange(currentValue, previousValue)) {
+			mutateComponent(key, currentValue)
+			invalidate()
+		}
+		previousValue = currentValue
+	}
+
+	const onRef = () => {
+		ref.on('change', onChange)
+	}
+
+	$: if (ref) onRef()
+
+	onDestroy(() => {
+		if (!ref) return
+		ref.off('change', onChange)
+	})
 </script>
 
 <Binding

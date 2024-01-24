@@ -62,15 +62,21 @@
 	// console.warn('Message B')
 	// console.error('Message C')
 	// console.log('Hello World')
+
+	const format = (v: any) => {
+		try {
+			return JSON.stringify(v, null, 2)
+		} catch (error) {
+			return ''
+		}
+	}
 </script>
 
 <div class="wrapper">
 	{#each messages as message}
 		<div class="message {message.type}">
 			{#each message.content as content}
-				<div class="content">
-					{JSON.stringify(content, null, 2)}
-				</div>
+				<div class="content">{format(content)}</div>
 			{/each}
 		</div>
 	{/each}
@@ -101,5 +107,9 @@
 
 	.content {
 		padding: 2px 0;
+	}
+
+	.content:empty {
+		display: none;
 	}
 </style>
