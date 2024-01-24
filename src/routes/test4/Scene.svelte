@@ -11,9 +11,9 @@
 <Inspector position="draggable" />
 
 <T.PerspectiveCamera
-	rotation={[-0.2853, 0, 0, 'XYZ']}
+	rotation={[-0.4133, -0.7942, -0.3032, 'XYZ']}
 	fov={60}
-	position={[0, 2.4507, 3.5388]}
+	position={[-2.8546, 1.8376, 2.64]}
 	makeDefault
 />
 
@@ -36,8 +36,8 @@
 	matrixWorldAutoUpdate={true}
 	matrixAutoUpdate={true}
 	frustumCulled={true}
-	position={[0, 0, 0]}
-	receiveShadow={false}
+	position={[0, -0.3607, -1.8369]}
+	receiveShadow={true}
 	name="Floor"
 >
 	<T.BoxGeometry args={[5, 0.01, 5]} />

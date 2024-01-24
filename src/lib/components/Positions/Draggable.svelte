@@ -21,7 +21,7 @@
 </script>
 
 <Pane
-	title="Tools"
+	title=""
 	userExpandable={false}
 	position="fixed"
 	width={$size.width - 12}

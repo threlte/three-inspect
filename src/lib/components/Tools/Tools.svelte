@@ -17,7 +17,7 @@
 				usingRaycast.set(!$usingRaycast)
 			}}
 		/>
-		<span slot="tooltip">Select {$usingRaycast ? 'on' : 'off'}</span>
+		<span slot="tooltip">Select {$usingRaycast ? 'off' : 'on'}</span>
 	</Tooltip>
 
 	<Tooltip>
@@ -29,7 +29,7 @@
 				$toolSettings.freeCamera.enabled = !$toolSettings.freeCamera.enabled
 			}}
 		/>
-		<span slot="tooltip">Free camera {$toolSettings.freeCamera.enabled ? 'on' : 'off'}</span>
+		<span slot="tooltip">Free camera {$toolSettings.freeCamera.enabled ? 'off' : 'on'}</span>
 	</Tooltip>
 
 	<Tooltip>
