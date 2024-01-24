@@ -17,7 +17,7 @@
 
 	$: object = $selectedObject
 
-	const toolbarHeight = 60
+	const toolbarHeight = 56
 </script>
 
 <Pane

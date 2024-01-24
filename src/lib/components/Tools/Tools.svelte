@@ -116,6 +116,5 @@
 		display: flex;
 		gap: 0.25rem;
 		align-items: stretch;
-		padding-top: 4px;
 	}
 </style>
