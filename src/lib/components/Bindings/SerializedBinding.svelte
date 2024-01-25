@@ -2,6 +2,7 @@
 	import { useThrelte } from '@threlte/core'
 	import { onDestroy } from 'svelte'
 	import { Binding, type BindingRef } from 'svelte-tweakpane-ui'
+	import { useTransaction } from '../../internal/useTransaction'
 
 	export let object: any
 	export let key: string
@@ -75,14 +76,7 @@
 		return value
 	}
 
-	const mutateComponent = (attribute: string, value: any) => {
-		if (!import.meta.hot) return
-		import.meta.hot.send('threlte-inspector:from-client', {
-			...object.userData.inspectorOptions,
-			attribute,
-			value,
-		})
-	}
+	const { addTransaction } = useTransaction(object)
 
 	export const refresh = () => {
 		if (!ref) return
@@ -93,7 +87,7 @@
 	const onChange = () => {
 		const currentValue = transformAttributeValue(object[key])
 		if (didChange(currentValue, previousValue)) {
-			mutateComponent(key, currentValue)
+			addTransaction(key, currentValue)
 			invalidate()
 		}
 		previousValue = currentValue

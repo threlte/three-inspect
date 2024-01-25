@@ -12,10 +12,11 @@
 	import Helpers from './Tools/Helpers.svelte'
 	import Raycast from './Tools/Raycast.svelte'
 	import TransformControls from './Tools/TransformControls.svelte'
+	import AutoSync from './Tools/AutoSync.svelte'
 
 	const { position } = useInspector()
 	const { scene } = useThrelte()
-	const { usingRaycast, selectedObject, gizmoSettings, toolSettings, studioObjects } =
+	const { usingRaycast, selectedObject, gizmoSettings, toolSettings, studioObjects, syncSettings } =
 		getInternalContext()
 
 	$: object = $selectedObject
@@ -34,6 +35,10 @@
 		})
 	}
 </script>
+
+{#if $syncSettings.enabled && $syncSettings.mode === 'auto'}
+	<AutoSync />
+{/if}
 
 <Portal>
 	{#if $$slots.default}

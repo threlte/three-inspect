@@ -17,8 +17,12 @@
 
 	$: object = $selectedObject
 
-	const toolbarHeight = 56
+	const toolbarHeight = 60
+
+	let innerWidth = browser ? window.innerWidth : 0
 </script>
+
+<svelte:window bind:innerWidth />
 
 <Pane
 	title=""
@@ -92,18 +96,20 @@
 {/if}
 
 {#if object}
-	<Pane
-		title={`${object.name} (${object.type})`}
-		position="fixed"
-		theme={ThemeUtils.presets[$theme]}
-		width={320}
-		x={browser ? window.innerWidth - 6 - 320 : 6}
-		y={6 + toolbarHeight + 6}
-	>
-		{#key object}
-			<Bindings {object} />
-		{/key}
-	</Pane>
+	{#key object}
+		<Pane
+			title={`${object.name} (${object.type})`}
+			position="fixed"
+			theme={ThemeUtils.presets[$theme]}
+			width={320}
+			x={browser ? innerWidth - 6 - 320 : 6}
+			y={6 + toolbarHeight + 6}
+		>
+			{#key object}
+				<Bindings {object} />
+			{/key}
+		</Pane>
+	{/key}
 {/if}
 
 {#if $toolSettings.freeCamera.enabled}
@@ -113,7 +119,7 @@
 		theme={ThemeUtils.presets[$theme]}
 		userExpandable={false}
 		width={308}
-		x={browser ? window.innerWidth - 6 - 308 : 6}
+		x={browser ? innerWidth - 6 - 308 : 6}
 		y={browser ? window.innerHeight - 6 - 196 : 6}
 	>
 		<DefaultCameraView

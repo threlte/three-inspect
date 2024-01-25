@@ -86,6 +86,7 @@
 		height: 8px;
 		background-color: var(--activityColor);
 		border-radius: 1000px;
+		z-index: 1;
 	}
 
 	button:hover {

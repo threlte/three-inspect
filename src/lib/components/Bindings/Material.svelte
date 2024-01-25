@@ -1,13 +1,29 @@
 <script lang="ts">
-	import { Folder, List } from 'svelte-tweakpane-ui'
+	import { Folder, List, type BindingRef } from 'svelte-tweakpane-ui'
 	import * as THREE from 'three'
 	import Color from './Color.svelte'
 	import SerializedBinding from './SerializedBinding.svelte'
 	import Textures from './Textures.svelte'
+	import { onDestroy } from 'svelte'
 
 	export let object: THREE.Material
 
 	$: object.needsUpdate = true
+
+	// Transparency needs some extra care since Three.js needs to push the updated
+	// material to the GPU
+	let transparentBindingRef: BindingRef
+	const onTransparentChange = () => {
+		object.needsUpdate = true
+	}
+	$: if (transparentBindingRef) {
+		transparentBindingRef.on('change', onTransparentChange)
+	}
+	onDestroy(() => {
+		if (transparentBindingRef) {
+			transparentBindingRef.off('change', onTransparentChange)
+		}
+	})
 </script>
 
 <SerializedBinding
@@ -20,6 +36,7 @@
 	bind:object
 	key="transparent"
 	label="transparent"
+	bind:ref={transparentBindingRef}
 />
 
 <SerializedBinding

@@ -2,6 +2,7 @@ import MagicString from 'magic-string'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { parse, walk } from 'svelte/compiler'
 import type { Plugin } from 'vite'
+import type { Transaction } from '../lib/internal/context'
 
 const dummyScript = '<script>"ABC"</script>'
 const dummyStyle = '<style>"ABC"</style>'
@@ -90,15 +91,12 @@ const parseValue = (value: unknown): string => {
 }
 
 const changeAttribute = (
-	fileId: string,
-	start: number,
+	componentContent: string,
 	componentIndex: number,
 	attribute: string,
 	value: unknown
 ) => {
-	const code = readFileSync(fileId, 'utf8')
-
-	const { markup, script, style } = extractMarkup(code)
+	const { markup, script, style } = extractMarkup(componentContent)
 
 	// alter markup
 	const mc = new MagicString(markup)
@@ -162,21 +160,12 @@ const changeAttribute = (
 
 	const finalComponent = buildComponent(mc.toString(), script, style)
 
-	// write to file
-	writeFileSync(fileId, finalComponent)
+	return finalComponent
 }
 
-const transformations: {
-	id: string
-	start: number
-	attribute: string
-	value: unknown
-	index: number
-}[] = []
+const transactions: Transaction[] = []
 const noHMROnIds = new Set<string>()
-
-let transformTimeout: ReturnType<typeof setTimeout>
-let watchTimeout: ReturnType<typeof setTimeout>
+const fileTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
 export const plugin: () => Plugin = () => {
 	return {
@@ -207,35 +196,48 @@ export const plugin: () => Plugin = () => {
 			server.ws.on('threlte-inspector:from-client', (data, client) => {
 				const d = data as {
 					id: string
-					start: number
-					attribute: string
-					index: number
-					value: unknown
+					transactions: Transaction[]
 				}
-				for (const t of transformations) {
-					// find the same transformation by id, start and attribute
-					if (t.id === d.id && t.start === d.start && t.attribute === d.attribute) {
-						// update the value
-						t.value = d.value
-						break
+
+				transactions.push(...d.transactions)
+
+				const transactionsPerFileId: Record<string, Transaction[]> = {}
+
+				for (const t of transactions) {
+					if (t.fileId in transactionsPerFileId) {
+						transactionsPerFileId[t.fileId].push(t)
+					} else {
+						transactionsPerFileId[t.fileId] = [t]
 					}
 				}
-				transformations.push(d)
 
-				clearTimeout(transformTimeout)
-				clearTimeout(watchTimeout)
-
-				noHMROnIds.add(d.id)
-				transformTimeout = setTimeout(() => {
-					for (const t of transformations) {
-						changeAttribute(t.id, t.start, t.index, t.attribute, t.value)
+				Object.keys(transactionsPerFileId).forEach((fileId) => {
+					noHMROnIds.add(fileId)
+					if (fileTimeouts.has(fileId)) {
+						clearTimeout(fileTimeouts.get(fileId))
 					}
-					transformations.length = 0
-				}, 500)
+					let component = readFileSync(fileId, 'utf8')
+					for (const t of transactionsPerFileId[fileId]) {
+						component = changeAttribute(
+							component,
+							t.componentIndex,
+							t.attributeName,
+							t.attributeValue
+						)
+					}
+					writeFileSync(fileId, component)
+					fileTimeouts.set(
+						fileId,
+						setTimeout(() => {
+							noHMROnIds.delete(fileId)
+							fileTimeouts.delete(fileId)
+						}, 1000)
+					)
+				})
 
-				watchTimeout = setTimeout(() => {
-					noHMROnIds.delete(d.id)
-				}, 1000)
+				server.ws.send(`threlte-inspector:from-server-${d.id}`, {
+					success: true,
+				})
 			})
 		},
 	}

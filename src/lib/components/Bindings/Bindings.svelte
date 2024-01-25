@@ -1,12 +1,12 @@
 <script lang="ts">
+	import { Folder, Textarea } from 'svelte-tweakpane-ui'
 	import * as THREE from 'three'
-	import { Binding, Textarea, Folder } from 'svelte-tweakpane-ui'
-	import Transform from './Transform/Transform.svelte'
 	import Camera from './Camera.svelte'
 	import Light from './Light.svelte'
-	import Scene from './Scene.svelte'
 	import Material from './Material.svelte'
+	import Scene from './Scene.svelte'
 	import SerializedBinding from './SerializedBinding.svelte'
+	import Transform from './Transform/Transform.svelte'
 
 	export let object: THREE.Scene | THREE.Light | THREE.PerspectiveCamera | THREE.OrthographicCamera
 

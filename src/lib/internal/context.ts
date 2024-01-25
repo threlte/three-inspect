@@ -1,9 +1,9 @@
-import { type CurrentWritable, currentWritable } from '@threlte/core'
-import { type Writable, writable } from 'svelte/store'
+import { currentWritable, type CurrentWritable } from '@threlte/core'
 import { getContext, setContext } from 'svelte'
 import type { ThemeUtils } from 'svelte-tweakpane-ui'
-import { persisted } from './persisted'
+import { writable, type Writable } from 'svelte/store'
 import { Object3D } from 'three'
+import { persisted } from './persisted'
 
 const internalKey = Symbol('three-inspect-internal-context')
 const publicKey = Symbol('three-inspect-context')
@@ -45,7 +45,9 @@ export interface GizmoSettings {
 	}
 }
 
-interface Transaction {
+export interface Transaction {
+	id: string
+	time: number
 	fileId: string
 	componentIndex: number
 	attributeName: string
@@ -53,9 +55,14 @@ interface Transaction {
 }
 
 export interface SyncSettings {
+	enabled: boolean
 	mode: 'manual' | 'auto'
-	saving: boolean
-	transactions: Transaction[]
+}
+
+export interface Sync {
+	transactions: Writable<Transaction[]>
+	addTransaction: (t: Omit<Transaction, 'id' | 'time'>) => void
+	staleTransactions: CurrentWritable<Transaction[]>
 }
 
 interface InternalContext {
@@ -67,6 +74,7 @@ interface InternalContext {
 	gizmoSettings: Writable<GizmoSettings>
 	toolSettings: Writable<ToolSettings>
 	syncSettings: Writable<SyncSettings>
+	sync: Sync
 }
 
 interface PublicContext {
@@ -80,7 +88,7 @@ interface SetPublicContextOptions {
 }
 
 export const setInternalContext = () => {
-	setContext<InternalContext>(internalKey, {
+	const context: InternalContext = {
 		defaultCamera: currentWritable(undefined),
 		usingRaycast: currentWritable(false),
 		selectedObject: currentWritable<SelectedObject | undefined>(undefined),
@@ -116,11 +124,56 @@ export const setInternalContext = () => {
 			},
 		}),
 		syncSettings: persisted('internalContext.syncSettings', {
+			enabled: true,
 			mode: 'auto',
 			saving: false,
 			transactions: [],
 		}),
+		sync: {
+			transactions: persisted('internalContext.sync.transactions', []),
+			addTransaction(t) {
+				const time = Date.now()
+				this.transactions.update((ts) => {
+					// dedupe
+					let deleteTransactionsIndicees: number[] = []
+					for (let i = ts.length - 1; i >= 0; i -= 1) {
+						const t2 = ts[i]
+						if (
+							t.fileId === t2.fileId &&
+							t.componentIndex === t2.componentIndex &&
+							t.attributeName === t2.attributeName &&
+							time > t2.time
+						) {
+							deleteTransactionsIndicees.push(i)
+						}
+					}
+					// make unique
+					deleteTransactionsIndicees = [...new Set(deleteTransactionsIndicees)]
+					// sort in descending order
+					deleteTransactionsIndicees.sort((a, b) => b - a)
+					deleteTransactionsIndicees.forEach((i) => {
+						ts.splice(i, 1)
+					})
+					// add new transaction
+					ts.push({
+						id: Math.random().toString(36).slice(2, 9),
+						time,
+						...t,
+					})
+					return ts
+				})
+			},
+			staleTransactions: currentWritable([]),
+		},
+	}
+
+	// we don't want to persist this
+	context.toolSettings.update((toolSettings) => {
+		toolSettings.transformControls.inUse = false
+		return toolSettings
 	})
+
+	setContext<InternalContext>(internalKey, context)
 }
 
 export const setPublicContext = (options: SetPublicContextOptions) => {

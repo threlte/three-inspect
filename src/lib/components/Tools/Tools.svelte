@@ -1,13 +1,15 @@
 <script lang="ts">
-	import { Checkbox, Color, RadioGrid, Slider } from 'svelte-tweakpane-ui'
+	import { Checkbox, Color, Element, RadioGrid, Separator, Slider } from 'svelte-tweakpane-ui'
 	import { getInternalContext } from '../../internal/context'
+	import { useSync } from '../../internal/sync'
 	import IconButton from '../Internal/IconButton.svelte'
 	import Tooltip from '../Internal/Tooltip.svelte'
 	import HorizontalButtonGroup from './HorizontalButtonGroup.svelte'
 	import PopUpPane from './PopUpPane.svelte'
 	import VerticalSeparator from './VerticalSeparator.svelte'
+	import Changes from './Changes.svelte'
 
-	const { usingRaycast, optionalPanes, gizmoSettings, toolSettings, syncSettings } =
+	const { usingRaycast, optionalPanes, gizmoSettings, toolSettings, syncSettings, sync } =
 		getInternalContext()
 
 	let autoSync = $syncSettings.mode === 'auto'
@@ -18,6 +20,10 @@
 			$syncSettings.mode = 'manual'
 		}
 	}
+
+	const { writeToDisk } = useSync()
+
+	const { staleTransactions, transactions } = sync
 </script>
 
 <div class="wrapper">
@@ -165,44 +171,72 @@
 			<Tooltip>
 				<IconButton
 					label="Sync"
-					icon="mdiContentSave"
-					disabled={$syncSettings.transactions.length === 0 || $syncSettings.mode === 'auto'}
+					icon={$staleTransactions.length > 0 ? 'mdiLoading' : 'mdiContentSave'}
+					activityColor={$syncSettings.mode === 'auto'
+						? 'green'
+						: $transactions.length
+							? 'orange'
+							: 'transparent'}
 					on:click={() => {
 						if ($syncSettings.mode === 'manual') {
-							// run save
-						} else {
-							// do nothing
+							writeToDisk()
 						}
 					}}
 				/>
 				<span slot="tooltip">
-					{#if $syncSettings.mode === 'manual'}
-						{#if $syncSettings.saving && $syncSettings.transactions.length === 0}
-							Saving …
-						{:else if $syncSettings.transactions.length > 0}
-							Save {$syncSettings.transactions.length} changes
-						{:else}
-							Up-to-date
-						{/if}
-					{:else if $syncSettings.saving}
-						Saving …
+					{#if !$syncSettings.enabled}
+						Sync disabled
 					{:else}
-						Up-to-date
+						<!-- Sync Enabled -->
+						{#if $syncSettings.mode === 'manual'}
+							<!-- Manual Sync -->
+							{#if $staleTransactions.length > 0}
+								Saving …
+							{:else if $transactions.length > 0}
+								Save {$transactions.length}
+								{#if $transactions.length > 1}
+									changes
+								{:else}
+									change
+								{/if}
+							{:else}
+								Up-to-date
+							{/if}
+						{:else}
+							<!-- Auto Sync -->
+							{#if $staleTransactions.length > 0}
+								Saving …
+							{:else}
+								AutoSave: Up-to-date
+							{/if}
+						{/if}
 					{/if}
 				</span>
 			</Tooltip>
 
 			<PopUpPane
 				placement="bottom"
-				title="Grid"
+				title="Sync"
 			>
 				<svelte:fragment slot="pane">
+					<Checkbox
+						label="Enabled"
+						bind:value={$syncSettings.enabled}
+					/>
 					<RadioGrid
 						label="Mode"
 						columns={2}
 						values={['manual', 'auto']}
 						bind:value={$syncSettings.mode}
 					/>
+
+					<Separator />
+
+					<Element>
+						<div style="margin-top: 4px;">
+							<Changes />
+						</div>
+					</Element>
 				</svelte:fragment>
 			</PopUpPane>
 		</HorizontalButtonGroup>
@@ -215,6 +249,7 @@
 		gap: 0.25rem;
 		align-items: stretch;
 		justify-content: space-between;
+		padding: 2px 2px;
 	}
 
 	.wrapper div {
