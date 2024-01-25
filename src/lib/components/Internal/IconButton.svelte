@@ -6,53 +6,73 @@
 
 	export let activityColor: 'transparent' | 'red' | 'orange' | 'green' = 'transparent'
 	export let active: boolean = false
+	export let warn: boolean = false
+	export let success: boolean = false
 	export let disabled: boolean = false
 
 	const activityColors: Record<Exclude<typeof activityColor, undefined>, string> = {
 		red: '#dc2626',
 		orange: '#f97316',
-		green: '#22c55e',
+		green: '#16a34a',
 		transparent: 'transparent',
 	}
 
-	const backgroundColors: Record<'active' | 'default', string> = {
+	const backgroundColors: Record<'active' | 'warn' | 'default' | 'success', string> = {
 		active: '#2563eb',
+		warn: '#f97316',
+		success: '#16a34a',
 		default: 'var(--btn-bg);',
 	}
 
-	const backgroundColorsHover: Record<'active' | 'default', string> = {
+	const backgroundColorsHover: Record<'active' | 'warn' | 'default' | 'success', string> = {
 		active: '#1d4ed8',
+		warn: '#ea580c',
+		success: '#15803d',
 		default: 'var(--btn-bg-h)',
 	}
 
-	const backgroundColorsFocus: Record<'active' | 'default', string> = {
+	const backgroundColorsFocus: Record<'active' | 'warn' | 'default' | 'success', string> = {
 		active: '#1d4ed8',
+		warn: '#ea580c',
+		success: '#15803d',
 		default: 'var(--btn-bg-f);',
 	}
 
-	const backgroundColorsActive: Record<'active' | 'default', string> = {
+	const backgroundColorsActive: Record<'active' | 'warn' | 'default' | 'success', string> = {
 		active: '#1d4ed8',
+		warn: '#ea580c',
+		success: '#15803d',
 		default: 'var(--btn-bg-a);',
 	}
 
-	const textColor: Record<'active' | 'default', string> = {
+	const textColor: Record<'active' | 'warn' | 'default' | 'success', string> = {
 		active: 'white',
+		warn: 'white',
+		success: 'white',
 		default: 'black',
+	}
+
+	$: state = warn
+		? 'warn'
+		: success
+			? 'success'
+			: active
+				? 'active'
+				: ('default' as 'active' | 'warn' | 'default' | 'success')
+	$: colors = {
+		activityColor: activityColors[activityColor],
+		backgroundColor: backgroundColors[state],
+		backgroundColorHover: backgroundColorsHover[state],
+		backgroundColorFocus: backgroundColorsFocus[state],
+		backgroundColorActive: backgroundColorsActive[state],
+		textColor: textColor[state],
 	}
 </script>
 
 <button
 	aria-label={label}
 	on:click
-	style="--activityColor: {activityColors[activityColor]}; --background-color: {backgroundColors[
-		active ? 'active' : 'default'
-	]}; --background-color-hover: {backgroundColorsHover[
-		active ? 'active' : 'default'
-	]}; --background-color-focus: {backgroundColorsFocus[
-		active ? 'active' : 'default'
-	]}; --background-color-active: {backgroundColorsActive[
-		active ? 'active' : 'default'
-	]}; --text-color: {textColor[active ? 'active' : 'default']};"
+	style="--activityColor: {colors.activityColor}; --background-color: {colors.backgroundColor}; --background-color-hover: {colors.backgroundColorHover}; --background-color-focus: {colors.backgroundColorFocus}; --background-color-active: {colors.backgroundColorActive}; --text-color: {colors.textColor};"
 	{disabled}
 	{...$$restProps}
 >

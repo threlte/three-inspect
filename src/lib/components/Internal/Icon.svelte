@@ -15,6 +15,12 @@
 		mdiVideoVintage,
 		mdiContentSave,
 		mdiLoading,
+		mdiAxisArrow,
+		mdiCursorMove,
+		mdiEarth,
+		mdiMagnet,
+		mdiMagnetOn,
+		mdiCog,
 	} from '@mdi/js'
 
 	export const paths = {
@@ -30,6 +36,12 @@
 		mdiVideoVintage,
 		mdiContentSave,
 		mdiLoading,
+		mdiAxisArrow,
+		mdiCursorMove,
+		mdiEarth,
+		mdiMagnet,
+		mdiMagnetOn,
+		mdiCog,
 	}
 
 	export type Icons = keyof typeof paths

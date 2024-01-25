@@ -2,12 +2,15 @@
 	import { arrow, computePosition, offset, shift, type Placement } from '@floating-ui/dom'
 	import { Pane } from 'svelte-tweakpane-ui'
 	import IconButton from '../Internal/IconButton.svelte'
+	import type { Icons } from '../Internal/Icon.svelte'
 
 	let ref: HTMLElement
 	let tooltipEl: HTMLElement
 	let arrowEl: HTMLElement
+
 	export let placement: Placement = 'bottom'
 	export let title: string = ''
+	export let icon: Icons = 'mdiChevronDown'
 
 	export let visible = false
 
@@ -91,7 +94,7 @@
 >
 	<div bind:this={ref}>
 		<IconButton
-			icon="mdiChevronDown"
+			{icon}
 			label="Toggle Pane"
 			on:click={() => {
 				toggle()

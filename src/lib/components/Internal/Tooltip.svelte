@@ -55,18 +55,18 @@
 	on:blur={hideTooltip}
 >
 	<slot />
-</div>
 
-<div
-	bind:this={tooltipEl}
-	class="tooltip"
-	role="tooltip"
->
-	<slot name="tooltip" />
 	<div
-		bind:this={arrowEl}
-		class="arrow"
-	/>
+		bind:this={tooltipEl}
+		class="tooltip"
+		role="tooltip"
+	>
+		<slot name="tooltip" />
+		<div
+			bind:this={arrowEl}
+			class="arrow"
+		/>
+	</div>
 </div>
 
 <style>

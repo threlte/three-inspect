@@ -17,7 +17,27 @@ export type SelectedObject =
 export type DefaultPane = 'Toolbar' | 'SceneGraph' | 'Inspector'
 export type OptionalPane = 'Console' | 'Monitor'
 
+export interface StudioSettings {
+	enabled: boolean
+	keyboard: {
+		enabled: boolean
+	}
+}
+
 export interface ToolSettings {
+	space: 'local' | 'world'
+	snapping: {
+		enabled: boolean
+		translation: {
+			step: number
+		}
+		rotation: {
+			step: number
+		}
+		scale: {
+			step: number
+		}
+	}
 	transformControls: {
 		enabled: boolean
 		inUse: boolean
@@ -72,6 +92,7 @@ interface InternalContext {
 	studioObjects: CurrentWritable<Set<Object3D>>
 	optionalPanes: Writable<Record<OptionalPane, boolean>>
 	gizmoSettings: Writable<GizmoSettings>
+	studioSettings: Writable<StudioSettings>
 	toolSettings: Writable<ToolSettings>
 	syncSettings: Writable<SyncSettings>
 	sync: Sync
@@ -120,6 +141,25 @@ export const setInternalContext = () => {
 				inUse: false,
 			},
 			freeCamera: {
+				enabled: true,
+			},
+			snapping: {
+				enabled: false,
+				translation: {
+					step: 0.1,
+				},
+				rotation: {
+					step: 15,
+				},
+				scale: {
+					step: 0.1,
+				},
+			},
+			space: 'local',
+		}),
+		studioSettings: persisted('internalContext.studioSettings', {
+			enabled: true,
+			keyboard: {
 				enabled: true,
 			},
 		}),

@@ -9,8 +9,15 @@
 	import VerticalSeparator from './VerticalSeparator.svelte'
 	import Changes from './Changes.svelte'
 
-	const { usingRaycast, optionalPanes, gizmoSettings, toolSettings, syncSettings, sync } =
-		getInternalContext()
+	const {
+		usingRaycast,
+		optionalPanes,
+		gizmoSettings,
+		toolSettings,
+		syncSettings,
+		sync,
+		studioSettings,
+	} = getInternalContext()
 
 	let autoSync = $syncSettings.mode === 'auto'
 	$: {
@@ -53,7 +60,7 @@
 		<Tooltip>
 			<IconButton
 				label="TransformControls"
-				icon="mdiAngleRight"
+				icon="mdiCursorMove"
 				active={$toolSettings.transformControls.enabled}
 				on:click={() => {
 					$toolSettings.transformControls.enabled = !$toolSettings.transformControls.enabled
@@ -164,19 +171,84 @@
 			/>
 			<span slot="tooltip">Helpers {$gizmoSettings.helpers.visible ? 'off' : 'on'}</span>
 		</Tooltip>
+
+		<VerticalSeparator />
+
+		<HorizontalButtonGroup>
+			<Tooltip>
+				<span slot="tooltip">Local Space</span>
+				<IconButton
+					on:click={() => {
+						$toolSettings.space = 'local'
+					}}
+					active={$toolSettings.space === 'local'}
+					label="Local Space"
+					icon="mdiAxisArrow"
+				/>
+			</Tooltip>
+			<Tooltip>
+				<span slot="tooltip">World Space</span>
+				<IconButton
+					label="World Space"
+					on:click={() => {
+						$toolSettings.space = 'world'
+					}}
+					active={$toolSettings.space === 'world'}
+					icon="mdiEarth"
+				/>
+			</Tooltip>
+		</HorizontalButtonGroup>
+
+		<HorizontalButtonGroup>
+			<Tooltip>
+				<IconButton
+					label="Snapping"
+					icon="mdiMagnet"
+					active={$toolSettings.snapping.enabled}
+					on:click={() => {
+						$toolSettings.snapping.enabled = !$toolSettings.snapping.enabled
+					}}
+				/>
+				<span slot="tooltip">Snapping {$toolSettings.snapping.enabled ? 'off' : 'on'}</span>
+			</Tooltip>
+
+			<PopUpPane
+				placement="bottom"
+				title="Snapping"
+			>
+				<svelte:fragment slot="pane">
+					<Slider
+						bind:value={$toolSettings.snapping.translation.step}
+						label="Move"
+						min={0}
+					/>
+					<Slider
+						bind:value={$toolSettings.snapping.rotation.step}
+						label="Rotate"
+						min={0}
+						format={(v) => `${v.toFixed(2)}°`}
+					/>
+					<Slider
+						bind:value={$toolSettings.snapping.scale.step}
+						label="Scale"
+						min={0}
+					/>
+				</svelte:fragment>
+			</PopUpPane>
+		</HorizontalButtonGroup>
 	</div>
 
 	<div>
+		<!-- Sync -->
 		<HorizontalButtonGroup>
 			<Tooltip>
 				<IconButton
 					label="Sync"
 					icon={$staleTransactions.length > 0 ? 'mdiLoading' : 'mdiContentSave'}
-					activityColor={$syncSettings.mode === 'auto'
-						? 'green'
-						: $transactions.length
-							? 'orange'
-							: 'transparent'}
+					warn={$syncSettings.enabled &&
+						$syncSettings.mode === 'manual' &&
+						$transactions.length > 0}
+					success={$syncSettings.enabled && $syncSettings.mode === 'auto'}
 					on:click={() => {
 						if ($syncSettings.mode === 'manual') {
 							writeToDisk()
@@ -240,6 +312,21 @@
 				</svelte:fragment>
 			</PopUpPane>
 		</HorizontalButtonGroup>
+
+		<!-- Settings -->
+
+		<PopUpPane
+			placement="bottom"
+			title="Studio Settings"
+			icon="mdiCog"
+		>
+			<svelte:fragment slot="pane">
+				<Checkbox
+					bind:value={$studioSettings.keyboard.enabled}
+					label="Keyboard Shortcuts"
+				/>
+			</svelte:fragment>
+		</PopUpPane>
 	</div>
 </div>
 

@@ -5,6 +5,7 @@
 	import { getInternalContext } from '../../internal/context'
 	import { persisted } from '../../internal/persisted'
 	import { add } from '../../hooks/useOnAdd'
+	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 
 	export let object: THREE.Object3D
 
@@ -12,13 +13,11 @@
 	const { toolSettings, studioObjects } = getInternalContext()
 
 	type Modes = 'translate' | 'rotate' | 'scale'
-	type Spaces = 'local' | 'world'
 
 	const mode = persisted<Modes>('transform-mode', 'translate')
-	const space = persisted<Spaces>('transform-space', 'local')
 
 	const toggleSpace = () => {
-		$space = $space === 'local' ? 'world' : 'local'
+		$toolSettings.space = $toolSettings.space === 'local' ? 'world' : 'local'
 	}
 
 	const keydown = (event: KeyboardEvent) => {
@@ -81,7 +80,10 @@
 	bind:group
 	{object}
 	mode={$mode}
-	space={$space}
+	space={$toolSettings.space}
+	rotationSnap={$toolSettings.snapping.enabled ? $toolSettings.snapping.rotation.step * DEG2RAD : 0}
+	translationSnap={$toolSettings.snapping.enabled ? $toolSettings.snapping.translation.step : 0}
+	scaleSnap={$toolSettings.snapping.enabled ? $toolSettings.snapping.scale.step : 0}
 	autoPauseOrbitControls
 	on:create={({ ref, cleanup }) => {
 		studioObjects.update((objects) => {

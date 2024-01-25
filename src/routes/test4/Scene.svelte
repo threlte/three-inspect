@@ -17,24 +17,33 @@
 <Inspector position="draggable" />
 
 <T.PerspectiveCamera
-	position={[-3.6341, 2.3358, 3.2701]}
+	zoom={1}
+	position={[0, 0, 5.4]}
 	near={0.1}
 	far={2000}
-	rotation={[-0.4169, -0.8022, -0.3083, 'XYZ']}
-	fov={60}
+	rotation={[0, 0, 0, 'XYZ']}
+	fov={41}
 	makeDefault
 />
 
 <T.DirectionalLight
+	rotation={[0, 0, 0, 'XYZ']}
 	castShadow={true}
-	position={[1.7319, 3.4897, 1.5203]}
+	position={[-1.4245, 4.8, 2]}
 />
 
-<T.AmbientLight intensity={0.2} />
+<T.AmbientLight
+	visible={true}
+	intensity={0.2}
+/>
 
 <T.Mesh
-	scale={[1, 1.2197, 1]}
-	position={[0, 0.8, 0]}
+	rotation={[0, 0, 0, 'XYZ']}
+	position={[0, 0, 0]}
+	receiveShadow={false}
+	frustumCulled={false}
+	visible={true}
+	scale={[1, 1, 1]}
 	castShadow={true}
 	name="Box"
 >
@@ -45,20 +54,48 @@
 	/>
 	<T.MeshStandardMaterial
 		wireframe={false}
-		color={'#aaff9b'}
+		color={'#68ff00'}
 	/>
 </T.Mesh>
 
+<T.Group rotation={[0, 0, 0, 'XYZ']} position={[0, 0, 0]}>
+	<T.MeshStandardMaterial
+		visible={true}
+		opacity={1}
+		transparent={false}
+		metalness={0.2609}
+		roughness={0.1848}
+		color={'#ff4747'}
+		let:ref
+	>
+		{#each [-2, -1, 0, 1, 2] as x, index}
+			<T.Mesh
+				castShadow={true}
+				position={[x, 0, 0]}
+				name="Sphere-{index + 1}"
+			>
+				<T.SphereGeometry args={[0.4]} />
+				<T is={ref} />
+			</T.Mesh>
+		{/each}
+	</T.MeshStandardMaterial>
+</T.Group>
+
 <T.Mesh
+	scale={[2.5, 1, 2.3]}
+	rotation={[1.5708, 0, 0, 'XYZ']}
 	visible={true}
 	castShadow={false}
 	matrixWorldAutoUpdate={true}
 	matrixAutoUpdate={true}
 	frustumCulled={true}
-	position={[0, 0, 0]}
+	position={[0, 0, -0.8]}
 	receiveShadow={true}
 	name="Floor"
 >
 	<T.BoxGeometry args={[5, 0.01, 5]} />
-	<T.MeshStandardMaterial visible={true} transparent={true} />
+	<T.MeshStandardMaterial
+		visible={true}
+		transparent={true}
+	/>
 </T.Mesh>
