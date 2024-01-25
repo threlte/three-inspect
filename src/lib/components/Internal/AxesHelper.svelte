@@ -52,6 +52,7 @@
 <T
 	is={line2}
 	bind:this={$component}
+	userData={{ ignoreOverrideMaterial: true }}
 >
 	<T is={lineGeometry} />
 	<T is={lineMaterial} />

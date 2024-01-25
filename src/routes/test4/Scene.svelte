@@ -22,14 +22,15 @@
 	near={0.1}
 	far={2000}
 	rotation={[0, 0, 0, 'XYZ']}
-	fov={41}
+	fov={60}
 	makeDefault
 />
 
 <T.DirectionalLight
+	visible={true}
 	rotation={[0, 0, 0, 'XYZ']}
 	castShadow={true}
-	position={[-1.4245, 4.8, 2]}
+	position={[-1.4245, 4.8, 8.0099]}
 />
 
 <T.AmbientLight
@@ -39,7 +40,7 @@
 
 <T.Mesh
 	rotation={[0, 0, 0, 'XYZ']}
-	position={[0, 0, 0]}
+	position={[0, 1.3487, 0]}
 	receiveShadow={false}
 	frustumCulled={false}
 	visible={true}
@@ -58,7 +59,7 @@
 	/>
 </T.Mesh>
 
-<T.Group rotation={[0, 0, 0, 'XYZ']} position={[0, 0, 0]}>
+<T.Group visible={true} rotation={[0, 0, 0, 'XYZ']} position={[0, -0.6218, 0]}>
 	<T.MeshStandardMaterial
 		visible={true}
 		opacity={1}
@@ -95,6 +96,7 @@
 >
 	<T.BoxGeometry args={[5, 0.01, 5]} />
 	<T.MeshStandardMaterial
+		color={'#8062fb'}
 		visible={true}
 		transparent={true}
 	/>

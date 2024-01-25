@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { HierarchicalObject, useThrelte } from '@threlte/core'
-	import { Grid, Gizmo } from '@threlte/extras'
+	import { Gizmo, Grid } from '@threlte/extras'
 	import { add } from '../hooks/useOnAdd'
 	import { remove } from '../hooks/useOnRemove'
 	import { getInternalContext, useInspector } from '../internal/context'
@@ -8,11 +8,12 @@
 	import Portal from './Internal/Portal.svelte'
 	import Draggable from './Positions/Draggable.svelte'
 	import Inline from './Positions/Inline.svelte'
+	import AutoSync from './Tools/AutoSync.svelte'
 	import FreeCamera from './Tools/FreeCamera.svelte'
 	import Helpers from './Tools/Helpers.svelte'
 	import Raycast from './Tools/Raycast.svelte'
 	import TransformControls from './Tools/TransformControls.svelte'
-	import AutoSync from './Tools/AutoSync.svelte'
+	import ViewportRenderModes from './Tools/ViewportRenderModes.svelte'
 
 	const { position } = useInspector()
 	const { scene } = useThrelte()
@@ -35,6 +36,8 @@
 		})
 	}
 </script>
+
+<ViewportRenderModes />
 
 {#if $syncSettings.enabled && $syncSettings.mode === 'auto'}
 	<AutoSync />
@@ -68,6 +71,7 @@
 
 	{#if $gizmoSettings.grid.visible}
 		<Grid
+			userData={{ ignoreOverrideMaterial: true }}
 			infiniteGrid
 			cellSize={$gizmoSettings.grid.units}
 			renderOrder={9999}

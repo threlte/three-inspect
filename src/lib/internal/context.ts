@@ -65,6 +65,10 @@ export interface GizmoSettings {
 	}
 }
 
+export interface ViewSettings {
+	mode: 'rendered' | 'wireframe' | 'solid'
+}
+
 export interface Transaction {
 	id: string
 	time: number
@@ -95,6 +99,7 @@ interface InternalContext {
 	studioSettings: Writable<StudioSettings>
 	toolSettings: Writable<ToolSettings>
 	syncSettings: Writable<SyncSettings>
+	viewSettings: Writable<ViewSettings>
 	sync: Sync
 }
 
@@ -156,6 +161,9 @@ export const setInternalContext = () => {
 				},
 			},
 			space: 'local',
+		}),
+		viewSettings: persisted('internalContext.viewSettings', {
+			mode: 'rendered',
 		}),
 		studioSettings: persisted('internalContext.studioSettings', {
 			enabled: true,

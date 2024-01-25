@@ -91,7 +91,12 @@
 				obj.visible = false
 			})
 
+			const originalOverrideMaterial = scene.overrideMaterial
+			scene.overrideMaterial = null
+
 			renderer.render(scene, defaultCamera.current)
+
+			scene.overrideMaterial = originalOverrideMaterial
 
 			studioObjects.current.forEach((obj) => {
 				obj.visible = true

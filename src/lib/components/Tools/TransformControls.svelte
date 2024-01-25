@@ -86,6 +86,9 @@
 	scaleSnap={$toolSettings.snapping.enabled ? $toolSettings.snapping.scale.step : 0}
 	autoPauseOrbitControls
 	on:create={({ ref, cleanup }) => {
+		ref.traverse((node) => {
+			node.userData.ignoreOverrideMaterial = true
+		})
 		studioObjects.update((objects) => {
 			objects.add(ref)
 			return objects

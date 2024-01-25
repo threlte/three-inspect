@@ -29,6 +29,7 @@
 {#if 'isCamera' in object}
 	{#if $toolSettings.freeCamera.enabled}
 		<T.CameraHelper
+			userData={{ ignoreOverrideMaterial: true }}
 			bind:ref
 			args={[object]}
 			on:create={onCreate}
@@ -37,6 +38,7 @@
 {:else if object instanceof THREE.Light}
 	{#if object.shadow}
 		<T.CameraHelper
+			userData={{ ignoreOverrideMaterial: true }}
 			args={[object.shadow.camera]}
 			on:create={onCreate}
 		/>
@@ -44,26 +46,31 @@
 
 	{#if 'isDirectionalLight' in object}
 		<T.DirectionalLightHelper
+			userData={{ ignoreOverrideMaterial: true }}
 			args={[object, 10]}
 			on:create={onCreate}
 		/>
 	{:else if 'isSpotLight' in object}
 		<T.SpotLightHelper
+			userData={{ ignoreOverrideMaterial: true }}
 			args={[object]}
 			on:create={onCreate}
 		/>
 	{:else if 'isPointLight' in object}
 		<T.PointLightHelper
+			userData={{ ignoreOverrideMaterial: true }}
 			args={[object, 10]}
 			on:create={onCreate}
 		/>
 	{:else if 'isHemisphereLight' in object}
 		<T.HemisphereLightHelper
+			userData={{ ignoreOverrideMaterial: true }}
 			args={[object, 10]}
 			on:create={onCreate}
 		/>
 	{:else if 'isRectAreaLight' in object}
 		<T
+			userData={{ ignoreOverrideMaterial: true }}
 			is={RectAreaLightHelper}
 			on:create={onCreate}
 			args={[object]}

@@ -17,6 +17,7 @@
 		syncSettings,
 		sync,
 		studioSettings,
+		viewSettings,
 	} = getInternalContext()
 
 	let autoSync = $syncSettings.mode === 'auto'
@@ -240,6 +241,46 @@
 					/>
 				</svelte:fragment>
 			</PopUpPane>
+		</HorizontalButtonGroup>
+
+		<VerticalSeparator />
+
+		<HorizontalButtonGroup>
+			<Tooltip>
+				<IconButton
+					on:click={() => {
+						$viewSettings.mode = 'wireframe'
+					}}
+					active={$viewSettings.mode === 'wireframe'}
+					label="Wireframe"
+					icon="mdiWeb"
+				/>
+				<span slot="tooltip">Wireframe</span>
+			</Tooltip>
+
+			<Tooltip>
+				<IconButton
+					on:click={() => {
+						$viewSettings.mode = 'solid'
+					}}
+					active={$viewSettings.mode === 'solid'}
+					label="Solid"
+					icon="mdiCircle"
+				/>
+				<span slot="tooltip">Solid</span>
+			</Tooltip>
+
+			<Tooltip>
+				<IconButton
+					on:click={() => {
+						$viewSettings.mode = 'rendered'
+					}}
+					active={$viewSettings.mode === 'rendered'}
+					label="Rendered"
+					icon="mdiCircleOpacity"
+				/>
+				<span slot="tooltip">Rendered</span>
+			</Tooltip>
 		</HorizontalButtonGroup>
 	</div>
 
