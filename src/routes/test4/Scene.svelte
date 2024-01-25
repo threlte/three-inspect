@@ -89,7 +89,7 @@
 	matrixWorldAutoUpdate={true}
 	matrixAutoUpdate={true}
 	frustumCulled={true}
-	position={[0, 0, -0.8]}
+	position={[0, 0, -0.7]}
 	receiveShadow={true}
 	name="Floor"
 >

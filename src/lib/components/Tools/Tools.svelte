@@ -46,6 +46,7 @@
 			/>
 			<span slot="tooltip">Select {$usingRaycast ? 'off' : 'on'}</span>
 		</Tooltip>
+
 		<Tooltip>
 			<IconButton
 				label="Free camera"
@@ -57,6 +58,7 @@
 			/>
 			<span slot="tooltip">Free camera {$toolSettings.freeCamera.enabled ? 'off' : 'on'}</span>
 		</Tooltip>
+
 		<Tooltip>
 			<IconButton
 				label="TransformControls"
@@ -70,7 +72,9 @@
 				>TransformControls {$toolSettings.transformControls.enabled ? 'off' : 'on'}</span
 			>
 		</Tooltip>
+
 		<VerticalSeparator />
+
 		<Tooltip>
 			<IconButton
 				label="Console"
@@ -82,6 +86,7 @@
 			/>
 			<span slot="tooltip">{$optionalPanes.Console ? 'Close' : 'Open'} Console</span>
 		</Tooltip>
+
 		<Tooltip>
 			<IconButton
 				label="Monitor"
