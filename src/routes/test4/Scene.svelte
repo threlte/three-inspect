@@ -40,7 +40,7 @@
 
 <T.Mesh
 	rotation={[0, 0, 0, 'XYZ']}
-	position={[0, 1.3487, 0]}
+	position={[0, 1, -0.1]}
 	receiveShadow={false}
 	frustumCulled={false}
 	visible={true}
@@ -59,7 +59,7 @@
 	/>
 </T.Mesh>
 
-<T.Group visible={true} rotation={[0, 0, 0, 'XYZ']} position={[0, -0.6218, 0]}>
+<T.Group scale={[1, 1, 1]} visible={true} rotation={[0, 0, 0, 'XYZ']} position={[0, -0.9, -0.2]}>
 	<T.MeshStandardMaterial
 		visible={true}
 		opacity={1}
@@ -90,7 +90,7 @@
 	matrixWorldAutoUpdate={true}
 	matrixAutoUpdate={true}
 	frustumCulled={true}
-	position={[0, 0, -0.7]}
+	position={[0, 0, -0.6]}
 	receiveShadow={true}
 	name="Floor"
 >

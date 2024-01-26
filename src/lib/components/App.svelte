@@ -14,6 +14,7 @@
 	import Raycast from './Tools/Raycast.svelte'
 	import TransformControls from './Tools/TransformControls.svelte'
 	import ViewportRenderModes from './Tools/ViewportRenderModes.svelte'
+	import Keyboard from './Tools/Keyboard.svelte'
 
 	const { position } = useInspector()
 	const { scene } = useThrelte()
@@ -36,6 +37,8 @@
 		})
 	}
 </script>
+
+<Keyboard />
 
 <ViewportRenderModes />
 

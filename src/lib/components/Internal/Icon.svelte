@@ -24,6 +24,11 @@
 		mdiWeb,
 		mdiCircleOpacity,
 		mdiCircle,
+		mdiRotate360,
+		mdiArrowExpand,
+		mdiRotateLeft,
+		mdiArrowRight,
+		mdiRayEndArrow,
 	} from '@mdi/js'
 
 	export const paths = {
@@ -48,6 +53,11 @@
 		mdiWeb,
 		mdiCircleOpacity,
 		mdiCircle,
+		mdiRotate360,
+		mdiArrowExpand,
+		mdiRotateLeft,
+		mdiArrowRight,
+		mdiRayEndArrow,
 	}
 
 	export type Icons = keyof typeof paths

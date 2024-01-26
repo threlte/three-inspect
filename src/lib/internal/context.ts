@@ -40,6 +40,7 @@ export interface ToolSettings {
 	}
 	transformControls: {
 		enabled: boolean
+		mode: 'translate' | 'rotate' | 'scale'
 		inUse: boolean
 	}
 	freeCamera: {
@@ -142,6 +143,7 @@ export const setInternalContext = () => {
 		}),
 		toolSettings: persisted('internalContext.toolSettings', {
 			transformControls: {
+				mode: 'translate',
 				enabled: true,
 				inUse: false,
 			},

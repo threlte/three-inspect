@@ -60,46 +60,6 @@
 			<span slot="tooltip">Free camera {$toolSettings.freeCamera.enabled ? 'off' : 'on'}</span>
 		</Tooltip>
 
-		<Tooltip>
-			<IconButton
-				label="TransformControls"
-				icon="mdiCursorMove"
-				active={$toolSettings.transformControls.enabled}
-				on:click={() => {
-					$toolSettings.transformControls.enabled = !$toolSettings.transformControls.enabled
-				}}
-			/>
-			<span slot="tooltip"
-				>TransformControls {$toolSettings.transformControls.enabled ? 'off' : 'on'}</span
-			>
-		</Tooltip>
-
-		<VerticalSeparator />
-
-		<Tooltip>
-			<IconButton
-				label="Console"
-				icon="mdiConsole"
-				active={$optionalPanes.Console}
-				on:click={() => {
-					$optionalPanes.Console = !$optionalPanes.Console
-				}}
-			/>
-			<span slot="tooltip">{$optionalPanes.Console ? 'Close' : 'Open'} Console</span>
-		</Tooltip>
-
-		<Tooltip>
-			<IconButton
-				label="Monitor"
-				icon="mdiGraphOutline"
-				active={$optionalPanes.Monitor}
-				on:click={() => {
-					$optionalPanes.Monitor = !$optionalPanes.Monitor
-				}}
-			/>
-			<span slot="tooltip">{$optionalPanes.Monitor ? 'Close' : 'Open'} Monitor</span>
-		</Tooltip>
-
 		<VerticalSeparator />
 
 		<HorizontalButtonGroup>
@@ -243,6 +203,71 @@
 			</PopUpPane>
 		</HorizontalButtonGroup>
 
+		<HorizontalButtonGroup>
+			<Tooltip>
+				<IconButton
+					on:click={() => {
+						if (
+							$toolSettings.transformControls.enabled &&
+							$toolSettings.transformControls.mode === 'translate'
+						) {
+							$toolSettings.transformControls.enabled = false
+						} else {
+							$toolSettings.transformControls.enabled = true
+							$toolSettings.transformControls.mode = 'translate'
+						}
+					}}
+					active={$toolSettings.transformControls.enabled &&
+						$toolSettings.transformControls.mode === 'translate'}
+					label="Move"
+					icon="mdiRayEndArrow"
+				/>
+				<span slot="tooltip">Move</span>
+			</Tooltip>
+
+			<Tooltip>
+				<IconButton
+					on:click={() => {
+						if (
+							$toolSettings.transformControls.enabled &&
+							$toolSettings.transformControls.mode === 'rotate'
+						) {
+							$toolSettings.transformControls.enabled = false
+						} else {
+							$toolSettings.transformControls.enabled = true
+							$toolSettings.transformControls.mode = 'rotate'
+						}
+					}}
+					active={$toolSettings.transformControls.enabled &&
+						$toolSettings.transformControls.mode === 'rotate'}
+					label="Rotate"
+					icon="mdiRotateLeft"
+				/>
+				<span slot="tooltip">Rotate</span>
+			</Tooltip>
+
+			<Tooltip>
+				<IconButton
+					on:click={() => {
+						if (
+							$toolSettings.transformControls.enabled &&
+							$toolSettings.transformControls.mode === 'scale'
+						) {
+							$toolSettings.transformControls.enabled = false
+						} else {
+							$toolSettings.transformControls.enabled = true
+							$toolSettings.transformControls.mode = 'scale'
+						}
+					}}
+					active={$toolSettings.transformControls.enabled &&
+						$toolSettings.transformControls.mode === 'scale'}
+					label="Scale"
+					icon="mdiArrowExpand"
+				/>
+				<span slot="tooltip">Scale</span>
+			</Tooltip>
+		</HorizontalButtonGroup>
+
 		<VerticalSeparator />
 
 		<HorizontalButtonGroup>
@@ -285,6 +310,32 @@
 	</div>
 
 	<div>
+		<Tooltip>
+			<IconButton
+				label="Console"
+				icon="mdiConsole"
+				active={$optionalPanes.Console}
+				on:click={() => {
+					$optionalPanes.Console = !$optionalPanes.Console
+				}}
+			/>
+			<span slot="tooltip">{$optionalPanes.Console ? 'Close' : 'Open'} Console</span>
+		</Tooltip>
+
+		<Tooltip>
+			<IconButton
+				label="Monitor"
+				icon="mdiGraphOutline"
+				active={$optionalPanes.Monitor}
+				on:click={() => {
+					$optionalPanes.Monitor = !$optionalPanes.Monitor
+				}}
+			/>
+			<span slot="tooltip">{$optionalPanes.Monitor ? 'Close' : 'Open'} Monitor</span>
+		</Tooltip>
+
+		<VerticalSeparator />
+
 		<!-- Sync -->
 		<HorizontalButtonGroup>
 			<Tooltip>
