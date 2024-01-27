@@ -25,8 +25,8 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k cylinder.glb
 	name="Cylinder"
 	is={ref}
 	dispose={false}
-	position={[-4.6144, -1.1208, -0.2507]}
-	rotation={[0.247, 0.3541, -0.5378, 'XYZ']}
+	position={[-4.6144, -1.2, -0.3]}
+	rotation={[0.5088, 0.3541, -0.5378, 'XYZ']}
 >
 	{#await gltf}
 		<slot name="fallback" />
@@ -35,6 +35,7 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k cylinder.glb
 			name="Cylinder"
 			geometry={gltf.nodes.Cylinder.geometry}
 			material={gltf.nodes.Cylinder.material}
+			material.roughness={0}
 		/>
 	{:catch error}
 		<slot

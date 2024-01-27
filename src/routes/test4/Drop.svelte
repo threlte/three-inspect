@@ -34,6 +34,7 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k drop.glb
 			name="Cone"
 			geometry={gltf.nodes.Cone.geometry}
 			material={gltf.nodes.Cone.material}
+			material.roughness={0}
 		/>
 	{:catch error}
 		<slot

@@ -34,6 +34,7 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k ico.glb
 			name="Icosphere"
 			geometry={gltf.nodes.Icosphere.geometry}
 			material={gltf.nodes.Icosphere.material}
+			material.roughness={0}
 		/>
 	{:catch error}
 		<slot

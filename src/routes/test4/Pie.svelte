@@ -25,8 +25,9 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k pie-chart.glb
 	name="Pie"
 	is={ref}
 	dispose={false}
-	position={[0.1227, -1.5561, -2.5128]}
-	rotation={[0.2408, -0.6125, 1.1494, 'XYZ']}
+	position={[0.1227, -1.2538, -2.5128]}
+	rotation={[0.1277, -0.6416, 0.9571, 'XYZ']}
+	scale={0.952}
 >
 	{#await gltf}
 		<slot name="fallback" />
@@ -35,6 +36,9 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k pie-chart.glb
 			name="Cylinder"
 			geometry={gltf.nodes.Cylinder.geometry}
 			material={gltf.nodes.Cylinder.material}
+			rotation={[0.966, 0.5404, -0.409, 'XYZ']}
+			position={[-0.1412, 0.0818, -0.1984]}
+			material.roughness={0}
 		/>
 	{:catch error}
 		<slot
