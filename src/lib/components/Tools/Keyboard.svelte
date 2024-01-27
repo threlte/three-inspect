@@ -1,32 +1,39 @@
 <script lang="ts">
 	import { getInternalContext } from '../../internal/context'
+	import { useSync } from '../../internal/sync'
 
-	const { studioSettings, toolSettings, viewSettings, usingRaycast } = getInternalContext()
+	const { studioSettings, toolSettings, viewSettings, usingRaycast, syncSettings } =
+		getInternalContext()
+
+	const { writeToDisk } = useSync()
 
 	const onKeyDown = (event: KeyboardEvent) => {
 		if (!$studioSettings.keyboard.enabled) return
 
-		if (event.key === 'a') {
+		// check if any modifier keys are pressed
+		const metaKeyPressed = event.metaKey || event.ctrlKey || event.altKey || event.shiftKey
+
+		if (!metaKeyPressed && event.key === 'a') {
 			$usingRaycast = !$usingRaycast
 			return
 		}
 
-		if (event.key === 'w') {
+		if (!metaKeyPressed && event.key === 'w') {
 			$toolSettings.space = $toolSettings.space === 'local' ? 'world' : 'local'
 			return
 		}
 
-		if (event.key === 'c') {
+		if (!metaKeyPressed && event.key === 'c') {
 			$toolSettings.freeCamera.enabled = !$toolSettings.freeCamera.enabled
 			return
 		}
 
-		if (event.key === 'm') {
+		if (!metaKeyPressed && event.key === 'm') {
 			$toolSettings.snapping.enabled = !$toolSettings.snapping.enabled
 			return
 		}
 
-		if (event.key === 'v') {
+		if (!metaKeyPressed && event.key === 'v') {
 			$viewSettings.mode =
 				$viewSettings.mode === 'wireframe'
 					? 'solid'
@@ -36,7 +43,7 @@
 			return
 		}
 
-		if (event.key === 't') {
+		if (!metaKeyPressed && event.key === 't') {
 			$toolSettings.transformControls.enabled = true
 			if ($toolSettings.transformControls.mode === 'translate') {
 				$toolSettings.space = $toolSettings.space === 'local' ? 'world' : 'local'
@@ -46,7 +53,7 @@
 			return
 		}
 
-		if (event.key === 'r') {
+		if (!metaKeyPressed && event.key === 'r') {
 			$toolSettings.transformControls.enabled = true
 			if ($toolSettings.transformControls.mode === 'rotate') {
 				$toolSettings.space = $toolSettings.space === 'local' ? 'world' : 'local'
@@ -56,7 +63,7 @@
 			return
 		}
 
-		if (event.key === 's') {
+		if (!metaKeyPressed && event.key === 's') {
 			$toolSettings.transformControls.enabled = true
 			if ($toolSettings.transformControls.mode === 'scale') {
 				$toolSettings.space = $toolSettings.space === 'local' ? 'world' : 'local'
@@ -64,6 +71,14 @@
 				$toolSettings.transformControls.mode = 'scale'
 			}
 			return
+		}
+
+		// check if cmd+s or ctrl+s is pressed
+		const cmdOrCtrlPressed = event.metaKey || event.ctrlKey
+		if (cmdOrCtrlPressed && event.key === 's') {
+			if ($syncSettings.enabled && $syncSettings.mode === 'manual') {
+				writeToDisk()
+			}
 		}
 	}
 </script>

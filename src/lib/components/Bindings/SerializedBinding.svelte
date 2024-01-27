@@ -56,9 +56,11 @@
 			return value
 		}
 		if (value.isVector3) {
+			if (value.x === value.y && value.x === value.z) return value.x
 			return value.toArray()
 		}
 		if (value.isVector2) {
+			if (value.x === value.y) return value.x
 			return value.toArray()
 		}
 		if (value.isColor) {

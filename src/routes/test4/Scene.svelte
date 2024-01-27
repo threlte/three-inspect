@@ -7,6 +7,10 @@
 	import { Float, useTexture } from '@threlte/extras'
 	import type { StudioProps } from '../../types'
 	import { onMount } from 'svelte'
+	import Ico from './Ico.svelte'
+	import Pie from './Pie.svelte'
+	import Cylinder from './Cylinder.svelte'
+	import Drop from './Drop.svelte'
 
 	const applyToProperties = ['shadow', 'light', 'material', 'camera']
 
@@ -55,10 +59,10 @@
 
 <T.PerspectiveCamera
 	zoom={1}
-	position={[-1.3227, 2.6187, 7.9287]}
+	position={[10, 0, 0]}
 	near={0.1}
 	far={2000}
-	rotation={[-0.2652, -0.1863, -0.0503, 'XYZ']}
+	rotation={[0, 1.5708, 0, 'XYZ']}
 	fov={30}
 	makeDefault
 />
@@ -76,10 +80,50 @@
 	intensity={0.2}
 />
 
-<Float rotationIntensity={1}>
+<Float
+	rotationIntensity={1}
+	name="Ramp"
+	seed={1}
+>
+	<Ramp />
+</Float>
+
+<Float
+	rotationIntensity={1}
+	seed={2}
+	name="Torus"
+>
 	<Torus />
 </Float>
 
-<Float rotationIntensity={1}>
-	<Ramp />
+<Float
+	rotationIntensity={1}
+	seed={3}
+	name="Ico"
+>
+	<Ico />
+</Float>
+
+<Float
+	rotationIntensity={1}
+	seed={4}
+	name="Pie"
+>
+	<Pie />
+</Float>
+
+<Float
+	rotationIntensity={1}
+	seed={5}
+	name="Cylinder"
+>
+	<Cylinder />
+</Float>
+
+<Float
+	rotationIntensity={1}
+	seed={5}
+	name="Drop"
+>
+	<Drop />
 </Float>

@@ -8,6 +8,7 @@
 	import PopUpPane from './PopUpPane.svelte'
 	import VerticalSeparator from './VerticalSeparator.svelte'
 	import Changes from './Changes.svelte'
+	import { browser } from '../../internal/browser'
 
 	const {
 		usingRaycast,
@@ -45,7 +46,7 @@
 					usingRaycast.set(!$usingRaycast)
 				}}
 			/>
-			<span slot="tooltip">Select {$usingRaycast ? 'off' : 'on'}</span>
+			<span slot="tooltip">Select {$usingRaycast ? 'off' : 'on'} (A)</span>
 		</Tooltip>
 
 		<Tooltip>
@@ -57,7 +58,7 @@
 					$toolSettings.freeCamera.enabled = !$toolSettings.freeCamera.enabled
 				}}
 			/>
-			<span slot="tooltip">Free camera {$toolSettings.freeCamera.enabled ? 'off' : 'on'}</span>
+			<span slot="tooltip">Free camera {$toolSettings.freeCamera.enabled ? 'off' : 'on'} (C)</span>
 		</Tooltip>
 
 		<VerticalSeparator />
@@ -142,7 +143,7 @@
 
 		<HorizontalButtonGroup>
 			<Tooltip>
-				<span slot="tooltip">Local Space</span>
+				<span slot="tooltip">Local Space (W)</span>
 				<IconButton
 					on:click={() => {
 						$toolSettings.space = 'local'
@@ -153,7 +154,7 @@
 				/>
 			</Tooltip>
 			<Tooltip>
-				<span slot="tooltip">World Space</span>
+				<span slot="tooltip">World Space (W)</span>
 				<IconButton
 					label="World Space"
 					on:click={() => {
@@ -175,7 +176,7 @@
 						$toolSettings.snapping.enabled = !$toolSettings.snapping.enabled
 					}}
 				/>
-				<span slot="tooltip">Snapping {$toolSettings.snapping.enabled ? 'off' : 'on'}</span>
+				<span slot="tooltip">Snapping {$toolSettings.snapping.enabled ? 'off' : 'on'} (M)</span>
 			</Tooltip>
 
 			<PopUpPane
@@ -222,7 +223,7 @@
 					label="Move"
 					icon="mdiRayEndArrow"
 				/>
-				<span slot="tooltip">Move</span>
+				<span slot="tooltip">Move (T)</span>
 			</Tooltip>
 
 			<Tooltip>
@@ -243,7 +244,7 @@
 					label="Rotate"
 					icon="mdiRotateLeft"
 				/>
-				<span slot="tooltip">Rotate</span>
+				<span slot="tooltip">Rotate (R)</span>
 			</Tooltip>
 
 			<Tooltip>
@@ -264,7 +265,7 @@
 					label="Scale"
 					icon="mdiArrowExpand"
 				/>
-				<span slot="tooltip">Scale</span>
+				<span slot="tooltip">Scale (S)</span>
 			</Tooltip>
 		</HorizontalButtonGroup>
 
@@ -280,7 +281,7 @@
 					label="Wireframe"
 					icon="mdiWeb"
 				/>
-				<span slot="tooltip">Wireframe</span>
+				<span slot="tooltip">Wireframe (V)</span>
 			</Tooltip>
 
 			<Tooltip>
@@ -292,7 +293,7 @@
 					label="Solid"
 					icon="mdiCircle"
 				/>
-				<span slot="tooltip">Solid</span>
+				<span slot="tooltip">Solid (V)</span>
 			</Tooltip>
 
 			<Tooltip>
@@ -304,7 +305,7 @@
 					label="Rendered"
 					icon="mdiCircleOpacity"
 				/>
-				<span slot="tooltip">Rendered</span>
+				<span slot="tooltip">Rendered (V)</span>
 			</Tooltip>
 		</HorizontalButtonGroup>
 	</div>
@@ -367,6 +368,11 @@
 									changes
 								{:else}
 									change
+								{/if}
+								{#if browser && navigator.userAgent.includes('Mac')}
+									(CMD + S)
+								{:else}
+									(CTRL + S)
 								{/if}
 							{:else}
 								Up-to-date

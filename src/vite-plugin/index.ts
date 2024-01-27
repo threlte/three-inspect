@@ -150,13 +150,16 @@ const changeAttribute = (
 					isMultiLine = slice.includes('\n')
 					indent = slice
 				}
+				// new attributes should be added after the last attribute
+				let start = node.start + node.name.length + 1
+				const hasAttributes = Boolean(node.attributes?.length)
+				if (hasAttributes) {
+					start = node.attributes[node.attributes.length - 1].end
+				}
 				if (isMultiLine) {
-					mc.appendLeft(
-						node.start + node.name.length + 1,
-						`${indent}${finalPath}={${parseValue(value)}}`
-					)
+					mc.appendLeft(start, `${indent}${finalPath}={${parseValue(value)}}`)
 				} else {
-					mc.appendLeft(node.start + node.name.length + 1, ` ${finalPath}={${parseValue(value)}}`)
+					mc.appendLeft(start, ` ${finalPath}={${parseValue(value)}}`)
 				}
 			} else {
 				// get the mustache tag value
