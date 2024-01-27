@@ -4,31 +4,43 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k ico.glb
 -->
 
 <script lang="ts">
-  import type * as THREE from 'three'
-  import { Group } from 'three'
-  import { T } from '@threlte/core'
-  import { useGltf } from '@threlte/extras'
+	import type * as THREE from 'three'
+	import { Group } from 'three'
+	import { T } from '@threlte/core'
+	import { useGltf } from '@threlte/extras'
 
-  export const ref = new Group()
+	export const ref = new Group()
 
-  type GLTFResult = {
-    nodes: {
-      Icosphere: THREE.Mesh
-    }
-    materials: {}
-  }
+	type GLTFResult = {
+		nodes: {
+			Icosphere: THREE.Mesh
+		}
+		materials: {}
+	}
 
-  const gltf = useGltf<GLTFResult>('/ico.glb')
+	const gltf = useGltf<GLTFResult>('/ico.glb')
 </script>
 
-<T is={ref} dispose={false} position={[0.4265, 0.8421, -2.5325]}>
-  {#await gltf}
-    <slot name="fallback" />
-  {:then gltf}
-    <T.Mesh name="Icosphere" geometry={gltf.nodes.Icosphere.geometry} material={gltf.nodes.Icosphere.material} material.roughness={0} />
-  {:catch error}
-    <slot name="error" {error} />
-  {/await}
+<T
+	name="Ico"
+	is={ref}
+	dispose={false}
+	position={[0.4265, 0.8421, -2.5325]}
+>
+	{#await gltf}
+		<slot name="fallback" />
+	{:then gltf}
+		<T.Mesh
+			name="Icosphere"
+			geometry={gltf.nodes.Icosphere.geometry}
+			material={gltf.nodes.Icosphere.material}
+		/>
+	{:catch error}
+		<slot
+			name="error"
+			{error}
+		/>
+	{/await}
 
-  <slot {ref} />
+	<slot {ref} />
 </T>

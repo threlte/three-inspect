@@ -4,31 +4,43 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k drop.glb
 -->
 
 <script lang="ts">
-  import type * as THREE from 'three'
-  import { Group } from 'three'
-  import { T } from '@threlte/core'
-  import { useGltf } from '@threlte/extras'
+	import type * as THREE from 'three'
+	import { Group } from 'three'
+	import { T } from '@threlte/core'
+	import { useGltf } from '@threlte/extras'
 
-  export const ref = new Group()
+	export const ref = new Group()
 
-  type GLTFResult = {
-    nodes: {
-      Cone: THREE.Mesh
-    }
-    materials: {}
-  }
+	type GLTFResult = {
+		nodes: {
+			Cone: THREE.Mesh
+		}
+		materials: {}
+	}
 
-  const gltf = useGltf<GLTFResult>('/drop.glb')
+	const gltf = useGltf<GLTFResult>('/drop.glb')
 </script>
 
-<T is={ref} dispose={false} position={[0.1173, 1.1125, 0.1772]}>
-  {#await gltf}
-    <slot name="fallback" />
-  {:then gltf}
-    <T.Mesh name="Cone" geometry={gltf.nodes.Cone.geometry} material={gltf.nodes.Cone.material} material.roughness={0} />
-  {:catch error}
-    <slot name="error" {error} />
-  {/await}
+<T
+	name="Drop"
+	is={ref}
+	dispose={false}
+	position={[0.1173, 1.1125, 0.1772]}
+>
+	{#await gltf}
+		<slot name="fallback" />
+	{:then gltf}
+		<T.Mesh
+			name="Cone"
+			geometry={gltf.nodes.Cone.geometry}
+			material={gltf.nodes.Cone.material}
+		/>
+	{:catch error}
+		<slot
+			name="error"
+			{error}
+		/>
+	{/await}
 
-  <slot {ref} />
+	<slot {ref} />
 </T>

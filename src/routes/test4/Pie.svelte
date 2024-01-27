@@ -4,31 +4,44 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k pie-chart.glb
 -->
 
 <script lang="ts">
-  import type * as THREE from 'three'
-  import { Group } from 'three'
-  import { T } from '@threlte/core'
-  import { useGltf } from '@threlte/extras'
+	import type * as THREE from 'three'
+	import { Group } from 'three'
+	import { T } from '@threlte/core'
+	import { useGltf } from '@threlte/extras'
 
-  export const ref = new Group()
+	export const ref = new Group()
 
-  type GLTFResult = {
-    nodes: {
-      Cylinder: THREE.Mesh
-    }
-    materials: {}
-  }
+	type GLTFResult = {
+		nodes: {
+			Cylinder: THREE.Mesh
+		}
+		materials: {}
+	}
 
-  const gltf = useGltf<GLTFResult>('/pie-chart.glb')
+	const gltf = useGltf<GLTFResult>('/pie-chart.glb')
 </script>
 
-<T is={ref} dispose={false} position={[0.1227, -1.5561, -2.5128]} rotation={[0.2408, -0.6125, 1.1494, 'XYZ']}>
-  {#await gltf}
-    <slot name="fallback" />
-  {:then gltf}
-    <T.Mesh name="Cylinder" geometry={gltf.nodes.Cylinder.geometry} material={gltf.nodes.Cylinder.material} material.roughness={0} material.metalness={1} />
-  {:catch error}
-    <slot name="error" {error} />
-  {/await}
+<T
+	name="Pie"
+	is={ref}
+	dispose={false}
+	position={[0.1227, -1.5561, -2.5128]}
+	rotation={[0.2408, -0.6125, 1.1494, 'XYZ']}
+>
+	{#await gltf}
+		<slot name="fallback" />
+	{:then gltf}
+		<T.Mesh
+			name="Cylinder"
+			geometry={gltf.nodes.Cylinder.geometry}
+			material={gltf.nodes.Cylinder.material}
+		/>
+	{:catch error}
+		<slot
+			name="error"
+			{error}
+		/>
+	{/await}
 
-  <slot {ref} />
+	<slot {ref} />
 </T>

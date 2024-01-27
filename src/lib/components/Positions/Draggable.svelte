@@ -25,7 +25,7 @@
 <svelte:window bind:innerWidth />
 
 <Pane
-	title=""
+	title="Threlte Studio"
 	userExpandable={false}
 	position="fixed"
 	width={$size.width - 12}
@@ -39,7 +39,7 @@
 </Pane>
 
 <Pane
-	title=""
+	title="Outline"
 	position="fixed"
 	theme={ThemeUtils.presets[$theme]}
 	width={250}

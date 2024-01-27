@@ -4,33 +4,50 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k ramp.glb
 -->
 
 <script lang="ts">
-  import type * as THREE from 'three'
-  import { Group } from 'three'
-  import { T } from '@threlte/core'
-  import { useGltf } from '@threlte/extras'
+	import type * as THREE from 'three'
+	import { Group } from 'three'
+	import { T } from '@threlte/core'
+	import { useGltf } from '@threlte/extras'
 
-  export const ref = new Group()
+	export const ref = new Group()
 
-  type GLTFResult = {
-    nodes: {
-      Cube001: THREE.Mesh
-      Cube001_1: THREE.Mesh
-    }
-    materials: {}
-  }
+	type GLTFResult = {
+		nodes: {
+			Cube001: THREE.Mesh
+			Cube001_1: THREE.Mesh
+		}
+		materials: {}
+	}
 
-  const gltf = useGltf<GLTFResult>('/ramp.glb')
+	const gltf = useGltf<GLTFResult>('/ramp.glb')
 </script>
 
-<T is={ref} dispose={false} position={[-0.4058, -0.6535, 2.6129]} rotation={[0.4674, 0.8436, -1.0191, 'XYZ']} scale={0.7}>
-  {#await gltf}
-    <slot name="fallback" />
-  {:then gltf}
-    <T.Mesh name="Cube001" geometry={gltf.nodes.Cube001.geometry} material={gltf.nodes.Cube001.material} material.roughness={0} />
-    <T.Mesh name="Cube001_1" geometry={gltf.nodes.Cube001_1.geometry} material={gltf.nodes.Cube001_1.material} />
-  {:catch error}
-    <slot name="error" {error} />
-  {/await}
+<T
+	name="Ramp"
+	is={ref}
+	dispose={false}
+	position={[-0.4058, -0.6535, 2.6129]}
+	rotation={[0.4674, 0.8436, -1.0191, 'XYZ']}
+>
+	{#await gltf}
+		<slot name="fallback" />
+	{:then gltf}
+		<T.Mesh
+			name="Cube001"
+			geometry={gltf.nodes.Cube001.geometry}
+			material={gltf.nodes.Cube001.material}
+		/>
+		<T.Mesh
+			name="Cube001_1"
+			geometry={gltf.nodes.Cube001_1.geometry}
+			material={gltf.nodes.Cube001_1.material}
+		/>
+	{:catch error}
+		<slot
+			name="error"
+			{error}
+		/>
+	{/await}
 
-  <slot {ref} />
+	<slot {ref} />
 </T>

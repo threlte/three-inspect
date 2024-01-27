@@ -4,31 +4,46 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k torus.glb
 -->
 
 <script lang="ts">
-  import type * as THREE from 'three'
-  import { Group } from 'three'
-  import { T } from '@threlte/core'
-  import { useGltf } from '@threlte/extras'
+	import type * as THREE from 'three'
+	import { Group } from 'three'
+	import { T } from '@threlte/core'
+	import { useGltf } from '@threlte/extras'
 
-  export const ref = new Group()
+	export const ref = new Group()
 
-  type GLTFResult = {
-    nodes: {
-      Torus: THREE.Mesh
-    }
-    materials: {}
-  }
+	type GLTFResult = {
+		nodes: {
+			Torus: THREE.Mesh
+		}
+		materials: {}
+	}
 
-  const gltf = useGltf<GLTFResult>('/torus.glb')
+	const gltf = useGltf<GLTFResult>('/torus.glb')
 </script>
 
-<T is={ref} dispose={false} position={[-0.0799, 1.5123, 2.1319]} rotation={[0.3639, -0.2697, -0.8154, 'XYZ']}>
-  {#await gltf}
-    <slot name="fallback" />
-  {:then gltf}
-    <T.Mesh name="Torus" geometry={gltf.nodes.Torus.geometry} material={gltf.nodes.Torus.material} material.roughness={0} position={0} />
-  {:catch error}
-    <slot name="error" {error} />
-  {/await}
+<T
+	name="Torus"
+	is={ref}
+	dispose={false}
+	position={[-0.0799, 1.5123, 2.1319]}
+	rotation={[0.3639, -0.2697, -0.8154, 'XYZ']}
+>
+	{#await gltf}
+		<slot name="fallback" />
+	{:then gltf}
+		<T.Mesh
+			name="Torus"
+			geometry={gltf.nodes.Torus.geometry}
+			material={gltf.nodes.Torus.material}
+			material.metalness={1}
+			position={[-0.1397, 0.1072, -0.0643]}
+		/>
+	{:catch error}
+		<slot
+			name="error"
+			{error}
+		/>
+	{/await}
 
-  <slot {ref} />
+	<slot {ref} />
 </T>

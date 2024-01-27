@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { Inspector } from '$lib'
 	import { T, injectPlugin, useThrelte } from '@threlte/core'
-	import { Color, EquirectangularReflectionMapping } from 'three'
-	import Torus from './TorusModel.svelte'
-	import Ramp from './RampModel.svelte'
-	import { Float, useTexture } from '@threlte/extras'
-	import type { StudioProps } from '../../types'
+	import { useTexture } from '@threlte/extras'
 	import { onMount } from 'svelte'
-	import Ico from './Ico.svelte'
-	import Pie from './Pie.svelte'
+	import { Color, EquirectangularReflectionMapping } from 'three'
+	import type { StudioProps } from '../../types'
 	import Cylinder from './Cylinder.svelte'
 	import Drop from './Drop.svelte'
+	import Ico from './Ico.svelte'
+	import Pie from './Pie.svelte'
+	import Ramp from './RampModel.svelte'
+	import Torus from './TorusModel.svelte'
 
 	const applyToProperties = ['shadow', 'light', 'material', 'camera']
 
@@ -58,7 +58,6 @@
 <Inspector position="draggable" />
 
 <T.PerspectiveCamera
-	zoom={1}
 	position={[10, 0, 0]}
 	near={0.1}
 	far={2000}
@@ -68,7 +67,7 @@
 />
 
 <T.DirectionalLight
-	intensity={2}
+	intensity={1}
 	visible={true}
 	rotation={[0, 0, 0, 'XYZ']}
 	castShadow={true}
@@ -80,50 +79,14 @@
 	intensity={0.2}
 />
 
-<Float
-	rotationIntensity={1}
-	name="Ramp"
-	seed={1}
->
-	<Ramp />
-</Float>
+<Ramp />
 
-<Float
-	rotationIntensity={1}
-	seed={2}
-	name="Torus"
->
-	<Torus />
-</Float>
+<Torus />
 
-<Float
-	rotationIntensity={1}
-	seed={3}
-	name="Ico"
->
-	<Ico />
-</Float>
+<Ico />
 
-<Float
-	rotationIntensity={1}
-	seed={4}
-	name="Pie"
->
-	<Pie />
-</Float>
+<Pie />
 
-<Float
-	rotationIntensity={1}
-	seed={5}
-	name="Cylinder"
->
-	<Cylinder />
-</Float>
+<Cylinder />
 
-<Float
-	rotationIntensity={1}
-	seed={5}
-	name="Drop"
->
-	<Drop />
-</Float>
+<Drop />
