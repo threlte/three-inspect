@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type * as THREE from 'three'
-	import { Binding, Folder, List } from 'svelte-tweakpane-ui'
+	import { Folder, List } from 'svelte-tweakpane-ui'
 	import Camera from './Camera.svelte'
+	import SerializedBinding from './SerializedBinding.svelte'
 
 	export let object: THREE.LightShadow
 
@@ -33,7 +34,7 @@
 />
 
 {#each keys as key (key)}
-	<Binding
+	<SerializedBinding
 		bind:object
 		{key}
 		label={key}

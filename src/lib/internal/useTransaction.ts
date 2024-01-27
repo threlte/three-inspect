@@ -21,6 +21,7 @@ export const useTransaction = (object: Object3D) => {
 			componentIndex: details.componentIndex,
 			attributeName,
 			attributeValue,
+			path: object.userData.inspectorOptions.path,
 		})
 	}
 

@@ -1,10 +1,15 @@
 <script lang="ts">
 	import { getInternalContext } from '../../internal/context'
 
-	const { studioSettings, toolSettings, viewSettings } = getInternalContext()
+	const { studioSettings, toolSettings, viewSettings, usingRaycast } = getInternalContext()
 
 	const onKeyDown = (event: KeyboardEvent) => {
 		if (!$studioSettings.keyboard.enabled) return
+
+		if (event.key === 'a') {
+			$usingRaycast = !$usingRaycast
+			return
+		}
 
 		if (event.key === 'w') {
 			$toolSettings.space = $toolSettings.space === 'local' ? 'world' : 'local'

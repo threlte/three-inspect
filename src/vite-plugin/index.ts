@@ -5,36 +5,52 @@ import type { Plugin } from 'vite'
 import type { Transaction } from '../lib/internal/context'
 
 const dummyScript = '<script>"ABC"</script>'
+const dummyScriptModule = '<script context="module">"ABC"</script>'
 const dummyStyle = '<style>"ABC"</style>'
 const precision = 4
 
 const extractMarkup = (code: string) => {
 	// to parse the markup, we first need to remove the script and the style blocks
-	const scriptRegex = /<script[^>]*>[\S\s]*?<\/script>/u
-	const styleRegex = /<style[^>]*>[\S\s]*?<\/style>/u
+	const scriptRegex = /<script(?![^>]*context="module")[^>]*>[\s\S]*?<\/script>/gu
+	const scriptModuleRegex = /<script[^>]*context="module"[^>]*>[\S\s]*?<\/script>/gu
+	const styleRegex = /<style[^>]*>[\S\s]*?<\/style>/gu
 	const scriptMatch = code.match(scriptRegex)
+	const scriptModuleMatch = code.match(scriptModuleRegex)
 	const styleMatch = code.match(styleRegex)
 	const hasScript = Boolean(scriptMatch)
+	const hasScriptModule = Boolean(scriptModuleMatch)
 	const hasStyle = Boolean(styleMatch)
 
 	let markup = code
 
+	if (hasScriptModule) {
+		markup = markup.replaceAll(scriptModuleRegex, dummyScriptModule)
+	}
 	if (hasScript) {
-		markup = markup.replace(scriptRegex, dummyScript)
+		markup = markup.replaceAll(scriptRegex, dummyScript)
 	}
 	if (hasStyle) {
-		markup = markup.replace(styleRegex, dummyStyle)
+		markup = markup.replaceAll(styleRegex, dummyStyle)
 	}
 
 	return {
 		markup,
+		scriptModule: hasScriptModule ? scriptModuleMatch![0] : undefined,
 		script: hasScript ? scriptMatch![0] : undefined,
 		style: hasStyle ? styleMatch![0] : undefined,
 	}
 }
 
-const buildComponent = (markup: string, script: string | undefined, style: string | undefined) => {
+const buildComponent = (
+	markup: string,
+	script: string | undefined,
+	scriptModule: string | undefined,
+	style: string | undefined
+) => {
 	let component = markup
+	if (scriptModule) {
+		component = component.replace(dummyScriptModule, scriptModule)
+	}
 	if (script) {
 		component = component.replace(dummyScript, script)
 	}
@@ -50,7 +66,7 @@ const transformMarkup = (markup: string, id: string): string => {
 	let index = 0
 	walk(ast.html, {
 		enter(node, parent, key) {
-			if (node.type === 'InlineComponent' && node.name.startsWith('T.')) {
+			if ((node.type === 'InlineComponent' && node.name.startsWith('T.')) || node.name === 'T') {
 				const nodeNameLen = node.name.length + 1 // account for "<"
 				const str = ` inspectorOptions={{ id: '${id}', start: ${node.start}, index: ${index} }}`
 				index++
@@ -94,25 +110,31 @@ const changeAttribute = (
 	componentContent: string,
 	componentIndex: number,
 	attribute: string,
-	value: unknown
+	value: unknown,
+	path?: string[]
 ) => {
-	const { markup, script, style } = extractMarkup(componentContent)
+	const { markup, script, scriptModule, style } = extractMarkup(componentContent)
 
 	// alter markup
 	const mc = new MagicString(markup)
 	const ast = parse(markup)
 	let index = -1
 
+	const finalPathItems = path ?? []
+	finalPathItems.push(attribute)
+	const finalPath = finalPathItems.join('.')
+
 	walk(ast.html, {
 		enter(node, parent, key) {
-			if (node.type !== 'InlineComponent' || !node.name.startsWith('T.')) return
+			if (node.type !== 'InlineComponent') return
+			if (node.name !== 'T' && !node.name.startsWith('T.')) return
 			index++
 
 			if (index !== componentIndex) return
 
 			// search for the attribute
 			const attr = node.attributes.find(
-				(attr) => attr.name === attribute && attr.type === 'Attribute'
+				(attr) => attr.name === finalPath && attr.type === 'Attribute'
 			)
 
 			if (!attr) {
@@ -120,9 +142,7 @@ const changeAttribute = (
 				let isMultiLine = false
 				let indent = ' '
 				if (node.attributes?.length) {
-					// const end = node.attributes[node.attributes.length - 1].end
-					// // find new line chars in between
-					// isMultiLine = markup.slice(node.start, end).includes('\n')
+					// find new line chars in between
 					const firstAttribute = node.attributes[0]
 					const startOfFirstAttribute = firstAttribute.start
 					const endOfTagOpen = node.start + node.name.length + 1 // +1 for "<"
@@ -133,10 +153,10 @@ const changeAttribute = (
 				if (isMultiLine) {
 					mc.appendLeft(
 						node.start + node.name.length + 1,
-						`${indent}${attribute}={${parseValue(value)}}`
+						`${indent}${finalPath}={${parseValue(value)}}`
 					)
 				} else {
-					mc.appendLeft(node.start + node.name.length + 1, ` ${attribute}={${parseValue(value)}}`)
+					mc.appendLeft(node.start + node.name.length + 1, ` ${finalPath}={${parseValue(value)}}`)
 				}
 			} else {
 				// get the mustache tag value
@@ -158,12 +178,11 @@ const changeAttribute = (
 		},
 	})
 
-	const finalComponent = buildComponent(mc.toString(), script, style)
+	const finalComponent = buildComponent(mc.toString(), script, scriptModule, style)
 
 	return finalComponent
 }
 
-const transactions: Transaction[] = []
 const noHMROnIds = new Set<string>()
 const fileTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
@@ -173,13 +192,13 @@ export const plugin: () => Plugin = () => {
 		enforce: 'pre',
 		transform(code, id, options) {
 			if (!id.endsWith('.svelte')) return {}
-			if (!code.includes('<T.')) return {}
+			if (!code.includes('<T.') && !code.includes('<T ') && !code.includes('<T\n')) return {}
 
-			const { markup, script, style } = extractMarkup(code)
+			const { markup, script, style, scriptModule } = extractMarkup(code)
 
 			let transformedMarkup = transformMarkup(markup, id)
 
-			transformedMarkup = buildComponent(transformedMarkup, script, style)
+			transformedMarkup = buildComponent(transformedMarkup, script, scriptModule, style)
 
 			return {
 				code: transformedMarkup,
@@ -199,11 +218,9 @@ export const plugin: () => Plugin = () => {
 					transactions: Transaction[]
 				}
 
-				transactions.push(...d.transactions)
-
 				const transactionsPerFileId: Record<string, Transaction[]> = {}
 
-				for (const t of transactions) {
+				for (const t of d.transactions) {
 					if (t.fileId in transactionsPerFileId) {
 						transactionsPerFileId[t.fileId].push(t)
 					} else {
@@ -222,7 +239,8 @@ export const plugin: () => Plugin = () => {
 							component,
 							t.componentIndex,
 							t.attributeName,
-							t.attributeValue
+							t.attributeValue,
+							t.path
 						)
 					}
 					writeFileSync(fileId, component)

@@ -1,32 +1,70 @@
 <script lang="ts">
 	import { Inspector } from '$lib'
 	import { T, injectPlugin, useThrelte } from '@threlte/core'
-	import { RoundedBoxGeometry } from '@threlte/extras'
-	import { Color } from 'three'
+	import { Color, EquirectangularReflectionMapping } from 'three'
+	import Torus from './TorusModel.svelte'
+	import Ramp from './RampModel.svelte'
+	import { Float, useTexture } from '@threlte/extras'
+	import type { StudioProps } from '../../types'
+	import { onMount } from 'svelte'
+
+	const applyToProperties = ['shadow', 'light', 'material', 'camera']
+
+	const insertStudioProps = (object: any, props: StudioProps) => {
+		for (const key of Object.keys(object)) {
+			if (applyToProperties.includes(key)) {
+				const newProps = {
+					...props,
+					path: [...(props.path ?? []), key],
+				}
+				const hasUserData = 'userData' in object[key]
+				const hasInspectorOptions = hasUserData && 'inspectorOptions' in object[key].userData
+				if (!hasInspectorOptions) {
+					if (hasUserData) {
+						object[key].userData.inspectorOptions = newProps
+					} else {
+						object[key]['userData'] = { inspectorOptions: newProps }
+					}
+				}
+				insertStudioProps(object[key], newProps)
+			}
+		}
+	}
 
 	injectPlugin('inspector', ({ props, ref }) => {
 		if (!props.inspectorOptions) return
 		ref.userData.inspectorOptions = props.inspectorOptions
+		// go through the properties and apply the inspector options
+		// to the properties that are in the applyToProperties array
+		onMount(() => {
+			insertStudioProps(ref, props.inspectorOptions)
+		})
 	})
 
 	const { scene } = useThrelte()
 
 	scene.background = new Color('#18191C')
+	const oil = useTexture('/oil.png')
+	$: if ($oil) {
+		$oil.mapping = EquirectangularReflectionMapping
+		scene.environment = $oil
+	}
 </script>
 
 <Inspector position="draggable" />
 
 <T.PerspectiveCamera
 	zoom={1}
-	position={[0, 0, 5.4]}
+	position={[-1.3227, 2.6187, 7.9287]}
 	near={0.1}
 	far={2000}
-	rotation={[0, 0, 0, 'XYZ']}
-	fov={60}
+	rotation={[-0.2652, -0.1863, -0.0503, 'XYZ']}
+	fov={30}
 	makeDefault
 />
 
 <T.DirectionalLight
+	intensity={2}
 	visible={true}
 	rotation={[0, 0, 0, 'XYZ']}
 	castShadow={true}
@@ -38,66 +76,10 @@
 	intensity={0.2}
 />
 
-<T.Mesh
-	rotation={[0, 0, 0, 'XYZ']}
-	position={[0, 1, -0.1]}
-	receiveShadow={false}
-	frustumCulled={false}
-	visible={true}
-	scale={[1, 1, 1]}
-	castShadow={true}
-	name="Box"
->
-	<RoundedBoxGeometry
-		args={[1, 1, 1]}
-		radius={0.2}
-		smoothness={12}
-	/>
-	<T.MeshStandardMaterial
-		wireframe={false}
-		color={'#68ff00'}
-	/>
-</T.Mesh>
+<Float rotationIntensity={1}>
+	<Torus />
+</Float>
 
-<T.Group scale={[1, 1, 1]} visible={true} rotation={[0, 0, 0, 'XYZ']} position={[0, -0.9, -0.2]}>
-	<T.MeshStandardMaterial
-		visible={true}
-		opacity={1}
-		transparent={false}
-		metalness={0.2609}
-		roughness={0.1848}
-		color={'#ff4747'}
-		let:ref
-	>
-		{#each [-2, -1, 0, 1, 2] as x, index}
-			<T.Mesh
-				castShadow={true}
-				position={[x, 0, 0]}
-				name="Sphere-{index + 1}"
-			>
-				<T.SphereGeometry args={[0.4]} />
-				<T is={ref} />
-			</T.Mesh>
-		{/each}
-	</T.MeshStandardMaterial>
-</T.Group>
-
-<T.Mesh
-	scale={[2.5, 1, 2.3]}
-	rotation={[1.5708, 0, 0, 'XYZ']}
-	visible={true}
-	castShadow={false}
-	matrixWorldAutoUpdate={true}
-	matrixAutoUpdate={true}
-	frustumCulled={true}
-	position={[0, 0, -0.6]}
-	receiveShadow={true}
-	name="Floor"
->
-	<T.BoxGeometry args={[5, 0.01, 5]} />
-	<T.MeshStandardMaterial
-		color={'#8062fb'}
-		visible={true}
-		transparent={true}
-	/>
-</T.Mesh>
+<Float rotationIntensity={1}>
+	<Ramp />
+</Float>

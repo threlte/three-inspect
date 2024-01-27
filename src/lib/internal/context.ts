@@ -77,6 +77,7 @@ export interface Transaction {
 	componentIndex: number
 	attributeName: string
 	attributeValue: unknown
+	path?: string[]
 }
 
 export interface SyncSettings {
@@ -188,10 +189,13 @@ export const setInternalContext = () => {
 					let deleteTransactionsIndicees: number[] = []
 					for (let i = ts.length - 1; i >= 0; i -= 1) {
 						const t2 = ts[i]
+						const paths = (t.path ?? []).join('.')
+						const paths2 = (t2.path ?? []).join('.')
 						if (
 							t.fileId === t2.fileId &&
 							t.componentIndex === t2.componentIndex &&
 							t.attributeName === t2.attributeName &&
+							paths === paths2 &&
 							time > t2.time
 						) {
 							deleteTransactionsIndicees.push(i)

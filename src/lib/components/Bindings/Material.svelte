@@ -70,6 +70,14 @@
 	/>
 {/if}
 
+{#if 'envMapIntensity' in object}
+	<SerializedBinding
+		bind:object
+		key="envMapIntensity"
+		label="envMapIntensity"
+	/>
+{/if}
+
 {#if 'reflectivity' in object}
 	<SerializedBinding
 		bind:object

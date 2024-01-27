@@ -28,17 +28,3 @@ export const preprocessor: PreprocessorGroup = {
 		}
 	},
 }
-
-// const start = async () => {
-// 	const testComponent = Bun.file('Test.svelte')
-// 	const text = (await testComponent.text()) as string
-
-// 	const preprocessed = await preprocess(text, preprocessor, {
-// 		filename: 'Test.svelte',
-// 	})
-
-// 	const x = preprocessed.code
-// 	console.log(x)
-// }
-
-// start()
