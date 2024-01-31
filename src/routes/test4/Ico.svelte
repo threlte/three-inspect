@@ -25,7 +25,9 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k ico.glb
 	name="Ico"
 	is={ref}
 	dispose={false}
-	position={[0.4265, 0.8421, -2.5325]}
+	position={[0.3799, 2.0828, -0.9336]}
+	scale={1.5893}
+	rotation={[0.2337, -0.0256, 0.0327, 'XYZ']}
 >
 	{#await gltf}
 		<slot name="fallback" />

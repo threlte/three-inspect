@@ -17,7 +17,6 @@
 
 {#if $$slots.default}
 	<Inspector {position}>
-		<slot />
 	</Inspector>
 {:else}
 	<Inspector {position} />

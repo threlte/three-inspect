@@ -25,7 +25,7 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k drop.glb
 	name="Drop"
 	is={ref}
 	dispose={false}
-	position={[0.1173, 1.1125, 0.1772]}
+	position={[0.1617, 2.8192, 1.5197]}
 >
 	{#await gltf}
 		<slot name="fallback" />
@@ -35,6 +35,9 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k drop.glb
 			geometry={gltf.nodes.Cone.geometry}
 			material={gltf.nodes.Cone.material}
 			material.roughness={0}
+			position={[-3.5563, 0.6906, 1.8159]}
+			rotation={[-0.0078, 0.0094, 0.0686, 'XYZ']}
+			scale={2.4838}
 		/>
 	{:catch error}
 		<slot

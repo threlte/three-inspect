@@ -29,7 +29,6 @@
 			}
 
 			targetEl.append(el)
-			el.hidden = false
 		}
 
 		update(target)
@@ -52,7 +51,7 @@
 
 <div
 	use:portal={target}
-	hidden
+	style="display: contents;"
 	{...$$restProps}
 >
 	<slot />

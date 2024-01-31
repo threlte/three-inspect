@@ -1,10 +1,7 @@
 <script lang="ts">
-	import { Inspector } from '$lib'
-	import { T, injectPlugin, useThrelte } from '@threlte/core'
+	import { T, useThrelte } from '@threlte/core'
 	import { useTexture } from '@threlte/extras'
-	import { onMount } from 'svelte'
 	import { Color, EquirectangularReflectionMapping } from 'three'
-	import type { StudioProps } from '../../types'
 	import Cylinder from './Cylinder.svelte'
 	import Drop from './Drop.svelte'
 	import Ico from './Ico.svelte'
@@ -12,50 +9,51 @@
 	import Ramp from './RampModel.svelte'
 	import Torus from './TorusModel.svelte'
 
-	const applyToProperties = ['shadow', 'light', 'material', 'camera']
+	// const applyToProperties = ['shadow', 'light', 'material', 'camera']
 
-	const insertStudioProps = (object: any, props: StudioProps) => {
-		for (const key of Object.keys(object)) {
-			if (applyToProperties.includes(key)) {
-				const newProps = {
-					...props,
-					path: [...(props.path ?? []), key],
-				}
-				const hasUserData = 'userData' in object[key]
-				const hasInspectorOptions = hasUserData && 'inspectorOptions' in object[key].userData
-				if (!hasInspectorOptions) {
-					if (hasUserData) {
-						object[key].userData.inspectorOptions = newProps
-					} else {
-						object[key]['userData'] = { inspectorOptions: newProps }
-					}
-				}
-				insertStudioProps(object[key], newProps)
-			}
-		}
-	}
+	// const insertStudioProps = (object: any, props: StudioProps) => {
+	// 	for (const key of Object.keys(object)) {
+	// 		if (applyToProperties.includes(key)) {
+	// 			const newProps = {
+	// 				...props,
+	// 				path: [...(props.path ?? []), key],
+	// 			}
+	// 			const hasUserData = 'userData' in object[key]
+	// 			const hasInspectorOptions = hasUserData && 'inspectorOptions' in object[key].userData
+	// 			if (!hasInspectorOptions) {
+	// 				if (hasUserData) {
+	// 					object[key].userData.inspectorOptions = newProps
+	// 				} else {
+	// 					object[key]['userData'] = { inspectorOptions: newProps }
+	// 				}
+	// 			}
+	// 			insertStudioProps(object[key], newProps)
+	// 		}
+	// 	}
+	// }
 
-	injectPlugin('inspector', ({ props, ref }) => {
-		if (!props.inspectorOptions) return
-		ref.userData.inspectorOptions = props.inspectorOptions
-		// go through the properties and apply the inspector options
-		// to the properties that are in the applyToProperties array
-		onMount(() => {
-			insertStudioProps(ref, props.inspectorOptions)
-		})
-	})
+	// injectPlugin('inspector', ({ props, ref }) => {
+	// 	if (!props.inspectorOptions) return
+	// 	ref.userData.inspectorOptions = props.inspectorOptions
+	// 	// go through the properties and apply the inspector options
+	// 	// to the properties that are in the applyToProperties array
+	// 	onMount(() => {
+	// 		insertStudioProps(ref, props.inspectorOptions)
+	// 	})
+	// })
 
-	const { scene } = useThrelte()
+	const { scene, invalidate } = useThrelte()
 
 	scene.background = new Color('#18191C')
 	const oil = useTexture('/oil.png')
 	$: if ($oil) {
 		$oil.mapping = EquirectangularReflectionMapping
 		scene.environment = $oil
+		invalidate()
 	}
 </script>
 
-<Inspector position="draggable" />
+<!-- <Inspector position="draggable" /> -->
 
 <T.PerspectiveCamera
 	position={[10, 0, 0]}

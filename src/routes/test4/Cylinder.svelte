@@ -36,6 +36,7 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k cylinder.glb
 			geometry={gltf.nodes.Cylinder.geometry}
 			material={gltf.nodes.Cylinder.material}
 			material.roughness={0}
+			position={[0.743, 0.0042, -0.1478]}
 		/>
 	{:catch error}
 		<slot

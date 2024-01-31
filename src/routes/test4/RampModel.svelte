@@ -26,9 +26,9 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k ramp.glb
 	name="Ramp"
 	is={ref}
 	dispose={false}
-	position={[-0.4058, -0.829, 2.9711]}
+	position={[-0.4296, -0.3172, 3.6672]}
 	rotation={[1.3858, 0.8436, -1.0191, 'XYZ']}
-	scale={0.8127}
+	scale={0.9605}
 >
 	{#await gltf}
 		<slot name="fallback" />
@@ -43,6 +43,7 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k ramp.glb
 			name="Cube001_1"
 			geometry={gltf.nodes.Cube001_1.geometry}
 			material={gltf.nodes.Cube001_1.material}
+			position={0}
 		/>
 	{:catch error}
 		<slot

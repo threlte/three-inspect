@@ -1,9 +1,18 @@
 <script lang="ts">
-	import { HierarchicalObject, useThrelte } from '@threlte/core'
+	import { HierarchicalObject, useThrelte, watch } from '@threlte/core'
 	import { Gizmo, Grid } from '@threlte/extras'
+	import { objectSelection } from '../extensions/object-selection'
+	import { renderModes } from '../extensions/render-modes'
+	// import {
+	// 	transformControls,
+	// 	transformControlsScope,
+	// 	type TransformControlsActions,
+	// 	type TransformControlsState,
+	// } from '../extensions/transform-controls'
 	import { add } from '../hooks/useOnAdd'
 	import { remove } from '../hooks/useOnRemove'
 	import { getInternalContext, useInspector } from '../internal/context'
+	import { createRootContext, useStudio } from '../internal/extensions'
 	import AxesHelper from './Internal/AxesHelper.svelte'
 	import Portal from './Internal/Portal.svelte'
 	import Draggable from './Positions/Draggable.svelte'
@@ -11,10 +20,9 @@
 	import AutoSync from './Tools/AutoSync.svelte'
 	import FreeCamera from './Tools/FreeCamera.svelte'
 	import Helpers from './Tools/Helpers.svelte'
+	import Keyboard from './Tools/Keyboard.svelte'
 	import Raycast from './Tools/Raycast.svelte'
 	import TransformControls from './Tools/TransformControls.svelte'
-	import ViewportRenderModes from './Tools/ViewportRenderModes.svelte'
-	import Keyboard from './Tools/Keyboard.svelte'
 
 	const { position } = useInspector()
 	const { scene } = useThrelte()
@@ -36,11 +44,47 @@
 			})
 		})
 	}
+
+	// createRootContext()
+
+	// renderModes()
+	// objectSelection()
+
+	// const { getExtension } = useStudio()
+
+	// const tInUse = subStore(state, (s) => s[transformControlsScope].inUse)
+
+	// const transformControlsState = getState3<boolean>('transform-controls')
+
+	// watch(tInUse, (inUse) => {
+	// 	console.log('inUse', inUse)
+	// })
+
+	// watch(transformControlsState, (transformControlsState) => {
+	// 	console.log('transformControlsState', transformControlsState)
+	// })
+
+	// const tc = getExtension<TransformControlsState, TransformControlsActions>(transformControlsScope)
+	// const inUse = tc.select((s) => s.inUse)
+
+	// watch(inUse, (inUse) => {
+	// 	console.log('inUse', inUse)
+	// })
+
+	// transformControls()
 </script>
+
+<svelte:window
+	on:keydown={(e) => {
+		if (e.key === 'f') {
+			tc.run('toggleInUse')
+		}
+	}}
+/>
 
 <Keyboard />
 
-<ViewportRenderModes />
+<!-- <ViewportRenderModes /> -->
 
 {#if $syncSettings.enabled && $syncSettings.mode === 'auto'}
 	<AutoSync />

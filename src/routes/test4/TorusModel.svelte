@@ -25,8 +25,9 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k torus.glb
 	name="Torus"
 	is={ref}
 	dispose={false}
-	position={[-0.0799, 1.0204, 2.4395]}
-	rotation={[0.3639, -0.2697, -0.8154, 'XYZ']}
+	position={[-4.5725, 1.5604, 1.676]}
+	rotation={[0.3834, -0.1213, -0.5494, 'XYZ']}
+	scale={2.2515}
 >
 	{#await gltf}
 		<slot name="fallback" />
@@ -36,7 +37,7 @@ Command: npx @threlte/gltf@2.0.1 -t -i -k torus.glb
 			geometry={gltf.nodes.Torus.geometry}
 			material={gltf.nodes.Torus.material}
 			material.metalness={1}
-			position={[-0.1397, 0.1072, -0.0643]}
+			position={[1.0181, -1.2199, -0.4932]}
 			material.roughness={0}
 		/>
 	{:catch error}

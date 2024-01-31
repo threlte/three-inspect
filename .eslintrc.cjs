@@ -107,5 +107,12 @@ module.exports = {
 
 		'@typescript-eslint/prefer-for-of': 'off',
 		'@typescript-eslint/no-non-null-assertion': 'off',
+		'@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+		'no-shadow': 'off',
+		'@typescript-eslint/no-explicit-any': 'warn',
+		'max-depth': ['warn', 6],
+		'comma-dangle': ['off', 'never'],
+		'@typescript-eslint/no-floating-promises': 'off',
+		'unicorn/no-array-reduce': 'off',
 	},
 }
