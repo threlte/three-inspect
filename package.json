@@ -1,6 +1,6 @@
 {
 	"name": "three-inspect",
-	"version": "0.4.2",
+	"version": "0.4.3",
 	"type": "module",
 	"files": [
 		"dist",
@@ -13,6 +13,10 @@
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js",
 			"import": "./dist/index.js"
+		},
+		"./vanilla": {
+			"types": "./dist/inspector.d.ts",
+			"import": "./dist/inspector.js"
 		}
 	},
 	"repository": {
@@ -51,41 +55,41 @@
 	},
 	"dependencies": {
 		"@changesets/cli": "^2.27.1",
-		"@floating-ui/dom": "^1.5.4",
+		"@floating-ui/dom": "^1.6.1",
 		"@mdi/js": "^7.4.47",
 		"@threlte/core": "^7.0.12",
-		"@threlte/extras": "^8.1.2",
-		"camera-controls": "^2.7.3",
+		"@threlte/extras": "^8.7.0",
+		"camera-controls": "^2.7.4",
 		"flexible-tree": "^0.1.6",
-		"svelte": "^4.2.8",
+		"svelte": "^4.2.10",
 		"svelte-splitpanes": "^0.8.0",
-		"svelte-tweakpane-ui": "^1.1.4",
+		"svelte-tweakpane-ui": "^1.2.0",
 		"three-perf": "^1.0.10"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "^3.0.1",
-		"@sveltejs/kit": "^2.3.2",
-		"@sveltejs/package": "^2.2.5",
-		"@sveltejs/vite-plugin-svelte": "^3.0.1",
-		"@types/three": "^0.160.0",
-		"@typescript-eslint/eslint-plugin": "^6.18.1",
-		"@typescript-eslint/parser": "^6.18.1",
+		"@sveltejs/kit": "^2.5.0",
+		"@sveltejs/package": "^2.2.6",
+		"@sveltejs/vite-plugin-svelte": "^3.0.2",
+		"@types/three": "^0.161.2",
+		"@typescript-eslint/eslint-plugin": "^6.21.0",
+		"@typescript-eslint/parser": "^6.21.0",
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.35.1",
-		"eslint-plugin-unicorn": "^50.0.1",
-		"postcss": "^8.4.33",
-		"postprocessing": "^6.34.1",
-		"prettier": "^3.2.2",
+		"eslint-plugin-unicorn": "^51.0.1",
+		"postcss": "^8.4.35",
+		"postprocessing": "^6.34.2",
+		"prettier": "^3.2.5",
 		"prettier-plugin-svelte": "^3.1.2",
 		"publint": "^0.2.7",
 		"simplex-noise": "^4.0.1",
-		"svelte-check": "^3.6.3",
+		"svelte-check": "^3.6.4",
 		"tailwindcss": "^3.4.1",
-		"three": "^0.160.0",
+		"three": "^0.161.0",
 		"tslib": "^2.6.2",
 		"typescript": "^5.3.3",
-		"vite": "^5.0.11",
+		"vite": "^5.1.0",
 		"vite-plugin-glsl": "^1.2.1"
 	},
 	"svelte": "./dist/index.js"
