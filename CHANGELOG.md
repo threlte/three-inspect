@@ -1,5 +1,11 @@
 # three-inspect
 
+## 0.4.3
+
+### Patch Changes
+
+- 2803c98: Fix exports for vanilla projects
+
 ## 0.4.2
 
 ### Patch Changes
@@ -25,10 +31,10 @@
   Adding the inspector for Vanilla environments has changed:
 
   ```ts
-  import { createInspector } from 'three-inspect'
+  import { createInspector } from "three-inspect";
 
-  const inspector = createInspector({ scene, camera, renderer })
+  const inspector = createInspector({ scene, camera, renderer });
 
   // When you're finished with the inspector...
-  inspector.dispose()
+  inspector.dispose();
   ```
