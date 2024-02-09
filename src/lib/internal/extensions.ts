@@ -1,11 +1,12 @@
 import { currentWritable } from '@threlte/core'
+import { setAutoFreeze } from 'immer'
 import { getContext, setContext, SvelteComponent } from 'svelte'
 import { get, type Readable, type Writable } from 'svelte/store'
 import { browser } from './browser'
 import { createKeyboardControls, flattenKeyCombo, formatKeyCombo, hotkeyFns } from './keyboard'
 import { scopeId } from './scopeUtils'
 import { subStore } from './subStore'
-import { setAutoFreeze } from 'immer'
+import { immerStore } from 'svelte-immer-store'
 
 setAutoFreeze(false)
 
@@ -56,8 +57,7 @@ const getPersistedPaths = function (obj: Record<string, unknown>, prefix?: strin
 export const createRootContext = () => {
 	const scopes = currentWritable(new Set<string>())
 
-	// global state
-	const state = currentWritable<Record<string, Record<string, unknown>>>({})
+	const state = immerStore<Record<string, Record<string, unknown>>>({})
 
 	// global actions, keys are extension scopes
 	const actions = currentWritable<Record<string, ExtensionActions>>({})
@@ -81,9 +81,10 @@ export const createRootContext = () => {
 		const action = (actions.current[scope] as any)[id] as ExtensionAction
 
 		const select: SelectExtensionState<RecordUnknown> = (selector) => {
-			return subStore(state, (s) => {
-				return selector(s[scope] as RecordUnknown)
-			})
+			return state.select(selector)
+			// return statae(state, (s) => {
+			// 	return selector(s[scope] as RecordUnknown)
+			// })
 		}
 
 		return action({ select }, ...args) as ReturnType<Actions[keyof Actions]>
@@ -96,12 +97,7 @@ export const createRootContext = () => {
 		scope: string,
 	) => {
 		const select = <U>(selector: (s: State) => U): Readable<U> => {
-			const store = subStore(state, (s) => {
-				return selector(s[scope] as State)
-			})
-			return {
-				subscribe: store.subscribe,
-			}
+			return state.select(selector)
 		}
 
 		const run = <K extends keyof Actions>(id: K, ...args: Parameters<Actions[K]>) => {
@@ -160,17 +156,17 @@ export const createRootContext = () => {
 
 			// save persisted values
 			window.addEventListener('beforeunload', () => {
-				for (const path of persistedPaths) {
-					const currentState = get(subStore(state, (s) => s[options.scope])) as State
-					const value = path.split('.').reduce((o, i) => o[i], currentState)
-					const scopedKey = makeScopedId(path)
-					localStorage[scopedKey] = JSON.stringify(value)
-				}
+				// for (const path of persistedPaths) {
+				// 	const currentState = get(subStore(state, (s) => s[options.scope])) as State
+				// 	const value = path.split('.').reduce((o, i) => o[i], currentState)
+				// 	const scopedKey = makeScopedId(path)
+				// 	localStorage[scopedKey] = JSON.stringify(value)
+				// }
 			})
 		}
 
 		// add extension state to global state
-		subStore(state, (s) => s).update((s) => {
+		state.update((s) => {
 			if (options.scope in s) {
 				throw new Error(`Extension with scope "${options.scope}" already exists`)
 			}
@@ -220,7 +216,7 @@ export const createRootContext = () => {
 			s.delete(scope)
 			return s
 		})
-		subStore(state, (s) => s).update((s) => {
+		state.update((s) => {
 			delete s[scope]
 			return s
 		})

@@ -11,8 +11,23 @@
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from './types'
+	import { watch } from '@threlte/core'
 
-	const { addExtension, removeExtension } = useStudio()
+	const { addExtension, removeExtension, getExtension } = useStudio()
+
+	const tc = getExtension('abc').select((s) => s.enabled)
+
+	watch(tc, (tc) => {
+		console.log('tc', tc)
+	})
+
+	addExtension({
+		scope: 'abc',
+		state: () => ({
+			enabled: true,
+		}),
+		actions: {},
+	})
 
 	const { run, select } = addExtension<TransformControlsState, TransformControlsActions>({
 		scope: transformControlsScope,
@@ -96,7 +111,7 @@
 			tooltip="Scale (S)"
 		/>
 
-		<!-- <DropDownPane title="Settings">
+		<DropDownPane title="Settings">
 			<Checkbox
 				value={true}
 				on:change={(e) => {
@@ -108,6 +123,6 @@
 				}}
 				label="Enabled"
 			/>
-		</DropDownPane> -->
+		</DropDownPane>
 	</HorizontalButtonGroup>
 </ToolbarItem>

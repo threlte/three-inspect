@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* eslint-disable functional/no-return-void */
 /* eslint-disable functional/immutable-data */
 

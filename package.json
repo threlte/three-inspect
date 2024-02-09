@@ -58,6 +58,7 @@
 		"camera-controls": "^2.7.3",
 		"flexible-tree": "^0.1.6",
 		"svelte": "^4.2.8",
+		"svelte-immer-store": "^1.0.2",
 		"svelte-splitpanes": "^0.8.0",
 		"svelte-tweakpane-ui": "^1.2.0",
 		"three-perf": "^1.0.10"
