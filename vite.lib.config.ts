@@ -6,7 +6,7 @@ export default defineConfig({
 	plugins: [svelte()],
 	build: {
 		emptyOutDir: false,
-		minify: false,
+		minify: true,
 		target: 'esnext',
 		lib: {
 			formats: ['es'],
