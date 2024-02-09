@@ -19,7 +19,7 @@ jobs:
           node-version: 20
 
       - name: Install 🔧
-        run: npm ci --audit=false --legacy-peer-deps
+        run: npm ci
 
       - name: Prettier 💅
         run: npm run prettier
