@@ -1,5 +1,5 @@
 ---
-"three-inspect": patch
+'three-inspect': patch
 ---
 
 Add /vanilla export

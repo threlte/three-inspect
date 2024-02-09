@@ -11,7 +11,7 @@ export default defineConfig({
 		lib: {
 			formats: ['es'],
 			entry: './src/lib/inspector.ts',
-      fileName: 'inspector',
+			fileName: 'inspector',
 		},
 		rollupOptions: {
 			external: ['three'],
