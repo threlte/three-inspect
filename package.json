@@ -58,7 +58,7 @@
 		"@floating-ui/dom": "^1.6.1",
 		"@mdi/js": "^7.4.47",
 		"@threlte/core": "^7.0.12",
-		"@threlte/extras": "^8.7.0",
+		"@threlte/extras": "^8.7.1",
 		"camera-controls": "^2.7.4",
 		"flexible-tree": "^0.1.6",
 		"svelte": "^4.2.10",
