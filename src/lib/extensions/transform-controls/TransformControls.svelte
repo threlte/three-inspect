@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte'
-	import { Checkbox } from 'svelte-tweakpane-ui'
-	import DropDownPane from '../../components/DropDownPane/DropDownPane.svelte'
+	// import { Checkbox } from 'svelte-tweakpane-ui'
+	// import DropDownPane from '../../components/DropDownPane/DropDownPane.svelte'
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
 	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
@@ -11,25 +11,10 @@
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from './types'
-	import { watch } from '@threlte/core'
 
-	const { addExtension, removeExtension, getExtension } = useStudio()
+	const { addExtension, removeExtension } = useStudio()
 
-	const tc = getExtension('abc').select((s) => s.enabled)
-
-	watch(tc, (tc) => {
-		console.log('tc', tc)
-	})
-
-	addExtension({
-		scope: 'abc',
-		state: () => ({
-			enabled: true,
-		}),
-		actions: {},
-	})
-
-	const { run, select } = addExtension<TransformControlsState, TransformControlsActions>({
+	const { run, state } = addExtension<TransformControlsState, TransformControlsActions>({
 		scope: transformControlsScope,
 		state: ({ persist }) => ({
 			enabled: persist(false),
@@ -76,7 +61,7 @@
 		removeExtension(transformControlsScope)
 	})
 
-	const mode = select((s) => s.mode)
+	$: mode = $state.mode
 </script>
 
 <ToolbarItem position="left">
@@ -85,7 +70,7 @@
 			on:click={() => {
 				run('setMode', 'translate')
 			}}
-			active={$mode === 'translate'}
+			active={mode === 'translate'}
 			label="Move"
 			icon="mdiRayEndArrow"
 			tooltip="Move (T)"
@@ -95,7 +80,7 @@
 			on:click={() => {
 				run('setMode', 'rotate')
 			}}
-			active={$mode === 'rotate'}
+			active={mode === 'rotate'}
 			label="Rotate"
 			icon="mdiRotateLeft"
 			tooltip="Rotate (R)"
@@ -105,13 +90,13 @@
 			on:click={() => {
 				run('setMode', 'scale')
 			}}
-			active={$mode === 'scale'}
+			active={mode === 'scale'}
 			label="Scale"
 			icon="mdiArrowExpand"
 			tooltip="Scale (S)"
 		/>
 
-		<DropDownPane title="Settings">
+		<!-- <DropDownPane title="Settings">
 			<Checkbox
 				value={true}
 				on:change={(e) => {
@@ -123,6 +108,6 @@
 				}}
 				label="Enabled"
 			/>
-		</DropDownPane>
+		</DropDownPane> -->
 	</HorizontalButtonGroup>
 </ToolbarItem>
