@@ -1,30 +1,9 @@
-import type { CurrentWritable } from '@threlte/core'
+import { currentWritable } from '@threlte/core'
 import { onMount } from 'svelte'
-import { useStudio } from './extensions'
 
 const metaKeys = new Set(['ctrl', 'alt', 'shift', 'meta'])
 
-const makeHotkeyFn = (hotkey: string): ((key: string | string[]) => string[]) => {
-	return (key: string | string[]) => {
-		const keys = Array.isArray(key) ? key : [key]
-		keys.push(hotkey)
-		return keys
-	}
-}
-
-export const hotkeyFns = {
-	ctrl: makeHotkeyFn('ctrl'),
-	alt: makeHotkeyFn('alt'),
-	shift: makeHotkeyFn('shift'),
-	meta: makeHotkeyFn('meta'),
-}
-
 const keyDelimiter = '§§§'
-
-export const formatKeyCombo = (keyCombo: string) => {
-	const [metaKeys, otherKeys] = keyCombo.split(keyDelimiter)
-	return [...metaKeys, ...otherKeys].join('+')
-}
 
 /**
  * Creates a string representation from an array of keyboard keys with a
@@ -46,12 +25,66 @@ export const flattenKeyCombo = (keyCombo: string[] | string) => {
 	return [...metaKeysArray, ...otherKeysArray].join(keyDelimiter)
 }
 
-export const createKeyboardControls = (
-	keyMap: CurrentWritable<Map<string, { scope: string; actionId: string }>>,
-) => {
-	const { getExtension } = useStudio()
+const makeHotkeyFn = (hotkey: string): ((key: string | string[]) => string[]) => {
+	return (key: string | string[]) => {
+		const keys = Array.isArray(key) ? key : [key]
+		keys.push(hotkey)
+		return keys
+	}
+}
+
+export const hotkeyFns = {
+	ctrl: makeHotkeyFn('ctrl'),
+	alt: makeHotkeyFn('alt'),
+	shift: makeHotkeyFn('shift'),
+	meta: makeHotkeyFn('meta'),
+}
+
+export const formatKeyCombo = (keyCombo: string): string => {
+	return keyCombo.split(keyDelimiter).join('+')
+}
+
+export const createKeyboardControls = (runAction: (scope: string, actionId: string) => void) => {
+	const enabled = currentWritable(true)
+
+	const keyMap = currentWritable<Map<string, { scope: string; actionId: string }>>(new Map())
+
+	const addKeys = (scope: string, keyMapItems: Record<string, string | string[] | undefined>) => {
+		keyMap.update((keyMap) => {
+			for (const [actionId, keyOrKeyCombo] of Object.entries(keyMapItems)) {
+				if (!keyOrKeyCombo) continue
+				const flattenedKeyCombo = flattenKeyCombo(keyOrKeyCombo)
+				if (keyMap.has(flattenedKeyCombo)) {
+					const action = keyMap.get(flattenedKeyCombo)
+					const formattedKeyCombo = formatKeyCombo(flattenedKeyCombo)
+					console.warn(
+						`"${formattedKeyCombo}" is already used by action "${action?.scope}:${action?.actionId}", skipping …"`,
+					)
+				} else {
+					keyMap.set(flattenedKeyCombo, {
+						scope,
+						actionId,
+					})
+				}
+			}
+			return keyMap
+		})
+	}
+
+	const removeKeys = (scope: string) => {
+		keyMap.update((k) => {
+			for (const [keys, { scope: s }] of k.entries()) {
+				if (s === scope) {
+					k.delete(keys)
+				}
+			}
+			return k
+		})
+	}
 
 	const onKeyDown = (e: KeyboardEvent) => {
+		if (!enabled.current) return
+
 		const MetaKeys = ['Meta', 'Control', 'Alt', 'Shift']
 		if (MetaKeys.includes(e.key)) return
 
@@ -73,7 +106,7 @@ export const createKeyboardControls = (
 			if (!action) return
 			// no need to await here
 			// eslint-disable-next-line @typescript-eslint/no-floating-promises
-			getExtension(action.scope).run(action.actionId)
+			runAction(action.scope, action.actionId)
 		}
 	}
 
@@ -83,4 +116,10 @@ export const createKeyboardControls = (
 			window.removeEventListener('keydown', onKeyDown)
 		}
 	})
+
+	return {
+		removeKeys,
+		addKeys,
+		enabled,
+	}
 }
