@@ -2,65 +2,8 @@
 	context="module"
 	lang="ts"
 >
-	import {
-		mdiCursorDefault,
-		mdiCameraOutline,
-		mdiConsole,
-		mdiGraphOutline,
-		mdiAxis,
-		mdiGrid,
-		mdiAngleRight,
-		mdiBorderOutside,
-		mdiChevronDown,
-		mdiVideoVintage,
-		mdiContentSave,
-		mdiLoading,
-		mdiAxisArrow,
-		mdiCursorMove,
-		mdiEarth,
-		mdiMagnet,
-		mdiMagnetOn,
-		mdiCog,
-		mdiWeb,
-		mdiCircleOpacity,
-		mdiCircle,
-		mdiRotate360,
-		mdiArrowExpand,
-		mdiRotateLeft,
-		mdiArrowRight,
-		mdiRayEndArrow,
-	} from '@mdi/js'
-
-	export const paths = {
-		mdiCursorDefault,
-		mdiCameraOutline,
-		mdiConsole,
-		mdiGraphOutline,
-		mdiAxis,
-		mdiGrid,
-		mdiAngleRight,
-		mdiBorderOutside,
-		mdiChevronDown,
-		mdiVideoVintage,
-		mdiContentSave,
-		mdiLoading,
-		mdiAxisArrow,
-		mdiCursorMove,
-		mdiEarth,
-		mdiMagnet,
-		mdiMagnetOn,
-		mdiCog,
-		mdiWeb,
-		mdiCircleOpacity,
-		mdiCircle,
-		mdiRotate360,
-		mdiArrowExpand,
-		mdiRotateLeft,
-		mdiArrowRight,
-		mdiRayEndArrow,
-	}
-
-	export type Icons = keyof typeof paths
+	import type * as AllIcons from '@mdi/js'
+	export type Icons = keyof typeof AllIcons
 </script>
 
 <script lang="ts">
@@ -75,16 +18,18 @@
 	$: r = Number.isNaN(rotate) ? rotate : `${rotate}deg`
 </script>
 
-<svg
-	width={size}
-	height={size}
-	{viewBox}
-	style="--sx:{sx}; --sy:{sy}; --r:{r}"
-	class:spin={name === 'mdiLoading'}
-	{...$$restProps}
->
-	<path d={paths[name]} />
-</svg>
+{#await import(`@mdi/js`) then paths}
+	<svg
+		width={size}
+		height={size}
+		{viewBox}
+		style="--sx:{sx}; --sy:{sy}; --r:{r}"
+		class:spin={name === 'mdiLoading'}
+		{...$$restProps}
+	>
+		<path d={paths[name]} />
+	</svg>
+{/await}
 
 <style>
 	svg {
