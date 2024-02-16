@@ -20,7 +20,7 @@ export const createRootContext = () => {
 	const state = createState()
 	const actions = createActions()
 	const keyboardControls = createKeyboardControls((scope, actionId) => {
-		actions.runAction(scope, actionId, state.getScopedState(scope))
+		actions.runAction(scope, actionId, state.getScopedState(scope), state.record)
 	})
 
 	const getExtension = <
@@ -30,7 +30,13 @@ export const createRootContext = () => {
 		scope: string,
 	) => {
 		const run = <K extends keyof Actions>(id: K, ...args: Parameters<Actions[K]>) => {
-			actions.runAction(scope, id as string, state.getScopedState<State>(scope), ...args)
+			actions.runAction(
+				scope,
+				id as string,
+				state.getScopedState<State>(scope),
+				state.record,
+				...args,
+			)
 		}
 
 		return {
@@ -49,6 +55,7 @@ export const createRootContext = () => {
 			[K in keyof Actions]: (
 				params: {
 					select: SubImmerStore<State>['select']
+					record: (callback: (...args: any[]) => any) => void
 				},
 				...args: Parameters<Actions[K]>
 			) => ReturnType<Actions[K]>

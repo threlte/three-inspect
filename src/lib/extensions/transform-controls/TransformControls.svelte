@@ -22,7 +22,7 @@
 	const { run, state } = addExtension<TransformControlsState, TransformControlsActions>({
 		scope: transformControlsScope,
 		state: ({ persist }) => ({
-			enabled: persist(false),
+			enabled: persist(true),
 			mode: persist('translate' as TransformControlsState['mode']),
 			inUse: false,
 		}),

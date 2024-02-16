@@ -15,20 +15,24 @@
 			selectedObjects: [],
 		}),
 		actions: {
-			selectObjects({ select }, objects) {
-				select((s) => s.selectedObjects).set(objects)
+			selectObjects({ select, record }, objects) {
+				record(() => select((s) => s.selectedObjects).set(objects))
 			},
-			clearSelection({ select }) {
-				select((s) => s.selectedObjects).set([])
+			clearSelection({ select, record }) {
+				record(() => select((s) => s.selectedObjects).set([]))
 			},
-			addToSelection({ select }, objects) {
-				select((s) => s.selectedObjects).update((selectedObjects) => {
-					return [...selectedObjects, ...objects]
+			addToSelection({ select, record }, objects) {
+				record(() => {
+					select((s) => s.selectedObjects).update((selectedObjects) => {
+						return [...selectedObjects, ...objects]
+					})
 				})
 			},
-			removeFromSelection({ select }, objects) {
-				select((s) => s.selectedObjects).update((selectedObjects) => {
-					return selectedObjects.filter((object) => !objects.includes(object))
+			removeFromSelection({ select, record }, objects) {
+				record(() => {
+					select((s) => s.selectedObjects).update((selectedObjects) => {
+						return selectedObjects.filter((object) => !objects.includes(object))
+					})
 				})
 			},
 		},

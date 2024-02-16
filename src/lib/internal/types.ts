@@ -5,6 +5,7 @@ export type ExtensionState = Record<string, unknown>
 export type ExtensionAction<State extends ExtensionState> = (
 	params: {
 		select: SubImmerStore<State>['select']
+		record: (callback: (...args: any[]) => any) => void
 	},
 	...args: any[]
 ) => Promise<void> | void

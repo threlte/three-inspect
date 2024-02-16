@@ -10,7 +10,6 @@
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from './types'
-	import { onMount } from 'svelte'
 
 	const { selectedObjects } = useObjectSelection()
 	const { getExtension } = useStudio()

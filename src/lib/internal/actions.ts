@@ -16,6 +16,7 @@ export const createActions = () => {
 		scope: string,
 		actionId: string,
 		state: SubImmerStore<any>,
+		record: () => void,
 		...args: any[]
 	) => {
 		if (!actions.has(scope)) {
@@ -37,7 +38,10 @@ export const createActions = () => {
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		return action({ select: selectProxy as Parameters<ExtensionAction<any>>[0]['select'] }, ...args)
+		return action(
+			{ select: selectProxy as Parameters<ExtensionAction<any>>[0]['select'], record },
+			...args,
+		)
 	}
 
 	return {

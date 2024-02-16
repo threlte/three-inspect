@@ -1,4 +1,4 @@
-import { immerStore, type ImmerStore, type SubImmerStore } from 'svelte-immer-store'
+import { immerStore, type ImmerStore, type SubImmerStore, History } from 'svelte-immer-store'
 import { get } from 'svelte/store'
 import { scopeId } from './scopeUtils'
 import { enableMapSet } from 'immer'
@@ -36,8 +36,42 @@ const getPersistedPaths = function (obj: Record<string, unknown>, prefix?: strin
 	}, [])
 }
 
+type Action = () => void
+// type Undo = Exclude<Parameters<InstanceType<typeof History>['enqueue']>[0]['undo'], undefined>
+
 export const createState = () => {
-	const state = immerStore<Record<string, Record<string, unknown>>>({})
+	const history = new History()
+	let shouldRecord = false
+	// LIFO, number of changes to undo per action
+	const changeHistory: number[] = []
+	let currentNumberOfChanges = 0
+	const record = (callback: (...args: any[]) => any) => {
+		shouldRecord = true
+		currentNumberOfChanges = 0
+		callback()
+		changeHistory.push(currentNumberOfChanges)
+		shouldRecord = false
+	}
+	const onChange = (change: Parameters<typeof history.enqueue>[0]) => {
+		if (shouldRecord) {
+			currentNumberOfChanges += 1
+			history.enqueue(change)
+		}
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	const state = immerStore<Record<string, Record<string, unknown>>>({}, () => {}, onChange)
+
+	window.addEventListener('keydown', (e) => {
+		if (e.key === 'z' && e.ctrlKey) {
+			// use lifo changeHistory to undo the correct number of changes
+			const numberOfChanges = changeHistory.pop()
+			if (!numberOfChanges) return
+			for (let i = 0; i < numberOfChanges; i += 1) {
+				history.undo()
+			}
+		}
+	})
 
 	// the key is the scope and the value is the path to the persisted state
 	const persistedStatePaths: Record<string, string[]> = {}
@@ -137,5 +171,6 @@ export const createState = () => {
 		removeScopedState,
 		persistState,
 		state,
+		record,
 	}
 }

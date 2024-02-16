@@ -16,14 +16,14 @@
   `
 
 	const { scene } = useThrelte()
-	const { selectedObjects, removeFromSelection, clearSelection, addToSelection } =
-		useObjectSelection()
+	const { selectedObjects, removeFromSelection, addToSelection } = useObjectSelection()
 
 	const treeroot = new TreeViewItem({ text: 'Scene' })
 	treeview.append(treeroot)
 
 	const objectToTreeItem = new WeakMap<THREE.Object3D, TreeViewItem>()
 	const treeItemToObject = new WeakMap<TreeViewItem, THREE.Object3D>()
+	const selectedItems = new Set<TreeViewItem>()
 
 	treeItemToObject.set(treeroot, scene)
 	objectToTreeItem.set(scene, treeroot)
@@ -41,9 +41,6 @@
 		if ($selectedObjects.includes(object)) {
 			removeFromSelection([object])
 		}
-		// if (object === $selectedObject) {
-		// 	selectedObject.set(undefined)
-		// }
 
 		// @TODO investigate
 		if (item !== undefined) {
@@ -88,14 +85,18 @@
 
 	const handleSelect = async (item: TreeViewItem) => {
 		if (!observeChanges) return
+		selectedItems.add(item)
 		const object = treeItemToObject.get(item)
 		if (!object) return
 		addToSelection([object])
 	}
 
-	treeview.on('deselect', () => {
+	treeview.on('deselect', (item: TreeViewItem) => {
 		if (!observeChanges) return
-		clearSelection()
+		selectedItems.delete(item)
+		const object = treeItemToObject.get(item)
+		if (!object) return
+		removeFromSelection([object])
 	})
 
 	treeview.on('select', handleSelect)
@@ -112,30 +113,33 @@
 		register(child)
 	}
 
+	const noUndef = <T,>(v: T | undefined): v is T => v !== undefined
+
 	watch(selectedObjects, (objects) => {
 		observeChanges = false
 
-		objects.forEach((object) => {
-			const treeitem = objectToTreeItem.get(object)
+		const treeItems = objects
+			.map((object) => {
+				const treeitem = objectToTreeItem.get(object)
+				return treeitem
+			})
+			.filter(noUndef)
 
-			if (treeitem) treeitem.selected = true
-			observeChanges = true
-
-			return () => {
-				if (treeitem) {
-					observeChanges = false
-					treeitem.selected = false
-					observeChanges = true
-				}
-			}
+		treeItems.forEach((treeitem) => {
+			treeitem.selected = true
 		})
 
 		observeChanges = true
-		return () => {}
+		return () => {
+			observeChanges = false
+			treeItems.forEach((treeitem) => {
+				treeitem.selected = false
+			})
+			observeChanges = true
+		}
 	})
 
 	const replace = (node: HTMLElement) => {
-		console.log('replace', node, treeview.wc)
 		node.replaceWith(treeview.wc)
 		return {
 			destroy() {
