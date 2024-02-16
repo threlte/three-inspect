@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { watch } from '@threlte/core'
+	import { T, watch } from '@threlte/core'
 	import { TransformControls } from '@threlte/extras'
 	import { Box3, Object3D, Vector3 } from 'three'
 	import { useStudio } from '../../internal/extensions'
@@ -10,6 +10,7 @@
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from './types'
+	import { onMount } from 'svelte'
 
 	const { selectedObjects } = useObjectSelection()
 	const { getExtension } = useStudio()
@@ -21,6 +22,7 @@
 	let lastPosition = new Vector3()
 
 	watch(selectedObjects, (objects) => {
+		if (objects.length === 0) return
 		// make bb with all selected objects
 		const bb = new Box3().setFromObject(objects[0])
 		for (let i = 1; i < objects.length; i++) {
@@ -48,6 +50,8 @@
 		})
 	}
 </script>
+
+<T is={centerObject} />
 
 <TransformControls
 	object={centerObject}

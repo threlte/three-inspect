@@ -4,6 +4,7 @@
 	import Helpers from '../../extensions/helpers/Helpers.svelte'
 	import ObjectSelection from '../../extensions/object-selection/ObjectSelection.svelte'
 	import RenderModes from '../../extensions/render-modes/RenderModes.svelte'
+	import SceneHierarchy from '../../extensions/scene-hierarchy/SceneHierarchy.svelte'
 	import StudioObjectsRegistry from '../../extensions/studio-objects-registry/StudioObjectsRegistry.svelte'
 	import TransformControls from '../../extensions/transform-controls/TransformControls.svelte'
 	import { createRootContext } from '../../internal/extensions'
@@ -21,5 +22,6 @@
 <RenderModes />
 <Grid />
 <Helpers />
+<SceneHierarchy />
 
 <slot />

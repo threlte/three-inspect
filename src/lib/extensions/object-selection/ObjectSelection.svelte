@@ -21,6 +21,16 @@
 			clearSelection({ select }) {
 				select((s) => s.selectedObjects).set([])
 			},
+			addToSelection({ select }, objects) {
+				select((s) => s.selectedObjects).update((selectedObjects) => {
+					return [...selectedObjects, ...objects]
+				})
+			},
+			removeFromSelection({ select }, objects) {
+				select((s) => s.selectedObjects).update((selectedObjects) => {
+					return selectedObjects.filter((object) => !objects.includes(object))
+				})
+			},
 		},
 	})
 

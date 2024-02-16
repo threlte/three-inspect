@@ -8,5 +8,7 @@ export type ObjectSelectionState = {
 
 export type ObjectSelectionActions = {
 	selectObjects: (objects: Object3D[]) => void
+	addToSelection: (objects: Object3D[]) => void
+	removeFromSelection: (objects: Object3D[]) => void
 	clearSelection: () => void
 }
