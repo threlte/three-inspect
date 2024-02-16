@@ -84,7 +84,7 @@
 		{#key key($selectedObjects)}
 			<ContainerTransform />
 		{/key}
-	{:else}
+	{:else if $selectedObjects.length === 1}
 		{#key key($selectedObjects)}
 			<SingleTransform />
 		{/key}

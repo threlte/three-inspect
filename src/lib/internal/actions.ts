@@ -16,7 +16,7 @@ export const createActions = () => {
 		scope: string,
 		actionId: string,
 		state: SubImmerStore<any>,
-		record: () => void,
+		record: (callback: (...args: any[]) => any) => void,
 		...args: any[]
 	) => {
 		if (!actions.has(scope)) {

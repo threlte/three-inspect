@@ -8,7 +8,6 @@
 	import Pie from './Pie.svelte'
 	import Ramp from './RampModel.svelte'
 	import Torus from './TorusModel.svelte'
-	import { useObjectSelection } from '../../lib/extensions/object-selection/useObjectSelection'
 
 	// const applyToProperties = ['shadow', 'light', 'material', 'camera']
 
@@ -52,8 +51,6 @@
 		scene.environment = $oil
 		invalidate()
 	}
-
-	const { selectObjects } = useObjectSelection()
 </script>
 
 <T.PerspectiveCamera
@@ -63,9 +60,6 @@
 	rotation={[0, 1.5708, 0, 'XYZ']}
 	fov={30}
 	makeDefault
-	on:create={({ ref }) => {
-		selectObjects([ref])
-	}}
 />
 
 <T.DirectionalLight
