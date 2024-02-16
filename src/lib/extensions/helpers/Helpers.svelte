@@ -10,6 +10,7 @@
 	import { useObjectSelection } from '../object-selection/useObjectSelection'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
 	import { helpersScope, type HelpersActions, type HelpersState } from './types'
+	import AxesHelper from './AxesHelper.svelte'
 
 	const { addExtension, removeExtension } = useStudio()
 
@@ -71,6 +72,12 @@
 </ToolbarItem>
 
 {#if $enabled}
+	<AxesHelper
+		length={2}
+		width={0.2}
+		on:create={onCreate}
+	/>
+
 	{#each $selectedObjects as object}
 		{#if isCamera(object)}
 			<T.CameraHelper

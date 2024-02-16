@@ -19,6 +19,12 @@
 	const { addObject, removeObject } = useStudioObjectsRegistry()
 
 	const mode = state.select((s) => s.mode)
+
+	const setIgnoreOverrideMaterial = (ref: any) => {
+		ref.traverse((node: any) => {
+			node.userData.ignoreOverrideMaterial = true
+		})
+	}
 </script>
 
 <TransformControls
@@ -31,9 +37,7 @@
 		run('setInUse', false)
 	}}
 	on:create={({ ref, cleanup }) => {
-		ref.traverse((node) => {
-			node.userData.ignoreOverrideMaterial = true
-		})
+		setIgnoreOverrideMaterial(ref)
 		addObject(ref)
 		cleanup(() => {
 			removeObject(ref)

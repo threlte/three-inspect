@@ -130,7 +130,7 @@
 			active={$editorCameraEnabled}
 			label="Editor Camera"
 			icon="mdiCamera"
-			tooltip="Editor Camera (T)"
+			tooltip="Editor Camera (C)"
 		/>
 
 		<DropDownPane title="Settings">
