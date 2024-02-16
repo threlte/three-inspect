@@ -1,11 +1,16 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte'
-	// import { Checkbox } from 'svelte-tweakpane-ui'
-	// import DropDownPane from '../../components/DropDownPane/DropDownPane.svelte'
+	import { Checkbox } from 'svelte-tweakpane-ui'
+	import { get } from 'svelte/store'
+	import type { Object3D } from 'three'
+	import DropDownPane from '../../components/DropDownPane/DropDownPane.svelte'
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
 	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
 	import { useStudio } from '../../internal/extensions'
+	import { useObjectSelection } from '../object-selection/useObjectSelection'
+	import ContainerTransform from './ContainerTransform.svelte'
+	import SingleTransform from './SingleTransform.svelte'
 	import {
 		transformControlsScope,
 		type TransformControlsActions,
@@ -18,7 +23,7 @@
 		scope: transformControlsScope,
 		state: ({ persist }) => ({
 			enabled: persist(false),
-			mode: 'translate' as TransformControlsState['mode'],
+			mode: persist('translate' as TransformControlsState['mode']),
 			inUse: false,
 		}),
 		actions: {
@@ -27,9 +32,14 @@
 			},
 			disable({ select }) {
 				select((s) => s.enabled).set(false)
+				select((s) => s.inUse).set(false)
 			},
 			toggle({ select }) {
-				select((s) => s.enabled).update((enabled) => !enabled)
+				const enabled = select((s) => s.enabled)
+				enabled.update((enabled) => !enabled)
+				if (!get(enabled)) {
+					select((s) => s.inUse).set(false)
+				}
 			},
 			setMode({ select }, mode) {
 				select((s) => s.mode).set(mode)
@@ -43,8 +53,8 @@
 			scale({ select }) {
 				select((s) => s.mode).set('scale')
 			},
-			toggleInUse({ select }) {
-				select((s) => s.inUse).update((inUse) => !inUse)
+			setInUse({ select }, inUse) {
+				select((s) => s.inUse).set(inUse)
 			},
 		},
 		keyMap() {
@@ -61,8 +71,25 @@
 		removeExtension(transformControlsScope)
 	})
 
-	$: mode = $state.mode
+	const mode = state.select((s) => s.mode)
+	const enabled = state.select((s) => s.enabled)
+
+	const { selectedObjects } = useObjectSelection()
+
+	const key = (objects: Object3D[]) => objects.map((o) => o.uuid).join()
 </script>
+
+{#if $enabled}
+	{#if $selectedObjects.length > 1}
+		{#key key($selectedObjects)}
+			<ContainerTransform />
+		{/key}
+	{:else}
+		{#key key($selectedObjects)}
+			<SingleTransform />
+		{/key}
+	{/if}
+{/if}
 
 <ToolbarItem position="left">
 	<HorizontalButtonGroup>
@@ -70,7 +97,7 @@
 			on:click={() => {
 				run('setMode', 'translate')
 			}}
-			active={mode === 'translate'}
+			active={$mode === 'translate'}
 			label="Move"
 			icon="mdiRayEndArrow"
 			tooltip="Move (T)"
@@ -80,7 +107,7 @@
 			on:click={() => {
 				run('setMode', 'rotate')
 			}}
-			active={mode === 'rotate'}
+			active={$mode === 'rotate'}
 			label="Rotate"
 			icon="mdiRotateLeft"
 			tooltip="Rotate (R)"
@@ -90,15 +117,15 @@
 			on:click={() => {
 				run('setMode', 'scale')
 			}}
-			active={mode === 'scale'}
+			active={$mode === 'scale'}
 			label="Scale"
 			icon="mdiArrowExpand"
 			tooltip="Scale (S)"
 		/>
 
-		<!-- <DropDownPane title="Settings">
+		<DropDownPane title="Settings">
 			<Checkbox
-				value={true}
+				value={$enabled}
 				on:change={(e) => {
 					if (e.detail.value) {
 						run('enable')
@@ -108,6 +135,6 @@
 				}}
 				label="Enabled"
 			/>
-		</DropDownPane> -->
+		</DropDownPane>
 	</HorizontalButtonGroup>
 </ToolbarItem>

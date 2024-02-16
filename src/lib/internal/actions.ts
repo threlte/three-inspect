@@ -19,13 +19,15 @@ export const createActions = () => {
 		...args: any[]
 	) => {
 		if (!actions.has(scope)) {
-			throw new Error(`Extension with scope "${scope}" does not exist`)
+			console.warn(`Extension with scope "${scope}" does not exist`)
+			return undefined
 		}
 
 		const extensionActions = actions.get(scope)!
 
 		if (!(actionId in extensionActions)) {
-			throw new Error(`Action with id "${actionId.toString()}" does not exist in scope "${scope}"`)
+			console.warn(`Action with id "${actionId.toString()}" does not exist in scope "${scope}"`)
+			return undefined
 		}
 
 		const action = extensionActions[actionId]
@@ -34,6 +36,7 @@ export const createActions = () => {
 			return state.select(...args)
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		return action({ select: selectProxy as Parameters<ExtensionAction<any>>[0]['select'] }, ...args)
 	}
 

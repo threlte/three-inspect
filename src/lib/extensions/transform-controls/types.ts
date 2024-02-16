@@ -14,5 +14,5 @@ export type TransformControlsActions = {
 	translate: () => void
 	rotate: () => void
 	scale: () => void
-	toggleInUse: () => void
+	setInUse: (inUse: boolean) => void
 }

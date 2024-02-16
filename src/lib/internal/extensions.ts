@@ -3,6 +3,7 @@ import type { SubImmerStore } from 'svelte-immer-store'
 import { createActions } from './actions'
 import { createKeyboardControls, hotkeyFns } from './keyboard'
 import { createState } from './state'
+import { beforeUnload } from './useBeforeUnload'
 
 // type RecordUnknown = Record<symbol, unknown> | Readonly<Record<number, unknown>>
 
@@ -82,6 +83,10 @@ export const createRootContext = () => {
 	}
 
 	setContext('threlte:studio:extensions', context)
+
+	// the last thing to do before the window is being closed is to persist the
+	// state to the local storage
+	beforeUnload(state.persistState, true)
 
 	return context
 }

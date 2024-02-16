@@ -6,4 +6,5 @@ export type RenderModesState = {
 
 export type RenderModesActions = {
 	cycleRenderMode: () => void
+	setRenderMode: (mode: RenderModesState['renderMode']) => void
 }

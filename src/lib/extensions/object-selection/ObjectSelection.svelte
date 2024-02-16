@@ -16,7 +16,7 @@
 		}),
 		actions: {
 			selectObjects({ select }, objects) {
-				select((s) => (s.selectedObjects = objects))
+				select((s) => s.selectedObjects).set(objects)
 			},
 			clearSelection({ select }) {
 				select((s) => s.selectedObjects).set([])

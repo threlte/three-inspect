@@ -1,6 +1,9 @@
 import { immerStore, type ImmerStore, type SubImmerStore } from 'svelte-immer-store'
 import { get } from 'svelte/store'
 import { scopeId } from './scopeUtils'
+import { enableMapSet } from 'immer'
+
+enableMapSet()
 
 // Persistance
 const persist = {
@@ -104,7 +107,7 @@ export const createState = () => {
 		subtree.delete()
 	}
 
-	window.addEventListener('beforeunload', () => {
+	const persistState = () => {
 		for (const [scope, paths] of Object.entries(persistedStatePaths)) {
 			const state = getScopedState(scope)
 			for (const path of paths) {
@@ -125,13 +128,14 @@ export const createState = () => {
 				localStorage[scopedKey] = JSON.stringify(value)
 			}
 		}
-	})
+	}
 
 	return {
 		addExtensionState,
 		getScopedState,
 		getScopedReadableState,
 		removeScopedState,
+		persistState,
 		state,
 	}
 }

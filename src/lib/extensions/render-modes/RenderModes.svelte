@@ -9,10 +9,11 @@
 		MeshBasicMaterial,
 		MeshMatcapMaterial,
 	} from 'three'
+	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
+	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
+	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
 	import { useStudio } from '../../internal/extensions'
 	import { renderModesScope, type RenderModesActions, type RenderModesState } from './types'
-	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
-	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
 
 	const hasMaterial = (object: any): object is { material: Material } => {
 		return 'material' in object
@@ -27,7 +28,7 @@
 	const { addExtension, removeExtension } = useStudio()
 	const { scene, invalidate, renderer } = useThrelte()
 
-	const { state } = addExtension<RenderModesState, RenderModesActions>({
+	const { state, run } = addExtension<RenderModesState, RenderModesActions>({
 		scope: renderModesScope,
 		state: ({ persist }) => ({
 			renderMode: persist<RenderModesState['renderMode']>('rendered'),
@@ -37,6 +38,9 @@
 				select((s) => s.renderMode).update((mode) => {
 					return mode === 'wireframe' ? 'solid' : mode === 'solid' ? 'rendered' : 'wireframe'
 				})
+			},
+			setRenderMode({ select }, mode) {
+				select((s) => s.renderMode).set(mode)
 			},
 		},
 		keyMap() {
@@ -77,41 +81,65 @@
 		renderer.renderBufferDirect = ogRenderBufferDirect
 	})
 
-	watch(
-		state.select((s) => s.renderMode),
-		(renderMode) => {
-			switch (renderMode) {
-				case 'rendered': {
-					scene.overrideMaterial = null
-					break
-				}
-				case 'wireframe': {
-					scene.overrideMaterial = new MeshBasicMaterial({
-						wireframe: true,
-						color: '#ffffff',
-					})
-					break
-				}
-				case 'solid': {
-					scene.overrideMaterial = new MeshMatcapMaterial({
-						color: '#ffffff',
-						flatShading: true,
-					})
-					break
-				}
+	const renderMode = state.select((s) => s.renderMode)
+
+	watch(renderMode, (renderMode) => {
+		switch (renderMode) {
+			case 'rendered': {
+				scene.overrideMaterial = null
+				break
 			}
-			invalidate()
-		},
-	)
+			case 'wireframe': {
+				scene.overrideMaterial = new MeshBasicMaterial({
+					wireframe: true,
+					color: '#ffffff',
+				})
+				break
+			}
+			case 'solid': {
+				scene.overrideMaterial = new MeshMatcapMaterial({
+					color: '#ffffff',
+					flatShading: true,
+				})
+				break
+			}
+		}
+		invalidate()
+	})
 
 	onDestroy(() => {
 		removeExtension(renderModesScope)
 	})
 </script>
 
-<ToolbarItem>
-	<ToolbarButton
-		label="helo"
-		icon="mdiArrowExpand"
-	></ToolbarButton>
+<ToolbarItem position="left">
+	<HorizontalButtonGroup>
+		<ToolbarButton
+			label="Wireframe"
+			icon="mdiWeb"
+			on:click={() => {
+				run('setRenderMode', 'wireframe')
+			}}
+			active={$renderMode === 'wireframe'}
+			tooltip="Wireframe (V)"
+		/>
+		<ToolbarButton
+			label="Solid"
+			icon="mdiCircle"
+			on:click={() => {
+				run('setRenderMode', 'solid')
+			}}
+			active={$renderMode === 'solid'}
+			tooltip="Solid (V)"
+		/>
+		<ToolbarButton
+			label="Rendered"
+			icon="mdiCircleOpacity"
+			on:click={() => {
+				run('setRenderMode', 'rendered')
+			}}
+			active={$renderMode === 'rendered'}
+			tooltip="Rendered (V)"
+		/>
+	</HorizontalButtonGroup>
 </ToolbarItem>
