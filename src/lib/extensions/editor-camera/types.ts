@@ -27,5 +27,6 @@ export type EditorCameraActions = {
 	setPerspective: () => void
 	setOrthographic: () => void
 	toggleDefaultCameraEnabled: () => void
+	setDefaultCameraEnabled: (enabled: boolean) => void
 	setDefaultCameraObject: (object: Camera | undefined) => void
 }

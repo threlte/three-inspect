@@ -1,5 +1,10 @@
 export const sceneHierarchyScope = 'scene-hierarchy'
 
-export type SceneHierarchyState = {}
+export type SceneHierarchyState = {
+	enabled: boolean
+}
 
-export type SceneHierarchyActions = {}
+export type SceneHierarchyActions = {
+	setEnabled: (enabled: boolean) => void
+	toggleEnabled: () => void
+}

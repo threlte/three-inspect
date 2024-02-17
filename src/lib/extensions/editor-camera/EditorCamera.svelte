@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { T, useThrelte, watch } from '@threlte/core'
 	import { onDestroy } from 'svelte'
-	import { RadioGrid } from 'svelte-tweakpane-ui'
+	import { RadioGrid, Checkbox } from 'svelte-tweakpane-ui'
 	import { derived, get } from 'svelte/store'
 	import { OrthographicCamera, PerspectiveCamera, Vector3 } from 'three'
 	import DropDownPane from '../../components/DropDownPane/DropDownPane.svelte'
@@ -66,6 +66,9 @@
 			},
 			toggleDefaultCameraEnabled({ select }) {
 				select((s) => s.defaultCamera.enabled).update((enabled) => !enabled)
+			},
+			setDefaultCameraEnabled({ select }, enabled) {
+				select((s) => s.defaultCamera.enabled).set(enabled)
 			},
 			setDefaultCameraObject({ select }, object) {
 				select((s) => s.defaultCamera.object).set(object)
@@ -139,6 +142,13 @@
 				values={modes}
 				on:change={(e) => {
 					onModeChange(e.detail.value)
+				}}
+			/>
+			<Checkbox
+				value={$defaultCameraEnabled}
+				label="Default Camera"
+				on:change={(e) => {
+					run('setDefaultCameraEnabled', e.detail.value)
 				}}
 			/>
 		</DropDownPane>
