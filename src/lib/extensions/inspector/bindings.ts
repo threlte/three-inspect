@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable unicorn/no-unused-properties */
 
 import type {
+	Color,
 	DirectionalLight,
 	HemisphereLight,
 	Light,
@@ -26,7 +28,7 @@ type Property = {
 }
 
 type Binding = {
-	attribute: Attribute
+	attributes: Attribute | Attribute[]
 	folder?: {
 		label: string
 		open: boolean
@@ -39,7 +41,15 @@ type Bindings = Binding[]
 const attributes = {
 	isObject3D: (object: any): object is Object3D => 'isObject3D' in object,
 	isScene: (object: any): object is Scene => 'isScene' in object,
-	isMesh: (object: any): object is Mesh => 'isMesh' in object,
+	mesh: {
+		isMesh: (object: any): object is Mesh => 'isMesh' in object,
+		material: {
+			hasMaterial: (object: any): object is { material: Material } => 'material' in object,
+			hasColor: (object: any): object is { material: { color: Color } } => {
+				return 'material' in object && 'color' in object.material
+			},
+		},
+	},
 	isLight: (object: any): object is Light => 'isLight' in object,
 	isPointLight: (object: any): object is PointLight => 'isPointLight' in object,
 	isSpotLight: (object: any): object is SpotLight => 'isSpotLight' in object,
@@ -50,12 +60,11 @@ const attributes = {
 		'isOrthographicCamera' in object,
 	isHemisphereLight: (object: any): object is HemisphereLight => 'isHemisphereLight' in object,
 	isRectAreaLight: (object: any): object is RectAreaLight => 'isRectAreaLight' in object,
-	hasMaterial: (object: any): object is { material: Material } => 'material' in object,
 }
 
 export const defaultBindings: Bindings = [
 	{
-		attribute: attributes.isObject3D,
+		attributes: attributes.isObject3D,
 		properties: [
 			{
 				label: 'visible',
@@ -103,7 +112,11 @@ export const defaultBindings: Bindings = [
 		],
 	},
 	{
-		attribute: attributes.hasMaterial,
+		attributes: [
+			attributes.mesh.isMesh,
+			attributes.mesh.material.hasMaterial,
+			attributes.mesh.material.hasColor,
+		],
 		folder: {
 			label: 'Material',
 			open: false,

@@ -8,8 +8,13 @@
 	const { selectedObjects } = useObjectSelection()
 	const { invalidate } = useThrelte()
 
-	const appliesToAllObjects = (attribute: Attribute) => {
-		return $selectedObjects.every((object) => attribute(object))
+	const appliesToAllObjects = (attribute: Attribute | Attribute[]) => {
+		return $selectedObjects.every((object) => {
+			if (Array.isArray(attribute)) {
+				return attribute.every((a) => a(object))
+			}
+			return attribute(object)
+		})
 	}
 
 	const readFromFirst = (read: Read<any>) => {
@@ -25,7 +30,7 @@
 {#if $selectedObjects.length}
 	{#key keyFromObjects($selectedObjects)}
 		{#each defaultBindings as binding}
-			{#if appliesToAllObjects(binding.attribute)}
+			{#if appliesToAllObjects(binding.attributes)}
 				{#if binding.folder}
 					<Folder
 						title={binding.folder.label}
