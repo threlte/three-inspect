@@ -16,6 +16,7 @@ import type {
 	Scene,
 	SpotLight,
 } from 'three'
+import { DEG2RAD, RAD2DEG } from 'three/src/math/MathUtils.js'
 
 export type Attribute = (object: any) => boolean
 export type Read<T> = (object: T) => any
@@ -87,12 +88,12 @@ export const defaultBindings: Bindings = [
 			{
 				label: 'rotation',
 				read: (object: Object3D) => ({
-					x: object.rotation.x,
-					y: object.rotation.y,
-					z: object.rotation.z,
+					x: object.rotation.x * RAD2DEG,
+					y: object.rotation.y * RAD2DEG,
+					z: object.rotation.z * RAD2DEG,
 				}),
 				apply(object: Object3D, value: { x: number; y: number; z: number }) {
-					object.rotation.set(value.x, value.y, value.z)
+					object.rotation.set(value.x * DEG2RAD, value.y * DEG2RAD, value.z * DEG2RAD)
 				},
 			},
 			{
