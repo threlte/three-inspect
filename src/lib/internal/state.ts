@@ -141,11 +141,12 @@ export const createState = () => {
 		subtree.delete()
 	}
 
-	const persistState = () => {
-		for (const [scope, paths] of Object.entries(persistedStatePaths)) {
-			const state = getScopedState(scope)
+	const persistState = (scope?: string) => {
+		for (const [currentScope, paths] of Object.entries(persistedStatePaths)) {
+			if (scope !== undefined && currentScope !== scope) continue
+			const state = getScopedState(currentScope)
 			for (const path of paths) {
-				const scopedKey = scopeId(scope, path)
+				const scopedKey = scopeId(currentScope, path)
 				const pathParts = path.split('.')
 				const value = get(
 					state.select((s) => {
