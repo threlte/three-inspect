@@ -76,6 +76,7 @@ export const createRootContext = () => {
 	}
 
 	const removeExtension = (scope: string) => {
+		state.persistState(scope)
 		state.removeScopedState(scope)
 		actions.removeExtensionActions(scope)
 		keyboardControls.removeKeys(scope)
