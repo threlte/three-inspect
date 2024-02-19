@@ -35,7 +35,6 @@
 <script lang="ts">
 	import { useTask, useThrelte, watch } from '@threlte/core'
 	import { createEventDispatcher, onMount, tick } from 'svelte'
-	import { beforeUnload } from '../../internal/useBeforeUnload'
 	import { useStudio } from '../../internal/extensions'
 	import {
 		transformControlsScope,
@@ -47,7 +46,7 @@
 	export let initialTarget: Vector3
 
 	const dispatch = createEventDispatcher<{
-		unmount: {
+		rest: {
 			position: Vector3
 			target: Vector3
 		}
@@ -75,12 +74,12 @@
 		},
 	)
 
-	const emitUnmount = () => {
+	const onRest = () => {
 		const position = new Vector3()
 		const target = new Vector3()
 		cameraControls.getPosition(position)
 		cameraControls.getTarget(target)
-		dispatch('unmount', {
+		dispatch('rest', {
 			position,
 			target,
 		})
@@ -88,9 +87,10 @@
 
 	onMount(() => {
 		cameraControls.addEventListener('update', invalidate)
+		cameraControls.addEventListener('rest', onRest)
 		return () => {
-			emitUnmount()
 			cameraControls.removeEventListener('update', invalidate)
+			cameraControls.removeEventListener('rest', onRest)
 			cameraControls.dispose()
 		}
 	})
@@ -107,6 +107,4 @@
 	watch(transformControlsInUse, (inUse) => {
 		cameraControls.enabled = !inUse
 	})
-
-	beforeUnload(emitUnmount)
 </script>

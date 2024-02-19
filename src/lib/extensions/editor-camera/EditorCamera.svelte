@@ -13,7 +13,7 @@
 	import DefaultCamera from './DefaultCamera.svelte'
 	import { editorCameraScope, type EditorCameraActions, type EditorCameraState } from './types'
 
-	const { addExtension } = useStudio()
+	const { addExtension, removeExtension } = useStudio()
 	const { camera } = useThrelte()
 
 	const editorCameraPerspective = new PerspectiveCamera()
@@ -113,6 +113,7 @@
 	onDestroy(() => {
 		const cam = get(defaultCameraObject)
 		if (cam) camera.set(cam)
+		removeExtension(editorCameraScope)
 	})
 
 	let modes = ['Perspective', 'Orthographic']
@@ -162,7 +163,7 @@
 				camera={editorCameraPerspective}
 				initialPosition={new Vector3(...$editorCameraPosition)}
 				initialTarget={new Vector3(...$editorCameraTarget)}
-				on:unmount={(e) => {
+				on:rest={(e) => {
 					run('setEditorCameraTransform', e.detail.position.toArray(), e.detail.target.toArray())
 				}}
 			/>
@@ -176,7 +177,7 @@
 				camera={editorCameraOrthographic}
 				initialPosition={new Vector3(...$editorCameraPosition)}
 				initialTarget={new Vector3(...$editorCameraTarget)}
-				on:unmount={(e) => {
+				on:rest={(e) => {
 					run('setEditorCameraTransform', e.detail.position.toArray(), e.detail.target.toArray())
 				}}
 			/>
