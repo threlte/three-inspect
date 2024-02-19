@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { T, useThrelte, watch } from '@threlte/core'
+	import type CC from 'camera-controls'
 	import { onDestroy } from 'svelte'
-	import { RadioGrid, Checkbox } from 'svelte-tweakpane-ui'
+	import { Checkbox, RadioGrid } from 'svelte-tweakpane-ui'
 	import { derived, get } from 'svelte/store'
 	import { Box3, OrthographicCamera, PerspectiveCamera, Sphere, Vector3 } from 'three'
 	import DropDownPane from '../../components/DropDownPane/DropDownPane.svelte'
@@ -9,12 +10,10 @@
 	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
 	import { useStudio } from '../../internal/extensions'
+	import { useObjectSelection } from '../object-selection/useObjectSelection'
 	import CameraControls from './CameraControls.svelte'
 	import DefaultCamera from './DefaultCamera.svelte'
 	import { editorCameraScope, type EditorCameraActions, type EditorCameraState } from './types'
-	import type CC from 'camera-controls'
-	import { useObjectSelection } from '../object-selection/useObjectSelection'
-	import { bounceIn } from 'svelte/easing'
 
 	const { addExtension, removeExtension } = useStudio()
 	const { camera } = useThrelte()
