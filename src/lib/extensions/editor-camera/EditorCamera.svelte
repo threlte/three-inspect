@@ -3,7 +3,7 @@
 	import { onDestroy } from 'svelte'
 	import { RadioGrid, Checkbox } from 'svelte-tweakpane-ui'
 	import { derived, get } from 'svelte/store'
-	import { OrthographicCamera, PerspectiveCamera, Vector3 } from 'three'
+	import { Box3, OrthographicCamera, PerspectiveCamera, Sphere, Vector3 } from 'three'
 	import DropDownPane from '../../components/DropDownPane/DropDownPane.svelte'
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
 	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
@@ -12,6 +12,9 @@
 	import CameraControls from './CameraControls.svelte'
 	import DefaultCamera from './DefaultCamera.svelte'
 	import { editorCameraScope, type EditorCameraActions, type EditorCameraState } from './types'
+	import type CC from 'camera-controls'
+	import { useObjectSelection } from '../object-selection/useObjectSelection'
+	import { bounceIn } from 'svelte/easing'
 
 	const { addExtension, removeExtension } = useStudio()
 	const { camera } = useThrelte()
@@ -22,6 +25,10 @@
 	const editorCameraOrthographic = new OrthographicCamera()
 	editorCameraOrthographic.userData.editorCamera = true
 	editorCameraOrthographic.userData.orthographic = true
+
+	let cameraControls: CC | undefined
+
+	const { selectedObjects } = useObjectSelection()
 
 	const { state, run } = addExtension<EditorCameraState, EditorCameraActions>({
 		scope: editorCameraScope,
@@ -73,10 +80,28 @@
 			setDefaultCameraObject({ select }, object) {
 				select((s) => s.defaultCamera.object).set(object)
 			},
+			focusSelectedObjects() {
+				if (!cameraControls) return
+				if (!$selectedObjects.length) return
+
+				const box = new Box3()
+				const centerAbs = new Vector3()
+				$selectedObjects.forEach((object) => {
+					object.getWorldPosition(centerAbs)
+					box.expandByPoint(centerAbs)
+					box.expandByObject(object, false)
+				})
+
+				const sphere = new Sphere()
+
+				box.getBoundingSphere(sphere)
+				cameraControls.fitToSphere(sphere, true)
+			},
 		},
-		keyMap() {
+		keyMap({ shift }) {
 			return {
 				toggleEnabled: 'c',
+				focusSelectedObjects: shift('f'),
 			}
 		},
 	})
@@ -137,6 +162,15 @@
 			tooltip="Editor Camera (C)"
 		/>
 
+		<ToolbarButton
+			on:click={() => {
+				run('focusSelectedObjects')
+			}}
+			label="Focus Selected"
+			icon="mdiImageFilterCenterFocusStrongOutline"
+			tooltip="Focus Selected (Shift+F)"
+		/>
+
 		<DropDownPane title="Settings">
 			<RadioGrid
 				{value}
@@ -166,6 +200,9 @@
 				on:rest={(e) => {
 					run('setEditorCameraTransform', e.detail.position.toArray(), e.detail.target.toArray())
 				}}
+				on:cc={(e) => {
+					cameraControls = e.detail
+				}}
 			/>
 		</T>
 	{:else if $mode === 'Orthographic'}
@@ -179,6 +216,9 @@
 				initialTarget={new Vector3(...$editorCameraTarget)}
 				on:rest={(e) => {
 					run('setEditorCameraTransform', e.detail.position.toArray(), e.detail.target.toArray())
+				}}
+				on:cc={(e) => {
+					cameraControls = e.detail
 				}}
 			/>
 		</T>

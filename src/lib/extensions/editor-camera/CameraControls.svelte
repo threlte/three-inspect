@@ -46,6 +46,7 @@
 	export let initialTarget: Vector3
 
 	const dispatch = createEventDispatcher<{
+		cc: CameraControls
 		rest: {
 			position: Vector3
 			target: Vector3
@@ -61,6 +62,7 @@
 
 	onMount(async () => {
 		await tick()
+		dispatch('cc', cameraControls)
 		cameraControls.setPosition(...initialPosition.toArray(), false)
 		cameraControls.setTarget(...initialTarget.toArray(), false)
 	})

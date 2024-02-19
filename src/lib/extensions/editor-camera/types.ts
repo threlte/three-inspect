@@ -29,4 +29,5 @@ export type EditorCameraActions = {
 	toggleDefaultCameraEnabled: () => void
 	setDefaultCameraEnabled: (enabled: boolean) => void
 	setDefaultCameraObject: (object: Camera | undefined) => void
+	focusSelectedObjects: () => void
 }

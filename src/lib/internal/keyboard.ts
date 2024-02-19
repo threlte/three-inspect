@@ -98,7 +98,7 @@ export const createKeyboardControls = (runAction: (scope: string, actionId: stri
 		const shift = e.shiftKey
 		if (shift) keys.push('shift')
 
-		keys.push(e.key)
+		keys.push(e.key.toLowerCase())
 		const flattenedKeyCombo = flattenKeyCombo(keys)
 		if (keyMap.current.has(flattenedKeyCombo)) {
 			e.preventDefault()

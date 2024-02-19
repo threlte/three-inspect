@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte'
 	import { get } from 'svelte/store'
-	import { Mesh, MeshBasicMaterial } from 'three'
+	import { DoubleSide, Mesh, MeshBasicMaterial, MeshMatcapMaterial } from 'three'
 	import { useStudio } from '../../internal/extensions'
 	import {
 		objectSelectionScope,
@@ -14,6 +14,15 @@
 	const isMesh = (object: any): object is Mesh => {
 		return 'isMesh' in object
 	}
+
+	const selectedMeshMaterial = new MeshBasicMaterial({
+		transparent: true,
+		opacity: 0.5,
+		color: '#3662E3',
+		depthWrite: false,
+		side: DoubleSide,
+		depthTest: false,
+	})
 
 	addExtension<ObjectSelectionState, ObjectSelectionActions>({
 		scope: objectSelectionScope,
@@ -35,15 +44,7 @@
 				// add new selection meshes
 				objects.forEach((object) => {
 					if (isMesh(object)) {
-						const wireframeMesh = new Mesh(
-							object.geometry,
-							new MeshBasicMaterial({
-								color: 'blue',
-								wireframe: true,
-								polygonOffset: true,
-								polygonOffsetFactor: 10,
-							}),
-						)
+						const wireframeMesh = new Mesh(object.geometry, selectedMeshMaterial)
 						wireframeMesh.userData.ignoreOverrideMaterial = true
 						wireframeMesh.userData.selectionMesh = true
 						object.add(wireframeMesh)
@@ -66,15 +67,7 @@
 			addToSelection({ select, record }, objects) {
 				objects.forEach((object) => {
 					if (isMesh(object)) {
-						const wireframeMesh = new Mesh(
-							object.geometry,
-							new MeshBasicMaterial({
-								color: 'blue',
-								wireframe: true,
-								polygonOffset: true,
-								polygonOffsetFactor: 10,
-							}),
-						)
+						const wireframeMesh = new Mesh(object.geometry, selectedMeshMaterial)
 						wireframeMesh.userData.ignoreOverrideMaterial = true
 						wireframeMesh.userData.selectionMesh = true
 						object.add(wireframeMesh)
