@@ -61,9 +61,10 @@ export const createRootContext = () => {
 			) => ReturnType<Actions[K]>
 		}
 		keyMap?: (utils: typeof hotkeyFns) => {
-			[Key in keyof Actions]?: Parameters<Actions[Key]> extends [] ? string | string[] : never
+			[Key in keyof Actions]?: Parameters<Actions[Key]> extends []
+				? string | string[] | { up?: string | string[]; down?: string | string[] }
+				: never
 		}
-		toolbarItems?: SvelteComponent[]
 	}) => {
 		state.addExtensionState(options.scope, options.state)
 		actions.addExtensionActions(options.scope, options.actions as unknown as ExtensionActions)

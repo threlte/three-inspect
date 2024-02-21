@@ -43,9 +43,25 @@
 
 	const mode = state.select((s) => s.mode)
 
-	const setIgnoreOverrideMaterial = (ref: any) => {
+	const isObject3D = (object: any): object is Object3D => {
+		return 'isObject3D' in object
+	}
+
+	const onCreate = (ref: any, cleanup: (callback: () => void) => void) => {
+		const objects: Object3D[] = [ref]
 		ref.traverse((node: any) => {
+			if (isObject3D(node)) {
+				objects.push(node)
+			}
 			node.userData.ignoreOverrideMaterial = true
+		})
+		objects.forEach((object) => {
+			addObject(object)
+		})
+		cleanup(() => {
+			for (const object of objects) {
+				removeObject(object)
+			}
 		})
 	}
 </script>
@@ -63,10 +79,6 @@
 	}}
 	mode={$mode}
 	on:create={({ ref, cleanup }) => {
-		setIgnoreOverrideMaterial(ref)
-		addObject(ref)
-		cleanup(() => {
-			removeObject(ref)
-		})
+		onCreate(ref, cleanup)
 	}}
 />

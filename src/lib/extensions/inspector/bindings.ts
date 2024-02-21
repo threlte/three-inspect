@@ -26,6 +26,8 @@ type Property = {
 	label: string
 	read: Read<any>
 	apply: Apply<any>
+	default: any
+	isDefault?: (value: any) => boolean
 }
 
 type Binding = {
@@ -73,6 +75,7 @@ export const defaultBindings: Bindings = [
 				apply(object: Object3D, value: boolean) {
 					object.visible = value
 				},
+				default: true,
 			},
 			{
 				label: 'position',
@@ -84,6 +87,7 @@ export const defaultBindings: Bindings = [
 				apply(object: Object3D, value: { x: number; y: number; z: number }) {
 					object.position.set(value.x, value.y, value.z)
 				},
+				default: { x: 0, y: 0, z: 0 },
 			},
 			{
 				label: 'rotation',
@@ -95,6 +99,7 @@ export const defaultBindings: Bindings = [
 				apply(object: Object3D, value: { x: number; y: number; z: number }) {
 					object.rotation.set(value.x * DEG2RAD, value.y * DEG2RAD, value.z * DEG2RAD)
 				},
+				default: { x: 0, y: 0, z: 0 },
 			},
 			{
 				label: 'scale',
@@ -102,6 +107,7 @@ export const defaultBindings: Bindings = [
 				apply(object: Object3D, value: { x: number; y: number; z: number }) {
 					object.scale.set(value.x, value.y, value.z)
 				},
+				default: { x: 1, y: 1, z: 1 },
 			},
 			{
 				label: 'renderOrder',
@@ -109,6 +115,7 @@ export const defaultBindings: Bindings = [
 				apply(object: Object3D, value: number) {
 					object.renderOrder = value
 				},
+				default: 0,
 			},
 		],
 	},
@@ -129,6 +136,7 @@ export const defaultBindings: Bindings = [
 				apply(object: { material: Material }, value: number) {
 					object.material.color.set(value)
 				},
+				default: '#ffffff',
 			},
 		],
 	},

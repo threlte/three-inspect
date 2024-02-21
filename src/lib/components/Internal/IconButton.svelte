@@ -109,15 +109,15 @@
 		z-index: 1;
 	}
 
-	button:hover {
+	button:not(:disabled):hover {
 		background-color: var(--background-color-hover);
 	}
 
-	button:focus {
+	button:not(:disabled):focus {
 		background-color: var(--background-color-focus);
 	}
 
-	button:active {
+	button:not(:disabled):active {
 		background-color: var(--background-color-active);
 	}
 </style>

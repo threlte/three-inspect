@@ -12,21 +12,15 @@
 	} from 'three'
 	import Portal from '../../components/Internal/Portal.svelte'
 	import { useStudio } from '../../internal/extensions'
-	import {
-		studioObjectsRegistryScope,
-		type StudioObjectsRegistryActions,
-		type StudioObjectsRegistryState,
-	} from '../studio-objects-registry/types'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
 	import { editorCameraScope, type EditorCameraActions, type EditorCameraState } from './types'
 
 	const { getExtension } = useStudio()
 	const { renderer, scene, autoRenderTask, invalidate } = useThrelte()
 
 	const { state } = getExtension<EditorCameraState, EditorCameraActions>(editorCameraScope)
-	const { state: studioObjectsRegistryState } = getExtension<
-		StudioObjectsRegistryState,
-		StudioObjectsRegistryActions
-	>(studioObjectsRegistryScope)
+
+	const { studioObjects } = useStudioObjectsRegistry()
 	const defaultCameraObject = state.select((s) => s.defaultCamera.object)
 	const width = state.select((s) => s.defaultCamera.width)
 	const height = state.select((s) => s.defaultCamera.height)
@@ -86,8 +80,6 @@
 	const size = new Vector2()
 	let dpr = 0
 
-	const studioObjects = studioObjectsRegistryState.select((s) => s.objects)
-
 	useTask(
 		() => {
 			if (!context) return
@@ -112,6 +104,7 @@
 			renderer.setViewport(0, 0, $width, $height)
 
 			$studioObjects.forEach((obj) => {
+				obj.userData.__threlte_studio_default_camera_visible = obj.visible
 				obj.visible = false
 			})
 
@@ -123,7 +116,7 @@
 			scene.overrideMaterial = originalOverrideMaterial
 
 			$studioObjects.forEach((obj) => {
-				obj.visible = true
+				obj.visible = obj.userData.__threlte_studio_default_camera_visible
 			})
 
 			// reset viewport

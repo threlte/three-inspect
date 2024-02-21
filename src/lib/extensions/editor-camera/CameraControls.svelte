@@ -41,6 +41,12 @@
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from '../transform-controls/types'
+	import {
+		objectSelectionScope,
+		type ObjectSelectionActions,
+		type ObjectSelectionState,
+	} from '../object-selection/types'
+	import { derived } from 'svelte/store'
 
 	export let initialPosition: Vector3
 	export let initialTarget: Vector3
@@ -58,6 +64,8 @@
 	const { renderer, invalidate } = useThrelte()
 
 	const cameraControls = new CameraControls(camera, renderer.domElement)
+	cameraControls.smoothTime = 0.05
+	cameraControls.draggingSmoothTime = 0.05
 	cameraControls.dollyToCursor = true
 
 	onMount(async () => {
@@ -99,14 +107,24 @@
 
 	const { getExtension } = useStudio()
 
-	const { state } = getExtension<TransformControlsState, TransformControlsActions>(
-		transformControlsScope,
-	)
+	const { state: transformControlsState } = getExtension<
+		TransformControlsState,
+		TransformControlsActions
+	>(transformControlsScope)
+	const { state: objectSelectionState } = getExtension<
+		ObjectSelectionState,
+		ObjectSelectionActions
+	>(objectSelectionScope)
 
-	const transformControlsInUse = state.select((s) => s.inUse)
+	const transformControlsInUse = transformControlsState.select((s) => s.inUse)
+	const objectSelectionInUse = objectSelectionState.select((s) => s.inUse)
+
+	const anyInUse = derived([transformControlsInUse, objectSelectionInUse], ([a, b]) => {
+		return a || b
+	})
 
 	// disable camera controls when transform controls are in use
-	watch(transformControlsInUse, (inUse) => {
+	watch(anyInUse, (inUse) => {
 		cameraControls.enabled = !inUse
 	})
 </script>

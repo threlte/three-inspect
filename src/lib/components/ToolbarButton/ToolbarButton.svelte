@@ -11,12 +11,15 @@
 	export let success = false
 
 	export let tooltip: string = ''
+
+	export let disabled: boolean = false
 </script>
 
 {#if tooltip.length}
 	<Tooltip>
 		<IconButton
 			on:click
+			{disabled}
 			{active}
 			{warn}
 			{success}
@@ -28,6 +31,7 @@
 {:else}
 	<IconButton
 		on:click
+		{disabled}
 		{active}
 		{warn}
 		{success}

@@ -23,7 +23,7 @@
 		scope: transformControlsScope,
 		state: ({ persist }) => ({
 			enabled: persist(true),
-			mode: persist('translate' as TransformControlsState['mode']),
+			mode: persist('translate'),
 			inUse: false,
 		}),
 		actions: {

@@ -1,13 +1,28 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte'
 	import { get } from 'svelte/store'
-	import { DoubleSide, Mesh, MeshBasicMaterial, MeshMatcapMaterial } from 'three'
+	import {
+		DoubleSide,
+		GreaterDepth,
+		GreaterEqualCompare,
+		LessCompare,
+		LessDepth,
+		Mesh,
+		MeshBasicMaterial,
+		NeverDepth,
+	} from 'three'
+	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
+	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
+	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
 	import { useStudio } from '../../internal/extensions'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
 	import {
 		objectSelectionScope,
 		type ObjectSelectionActions,
 		type ObjectSelectionState,
 	} from './types'
+	import SelectTweak from './SelectTweak.svelte'
+	import SelectRect from './SelectRect.svelte'
 
 	const { addExtension, removeExtension } = useStudio()
 
@@ -19,15 +34,18 @@
 		transparent: true,
 		opacity: 0.5,
 		color: '#3662E3',
-		depthWrite: false,
 		side: DoubleSide,
-		depthTest: false,
 	})
 
-	addExtension<ObjectSelectionState, ObjectSelectionActions>({
+	const { addObject, removeObject } = useStudioObjectsRegistry()
+
+	const { run, state } = addExtension<ObjectSelectionState, ObjectSelectionActions>({
 		scope: objectSelectionScope,
-		state: () => ({
+		state: ({ persist }) => ({
 			selectedObjects: [],
+			enabled: persist(false),
+			mode: 'tweak',
+			inUse: false,
 		}),
 		actions: {
 			selectObjects({ select, record }, objects) {
@@ -35,19 +53,21 @@
 				const selectedObjects = select((s) => s.selectedObjects)
 				get(selectedObjects).forEach((object) => {
 					if (isMesh(object)) {
-						const outlineMesh = object.children.find((child) => child.uuid === object.uuid)
-						if (outlineMesh) {
-							object.remove(outlineMesh)
+						const selectionMesh = object.children.find((child) => child.userData.selectionMesh)
+						if (selectionMesh) {
+							removeObject(selectionMesh)
+							object.remove(selectionMesh)
 						}
 					}
 				})
 				// add new selection meshes
 				objects.forEach((object) => {
 					if (isMesh(object)) {
-						const wireframeMesh = new Mesh(object.geometry, selectedMeshMaterial)
-						wireframeMesh.userData.ignoreOverrideMaterial = true
-						wireframeMesh.userData.selectionMesh = true
-						object.add(wireframeMesh)
+						const selectionMesh = new Mesh(object.geometry, selectedMeshMaterial)
+						selectionMesh.userData.ignoreOverrideMaterial = true
+						selectionMesh.userData.selectionMesh = true
+						addObject(selectionMesh)
+						object.add(selectionMesh)
 					}
 				})
 				record(() => select((s) => s.selectedObjects).set(objects))
@@ -56,9 +76,10 @@
 				const selectedObjects = select((s) => s.selectedObjects)
 				get(selectedObjects).forEach((object) => {
 					if (isMesh(object)) {
-						const outlineMesh = object.children.find((child) => child.uuid === object.uuid)
-						if (outlineMesh) {
-							object.remove(outlineMesh)
+						const selectionMesh = object.children.find((child) => child.userData.selectionMesh)
+						if (selectionMesh) {
+							removeObject(selectionMesh)
+							object.remove(selectionMesh)
 						}
 					}
 				})
@@ -67,10 +88,11 @@
 			addToSelection({ select, record }, objects) {
 				objects.forEach((object) => {
 					if (isMesh(object)) {
-						const wireframeMesh = new Mesh(object.geometry, selectedMeshMaterial)
-						wireframeMesh.userData.ignoreOverrideMaterial = true
-						wireframeMesh.userData.selectionMesh = true
-						object.add(wireframeMesh)
+						const selectionMesh = new Mesh(object.geometry, selectedMeshMaterial)
+						selectionMesh.userData.ignoreOverrideMaterial = true
+						selectionMesh.userData.selectionMesh = true
+						addObject(selectionMesh)
+						object.add(selectionMesh)
 					}
 				})
 				record(() => {
@@ -82,9 +104,10 @@
 			removeFromSelection({ select, record }, objects) {
 				objects.forEach((object) => {
 					if (isMesh(object)) {
-						const wireframeMesh = object.children.find((child) => child.userData.selectionMesh)
-						if (wireframeMesh) {
-							object.remove(wireframeMesh)
+						const selectionMesh = object.children.find((child) => child.userData.selectionMesh)
+						if (selectionMesh) {
+							removeObject(selectionMesh)
+							object.remove(selectionMesh)
 						}
 					}
 				})
@@ -94,10 +117,74 @@
 					})
 				})
 			},
+			toggleEnabled({ select }) {
+				select((s) => s.enabled).update((enabled) => !enabled)
+			},
+			setEnabled({ select }, enabled) {
+				select((s) => s.enabled).set(enabled)
+			},
+			setMode({ select }, mode) {
+				select((s) => s.mode).set(mode)
+				if (mode === 'tweak') select((s) => s.inUse).set(false)
+			},
+			toggleMode({ select }) {
+				const mode = select((s) => s.mode)
+				mode.update((mode) => {
+					return mode === 'tweak' ? 'rect' : 'tweak'
+				})
+				if (get(mode) === 'tweak') select((s) => s.inUse).set(false)
+			},
+			setInUse({ select }, inUse) {
+				select((s) => s.inUse).set(inUse)
+			},
+			setModeTweak({ select }) {
+				select((s) => s.mode).set('tweak')
+			},
+			setModeRect({ select }) {
+				select((s) => s.mode).set('rect')
+			},
+		},
+		keyMap({ shift }) {
+			return {
+				setModeTweak: {
+					up: shift(),
+				},
+				setModeRect: {
+					down: shift(),
+				},
+			}
 		},
 	})
 
 	onDestroy(() => {
 		removeExtension(objectSelectionScope)
 	})
+
+	const mode = state.select((s) => s.mode)
 </script>
+
+{#if $mode === 'tweak'}
+	<SelectTweak />
+{:else if $mode === 'rect'}
+	<SelectRect />
+{/if}
+
+<ToolbarItem>
+	<HorizontalButtonGroup>
+		<ToolbarButton
+			label="Select Tweak"
+			active={$mode === 'tweak'}
+			icon="mdiCursorPointer"
+			tooltip="Hold Shift to Toggle"
+			disabled
+		/>
+
+		<ToolbarButton
+			label="Select Box"
+			active={$mode === 'rect'}
+			icon="mdiSelect"
+			tooltip="Hold Shift to Toggle"
+			disabled
+		/>
+	</HorizontalButtonGroup>
+</ToolbarItem>

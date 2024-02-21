@@ -8,7 +8,7 @@ import {
 
 export const useStudioObjectsRegistry = () => {
 	const { getExtension } = useStudio()
-	const { run } = getExtension<StudioObjectsRegistryState, StudioObjectsRegistryActions>(
+	const { run, state } = getExtension<StudioObjectsRegistryState, StudioObjectsRegistryActions>(
 		studioObjectsRegistryScope,
 	)
 
@@ -23,5 +23,6 @@ export const useStudioObjectsRegistry = () => {
 	return {
 		addObject,
 		removeObject,
+		studioObjects: state.select((s) => s.objects),
 	}
 }
