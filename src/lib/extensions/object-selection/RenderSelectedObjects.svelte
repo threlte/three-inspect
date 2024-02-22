@@ -33,13 +33,39 @@
 		)
 	})
 
-	const overrideMaterial = new MeshBasicMaterial({
-		color: 'blue',
-	})
+	const numberSeedToHexColor = (seed: number) => {
+		let color = (Math.round(Math.abs(seed)) % 0xffffff).toString(16)
+		while (color.length < 6) {
+			color = `0${color}`
+		}
+		return `#${color}`
+	}
+
+	const MATERIAL_POOL_SIZE = 32
+	const overrideMaterialPool = new Map<number, MeshBasicMaterial>()
+
+	const getOverrideMaterial = (id: number) => {
+		// limits the amount of cached materials
+		// I'm worried about performance impact if we had one material per object id.
+		// though it means that if two meshes happen to have the same mapIndex
+		// and overlap in screen space, then the edges won't get detected
+		const mapIndex = id % MATERIAL_POOL_SIZE
+
+		if (overrideMaterialPool.has(mapIndex)) return overrideMaterialPool.get(mapIndex)
+
+		const newOverrideMaterial = new MeshBasicMaterial({
+			color: numberSeedToHexColor(mapIndex),
+		})
+
+		overrideMaterialPool.set(mapIndex, newOverrideMaterial)
+
+		return newOverrideMaterial
+	}
 
 	useTask(
 		() => {
 			// render to renderTarget
+			const originalMaterials = new Map()
 			const originalRenderTarget = renderer.getRenderTarget()
 			const currentCameraMask = camera.current.layers.mask
 			camera.current.layers.set(31)
@@ -47,9 +73,13 @@
 			$selectedObjects.forEach((object) => {
 				object.userData.originalLayer = object.layers.mask
 				object.layers.enable(31)
+				if (object.material) {
+					originalMaterials.set(object.id, object.material)
+					object.material = getOverrideMaterial(object.id)
+				}
 			})
 			const originalOverrideMaterial = scene.overrideMaterial
-			scene.overrideMaterial = overrideMaterial
+			scene.overrideMaterial = null
 			scene.background = null
 			const currentClearAlpha = renderer.getClearAlpha()
 			renderer.setRenderTarget(renderTarget)
@@ -60,6 +90,9 @@
 			scene.background = currentSceneBackground
 			$selectedObjects.forEach((object) => {
 				object.layers.mask = object.userData.originalLayer
+				if (object.material) {
+					object.material = originalMaterials.get(object.id)
+				}
 			})
 			scene.overrideMaterial = originalOverrideMaterial
 		},
@@ -107,13 +140,13 @@
 						value: renderTarget.texture,
 					},
 					lineWidth: {
-						value: 2,
+						value: 1.5,
 					},
 					outlineColor: {
 						value: new Color('yellow'),
 					},
 					edgeFactor: {
-						value: 0.01,
+						value: 0.0001,
 					},
 				}}
 				uniforms.outlinedObjectsTexture.value={renderTarget.texture}
@@ -122,29 +155,5 @@
 				transparent
 			/>
 		</T.Mesh>
-
-		<!-- <T.Mesh
-			raycast={() => {}}
-			position.z={-5}
-			scale.x={getExtends($camera, 5).x}
-			scale.y={getExtends($camera, 5).y}
-			on:create={({ ref, cleanup }) => {
-				addObject(ref)
-				cleanup(() => {
-					removeObject(ref)
-				})
-			}}
-		>
-			<T.PlaneGeometry />
-
-			<T.MeshBasicMaterial
-				color="white"
-				transparent
-				opacity={0.3}
-				map={renderTarget.texture}
-				depthWrite={false}
-				depthTest={false}
-			/>
-		</T.Mesh> -->
 	</Portal>
 {/if}
