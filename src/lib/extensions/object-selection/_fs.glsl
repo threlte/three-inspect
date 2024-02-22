@@ -32,10 +32,5 @@ void main() {
   // gl_FragColor = vec4(finalColor, max(edgeDetectValue, currentColor.a * 0.3f));
 
   // outline + highlight color based on the override material color
-  // gl_FragColor = vec4(currentColor.rgb, max(edgeDetectValue, currentColor.a * 0.3f));
-
-  if (edgeDetectValue < 0.1f) {
-    // discard;
-  }
-
+  // gl_FragColor = vec4(currentColor.rgb, max(edgeDetectValue, currentColor.a * 0.3f));  
 }

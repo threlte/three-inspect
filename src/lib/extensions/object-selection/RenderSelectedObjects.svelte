@@ -54,7 +54,7 @@
 		if (overrideMaterialPool.has(mapIndex)) return overrideMaterialPool.get(mapIndex)
 
 		const newOverrideMaterial = new MeshBasicMaterial({
-			color: numberSeedToHexColor(mapIndex),
+			color: numberSeedToHexColor(id),
 		})
 
 		overrideMaterialPool.set(mapIndex, newOverrideMaterial)
