@@ -1,9 +1,17 @@
 <script lang="ts">
 	import { T, useTask, useThrelte, watch } from '@threlte/core'
 	import { Portal } from '@threlte/extras'
-	import { MeshBasicMaterial, RGBAFormat, WebGLRenderTarget, type PerspectiveCamera } from 'three'
+	import {
+		MeshBasicMaterial,
+		RGBAFormat,
+		WebGLRenderTarget,
+		type PerspectiveCamera,
+		Color,
+	} from 'three'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
 	import { useObjectSelection } from './useObjectSelection'
+	import fragmentShader from './_fs.glsl?raw'
+	import vertexShader from './_vs.glsl?raw'
 
 	const { selectedObjects } = useObjectSelection()
 	const { addObject, removeObject } = useStudioObjectsRegistry()
@@ -28,6 +36,7 @@
 	const overrideMaterial = new MeshBasicMaterial({
 		color: 'blue',
 	})
+
 	useTask(
 		() => {
 			// render to renderTarget
@@ -90,13 +99,52 @@
 		>
 			<T.PlaneGeometry />
 
+			<T.ShaderMaterial
+				{fragmentShader}
+				{vertexShader}
+				uniforms={{
+					outlinedObjectsTexture: {
+						value: renderTarget.texture,
+					},
+					lineWidth: {
+						value: 2,
+					},
+					outlineColor: {
+						value: new Color('yellow'),
+					},
+					edgeFactor: {
+						value: 0.01,
+					},
+				}}
+				uniforms.outlinedObjectsTexture.value={renderTarget.texture}
+				depthWrite={false}
+				depthTest={false}
+				transparent
+			/>
+		</T.Mesh>
+
+		<!-- <T.Mesh
+			raycast={() => {}}
+			position.z={-5}
+			scale.x={getExtends($camera, 5).x}
+			scale.y={getExtends($camera, 5).y}
+			on:create={({ ref, cleanup }) => {
+				addObject(ref)
+				cleanup(() => {
+					removeObject(ref)
+				})
+			}}
+		>
+			<T.PlaneGeometry />
+
 			<T.MeshBasicMaterial
 				color="white"
 				transparent
+				opacity={0.3}
 				map={renderTarget.texture}
 				depthWrite={false}
 				depthTest={false}
 			/>
-		</T.Mesh>
+		</T.Mesh> -->
 	</Portal>
 {/if}
