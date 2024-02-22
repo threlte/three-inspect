@@ -54,7 +54,7 @@
 		if (overrideMaterialPool.has(mapIndex)) return overrideMaterialPool.get(mapIndex)
 
 		const newOverrideMaterial = new MeshBasicMaterial({
-			color: numberSeedToHexColor(id),
+			color: numberSeedToHexColor(Math.random() * 10000),
 		})
 
 		overrideMaterialPool.set(mapIndex, newOverrideMaterial)
@@ -70,12 +70,12 @@
 			const currentCameraMask = camera.current.layers.mask
 			camera.current.layers.set(31)
 			const currentSceneBackground = scene.background
-			$selectedObjects.forEach((object) => {
+			$selectedObjects.forEach((object, i) => {
 				object.userData.originalLayer = object.layers.mask
 				object.layers.enable(31)
 				if (object.material) {
 					originalMaterials.set(object.id, object.material)
-					object.material = getOverrideMaterial(object.id)
+					object.material = getOverrideMaterial(i)
 				}
 			})
 			const originalOverrideMaterial = scene.overrideMaterial
