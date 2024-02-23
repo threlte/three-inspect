@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { T, useTask, useThrelte, watch } from '@threlte/core'
 	import { Portal } from '@threlte/extras'
+	import { onMount } from 'svelte'
 	import {
 		Color,
+		Mesh,
 		MeshBasicMaterial,
 		RGBAFormat,
 		WebGLRenderTarget,
+		type Material,
+		type OrthographicCamera,
 		type PerspectiveCamera,
 	} from 'three'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
@@ -13,24 +17,18 @@
 	import vertexShader from './_vs.glsl?raw'
 	import { useObjectSelection } from './useObjectSelection'
 
+	const { invalidate } = useThrelte()
 	const { selectedObjects } = useObjectSelection()
 	const { addObject, removeObject } = useStudioObjectsRegistry()
 
 	const { size, renderer, autoRenderTask, scene, camera } = useThrelte()
 
-	const renderTarget = new WebGLRenderTarget(
-		$size.width * renderer.getPixelRatio(),
-		$size.height * renderer.getPixelRatio(),
-		{
-			format: RGBAFormat,
-		},
-	)
+	const renderTarget = new WebGLRenderTarget($size.width, $size.height, {
+		format: RGBAFormat,
+	})
 
 	watch(size, (size) => {
-		renderTarget.setSize(
-			size.width * renderer.getPixelRatio(),
-			size.height * renderer.getPixelRatio(),
-		)
+		renderTarget.setSize(size.width, size.height)
 	})
 
 	const numberSeedToHexColor = (seed: number) => {
@@ -44,14 +42,14 @@
 	const MATERIAL_POOL_SIZE = 32
 	const overrideMaterialPool = new Map<number, MeshBasicMaterial>()
 
-	const getOverrideMaterial = (id: number) => {
-		// limits the amount of cached materials
-		// I'm worried about performance impact if we had one material per object id.
-		// though it means that if two meshes happen to have the same mapIndex
-		// and overlap in screen space, then the edges won't get detected
+	const getOverrideMaterial = (id: number): MeshBasicMaterial => {
+		// limits the amount of cached materials. I'm worried about performance
+		// impact if we had one material per object id. though it means that if two
+		// meshes happen to have the same mapIndex and overlap in screen space, then
+		// the edges won't get detected.
 		const mapIndex = id % MATERIAL_POOL_SIZE
 
-		if (overrideMaterialPool.has(mapIndex)) return overrideMaterialPool.get(mapIndex)
+		if (overrideMaterialPool.has(mapIndex)) return overrideMaterialPool.get(mapIndex)!
 
 		const newOverrideMaterial = new MeshBasicMaterial({
 			color: numberSeedToHexColor(Math.random() * 10000),
@@ -62,9 +60,15 @@
 		return newOverrideMaterial
 	}
 
+	const hasMaterial = (object: any): object is { material: Material } => {
+		return 'material' in object
+	}
+
 	useTask(
 		() => {
-			// render to renderTarget
+			// TODO: Make perf optimizations in terms of not rendering when no objects
+			// are selected
+
 			const originalMaterials = new Map()
 			const originalRenderTarget = renderer.getRenderTarget()
 			const currentCameraMask = camera.current.layers.mask
@@ -73,7 +77,7 @@
 			$selectedObjects.forEach((object, i) => {
 				object.userData.originalLayer = object.layers.mask
 				object.layers.enable(31)
-				if (object.material) {
+				if (hasMaterial(object)) {
 					originalMaterials.set(object.id, object.material)
 					object.material = getOverrideMaterial(i)
 				}
@@ -90,7 +94,7 @@
 			scene.background = currentSceneBackground
 			$selectedObjects.forEach((object) => {
 				object.layers.mask = object.userData.originalLayer
-				if (object.material) {
+				if (hasMaterial(object)) {
 					object.material = originalMaterials.get(object.id)
 				}
 			})
@@ -102,34 +106,58 @@
 		},
 	)
 
-	var getExtends = function (camera: PerspectiveCamera, distance: number) {
-		const y = Math.tan(((camera.fov * Math.PI) / 180) * 0.5) * distance * 2
-		const x = y * camera.aspect
-		return {
-			x,
-			y,
-		}
-	}
-
 	const isPerspectiveCamera = (object: any): object is PerspectiveCamera => {
 		return 'isPerspectiveCamera' in object
 	}
+
+	const isOrthographicCamera = (object: any): object is OrthographicCamera => {
+		return 'isOrthographicCamera' in object
+	}
+
+	const selectionMesh = new Mesh()
+	selectionMesh.raycast = () => {}
+	selectionMesh.position.z = -5
+	selectionMesh.frustumCulled = false
+	selectionMesh.userData.ignoreOverrideMaterial = true
+	selectionMesh.renderOrder = 9999 // Set because of Grid overlap. Why to 9999? I don't know, but it works
+	const getMesh = () => selectionMesh // "getter" to disable reactivity for performance reasons
+
+	useTask(
+		() => {
+			// TODO: Make perf optimizations in terms of not rendering when no objects
+			// are selected
+
+			let scaleX = getMesh().scale.x
+			let scaleY = getMesh().scale.y
+			if (isPerspectiveCamera($camera)) {
+				scaleY = Math.tan((($camera.fov * Math.PI) / 180) * 0.5) * 5 * 2 // 5 being the distance of the camera to the plane
+				scaleX = scaleY * $camera.aspect
+			} else if (isOrthographicCamera($camera)) {
+				scaleY = ($camera.top - $camera.bottom) / $camera.zoom
+				scaleX = ($camera.right - $camera.left) / $camera.zoom
+			}
+			if (scaleX !== getMesh().scale.x || scaleY !== getMesh().scale.y) {
+				getMesh().scale.x = scaleX
+				getMesh().scale.y = scaleY
+				invalidate()
+			}
+		},
+		{
+			autoInvalidate: false,
+		},
+	)
+
+	onMount(() => {
+		addObject(selectionMesh)
+		return () => {
+			removeObject(selectionMesh)
+		}
+	})
 </script>
 
-{#if isPerspectiveCamera($camera)}
+{#key $camera.uuid}
 	<Portal object={$camera}>
-		<T.Mesh
-			raycast={() => {}}
-			position.z={-5}
-			scale.x={getExtends($camera, 5).x}
-			scale.y={getExtends($camera, 5).y}
-			on:create={({ ref, cleanup }) => {
-				addObject(ref)
-				cleanup(() => {
-					removeObject(ref)
-				})
-			}}
-		>
+		<T is={selectionMesh}>
 			<T.PlaneGeometry />
 
 			<T.ShaderMaterial
@@ -140,7 +168,7 @@
 						value: renderTarget.texture,
 					},
 					lineWidth: {
-						value: 1.5,
+						value: 2,
 					},
 					outlineColor: {
 						value: new Color('yellow'),
@@ -153,6 +181,6 @@
 				depthTest={false}
 				transparent
 			/>
-		</T.Mesh>
+		</T>
 	</Portal>
-{/if}
+{/key}

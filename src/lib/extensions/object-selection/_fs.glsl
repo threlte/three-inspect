@@ -24,13 +24,6 @@ void main() {
     edgeDetectValue += step(edgeFactor, length(currentColor.rgb - neighbors[i].rgb));
   }
 
-  // just outline 
-  gl_FragColor = vec4(outlineColor, edgeDetectValue);
-
-  // outline + transparent colorId
-  // vec3 finalColor = mix(currentColor.rgb, outlineColor, edgeDetectValue);
-  // gl_FragColor = vec4(finalColor, max(edgeDetectValue, currentColor.a * 0.3f));
-
-  // outline + highlight color based on the override material color
-  // gl_FragColor = vec4(currentColor.rgb, max(edgeDetectValue, currentColor.a * 0.3f));  
+  float smoothAlpha = smoothstep(0.1f, 3.f, edgeDetectValue);
+  gl_FragColor = vec4(outlineColor, smoothAlpha);
 }
