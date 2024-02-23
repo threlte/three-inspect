@@ -16,7 +16,7 @@
 
 	const { addExtension, removeExtension } = useStudio()
 
-	const { state } = addExtension<ObjectSelectionState, ObjectSelectionActions>({
+	const { state, run } = addExtension<ObjectSelectionState, ObjectSelectionActions>({
 		scope: objectSelectionScope,
 		state: ({ persist }) => ({
 			selectedObjects: [],
@@ -72,14 +72,9 @@
 				select((s) => s.mode).set('rect')
 			},
 		},
-		keyMap({ shift }) {
+		keyMap() {
 			return {
-				setModeTweak: {
-					up: shift(),
-				},
-				setModeRect: {
-					down: shift(),
-				},
+				toggleMode: 'a',
 			}
 		},
 	})
@@ -103,18 +98,22 @@
 	<HorizontalButtonGroup>
 		<ToolbarButton
 			label="Select Tweak"
+			on:click={() => {
+				run('setMode', 'tweak')
+			}}
 			active={$mode === 'tweak'}
 			icon="mdiCursorPointer"
-			tooltip="Hold Shift to Toggle"
-			disabled
+			tooltip="Tweak Selection (A)"
 		/>
 
 		<ToolbarButton
 			label="Select Box"
+			on:click={() => {
+				run('setMode', 'rect')
+			}}
 			active={$mode === 'rect'}
 			icon="mdiSelect"
-			tooltip="Hold Shift to Toggle"
-			disabled
+			tooltip="Box Selection (A)"
 		/>
 	</HorizontalButtonGroup>
 </ToolbarItem>

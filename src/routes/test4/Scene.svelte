@@ -78,16 +78,6 @@
 	intensity={0.2}
 />
 
-<T.Mesh
-	geometry={new BoxGeometry()}
-	on:create={({ ref, cleanup }) => {
-		addToSelection([ref])
-		cleanup(() => {
-			removeFromSelection([ref])
-		})
-	}}
-/>
-
 <Ramp />
 
 <Torus />

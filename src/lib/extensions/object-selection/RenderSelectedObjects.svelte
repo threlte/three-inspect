@@ -2,16 +2,16 @@
 	import { T, useTask, useThrelte, watch } from '@threlte/core'
 	import { Portal } from '@threlte/extras'
 	import {
+		Color,
 		MeshBasicMaterial,
 		RGBAFormat,
 		WebGLRenderTarget,
 		type PerspectiveCamera,
-		Color,
 	} from 'three'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
-	import { useObjectSelection } from './useObjectSelection'
 	import fragmentShader from './_fs.glsl?raw'
 	import vertexShader from './_vs.glsl?raw'
+	import { useObjectSelection } from './useObjectSelection'
 
 	const { selectedObjects } = useObjectSelection()
 	const { addObject, removeObject } = useStudioObjectsRegistry()
@@ -149,7 +149,6 @@
 						value: 0.0001,
 					},
 				}}
-				uniforms.outlinedObjectsTexture.value={renderTarget.texture}
 				depthWrite={false}
 				depthTest={false}
 				transparent

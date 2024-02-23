@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { useThrelte, watch } from '@threlte/core'
 	import { onMount } from 'svelte'
+	import { Object3D } from 'three'
 	import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox.js'
 	import { SelectionHelper } from 'three/examples/jsm/interactive/SelectionHelper.js'
 	import { useStudio } from '../../internal/extensions'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
 	import {
 		objectSelectionScope,
 		type ObjectSelectionActions,
 		type ObjectSelectionState,
 	} from './types'
-	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
-	import { Object3D } from 'three'
 
 	const { camera, scene, renderer } = useThrelte()
 
