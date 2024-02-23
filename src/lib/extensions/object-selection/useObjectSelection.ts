@@ -36,11 +36,16 @@ export const useObjectSelection = () => {
 		run('removeFromSelection', objects)
 	}
 
+	const toggleSelection = (objects: Object3D[]) => {
+		run('toggleSelection', objects)
+	}
+
 	return {
 		selectedObjects,
 		selectObjects,
 		clearSelection,
 		addToSelection,
 		removeFromSelection,
+		toggleSelection,
 	}
 }

@@ -8,7 +8,7 @@
 
 	const raycaster = new Raycaster()
 
-	const { addToSelection, clearSelection, selectObjects } = useObjectSelection()
+	const { clearSelection, selectObjects, toggleSelection } = useObjectSelection()
 	const { studioObjects } = useStudioObjectsRegistry()
 
 	const { renderer, camera, scene } = useThrelte()
@@ -51,11 +51,12 @@
 			hit = hits.shift()
 		}
 
-		if (!hit || !hit.object) {
-			clearSelection()
+		if (event.shiftKey) {
+			if (!hit || !hit.object) return
+			toggleSelection([hit.object])
 		} else {
-			if (event.shiftKey) {
-				addToSelection([hit.object])
+			if (!hit || !hit.object) {
+				clearSelection()
 			} else {
 				selectObjects([hit.object])
 			}

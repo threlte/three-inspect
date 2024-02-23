@@ -46,6 +46,21 @@
 					})
 				})
 			},
+			toggleSelection({ select, record }, objects) {
+				record(() => {
+					select((s) => s.selectedObjects).update((selectedObjects) => {
+						objects.forEach((object) => {
+							const index = selectedObjects.indexOf(object)
+							if (index === -1) {
+								selectedObjects.push(object)
+							} else {
+								selectedObjects.splice(index, 1)
+							}
+						})
+						return selectedObjects
+					})
+				})
+			},
 			toggleEnabled({ select }) {
 				select((s) => s.enabled).update((enabled) => !enabled)
 			},

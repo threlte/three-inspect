@@ -13,6 +13,7 @@ export type ObjectSelectionActions = {
 	selectObjects: (objects: Object3D[]) => void
 	addToSelection: (objects: Object3D[]) => void
 	removeFromSelection: (objects: Object3D[]) => void
+	toggleSelection: (objects: Object3D[]) => void
 	clearSelection: () => void
 	toggleEnabled: () => void
 	setEnabled: (enabled: boolean) => void
