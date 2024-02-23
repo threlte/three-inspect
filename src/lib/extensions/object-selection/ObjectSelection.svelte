@@ -34,7 +34,8 @@
 			addToSelection({ select, record }, objects) {
 				record(() => {
 					select((s) => s.selectedObjects).update((selectedObjects) => {
-						return [...selectedObjects, ...objects]
+						const newObjects = objects.filter((object) => !selectedObjects.includes(object))
+						return [...selectedObjects, ...newObjects]
 					})
 				})
 			},

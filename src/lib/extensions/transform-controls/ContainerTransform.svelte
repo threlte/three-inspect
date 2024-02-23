@@ -10,6 +10,7 @@
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from './types'
+	import { onDestroy } from 'svelte'
 
 	const { selectedObjects } = useObjectSelection()
 	const { getExtension } = useStudio()
@@ -64,6 +65,10 @@
 			}
 		})
 	}
+
+	onDestroy(() => {
+		run('setInUse', false)
+	})
 </script>
 
 <T is={centerObject} />

@@ -9,6 +9,7 @@
 		type TransformControlsState,
 	} from './types'
 	import { Object3D } from 'three'
+	import { onDestroy } from 'svelte'
 
 	const { getExtension } = useStudio()
 	const { run, state } = getExtension<TransformControlsState, TransformControlsActions>(
@@ -42,6 +43,10 @@
 			}
 		})
 	}
+
+	onDestroy(() => {
+		run('setInUse', false)
+	})
 </script>
 
 <TransformControls
