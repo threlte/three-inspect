@@ -21,7 +21,7 @@
 		state: ({ persist }) => ({
 			selectedObjects: [],
 			enabled: persist(false),
-			mode: 'tweak',
+			mode: persist('tweak'),
 			inUse: false,
 		}),
 		actions: {

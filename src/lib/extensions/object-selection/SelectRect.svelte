@@ -16,8 +16,11 @@
 
 	const { getExtension } = useStudio()
 
-	const { run } = getExtension<ObjectSelectionState, ObjectSelectionActions>(objectSelectionScope)
+	const { run, state } = getExtension<ObjectSelectionState, ObjectSelectionActions>(
+		objectSelectionScope,
+	)
 
+	const selectedObjects = state.select((s) => s.selectedObjects)
 	const selectionBox = new SelectionBox(camera.current, scene)
 	const helper = new SelectionHelper(renderer, 'selectBox')
 
@@ -34,13 +37,28 @@
 		return objs
 	}
 
+	let initialObjects: Object3D[] = []
+
+	let selectionMode: 'select' | 'remove' | 'add' = 'select'
+	$: console.log('selectionMode', selectionMode)
+
 	const onPointerDown = (event: MouseEvent) => {
+		console.log('meta key', event.metaKey)
+		if (event.shiftKey) {
+			event.preventDefault()
+			selectionMode = 'add'
+		} else if (event.ctrlKey || event.metaKey) {
+			event.preventDefault()
+			selectionMode = 'remove'
+		} else {
+			selectionMode = 'select'
+		}
+		initialObjects = [...$selectedObjects]
 		selectionBox.startPoint.set(
 			(event.clientX / window.innerWidth) * 2 - 1,
 			-(event.clientY / window.innerHeight) * 2 + 1,
 			0.5,
 		)
-
 		run('setInUse', true)
 	}
 
@@ -52,7 +70,13 @@
 				0.5,
 			)
 			const allSelected = filter(selectionBox.select())
-			run('selectObjects', allSelected)
+			if (selectionMode === 'add') {
+				run('addToSelection', allSelected)
+			} else if (selectionMode === 'remove') {
+				run('removeFromSelection', allSelected)
+			} else {
+				run('selectObjects', allSelected)
+			}
 		}
 	}
 
@@ -64,8 +88,13 @@
 		)
 
 		const allSelected = filter(selectionBox.select())
-
-		run('selectObjects', allSelected)
+		if (selectionMode === 'add') {
+			run('addToSelection', allSelected)
+		} else if (selectionMode === 'remove') {
+			run('removeFromSelection', allSelected)
+		} else {
+			run('selectObjects', allSelected)
+		}
 		run('setInUse', false)
 	}
 
