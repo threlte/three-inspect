@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { T, watch } from '@threlte/core'
 	import { TransformControls } from '@threlte/extras'
-	import { Box3, Object3D, Vector3 } from 'three'
+	import { onDestroy } from 'svelte'
+	import { Box3, Object3D, Quaternion, Vector3 } from 'three'
+	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 	import { useStudio } from '../../internal/extensions'
 	import { useObjectSelection } from '../object-selection/useObjectSelection'
+	import { useSnapping } from '../snapping/useSnapping'
+	import { useSpace } from '../space/useSpace'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
 	import {
 		transformControlsScope,
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from './types'
-	import { onDestroy } from 'svelte'
-	import { useSpace } from '../space/useSpace'
-	import { useSnapping } from '../snapping/useSnapping'
-	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 
 	const { selectedObjects } = useObjectSelection()
 	const { getExtension } = useStudio()
@@ -22,6 +22,7 @@
 	)
 	const { space } = useSpace()
 	const { enabled: snappingEnabled, scale, rotate, translate } = useSnapping()
+	const mode = state.select((s) => s.mode)
 
 	let centerObject = new Object3D()
 	let lastPosition = new Vector3()
@@ -38,16 +39,35 @@
 	})
 
 	const onChange = () => {
-		const delta = new Vector3().subVectors(centerObject.position, lastPosition)
-		for (const object of $selectedObjects) {
-			object.position.add(delta)
+		if ($mode === 'translate') {
+			const delta = new Vector3().subVectors(centerObject.position, lastPosition)
+			for (const object of $selectedObjects) {
+				// object.position.add(delta)
+				if ($space === 'world') {
+					if (!object.parent) {
+						// world space is local space
+						object.position.add(delta)
+					} else {
+						// translate in world space
+						const worldPosition = new Vector3()
+						object.getWorldPosition(worldPosition)
+						worldPosition.add(delta)
+						const localPosition = object.parent.worldToLocal(worldPosition)
+						object.position.copy(localPosition)
+					}
+				} else {
+					object.position.add(delta)
+				}
+			}
+			lastPosition.copy(centerObject.position)
+		} else if ($mode === 'rotate') {
+			// TODO: implement rotation
+		} else {
+			// TODO: implement scale
 		}
-		lastPosition.copy(centerObject.position)
 	}
 
 	const { addObject, removeObject } = useStudioObjectsRegistry()
-
-	const mode = state.select((s) => s.mode)
 
 	const isObject3D = (object: any): object is Object3D => {
 		return 'isObject3D' in object

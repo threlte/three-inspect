@@ -10,12 +10,17 @@
 	export let length = 1
 	export let width = 0.2
 	export let colors = ['red', 'green', 'blue']
+	export let opacity = 1
+	export let overlay = false
 
 	const lineGeometry = new LineGeometry()
 	const lineMaterial = new LineMaterial({
 		alphaToCoverage: true,
 		linewidth: width / 100,
 		vertexColors: true,
+		transparent: opacity < 1,
+		opacity,
+		...(overlay ? { depthTest: false, depthWrite: false } : {}),
 	})
 	const line2 = new Line2(lineGeometry, lineMaterial)
 	const color = new THREE.Color()

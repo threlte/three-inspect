@@ -11,7 +11,7 @@
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
 	import { helpersScope, type HelpersActions, type HelpersState } from './types'
 	import AxesHelper from './AxesHelper.svelte'
-	import { Gizmo } from '@threlte/extras'
+	import { Gizmo, Portal } from '@threlte/extras'
 
 	const { addExtension, removeExtension } = useStudio()
 
@@ -82,12 +82,22 @@
 	/>
 
 	<AxesHelper
-		length={2}
+		length={999}
 		width={0.2}
 		on:create={onCreate}
 	/>
 
 	{#each $selectedObjects as object}
+		<Portal {object}>
+			<AxesHelper
+				length={0.5}
+				width={0.2}
+				on:create={onCreate}
+				opacity={0.5}
+				overlay
+			/>
+		</Portal>
+
 		{#if isCamera(object)}
 			<T.CameraHelper
 				userData={{ ignoreOverrideMaterial: true }}
