@@ -1,7 +1,7 @@
-import { immerStore, type ImmerStore, type SubImmerStore, History } from 'svelte-immer-store'
+import { enableMapSet } from 'immer'
+import { History, immerStore, type ImmerStore, type SubImmerStore } from 'svelte-immer-store'
 import { get } from 'svelte/store'
 import { scopeId } from './scopeUtils'
-import { enableMapSet } from 'immer'
 
 enableMapSet()
 
@@ -35,9 +35,6 @@ const getPersistedPaths = function (obj: Record<string, unknown>, prefix?: strin
 		return result
 	}, [])
 }
-
-type Action = () => void
-// type Undo = Exclude<Parameters<InstanceType<typeof History>['enqueue']>[0]['undo'], undefined>
 
 export const createState = () => {
 	const history = new History()

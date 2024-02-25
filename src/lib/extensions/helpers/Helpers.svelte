@@ -11,6 +11,7 @@
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
 	import { helpersScope, type HelpersActions, type HelpersState } from './types'
 	import AxesHelper from './AxesHelper.svelte'
+	import { Gizmo } from '@threlte/extras'
 
 	const { addExtension, removeExtension } = useStudio()
 
@@ -72,6 +73,14 @@
 </ToolbarItem>
 
 {#if $enabled}
+	<Gizmo
+		paddingX={6}
+		paddingY={6}
+		verticalPlacement="bottom"
+		size={100}
+		horizontalPlacement="left"
+	/>
+
 	<AxesHelper
 		length={2}
 		width={0.2}

@@ -11,12 +11,17 @@
 		type TransformControlsState,
 	} from './types'
 	import { onDestroy } from 'svelte'
+	import { useSpace } from '../space/useSpace'
+	import { useSnapping } from '../snapping/useSnapping'
+	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 
 	const { selectedObjects } = useObjectSelection()
 	const { getExtension } = useStudio()
 	const { run, state } = getExtension<TransformControlsState, TransformControlsActions>(
 		transformControlsScope,
 	)
+	const { space } = useSpace()
+	const { enabled: snappingEnabled, scale, rotate, translate } = useSnapping()
 
 	let centerObject = new Object3D()
 	let lastPosition = new Vector3()
@@ -75,6 +80,10 @@
 
 <TransformControls
 	object={centerObject}
+	space={$space}
+	translationSnap={$snappingEnabled ? $translate : null}
+	rotationSnap={$snappingEnabled ? $rotate * DEG2RAD : null}
+	scaleSnap={$snappingEnabled ? $scale : null}
 	on:change={onChange}
 	on:mouseDown={() => {
 		run('setInUse', true)

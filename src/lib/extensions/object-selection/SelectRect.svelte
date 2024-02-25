@@ -16,11 +16,8 @@
 
 	const { getExtension } = useStudio()
 
-	const { run, state } = getExtension<ObjectSelectionState, ObjectSelectionActions>(
-		objectSelectionScope,
-	)
+	const { run } = getExtension<ObjectSelectionState, ObjectSelectionActions>(objectSelectionScope)
 
-	const selectedObjects = state.select((s) => s.selectedObjects)
 	const selectionBox = new SelectionBox(camera.current, scene)
 	const helper = new SelectionHelper(renderer, 'selectBox')
 
@@ -37,13 +34,10 @@
 		return objs
 	}
 
-	let initialObjects: Object3D[] = []
-
 	let selectionMode: 'select' | 'remove' | 'add' = 'select'
-	$: console.log('selectionMode', selectionMode)
+	let lastEvent: MouseEvent
 
 	const onPointerDown = (event: MouseEvent) => {
-		console.log('meta key', event.metaKey)
 		if (event.shiftKey) {
 			event.preventDefault()
 			selectionMode = 'add'
@@ -53,34 +47,35 @@
 		} else {
 			selectionMode = 'select'
 		}
-		initialObjects = [...$selectedObjects]
 		selectionBox.startPoint.set(
 			(event.clientX / window.innerWidth) * 2 - 1,
 			-(event.clientY / window.innerHeight) * 2 + 1,
 			0.5,
 		)
 		run('setInUse', true)
+		lastEvent = event
 	}
 
 	const onPointerMove = (event: MouseEvent) => {
-		if (helper.isDown) {
-			selectionBox.endPoint.set(
-				(event.clientX / window.innerWidth) * 2 - 1,
-				-(event.clientY / window.innerHeight) * 2 + 1,
-				0.5,
-			)
-			const allSelected = filter(selectionBox.select())
-			if (selectionMode === 'add') {
-				run('addToSelection', allSelected)
-			} else if (selectionMode === 'remove') {
-				run('removeFromSelection', allSelected)
-			} else {
-				run('selectObjects', allSelected)
-			}
+		if (!helper.isDown) return
+		selectionBox.endPoint.set(
+			(event.clientX / window.innerWidth) * 2 - 1,
+			-(event.clientY / window.innerHeight) * 2 + 1,
+			0.5,
+		)
+		const allSelected = filter(selectionBox.select())
+		if (selectionMode === 'add') {
+			run('addToSelection', allSelected)
+		} else if (selectionMode === 'remove') {
+			run('removeFromSelection', allSelected)
+		} else {
+			run('selectObjects', allSelected)
 		}
+		lastEvent = event
 	}
 
 	const onPointerUp = (event: MouseEvent) => {
+		if (!helper.isDown) return
 		selectionBox.endPoint.set(
 			(event.clientX / window.innerWidth) * 2 - 1,
 			-(event.clientY / window.innerHeight) * 2 + 1,
@@ -103,9 +98,12 @@
 		renderer.domElement.addEventListener('pointermove', onPointerMove)
 		renderer.domElement.addEventListener('pointerup', onPointerUp)
 		return () => {
+			if (lastEvent) onPointerUp(lastEvent)
 			renderer.domElement.removeEventListener('pointerdown', onPointerDown)
 			renderer.domElement.removeEventListener('pointermove', onPointerMove)
 			renderer.domElement.removeEventListener('pointerup', onPointerUp)
+			const h = helper as any
+			if (h.element && h.element.parentElement) h.onSelectOver()
 			helper.dispose()
 		}
 	})

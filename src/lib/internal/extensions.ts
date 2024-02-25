@@ -1,11 +1,9 @@
-import { getContext, setContext, SvelteComponent } from 'svelte'
+import { getContext, setContext } from 'svelte'
 import type { SubImmerStore } from 'svelte-immer-store'
 import { createActions } from './actions'
 import { createKeyboardControls, hotkeyFns } from './keyboard'
 import { createState } from './state'
 import { beforeUnload } from './useBeforeUnload'
-
-// type RecordUnknown = Record<symbol, unknown> | Readonly<Record<number, unknown>>
 
 type ExtensionAction = <ExtensionState extends Record<string, unknown>>(
 	params: {

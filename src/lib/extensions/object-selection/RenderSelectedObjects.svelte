@@ -77,6 +77,8 @@
 			$selectedObjects.forEach((object, i) => {
 				object.userData.originalLayer = object.layers.mask
 				object.layers.enable(31)
+				object.userData.originalVisible = object.visible
+				object.visible = true
 				if (hasMaterial(object)) {
 					originalMaterials.set(object.id, object.material)
 					object.material = getOverrideMaterial(i)
@@ -94,6 +96,7 @@
 			scene.background = currentSceneBackground
 			$selectedObjects.forEach((object) => {
 				object.layers.mask = object.userData.originalLayer
+				object.visible = object.userData.originalVisible
 				if (hasMaterial(object)) {
 					object.material = originalMaterials.get(object.id)
 				}
