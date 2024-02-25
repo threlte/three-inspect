@@ -2,7 +2,7 @@
 	import { T, watch } from '@threlte/core'
 	import { TransformControls } from '@threlte/extras'
 	import { onDestroy } from 'svelte'
-	import { Box3, Object3D, Quaternion, Vector3 } from 'three'
+	import { Box3, Object3D, Vector3 } from 'three'
 	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 	import { useStudio } from '../../internal/extensions'
 	import { useObjectSelection } from '../object-selection/useObjectSelection'
