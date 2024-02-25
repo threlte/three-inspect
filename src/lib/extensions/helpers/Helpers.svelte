@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { T } from '@threlte/core'
+	import { Gizmo, Portal } from '@threlte/extras'
 	import { onDestroy } from 'svelte'
-	import { Light, Object3D, type Camera } from 'three'
+	import { Light, Object3D, type Camera, type Group } from 'three'
 	import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js'
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
 	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
@@ -9,9 +10,9 @@
 	import { useStudio } from '../../internal/extensions'
 	import { useObjectSelection } from '../object-selection/useObjectSelection'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
-	import { helpersScope, type HelpersActions, type HelpersState } from './types'
 	import AxesHelper from './AxesHelper.svelte'
-	import { Gizmo, Portal } from '@threlte/extras'
+	import GroupHelper from './GroupHelper.svelte'
+	import { helpersScope, type HelpersActions, type HelpersState } from './types'
 
 	const { addExtension, removeExtension } = useStudio()
 
@@ -56,6 +57,10 @@
 	const isLight = (object: any): object is Light => {
 		return object.isLight
 	}
+
+	const isGroup = (object: any): object is Group => {
+		return object.isGroup
+	}
 </script>
 
 <ToolbarItem position="left">
@@ -93,10 +98,18 @@
 				length={0.5}
 				width={0.2}
 				on:create={onCreate}
-				opacity={0.5}
+				opacity={0.3}
 				overlay
 			/>
 		</Portal>
+
+		{#if isGroup(object)}
+			{#key object.uuid}
+				<Portal {object}>
+					<GroupHelper on:create={onCreate} />
+				</Portal>
+			{/key}
+		{/if}
 
 		{#if isCamera(object)}
 			<T.CameraHelper

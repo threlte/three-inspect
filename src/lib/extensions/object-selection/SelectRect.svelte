@@ -102,8 +102,13 @@
 			renderer.domElement.removeEventListener('pointerdown', onPointerDown)
 			renderer.domElement.removeEventListener('pointermove', onPointerMove)
 			renderer.domElement.removeEventListener('pointerup', onPointerUp)
-			const h = helper as any
-			if (h.element && h.element.parentElement) h.onSelectOver()
+			try {
+				// this sometimes throws an error, but we fail silently
+				const h = helper as any
+				if (h.element && h.element.parentElement) h.onSelectOver()
+			} catch (error) {
+				console.warn(error)
+			}
 			helper.dispose()
 		}
 	})

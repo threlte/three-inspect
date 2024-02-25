@@ -15,7 +15,6 @@
 
 	const lineGeometry = new LineGeometry()
 	const lineMaterial = new LineMaterial({
-		alphaToCoverage: true,
 		linewidth: width / 100,
 		vertexColors: true,
 		transparent: opacity < 1,

@@ -1,14 +1,13 @@
 <script lang="ts">
 	import { T, useThrelte } from '@threlte/core'
 	import { useTexture } from '@threlte/extras'
-	import { BoxGeometry, Color, EquirectangularReflectionMapping } from 'three'
+	import { Color, EquirectangularReflectionMapping } from 'three'
 	import Cylinder from './Cylinder.svelte'
 	import Drop from './Drop.svelte'
 	import Ico from './Ico.svelte'
 	import Pie from './Pie.svelte'
 	import Ramp from './RampModel.svelte'
 	import Torus from './TorusModel.svelte'
-	import { useObjectSelection } from '../../lib/extensions/object-selection/useObjectSelection'
 
 	// const applyToProperties = ['shadow', 'light', 'material', 'camera']
 
@@ -52,8 +51,6 @@
 		scene.environment = $oil
 		invalidate()
 	}
-
-	const { addToSelection, removeFromSelection } = useObjectSelection()
 </script>
 
 <T.PerspectiveCamera
