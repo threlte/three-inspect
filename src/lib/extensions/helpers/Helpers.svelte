@@ -92,7 +92,7 @@
 		on:create={onCreate}
 	/>
 
-	{#each $selectedObjects as object}
+	{#each $selectedObjects as object (object.uuid)}
 		<Portal {object}>
 			<AxesHelper
 				length={0.5}
@@ -104,11 +104,9 @@
 		</Portal>
 
 		{#if isGroup(object)}
-			{#key object.uuid}
-				<Portal {object}>
-					<GroupHelper on:create={onCreate} />
-				</Portal>
-			{/key}
+			<Portal {object}>
+				<GroupHelper on:create={onCreate} />
+			</Portal>
 		{/if}
 
 		{#if isCamera(object)}

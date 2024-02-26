@@ -28,6 +28,18 @@
 		texture = new CanvasTexture(canvas)
 		return texture
 	}
+
+	const material = new PointsMaterial({
+		map: getTexture(),
+		depthTest: false,
+		depthWrite: false,
+		sizeAttenuation: false,
+		size: 20,
+		transparent: true,
+	})
+
+	const geometry = new BufferGeometry()
+	geometry.setAttribute('position', new Float32BufferAttribute([0, 0, 0], 3))
 </script>
 
 <script lang="ts">
@@ -45,16 +57,7 @@
 	type $$Events = Events<typeof Sprite>
 
 	const component = forwardEventHandlers()
-	const material = new PointsMaterial({
-		map: getTexture(),
-		depthTest: false,
-		depthWrite: false,
-		sizeAttenuation: false,
-		size: 20,
-		transparent: true,
-	})
-	const geometry = new BufferGeometry()
-	geometry.setAttribute('position', new Float32BufferAttribute([0, 0, 0], 3))
+
 	const points = new Points(geometry, material)
 </script>
 
