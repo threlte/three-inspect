@@ -4,6 +4,7 @@
 		['Threlte Test 2', '/test2'],
 		['Threlte Test 3', '/test3'],
 		['Threlte Test 4', '/test4'],
+		['Threlte Test 6', '/test6'],
 		['Vanilla Test', '/vanilla'],
 	]
 </script>

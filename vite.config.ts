@@ -1,7 +1,7 @@
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vite'
 import Inspect from 'vite-plugin-inspect'
-import { plugin } from './src/vite-plugin'
+import { plugin } from './src/lib/extensions/sync/studioSyncVitePlugin'
 
 // https://vitejs.dev/config/
 export default defineConfig({
