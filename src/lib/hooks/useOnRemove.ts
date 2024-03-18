@@ -1,18 +1,18 @@
-import * as THREE from 'three'
+import { Object3D } from 'three'
 import { onDestroy } from 'svelte'
 import { intersectObjects } from '../internal/raycast'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
-export const remove = THREE.Object3D.prototype.remove
+export const remove = Object3D.prototype.remove
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
-export const clear = THREE.Object3D.prototype.clear
+export const clear = Object3D.prototype.clear
 
-type Callback = (object: THREE.Object3D) => void
+type Callback = (object: Object3D) => void
 
 export const removeFns = new Set<Callback>()
 
-THREE.Object3D.prototype.remove = function (...objects: THREE.Object3D[]) {
+Object3D.prototype.remove = function (...objects: Object3D[]) {
 	remove.call(this, ...objects)
 
 	for (const object of objects) {
@@ -28,7 +28,7 @@ THREE.Object3D.prototype.remove = function (...objects: THREE.Object3D[]) {
 	return this
 }
 
-THREE.Object3D.prototype.clear = function () {
+Object3D.prototype.clear = function () {
 	clear.call(this)
 
 	for (const object of this.children) {

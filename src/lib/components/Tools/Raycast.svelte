@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as THREE from 'three'
+	import { Vector2, Raycaster } from 'three'
 	import { onMount } from 'svelte'
 	import { useThrelte } from '@threlte/core'
 	import { getInternalContext } from '../../internal/context'
@@ -7,10 +7,10 @@
 
 	const { renderer, camera } = useThrelte()
 	const { selectedObject } = getInternalContext()
-	const down = new THREE.Vector2()
-	const up = new THREE.Vector2()
-	const raycaster = new THREE.Raycaster()
-	const pointer = new THREE.Vector2()
+	const down = new Vector2()
+	const up = new Vector2()
+	const raycaster = new Raycaster()
+	const pointer = new Vector2()
 
 	const recordDown = (event: PointerEvent) => {
 		down.set(event.clientX, event.clientY)

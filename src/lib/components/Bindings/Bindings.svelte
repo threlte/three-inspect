@@ -1,5 +1,11 @@
 <script lang="ts">
-	import * as THREE from 'three'
+	import {
+		Material as ThreeMaterial,
+		type Scene as ThreeScene,
+		type Light as ThreeLight,
+		type PerspectiveCamera,
+		type OrthographicCamera,
+	} from 'three'
 	import { Binding, Textarea, Folder } from 'svelte-tweakpane-ui'
 	import Transform from './Transform/Transform.svelte'
 	import Camera from './Camera.svelte'
@@ -7,7 +13,7 @@
 	import Scene from './Scene.svelte'
 	import Material from './Material.svelte'
 
-	export let object: THREE.Scene | THREE.Light | THREE.PerspectiveCamera | THREE.OrthographicCamera
+	export let object: ThreeScene | ThreeLight | PerspectiveCamera | OrthographicCamera
 
 	$: userData = JSON.stringify(object.userData)
 </script>
@@ -74,7 +80,7 @@
 	>
 		<Light {object} />
 	</Folder>
-{:else if 'material' in object && object.material instanceof THREE.Material}
+{:else if 'material' in object && object.material instanceof ThreeMaterial}
 	<Folder
 		title="Material"
 		expanded={false}

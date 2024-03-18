@@ -1,9 +1,9 @@
 <script lang="ts">
-	import * as THREE from 'three'
+	import { Color } from 'three'
 	import { T } from '@threlte/core'
-	import { Line2 } from 'three/examples/jsm/lines/Line2'
-	import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry'
-	import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial'
+	import { Line2 } from 'three/examples/jsm/lines/Line2.js'
+	import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'
+	import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
 
 	export let length = 1
 	export let width = 0.2
@@ -16,7 +16,7 @@
 		vertexColors: true,
 	})
 	const line2 = new Line2(lineGeometry, lineMaterial)
-	const color = new THREE.Color()
+	const color = new Color()
 
 	$: {
 		const positions = new Float32Array(27)

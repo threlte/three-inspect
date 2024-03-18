@@ -7,7 +7,7 @@
 </script>
 
 <script lang="ts">
-	import * as THREE from 'three'
+	import { PerspectiveCamera } from 'three'
 	import { T, useThrelte, watch } from '@threlte/core'
 	import { onDestroy } from 'svelte'
 	import CameraControls from '../Internal/CameraControls.svelte'
@@ -16,7 +16,7 @@
 
 	const { camera } = useThrelte()
 	const { defaultCamera } = getInternalContext()
-	const freeCamera = new THREE.PerspectiveCamera()
+	const freeCamera = new PerspectiveCamera()
 
 	defaultCamera.set(camera.current)
 	watch(camera, (newCamera) => {

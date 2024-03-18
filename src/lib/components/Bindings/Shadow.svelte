@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type * as THREE from 'three'
+	import type { LightShadow, PerspectiveCamera, OrthographicCamera } from 'three'
 	import { Binding, Folder, List } from 'svelte-tweakpane-ui'
 	import Camera from './Camera.svelte'
 
-	export let object: THREE.LightShadow
+	export let object: LightShadow
 
 	let mapSize = object.mapSize.width
 
@@ -14,7 +14,7 @@
 		object.map = null
 	}
 
-	$: camera = object.camera as THREE.PerspectiveCamera | THREE.OrthographicCamera
+	$: camera = object.camera as PerspectiveCamera | OrthographicCamera
 
 	const keys = ['autoUpdate', 'bias', 'blurSamples', 'normalBias', 'radius'] as const
 </script>

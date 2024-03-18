@@ -1,14 +1,14 @@
 <script lang="ts">
-	import * as THREE from 'three'
-	import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
+	import { type Object3D, type CameraHelper, Light } from 'three'
+	import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js'
 	import { T, useTask } from '@threlte/core'
 	import { getInternalContext } from '../../internal/context'
 
 	const { usingFreeCamera } = getInternalContext()
 
-	export let object: THREE.Object3D
+	export let object: Object3D
 
-	let ref: THREE.CameraHelper | undefined
+	let ref: CameraHelper | undefined
 
 	useTask(() => ref?.update())
 </script>
@@ -20,7 +20,7 @@
 			args={[object]}
 		/>
 	{/if}
-{:else if object instanceof THREE.Light}
+{:else if object instanceof Light}
 	{#if object.shadow}
 		<T.CameraHelper args={[object.shadow.camera]} />
 	{/if}

@@ -1,3 +1,4 @@
+import type { Scene, Light, PerspectiveCamera, OrthographicCamera, Camera } from 'three'
 import { type CurrentWritable, currentWritable } from '@threlte/core'
 import { type Writable, writable } from 'svelte/store'
 import { getContext, setContext } from 'svelte'
@@ -7,12 +8,12 @@ import { persisted } from './persisted'
 const internalKey = Symbol('three-inspect-internal-context')
 const publicKey = Symbol('three-inspect-context')
 
-export type Objects = THREE.Scene | THREE.Light | THREE.PerspectiveCamera | THREE.OrthographicCamera
+export type Objects = Scene | Light | PerspectiveCamera | OrthographicCamera
 
 interface InternalContext {
 	usingTransformControls: CurrentWritable<boolean>
 	usingFreeCamera: Writable<boolean>
-	defaultCamera: CurrentWritable<THREE.Camera | undefined>
+	defaultCamera: CurrentWritable<Camera | undefined>
 	usingRaycast: CurrentWritable<boolean>
 	selectedObject: CurrentWritable<Objects | undefined>
 }

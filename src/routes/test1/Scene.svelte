@@ -1,13 +1,13 @@
 <script lang="ts">
-	import * as THREE from 'three'
-	import { T, useTask, useThrelte } from '@threlte/core'
+	import { Color, Euler, Matrix4 } from 'three'
+	import { T, useThrelte } from '@threlte/core'
 	import { OrbitControls, InstancedMesh, Instance } from '@threlte/extras'
 	import { createNoise3D, type NoiseFunction3D } from 'simplex-noise'
 	import { Inspector } from '$lib'
 
 	const { scene, renderer, camera } = useThrelte()
 
-	scene.background = new THREE.Color('black')
+	scene.background = new Color('black')
 
 	// {
 	//   const count = 20
@@ -42,8 +42,8 @@
 	//   })
 	// }
 
-	const euler = new THREE.Euler()
-	const m4 = new THREE.Matrix4()
+	const euler = new Euler()
+	const m4 = new Matrix4()
 	const position = (symmetry = true) => (Math.random() - (symmetry ? 0.5 : 0)) * 20
 	const rotation = () => Math.random() * Math.PI * 2
 </script>

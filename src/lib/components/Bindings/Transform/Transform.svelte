@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as THREE from 'three'
+	import { type Object3D, InstancedMesh } from 'three'
 	import { useTask } from '@threlte/core'
 	import { Binding, Separator, type BindingRef } from 'svelte-tweakpane-ui'
 	import Instance from './Instance.svelte'
 
-	export let object: THREE.Object3D
+	export let object: Object3D
 
 	const refs: BindingRef[] = []
 
@@ -32,7 +32,7 @@
 	label="scale"
 />
 
-{#if object instanceof THREE.InstancedMesh}
+{#if object instanceof InstancedMesh}
 	<Separator />
 	<Instance {object} />
 {/if}

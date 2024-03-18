@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type * as THREE from 'three'
+	import type { Scene, PerspectiveCamera, OrthographicCamera, WebGLRenderer } from 'three'
 	import { useThrelte } from '@threlte/core'
 	import Inspector from './Inspector.svelte'
 
 	export let position: 'draggable' | 'inline' = 'draggable'
-	export let scene: undefined | THREE.Scene = undefined
-	export let camera: undefined | THREE.PerspectiveCamera | THREE.OrthographicCamera = undefined
-	export let renderer: undefined | THREE.WebGLRenderer = undefined
+	export let scene: undefined | Scene = undefined
+	export let camera: undefined | PerspectiveCamera | OrthographicCamera = undefined
+	export let renderer: undefined | WebGLRenderer = undefined
 
 	const context = useThrelte()
 

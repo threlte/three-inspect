@@ -1,11 +1,20 @@
 <script lang="ts">
-	import * as THREE from 'three'
+	import {
+		type Material,
+		Texture,
+		MeshBasicMaterial,
+		MeshLambertMaterial,
+		MeshPhongMaterial,
+		MeshToonMaterial,
+		MeshMatcapMaterial,
+		MeshStandardMaterial,
+	} from 'three'
 	import { Binding, Image, Point } from 'svelte-tweakpane-ui'
 
-	export let object: THREE.Material
+	export let object: Material
 </script>
 
-{#if object instanceof THREE.MeshBasicMaterial || object instanceof THREE.MeshLambertMaterial || object instanceof THREE.MeshPhongMaterial}
+{#if object instanceof MeshBasicMaterial || object instanceof MeshLambertMaterial || object instanceof MeshPhongMaterial}
 	{#if object.specularMap}
 		<Image
 			bind:value={object.specularMap.image.src}
@@ -15,7 +24,7 @@
 	{/if}
 {/if}
 
-{#if object instanceof THREE.MeshMatcapMaterial}
+{#if object instanceof MeshMatcapMaterial}
 	{#if object.matcap}
 		<Image
 			bind:value={object.matcap.image.src}
@@ -25,7 +34,7 @@
 	{/if}
 {/if}
 
-{#if object instanceof THREE.MeshBasicMaterial || object instanceof THREE.MeshLambertMaterial || object instanceof THREE.MeshPhongMaterial || object instanceof THREE.MeshStandardMaterial || object instanceof THREE.MeshMatcapMaterial || object instanceof THREE.MeshToonMaterial}
+{#if object instanceof MeshBasicMaterial || object instanceof MeshLambertMaterial || object instanceof MeshPhongMaterial || object instanceof MeshStandardMaterial || object instanceof MeshMatcapMaterial || object instanceof MeshToonMaterial}
 	{#if object.map}
 		<Image
 			bind:value={object.map.image.src}
@@ -43,7 +52,7 @@
 	{/if}
 {/if}
 
-{#if object instanceof THREE.MeshLambertMaterial || object instanceof THREE.MeshPhongMaterial || object instanceof THREE.MeshStandardMaterial || object instanceof THREE.MeshMatcapMaterial || object instanceof THREE.MeshToonMaterial}
+{#if object instanceof MeshLambertMaterial || object instanceof MeshPhongMaterial || object instanceof MeshStandardMaterial || object instanceof MeshMatcapMaterial || object instanceof MeshToonMaterial}
 	{#if object.normalMap}
 		<Image
 			bind:value={object.normalMap.image.src}
@@ -59,7 +68,7 @@
 	{/if}
 {/if}
 
-{#if 'envMap' in object && object.envMap instanceof THREE.Texture}
+{#if 'envMap' in object && object.envMap instanceof Texture}
 	<Image
 		bind:value={object.envMap.image.src}
 		fit="cover"
@@ -67,7 +76,7 @@
 	/>
 {/if}
 
-{#if object instanceof THREE.MeshBasicMaterial || object instanceof THREE.MeshLambertMaterial || object instanceof THREE.MeshPhongMaterial || object instanceof THREE.MeshStandardMaterial || object instanceof THREE.MeshToonMaterial}
+{#if object instanceof MeshBasicMaterial || object instanceof MeshLambertMaterial || object instanceof MeshPhongMaterial || object instanceof MeshStandardMaterial || object instanceof MeshToonMaterial}
 	{#if object.aoMap}
 		<Image
 			bind:value={object.aoMap.image.src}
@@ -95,7 +104,7 @@
 	{/if}
 {/if}
 
-{#if object instanceof THREE.MeshLambertMaterial || object instanceof THREE.MeshStandardMaterial || object instanceof THREE.MeshToonMaterial}
+{#if object instanceof MeshLambertMaterial || object instanceof MeshStandardMaterial || object instanceof MeshToonMaterial}
 	{#if object.bumpMap}
 		<Image
 			bind:value={object.bumpMap.image.src}
@@ -141,7 +150,7 @@
 	{/if}
 {/if}
 
-{#if object instanceof THREE.MeshToonMaterial}
+{#if object instanceof MeshToonMaterial}
 	{#if object.gradientMap}
 		<Image
 			bind:value={object.gradientMap.image.src}
@@ -151,7 +160,7 @@
 	{/if}
 {/if}
 
-{#if object instanceof THREE.MeshStandardMaterial}
+{#if object instanceof MeshStandardMaterial}
 	{#if object.metalnessMap}
 		<Image
 			bind:value={object.metalnessMap.image.src}

@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type * as THREE from 'three'
+	import type { Scene, PerspectiveCamera, OrthographicCamera, WebGLRenderer } from 'three'
 	import { Canvas } from '@threlte/core'
 	import Threlte from './Threlte.svelte'
 
 	export let position: 'draggable' | 'inline' = 'draggable'
-	export let scene: THREE.Scene
-	export let camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
-	export let renderer: THREE.WebGLRenderer
+	export let scene: Scene
+	export let camera: PerspectiveCamera | OrthographicCamera
+	export let renderer: WebGLRenderer
 </script>
 
 <Canvas

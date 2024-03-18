@@ -1,4 +1,4 @@
-import type * as THREE from 'three'
+import type { Object3D } from 'three'
 
-export const intersectObjects: THREE.Object3D[] = []
+export const intersectObjects: Object3D[] = []
 export const skipRaycastIds = new Set<string>()

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Inspector } from '$lib'
-	import * as THREE from 'three'
+	import { Color, Fog } from 'three'
 	import { T, useThrelte } from '@threlte/core'
 	import { OrbitControls } from '@threlte/extras'
 	import { Slider, TabPage } from 'svelte-tweakpane-ui'
@@ -9,8 +9,8 @@
 
 	const { scene } = useThrelte()
 
-	scene.background = new THREE.Color('#D1E6FA')
-	scene.fog = new THREE.Fog('#D1E6FA', 18, 25)
+	scene.background = new Color('#D1E6FA')
+	scene.fog = new Fog('#D1E6FA', 18, 25)
 
 	let floatIntensity = 3
 	let rotationSpeed = 10

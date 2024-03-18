@@ -1,10 +1,18 @@
 <script lang="ts">
-	import * as THREE from 'three'
+	import {
+		type Material,
+		MultiplyOperation,
+		MixOperation,
+		AddOperation,
+		FrontSide,
+		BackSide,
+		DoubleSide,
+	} from 'three'
 	import { Binding, Folder, List } from 'svelte-tweakpane-ui'
 	import Color from './Color.svelte'
 	import Textures from './Textures.svelte'
 
-	export let object: THREE.Material
+	export let object: Material
 
 	$: object.needsUpdate = true
 </script>
@@ -249,9 +257,9 @@
 		bind:value={object.combine}
 		label="combine"
 		options={{
-			MultiplyOperation: THREE.MultiplyOperation,
-			MixOperation: THREE.MixOperation,
-			AddOperation: THREE.AddOperation,
+			MultiplyOperation: MultiplyOperation,
+			MixOperation: MixOperation,
+			AddOperation: AddOperation,
 		}}
 	/>
 {/if}
@@ -358,9 +366,9 @@
 	bind:value={object.side}
 	label="side"
 	options={{
-		FrontSide: THREE.FrontSide,
-		BackSide: THREE.BackSide,
-		DoubleSide: THREE.DoubleSide,
+		FrontSide: FrontSide,
+		BackSide: BackSide,
+		DoubleSide: DoubleSide,
 	}}
 />
 
@@ -369,9 +377,9 @@
 		bind:value={object.shadowSide}
 		label="shadowSide"
 		options={{
-			FrontSide: THREE.FrontSide,
-			BackSide: THREE.BackSide,
-			DoubleSide: THREE.DoubleSide,
+			FrontSide: FrontSide,
+			BackSide: BackSide,
+			DoubleSide: DoubleSide,
 		}}
 	/>
 {/if}

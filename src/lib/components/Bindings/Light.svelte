@@ -1,15 +1,16 @@
 <script lang="ts">
-	import * as THREE from 'three'
+	import type {
+		DirectionalLight,
+		PointLight,
+		SpotLight,
+		HemisphereLight,
+		RectAreaLight,
+	} from 'three'
 	import { Binding, Folder } from 'svelte-tweakpane-ui'
 	import Color from './Color.svelte'
 	import Shadow from './Shadow.svelte'
 
-	export let object:
-		| THREE.DirectionalLight
-		| THREE.PointLight
-		| THREE.SpotLight
-		| THREE.HemisphereLight
-		| THREE.RectAreaLight
+	export let object: DirectionalLight | PointLight | SpotLight | HemisphereLight | RectAreaLight
 </script>
 
 <Color

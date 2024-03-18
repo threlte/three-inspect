@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type * as THREE from 'three'
+	import type { Object3D, Group } from 'three'
 	import { useThrelte } from '@threlte/core'
 	import { TransformControls } from '@threlte/extras'
 	import { getInternalContext } from '../../internal/context'
 	import { persisted } from '../../internal/persisted'
 	import { add } from '../../hooks/useOnAdd'
 
-	export let object: THREE.Object3D
+	export let object: Object3D
 
 	const { scene } = useThrelte()
 	const { usingTransformControls } = getInternalContext()
@@ -36,8 +36,8 @@
 		}
 	}
 
-	let controls: THREE.Object3D
-	let group: THREE.Group
+	let controls: Object3D
+	let group: Group
 
 	$: controls?.traverse((node) => {
 		node.userData.threeInspectSkipRaycast = true

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type * as THREE from 'three'
+	import type { Object3D, Material } from 'three'
 	import { Binding } from 'svelte-tweakpane-ui'
 
 	export let label = 'color'
 	export let key = 'color'
-	export let object: THREE.Object3D | THREE.Material
+	export let object: Object3D | Material
 
 	const options = {
 		color: { type: 'float' },

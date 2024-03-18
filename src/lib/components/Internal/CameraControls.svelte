@@ -4,6 +4,8 @@
 >
 	import CameraControls from 'camera-controls'
 	import {
+		type PerspectiveCamera,
+		type OrthographicCamera,
 		Box3,
 		MathUtils,
 		Matrix4,
@@ -37,7 +39,7 @@
 	import { onDestroy } from 'svelte'
 	import { getInternalContext } from '../../internal/context'
 
-	export let camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
+	export let camera: PerspectiveCamera | OrthographicCamera
 
 	const { renderer } = useThrelte()
 	const { usingTransformControls } = getInternalContext()

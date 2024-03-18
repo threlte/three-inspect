@@ -1,9 +1,10 @@
 import Inspector from './Vanilla.svelte'
+import { Scene, PerspectiveCamera, OrthographicCamera, WebGLRenderer } from 'three'
 
 export interface CreateInspectorOptions {
-	scene: THREE.Scene
-	camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
-	renderer: THREE.WebGLRenderer
+	scene: Scene
+	camera: PerspectiveCamera | OrthographicCamera
+	renderer: WebGLRenderer
 }
 
 export const createInspector = (target: HTMLElement, options: CreateInspectorOptions) => {

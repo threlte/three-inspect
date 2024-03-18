@@ -1,14 +1,25 @@
 <script lang="ts">
-	import * as THREE from 'three'
+	import {
+		Color,
+		CubeTextureLoader,
+		Object3D,
+		BufferGeometry,
+		Vector3,
+		BufferAttribute,
+		PointsMaterial,
+		Points,
+		type Texture,
+		RepeatWrapping,
+	} from 'three'
 	import { T, useThrelte, useTask } from '@threlte/core'
 	import { Inspector } from '$lib'
 	import { Edges, useTexture } from '@threlte/extras'
 
-	const { scene, camera, renderer } = useThrelte()
+	const { scene, renderer } = useThrelte()
 
-	scene.background = new THREE.Color('#222')
+	scene.background = new Color('#222')
 
-	const cubeTextureLoader = new THREE.CubeTextureLoader()
+	const cubeTextureLoader = new CubeTextureLoader()
 
 	const environmentMapTexture = cubeTextureLoader.load([
 		'/textures/environmentMaps/0/px.jpg',
@@ -19,12 +30,12 @@
 		'/textures/environmentMaps/0/nz.jpg',
 	])
 
-	const meshes: THREE.Object3D[] = []
+	const meshes: Object3D[] = []
 
 	// Create starfield
 	{
-		const geometry = new THREE.BufferGeometry()
-		const vec3 = new THREE.Vector3()
+		const geometry = new BufferGeometry()
+		const vec3 = new Vector3()
 
 		const count = 10_000
 		const radius = 100
@@ -41,13 +52,13 @@
 			vertices[i + 2] = vec3.z
 		}
 
-		geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
+		geometry.setAttribute('position', new BufferAttribute(vertices, 3))
 		geometry.translate(0, 0.5, 0)
 
-		const material = new THREE.PointsMaterial()
+		const material = new PointsMaterial()
 		material.size = 0.2
 		material.sizeAttenuation = true
-		const points = new THREE.Points(geometry, material)
+		const points = new Points(geometry, material)
 		points.name = 'Stars'
 		scene.add(points)
 	}
@@ -58,9 +69,9 @@
 		}
 	})
 
-	const transform = (texture: THREE.Texture) => {
-		texture.wrapS = THREE.RepeatWrapping
-		texture.wrapT = THREE.RepeatWrapping
+	const transform = (texture: Texture) => {
+		texture.wrapS = RepeatWrapping
+		texture.wrapT = RepeatWrapping
 		texture.repeat.x = 10
 		texture.anisotropy = renderer.capabilities.getMaxAnisotropy()
 		return texture

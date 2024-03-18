@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as THREE from 'three'
+	import { type Scene, type Fog, Texture } from 'three'
 	import { Binding, Separator, Image } from 'svelte-tweakpane-ui'
 	import Color from './Color.svelte'
 	import { persisted } from '../../internal/persisted'
 
-	export let object: THREE.Scene
+	export let object: Scene
 
 	const grid = persisted('grid', true)
 	const gridColor = persisted('gridColor', '#ddd')
@@ -20,7 +20,7 @@
 	$: $gridColor = params.gridColor
 	$: $axes = params.axes
 
-	$: fog = object.fog as THREE.Fog
+	$: fog = object.fog as Fog
 </script>
 
 <Binding
@@ -59,7 +59,7 @@
 			label="background"
 			{object}
 		/>
-	{:else if object.background instanceof THREE.Texture}
+	{:else if object.background instanceof Texture}
 		<Image
 			bind:value={object.background.image.src}
 			fit="cover"

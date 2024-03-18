@@ -14,6 +14,3 @@
 		{/each}
 	</ul>
 </nav>
-
-<style>
-</style>

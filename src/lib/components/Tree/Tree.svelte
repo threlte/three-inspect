@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type * as THREE from 'three'
+	import type { Object3D } from 'three'
 	import { onMount } from 'svelte'
 	import { useThrelte, watch } from '@threlte/core'
 	import { TreeViewItem, TreeViewWebComponent } from 'flexible-tree'
@@ -24,12 +24,12 @@
 	const treeroot = new TreeViewItem({ text: 'Scene' })
 	treeview.append(treeroot)
 
-	const objectToTreeItem = new WeakMap<THREE.Object3D, TreeViewItem>()
-	const treeItemToObject = new WeakMap<TreeViewItem, THREE.Object3D>()
+	const objectToTreeItem = new WeakMap<Object3D, TreeViewItem>()
+	const treeItemToObject = new WeakMap<TreeViewItem, Object3D>()
 
 	treeItemToObject.set(treeroot, scene)
 
-	const deregister = (object3D: THREE.Object3D) => {
+	const deregister = (object3D: Object3D) => {
 		object3D.traverse((child) => {
 			if (object3D !== child) {
 				deregister(child)
@@ -54,7 +54,7 @@
 
 	let observeChanges = true
 
-	const register = (object3D: THREE.Object3D) => {
+	const register = (object3D: Object3D) => {
 		const { parent } = object3D
 		const name = object3D.name
 		const parentItem = parent === scene ? treeroot : objectToTreeItem.get(parent!)
