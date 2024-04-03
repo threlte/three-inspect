@@ -1,11 +1,11 @@
 import { useStudio } from '../../internal/extensions'
 import type { TransactionArgs } from './TransactionQueue'
-import { syncScope, type SyncActions, type SyncState } from './types'
+import { transactionsScope, type TransactionsActions, type TransactionsState } from './types'
 
-export const useSync = () => {
+export const useTransactions = () => {
 	const { getExtension } = useStudio()
 
-	const { run } = getExtension<SyncState, SyncActions>(syncScope)
+	const { run } = getExtension<TransactionsState, TransactionsActions>(transactionsScope)
 
 	const commit = <T, U>(...args: TransactionArgs<T, U>) => {
 		run('commit', ...(args as TransactionArgs<unknown, unknown>))

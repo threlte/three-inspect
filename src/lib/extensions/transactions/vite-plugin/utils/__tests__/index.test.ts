@@ -6,10 +6,10 @@ import {
 	readAttribute,
 	removeAttribute,
 	upsertAttribute,
-} from '../component'
+} from '../componentParser'
 import { assembleComponent, disassembleComponent } from '../componentUtils'
 import { parsers } from '../parsers'
-import { recreateMagicString } from '../utils'
+import { recreateMagicString } from '../magicStringUtils'
 import {
 	buildTestComponent,
 	dummyScript,

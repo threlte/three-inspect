@@ -8,7 +8,7 @@
 	import { useSnapping } from '../snapping/useSnapping'
 	import { useSpace } from '../space/useSpace'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
-	import { useSync } from '../sync/useSync'
+	import { useTransactions } from '../transactions/useTransactions'
 	import {
 		transformControlsScope,
 		type TransformControlsActions,
@@ -54,7 +54,7 @@
 		run('setInUse', false)
 	})
 
-	const { commit } = useSync()
+	const { commit } = useTransactions()
 
 	let initialValue: any
 	const onMouseDown = () => {

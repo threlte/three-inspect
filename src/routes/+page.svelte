@@ -1,21 +1,25 @@
-<script>
-	const links = [
-		['Threlte Test 1', '/test1'],
-		['Threlte Test 2', '/test2'],
-		['Threlte Test 3', '/test3'],
-		['Threlte Test 4', '/test4'],
-		['Threlte Test 6', '/test6'],
-		['Vanilla Test', '/vanilla'],
-	]
+<script lang="ts">
+	import { Canvas, T } from '@threlte/core'
+	import Studio from '../lib/components/Studio/Studio.svelte'
 </script>
 
-<nav>
-	<ul>
-		{#each links as [title, href]}
-			<li><a {href}>{title}</a></li>
-		{/each}
-	</ul>
-</nav>
+<Canvas>
+	<Studio>
+		<T.Mesh position={[0, 1, 0]}>
+			<T.BoxGeometry args={[1, 1, 1]} />
+			<T.MeshBasicMaterial color="orange" />
+		</T.Mesh>
+		<T.Mesh position={[0, 2, 0]}>
+			<T.BoxGeometry args={[1, 1, 1]} />
+			<T.MeshBasicMaterial color="red" />
+		</T.Mesh>
+	</Studio>
+</Canvas>
 
 <style>
+	:global(body) {
+		height: 100vh;
+		margin: 0;
+		background-color: midnightblue;
+	}
 </style>

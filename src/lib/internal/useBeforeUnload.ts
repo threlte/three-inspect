@@ -1,4 +1,5 @@
 import { onDestroy } from 'svelte'
+import { browser } from './browser'
 
 const unloadHandlers = new Set<() => void>()
 const finalUnloadHandlers = new Set<() => void>()
@@ -16,12 +17,14 @@ export const beforeUnload = (handler: () => void, final?: boolean) => {
 	})
 }
 
-window.addEventListener('beforeunload', () => {
-	for (const handler of unloadHandlers) {
-		handler()
-	}
+if (typeof window !== 'undefined') {
+	window.addEventListener('beforeunload', () => {
+		for (const handler of unloadHandlers) {
+			handler()
+		}
 
-	for (const handler of finalUnloadHandlers) {
-		handler()
-	}
-})
+		for (const handler of finalUnloadHandlers) {
+			handler()
+		}
+	})
+}

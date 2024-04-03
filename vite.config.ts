@@ -1,11 +1,11 @@
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vite'
 import Inspect from 'vite-plugin-inspect'
-import { plugin } from './src/lib/extensions/sync/studioSyncVitePlugin'
+import { studioPlugin } from './src/lib/plugin'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [Inspect(), plugin(), sveltekit()],
+	plugins: [Inspect(), studioPlugin(), sveltekit()],
 	build: {
 		minify: true,
 		target: 'esnext',

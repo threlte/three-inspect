@@ -3,13 +3,13 @@
 	import { AutoValue, Folder } from 'svelte-tweakpane-ui'
 	import type { Object3D } from 'three'
 	import { useObjectSelection } from '../object-selection/useObjectSelection'
-	import { useSync } from '../sync/useSync'
+	import { useTransactions } from '../transactions/useTransactions'
 	import { defaultBindings, type Attribute, type Read } from './bindings'
 
 	const { selectedObjects } = useObjectSelection()
 	const { invalidate } = useThrelte()
 
-	const { commit } = useSync()
+	const { commit } = useTransactions()
 
 	const appliesToAllObjects = (attribute: Attribute | Attribute[]) => {
 		return $selectedObjects.every((object) => {
@@ -50,7 +50,6 @@
 										(objs) => objs.map(property.read),
 										(objs, data) => objs.forEach((obj, i) => property.apply(obj, data[i])),
 									)
-									invalidate()
 								}}
 							/>
 						{/each}
@@ -67,7 +66,6 @@
 									(objs) => objs.map(property.read),
 									(objs, data) => objs.forEach((obj, i) => property.apply(obj, data[i])),
 								)
-								invalidate()
 							}}
 						/>
 					{/each}

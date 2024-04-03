@@ -1,16 +1,17 @@
 <script lang="ts">
-	import { injectPlugin } from '@threlte/core'
+	import { injectPlugin, useThrelte } from '@threlte/core'
 	import { onDestroy } from 'svelte'
 	import { useStudio } from '../../internal/extensions'
 	import { TransactionQueue } from './TransactionQueue'
-	import { syncScope, type SyncActions, type SyncState } from './types'
+	import { transactionsScope, type TransactionsActions, type TransactionsState } from './types'
 
 	const { addExtension, removeExtension } = useStudio()
+	const { invalidate } = useThrelte()
 
 	const queue = new TransactionQueue()
 
-	addExtension<SyncState, SyncActions>({
-		scope: syncScope,
+	addExtension<TransactionsState, TransactionsActions>({
+		scope: transactionsScope,
 		state: ({ persist }) => {
 			return {
 				enabled: persist<boolean>(true),
@@ -23,12 +24,15 @@
 			},
 			commit(_, object, value, read, write) {
 				queue.commit(object, value, read, write)
+				invalidate()
 			},
 			undo() {
 				queue.undo()
+				invalidate()
 			},
 			redo() {
 				queue.redo()
+				invalidate()
 			},
 		},
 		keyMap({ meta, shift }) {
@@ -40,7 +44,7 @@
 	})
 
 	onDestroy(() => {
-		removeExtension(syncScope)
+		removeExtension(transactionsScope)
 	})
 
 	injectPlugin('sync', ({ ref, props }) => {

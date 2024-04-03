@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import MagicString from 'magic-string'
-import { toMagicString } from '../utils'
+import { toMagicString } from '../magicStringUtils'
 
 export const scriptModule = `<script lang="ts" context="module">
   const foo = 'bar'

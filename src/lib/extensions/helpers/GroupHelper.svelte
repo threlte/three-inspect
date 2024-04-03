@@ -5,6 +5,7 @@
 	let texture: Texture | undefined
 
 	const getTexture = () => {
+		if (typeof window === 'undefined') return
 		if (texture) return texture
 
 		// 1. Create the circular texture

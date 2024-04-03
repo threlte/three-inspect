@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { TransactionQueue } from '../../TransactionQueue'
+import { TransactionQueue } from '../../../TransactionQueue'
 
 describe('Transaction System', () => {
 	test('commit', () => {
