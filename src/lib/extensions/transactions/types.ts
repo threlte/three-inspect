@@ -1,3 +1,4 @@
+import type { TransactionConstructorParams } from './TransactionQueue'
 import type { ParserType } from './utils/parsers'
 
 export const syncScope = 'sync'
@@ -9,7 +10,7 @@ export type SyncState = {
 
 export type SyncActions = {
 	setEnabled: (enabled: boolean) => void
-	commit: <T, U>(root: T, data: U, read: (root: T) => U, write: (root: T, data: U) => void) => void
+	commit: <T, U>(...args: TransactionConstructorParams<T, U>) => void
 	undo: () => void
 	redo: () => void
 }

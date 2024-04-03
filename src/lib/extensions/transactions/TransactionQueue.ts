@@ -40,8 +40,8 @@ export class Transaction<T, U> {
  * data to the root object.
  *
  * @example
+ * Single object in single commit
  * ```ts
- * // Single object in single commit
  * const obj = {
  *   foo: {
  * 		 bar: 'baz',
@@ -57,8 +57,11 @@ export class Transaction<T, U> {
  * )
  *
  * expect(obj.foo.bar).toBe('quo')
+ * ```
  *
- * // Multiple objects in single commit
+ * @example
+ * Multiple objects in single commit
+ * ```ts
  * const arr = [{ foo: 'bar' }, { foo: 'baz' }]
  *
  * const transactionQueue = new TransactionQueue()
