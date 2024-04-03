@@ -1,25 +1,63 @@
 import { resolvePropertyPath } from '@threlte/core'
 
-const isObject = (value: unknown): value is Record<string, any> =>
-	typeof value === 'object' && value !== null
+const isObject = (value: unknown): value is Record<string, any> => {
+	return typeof value === 'object' && value !== null
+}
 
-export class Transaction {
-	public target: unknown
-	public key: string
+type PropertyPathResult = {
+	target: any
+	key: string | symbol
+}
+
+/**
+ * Function to detect the access path of a property by recursively providing a
+ * proxy object that intercepts the get operation.
+ */
+const detectPropertyPath = (target: any, selectorFn: (target: any) => any): PropertyPathResult => {
+	const path: PropertyPathResult[] = [{ target, key: '' }]
+	const proxy = new Proxy(
+		{},
+		{
+			get(_: any, key: string | symbol): any {
+				path.push({
+					key,
+					target: path.at(-1)?.target[key],
+				})
+				return proxy
+			},
+		},
+	)
+	// Execute the selector function with the proxy
+	selectorFn(proxy)
+	// Return the last accessed property information
+	return {
+		key: path.at(-1)!.key,
+		target: path.at(-2)?.target,
+	}
+}
+
+export class Transaction<T, U> {
+	public target: Record<string | symbol, any> | null
+	public key: string | symbol
+
+	public valueBefore: unknown
 
 	constructor(
-		public object: unknown,
-		public propertyPath: string,
+		public object: T,
+		public property: ((object: T) => U) | string,
 		public value: unknown,
-		public valueBefore: unknown,
 	) {
-		const { target, key } = Transaction.resolvePath(object, propertyPath)
-		this.target = target
-		this.key = key
-	}
-
-	static resolvePath(object: any, propertyPath: string): { target: unknown; key: string } {
-		return resolvePropertyPath(object, propertyPath)
+		if (typeof property === 'string') {
+			const { target, key } = resolvePropertyPath(object, property)
+			this.target = target
+			this.key = key
+			this.valueBefore = target[key]
+		} else {
+			const { key, target } = detectPropertyPath(object, property)
+			this.target = target
+			this.key = key
+			this.valueBefore = target[key]
+		}
 	}
 
 	commit() {
@@ -36,23 +74,5 @@ export class Transaction {
 		if (!this.key) return
 		if (!isObject(this.target)) return
 		this.target[this.key] = this.valueBefore
-	}
-
-	stringify(): string {
-		return JSON.stringify({
-			propertyPath: this.propertyPath,
-			value: this.value,
-			valueBefore: this.valueBefore,
-		})
-	}
-
-	static parse(object: any, string: string): Transaction {
-		const data = JSON.parse(string) as {
-			object: any
-			propertyPath: string
-			value: any
-			valueBefore: any
-		}
-		return new Transaction(object, data.propertyPath, data.value, data.valueBefore)
 	}
 }

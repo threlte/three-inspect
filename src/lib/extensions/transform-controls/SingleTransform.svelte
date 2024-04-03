@@ -1,18 +1,19 @@
 <script lang="ts">
 	import { TransformControls } from '@threlte/extras'
+	import { onDestroy } from 'svelte'
+	import { Object3D } from 'three'
+	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 	import { useStudio } from '../../internal/extensions'
 	import { useObjectSelection } from '../object-selection/useObjectSelection'
+	import { useSnapping } from '../snapping/useSnapping'
+	import { useSpace } from '../space/useSpace'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
+	import { useSync } from '../sync/useSync'
 	import {
 		transformControlsScope,
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from './types'
-	import { Object3D } from 'three'
-	import { onDestroy } from 'svelte'
-	import { useSpace } from '../space/useSpace'
-	import { useSnapping } from '../snapping/useSnapping'
-	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 
 	const { getExtension } = useStudio()
 	const { run, state } = getExtension<TransformControlsState, TransformControlsActions>(
@@ -52,6 +53,33 @@
 	onDestroy(() => {
 		run('setInUse', false)
 	})
+
+	const { commit } = useSync()
+
+	let initialValue: any
+	const onMouseDown = () => {
+		$selectedObjects[0]
+		if ($mode === 'translate') {
+			initialValue = $selectedObjects[0].position.clone()
+		}
+	}
+
+	const onMouseUp = () => {
+		if (!initialValue) return
+		if ($mode === 'translate') {
+			const value = $selectedObjects[0].position.clone()
+			$selectedObjects[0].position.copy(initialValue)
+			commit(
+				$selectedObjects[0],
+				value,
+				(object) => object.position.clone(),
+				(object, value) => {
+					object.position.copy(value)
+				},
+			)
+		}
+		initialValue = undefined
+	}
 </script>
 
 <TransformControls
@@ -63,9 +91,11 @@
 	scaleSnap={$snappingEnabled ? $scale : null}
 	on:mouseDown={() => {
 		run('setInUse', true)
+		onMouseDown()
 	}}
 	on:mouseUp={() => {
 		run('setInUse', false)
+		onMouseUp()
 	}}
 	on:create={({ ref, cleanup }) => {
 		onCreate(ref, cleanup)

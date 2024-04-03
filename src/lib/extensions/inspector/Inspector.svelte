@@ -3,13 +3,13 @@
 	import { Pane } from 'svelte-tweakpane-ui'
 	import { derived } from 'svelte/store'
 	import Portal from '../../components/Internal/Portal.svelte'
+	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
+	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import { browser } from '../../internal/browser'
 	import { useStudio } from '../../internal/extensions'
 	import { useObjectSelection } from '../object-selection/useObjectSelection'
 	import Bindings from './Bindings.svelte'
 	import { inspectorScope, type InspectorActions, type InspectorState } from './types'
-	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
-	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
 
 	const { addExtension, removeExtension } = useStudio()
 

@@ -37,3 +37,7 @@ export const replace = (
 		populateMatches()
 	}
 }
+
+export const isMagicString = (object: unknown): object is MagicString => {
+	return object instanceof MagicString
+}

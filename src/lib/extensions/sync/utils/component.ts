@@ -1,91 +1,17 @@
-import type { Node } from 'estree'
+import type { Expression, Node } from 'estree'
 import MagicString from 'magic-string'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import { parse, walk } from 'svelte/compiler'
-import { defaultParser } from './parsers'
+import { parsers, type Parser } from './parsers'
 
-const dummyScript = '<script>"ABC"</script>'
-const dummyScriptModule = '<script context="module">"ABC"</script>'
-const dummyStyle = '<style></style>'
-
-export const disassembleComponent = (component: MagicString) => {
-	const code = component.toString()
-	// to parse the markup, we first need to remove the script and the style blocks
-	const scriptRegex = /<script(?![^>]*context="module")[^>]*>[\s\S]*?<\/script>/gu
-	const scriptModuleRegex = /<script[^>]*context="module"[^>]*>[\S\s]*?<\/script>/gu
-	const styleRegex = /<style[^>]*>[\S\s]*?<\/style>/gu
-	const scriptMatch = code.match(scriptRegex)
-	const scriptModuleMatch = code.match(scriptModuleRegex)
-	const styleMatch = code.match(styleRegex)
-	const hasScript = Boolean(scriptMatch)
-	const hasScriptModule = Boolean(scriptModuleMatch)
-	const hasStyle = Boolean(styleMatch)
-
-	let markup = code
-
-	if (hasScriptModule) {
-		markup = markup.replaceAll(scriptModuleRegex, dummyScriptModule)
-	}
-	if (hasScript) {
-		markup = markup.replaceAll(scriptRegex, dummyScript)
-	}
-	if (hasStyle) {
-		markup = markup.replaceAll(styleRegex, dummyStyle)
-	}
-
-	return {
-		markup: new MagicString(markup),
-		scriptModule: hasScriptModule ? scriptModuleMatch![0] : undefined,
-		script: hasScript ? scriptMatch![0] : undefined,
-		style: hasStyle ? styleMatch![0] : undefined,
-	}
+export const componentNeedsTransform = (code: string): boolean => {
+	return code.includes('<T.') || code.includes('<T ') || code.includes('<T\n')
 }
 
-const isMagicString = (object: unknown): object is MagicString => {
-	return object instanceof MagicString
-}
-
-export const assembleComponent = (
-	markup: MagicString,
-	script: string | undefined,
-	scriptModule: string | undefined,
-	style: string | undefined,
-) => {
-	let component = isMagicString(markup) ? markup.toString() : markup
-	if (scriptModule) {
-		component = component.replace(dummyScriptModule, scriptModule)
-	}
-	if (script) {
-		component = component.replace(dummyScript, script)
-	}
-	if (style) {
-		component = component.replace(dummyStyle, style)
-	}
-	return component
-}
-
-export const componentFromCode = (code: string): MagicString => {
-	return new MagicString(code)
-}
-
-export const readComponent = (path: string): MagicString => {
-	const componentContent = readFileSync(path, {
-		encoding: 'utf8',
-	})
-	return new MagicString(componentContent)
-}
-
-export const writeComponent = (path: string, component: string) => {
-	writeFileSync(path, component, {
-		encoding: 'utf8',
-	})
-}
-
-export const componentNeedsTransform = (markup: string | MagicString): boolean => {
-	const markupString = isMagicString(markup) ? markup.toString() : markup
-	return (
-		markupString.includes('<T.') || markupString.includes('<T ') || markupString.includes('<T\n')
-	)
+type BaseAttribute = {
+	name: string
+	start: number
+	end: number
 }
 
 type BaseAttributeValue = {
@@ -93,49 +19,96 @@ type BaseAttributeValue = {
 	end: number
 }
 
-type TextAttributeValue = {
+type TextAttributeValue = BaseAttributeValue & {
 	type: 'Text'
 	raw: string
 	data: string
 }
 
-type MustacheTagAttributeValue = {
-	type: 'MustacheTag'
-	expression: {
-		type: 'Literal'
+type AttributeShorthandValue = BaseAttributeValue & {
+	type: 'AttributeShorthand'
+	expression: Expression & {
 		start: number
 		end: number
-		loc: {
-			start: {
-				line: number
-				column: number
-			}
-			end: {
-				line: number
-				column: number
-			}
-		}
-		value: unknown
-		raw: unknown
 	}
 }
 
-type AttributeValue = BaseAttributeValue & (TextAttributeValue | MustacheTagAttributeValue)
-
-type Attribute = {
-	name: string
-	start: number
-	end: number
-	type: 'Attribute'
-	value: AttributeValue[]
+type MustacheTagAttributeValue = BaseAttributeValue & {
+	type: 'MustacheTag'
+	expression: Expression & {
+		start: number
+		end: number
+	}
 }
 
-type DefinedNode = Node & {
+type EventHandlerAttribute = BaseAttribute & {
+	type: 'EventHandler'
+	name: string
+}
+
+type BooleanAttribute = BaseAttribute & {
+	type: 'Attribute'
+	value: true
+}
+
+type TextAttribute = BaseAttribute & {
+	type: 'Attribute'
+	value: TextAttributeValue[]
+}
+
+type MustacheTagAttribute = BaseAttribute & {
+	type: 'Attribute'
+	value: MustacheTagAttributeValue[]
+}
+
+type ShorthandAttribute = BaseAttribute & {
+	type: 'Attribute'
+	value: AttributeShorthandValue[]
+}
+
+type ValueAttribute = BooleanAttribute | TextAttribute | MustacheTagAttribute | ShorthandAttribute
+
+type Attribute = EventHandlerAttribute | ValueAttribute
+
+const isValueAttribute = (attribute: Attribute): attribute is ValueAttribute => {
+	return attribute.type === 'Attribute'
+}
+
+const isAttributeWithTextValue = (attribute: Attribute): attribute is TextAttribute => {
+	if (!isValueAttribute(attribute)) return false
+	if (attribute.value === true) return false
+	return attribute.value[0].type === 'Text'
+}
+
+const isAttributeWithMustacheTagValue = (
+	attribute: Attribute,
+): attribute is MustacheTagAttribute => {
+	if (!isValueAttribute(attribute)) return false
+	if (attribute.value === true) return false
+	return attribute.value[0].type === 'MustacheTag'
+}
+
+const isAttributeWithShorthandValue = (attribute: Attribute): attribute is ShorthandAttribute => {
+	if (!isValueAttribute(attribute)) return false
+	if (attribute.value === true) return false
+	return attribute.value[0].type === 'AttributeShorthand'
+}
+
+const isAttributeWithBooleanValue = (attribute: Attribute): attribute is BooleanAttribute => {
+	if (!isValueAttribute(attribute)) return false
+	return typeof attribute.value === 'boolean'
+}
+
+type DefinedNode = Omit<Node, 'type'> & {
+	type: Node['type'] | 'InlineComponent'
 	name: string
 	start: number
 	end: number
-} & {
 	attributes: Attribute[]
+}
+
+type TComponentNode = DefinedNode & {
+	name: `T.${string}` | 'T'
 }
 
 const isDefinedNode = (node: unknown): node is DefinedNode => {
@@ -150,14 +123,12 @@ const isDefinedNode = (node: unknown): node is DefinedNode => {
 	)
 }
 
-const hasName = (node: DefinedNode, name: string): boolean => {
-	const nameAttribute = node.attributes.find((attr) => attr.name === 'name')
-	if (!nameAttribute) return false
-	const value =
-		nameAttribute.value[0].type === 'Text'
-			? nameAttribute.value[0].data
-			: nameAttribute.value[0].expression.value
-	return value === name
+const isTComponentNode = (node: unknown): node is TComponentNode => {
+	return (
+		isDefinedNode(node) &&
+		node.type === 'InlineComponent' &&
+		(node.name.startsWith('T.') || node.name === 'T')
+	)
 }
 
 const isMultiLineNode = (
@@ -168,7 +139,8 @@ const isMultiLineNode = (
 	let indent = ''
 	if (node.attributes.length > 0) {
 		// find new line chars in between
-		const firstAttribute = node.attributes[0]
+		const firstAttribute = node.attributes.toSorted((a, b) => a.start - b.start).at(0)
+		if (!firstAttribute) throw new Error('No attributes found')
 		const startOfFirstAttribute = firstAttribute.start
 		// +1 for "<"
 		const endOfTagOpen = node.start + node.name.length + 1
@@ -182,20 +154,73 @@ const isMultiLineNode = (
 	}
 }
 
-const findNode = (markup: MagicString, componentName: string): DefinedNode | undefined => {
+export const findNodeByIndex = (markup: MagicString, index: number): TComponentNode | undefined => {
 	const ast = parse(markup.toString())
-	let finalNode: DefinedNode | undefined
+	let currentIndex = -1
+	let finalNode: TComponentNode | undefined
 	walk(ast.html as Node, {
 		enter(node) {
-			const type = node.type as string
-			if (!isDefinedNode(node)) return
-			if (type !== 'InlineComponent') return
-			if (!node.name.startsWith('T.') && node.name !== 'T') return
-			if (!hasName(node, componentName)) return
-			finalNode = node
+			if (!isTComponentNode(node)) return
+			currentIndex += 1
+			if (currentIndex === index) finalNode = node
 		},
 	})
 	return finalNode
+}
+
+export const tComponentNodeSignature = (markup: MagicString, node: TComponentNode): string => {
+	const name = node.name
+	const attributes = node.attributes
+		.filter((attr) => isValueAttribute(attr))
+		.toSorted((a, b) => a.name.localeCompare(b.name))
+		.map((attribute) => {
+			const attr = attribute as ValueAttribute
+			const value = attr.value
+			if (typeof value === 'boolean') return JSON.stringify({ name: attr.name, value })
+			const firstValue = value[0]
+			let valueString = ''
+			valueString =
+				firstValue.type === 'Text'
+					? firstValue.data
+					: markup.slice(firstValue.start, firstValue.end)
+			return JSON.stringify({ name: attr.name, value: valueString })
+		})
+		.join(',')
+
+	return createHash('sha256').update(`${name}:${attributes}`).digest('hex')
+}
+
+// The signature of a module is a hash of all T component names, their index and their attributes.
+export const markupSignature = (markup: MagicString): string => {
+	const ast = parse(markup.toString())
+	const nodes: [name: string, index: number, attributes: string][] = []
+	let index = 0
+	walk(ast.html as Node, {
+		enter(node) {
+			if (!isTComponentNode(node)) return
+			const name = node.name
+			const attributes = node.attributes
+				.filter((attr) => isValueAttribute(attr))
+				.toSorted((a, b) => a.name.localeCompare(b.name))
+				.map((attribute) => {
+					const attr = attribute as ValueAttribute
+					const value = attr.value
+					if (typeof value === 'boolean') return JSON.stringify({ name: attr.name, value })
+					const firstValue = value[0]
+					let valueString = ''
+					valueString =
+						firstValue.type === 'Text'
+							? firstValue.data
+							: markup.slice(firstValue.start, firstValue.end)
+					return JSON.stringify({ name: attr.name, value: valueString })
+				})
+				.join(',')
+			nodes.push([name, index, attributes])
+			index += 1
+		},
+	})
+
+	return createHash('sha256').update(JSON.stringify(nodes)).digest('hex')
 }
 
 /**
@@ -203,48 +228,86 @@ const findNode = (markup: MagicString, componentName: string): DefinedNode | und
  */
 export const upsertAttribute = (
 	markup: MagicString,
-	componentNameOrNode: string | DefinedNode,
+	node: TComponentNode,
 	attributeName: string,
-	value: string,
+	value: unknown,
+	parser: Parser<any>,
 	position: 'first' | 'last',
 ) => {
-	const node =
-		typeof componentNameOrNode === 'string'
-			? findNode(markup, componentNameOrNode)
-			: componentNameOrNode
-
-	if (!node) {
-		throw new Error('Node not found')
-	}
-
 	const attribute = node.attributes.find((attr) => attr.name === attributeName)
 
 	if (attribute) {
-		// update
-		const attributeValue = attribute.value[0]
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (attributeValue.type === 'Text') {
-			// text
-			markup.overwrite(attributeValue.start, attributeValue.end, value)
-		} else {
-			// mustache tag
-			markup.overwrite(attributeValue.expression.start, attributeValue.expression.end, value)
+		if (isAttributeWithBooleanValue(attribute)) {
+			// if the value is "true", we can return early: `name` -> `name`
+			if (value === true) return
+			if (typeof value === 'string') {
+				// it's a text value, so we need to convert it to a mustache tag: `name` -> `name="value"`
+				markup.appendLeft(attribute.end, `="${value}"`)
+			} else {
+				// it's a mustache tag value, so we need to stringify it: `name` -> `name={value}`
+				markup.appendLeft(attribute.end, `={${parser.stringify(value)}}`)
+			}
+		} else if (isAttributeWithTextValue(attribute)) {
+			const firstValue = attribute.value[0]
+			if (typeof value === 'string') {
+				// it's a text value, so we can just update it: `name="old"` -> `name="new"`
+				markup.overwrite(firstValue.start, firstValue.end, value)
+			} else if (typeof value === 'boolean' && value) {
+				// it's a boolean value, so we can remove the text part: `name="old"` -> `name`
+				markup.remove(firstValue.start - 2, firstValue.end + 1)
+			} else {
+				// it's a mustache tag value, so we need to stringify it: `name="old"` -> `name={new}`
+				markup.overwrite(firstValue.start - 1, firstValue.end + 1, `{${parser.stringify(value)}}`)
+			}
+		} else if (isAttributeWithMustacheTagValue(attribute)) {
+			const firstValue = attribute.value[0]
+			if (typeof value === 'string') {
+				// it's a text value, so we can update it: `name={old}` -> `name="new"`
+				markup.overwrite(firstValue.start, firstValue.end, `"${value}"`)
+			} else if (typeof value === 'boolean' && value) {
+				// it's a boolean value, so we can remove the mustache tag part: `name={old}` -> `name`
+				markup.remove(firstValue.start - 1, firstValue.end)
+			} else {
+				// it's a mustache tag value, so we can update it: `name={old}` -> `name={new}`
+				markup.overwrite(firstValue.start + 1, firstValue.end - 1, parser.stringify(value))
+			}
+		} else if (isAttributeWithShorthandValue(attribute)) {
+			if (typeof value === 'string') {
+				// it's a text value, so we can update it: `{name}` -> `name="new"`
+				markup.overwrite(attribute.start, attribute.end, `${attributeName}="${value}"`)
+			} else if (typeof value === 'boolean' && value) {
+				// it's a boolean value, so we can remove the shorthand part: `{name}` -> `name`
+				markup.overwrite(attribute.start, attribute.end, attributeName)
+			} else {
+				// it's a mustache tag value, so we can update it: `{name}` -> `name={new}`
+				markup.overwrite(
+					attribute.start,
+					attribute.end,
+					`${attributeName}={${parser.stringify(value)}}`,
+				)
+			}
 		}
-		markup.overwrite(attributeValue.start, attributeValue.end, value)
 	} else {
 		// insert
-		const { isMultiLine, indent } = isMultiLineNode(markup, node)
+		const { indent } = isMultiLineNode(markup, node)
+
+		let space = ''
 
 		// account for `<` at start of node
 		let start = node.start + node.name.length + 1
 		if (node.attributes.length > 0 && position === 'last') {
-			const lastAttribute = node.attributes.at(-1)!
+			const lastAttribute = node.attributes.reduce((a, b) => (a.end > b.end ? a : b))
 			start = lastAttribute.end
 		}
-		if (isMultiLine) {
-			markup.appendLeft(start, `${indent}${attributeName}={${value}}`)
+		if (node.attributes.length === 0) {
+			space = ' '
+		}
+		if (typeof value === 'boolean' && value) {
+			markup.appendLeft(start, `${space}${indent}${attributeName}`)
+		} else if (typeof value === 'string') {
+			markup.appendLeft(start, `${space}${indent}${attributeName}="${value}"`)
 		} else {
-			markup.appendLeft(start, ` ${attributeName}={${value}}`)
+			markup.appendLeft(start, `${space}${indent}${attributeName}={${parser.stringify(value)}}`)
 		}
 	}
 }
@@ -254,92 +317,60 @@ export const upsertAttribute = (
  */
 export const removeAttribute = (
 	markup: MagicString,
-	componentNameOrNode: string | DefinedNode,
+	node: TComponentNode,
 	attributeName: string,
 ): void => {
-	const node =
-		typeof componentNameOrNode === 'string'
-			? findNode(markup, componentNameOrNode)
-			: componentNameOrNode
-
-	if (!node) {
-		throw new Error('Node not found')
-	}
-
 	const attribute = node.attributes.find((attr) => attr.name === attributeName)
 	if (!attribute) return
 
-	markup.remove(attribute.start, attribute.end)
-}
+	let start = attribute.start
+	if (attribute === node.attributes.at(0)) {
+		// it's the first attribute, either because it's
+		// the only one or because it's the first one
+		start = node.start + node.name.length + 1
+	}
 
-// type InsertComponentOptions = {
-// 	class: string
-// } & (
-// 	| {
-// 			beforeComponentName: string
-// 	  }
-// 	| {
-// 			afterComponentName: string
-// 	  }
-// )
-
-/**
- * Inserts a new component before or after another component
- */
-// export const insertComponent = (
-// 	markup: MagicString,
-// 	options: InsertComponentOptions,
-// ): MagicString => {}
-
-const createShortRandomId = () => {
-	return Math.random().toString(36).slice(2, 5)
+	markup.remove(start, attribute.end)
 }
 
 /**
- * Prepares a component to be used with the Threlte Studio.
- * - Adds name properties to `<T>` components
+ * Read the value of an attribute from a `<T>` component.
  */
-export const prepareMarkup = (
+export const readAttribute = <P extends Parser<any>>(
 	markup: MagicString,
-): {
-	isModified: boolean
-} => {
-	const ast = parse(markup.toString())
-	let isModified = false
-	walk(ast.html as Node, {
-		enter(node) {
-			const type = node.type as string
-			if (!isDefinedNode(node)) return
-			if ((type === 'InlineComponent' && node.name.startsWith('T.')) || node.name === 'T') {
-				// - read attributes and check if `name` attribute exists
-				if (node.attributes.some((attr) => attr.name === 'name')) return
-				// - if not, add it
-				const name = `studio_${createShortRandomId()}`
-				isModified = true
-				upsertAttribute(markup, node, 'name', name, 'first')
-			}
-		},
-	})
-	return {
-		isModified,
+	node: TComponentNode,
+	attributeName: string,
+	parser: P,
+): ReturnType<P['parse']> => {
+	const attribute = node.attributes.find((attr) => attr.name === attributeName)
+	if (!attribute) throw new Error('Attribute not found')
+
+	if (isAttributeWithBooleanValue(attribute)) {
+		return true as ReturnType<P['parse']>
+	} else if (isAttributeWithTextValue(attribute)) {
+		return attribute.value[0].data as ReturnType<P['parse']>
+	} else if (isAttributeWithMustacheTagValue(attribute)) {
+		const firstValue = attribute.value[0]
+		return parser.parse(markup.slice(firstValue.start + 1, firstValue.end - 1)) as ReturnType<
+			P['parse']
+		>
+	} else if (isAttributeWithShorthandValue(attribute)) {
+		throw new Error('Shorthand attributes are not supported')
+	} else {
+		throw new Error('Unknown attribute type')
 	}
 }
 
 export const addStudioRuntimeProps = (markup: MagicString, id: string): void => {
 	const ast = parse(markup.toString())
+	let index = 0
+	const signature = markupSignature(markup)
 	walk(ast.html as Node, {
 		enter(node) {
-			const type = node.type as string
-			if (!isDefinedNode(node)) return
-			if ((type === 'InlineComponent' && node.name.startsWith('T.')) || node.name === 'T') {
-				upsertAttribute(
-					markup,
-					node,
-					'threlteStudio',
-					defaultParser.stringify({ moduleId: id }),
-					'last',
-				)
-			}
+			if (!isTComponentNode(node)) return
+			const prop = { moduleId: id, index, signature }
+			upsertAttribute(markup, node, 'threlteStudio', prop, parsers.json, 'last')
+			index += 1
 		},
 	})
 }

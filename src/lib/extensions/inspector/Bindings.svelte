@@ -3,10 +3,13 @@
 	import { AutoValue, Folder } from 'svelte-tweakpane-ui'
 	import type { Object3D } from 'three'
 	import { useObjectSelection } from '../object-selection/useObjectSelection'
+	import { useSync } from '../sync/useSync'
 	import { defaultBindings, type Attribute, type Read } from './bindings'
 
 	const { selectedObjects } = useObjectSelection()
 	const { invalidate } = useThrelte()
+
+	const { commit } = useSync()
 
 	const appliesToAllObjects = (attribute: Attribute | Attribute[]) => {
 		return $selectedObjects.every((object) => {
@@ -41,9 +44,12 @@
 								value={readFromFirst(property.read)}
 								label={property.label}
 								on:change={(event) => {
-									$selectedObjects.forEach((object) => {
-										property.apply(object, event.detail.value)
-									})
+									commit(
+										$selectedObjects,
+										$selectedObjects.map(() => event.detail.value),
+										(objs) => objs.map(property.read),
+										(objs, data) => objs.forEach((obj, i) => property.apply(obj, data[i])),
+									)
 									invalidate()
 								}}
 							/>
@@ -55,9 +61,12 @@
 							value={readFromFirst(property.read)}
 							label={property.label}
 							on:change={(event) => {
-								$selectedObjects.forEach((object) => {
-									property.apply(object, event.detail.value)
-								})
+								commit(
+									$selectedObjects,
+									$selectedObjects.map(() => event.detail.value),
+									(objs) => objs.map(property.read),
+									(objs, data) => objs.forEach((obj, i) => property.apply(obj, data[i])),
+								)
 								invalidate()
 							}}
 						/>
