@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
-export type TransactionConstructorParams<T, U> = [
+export type TransactionArgs<T, U> = [
 	root: T,
 	data: U,
 	read: (root: T) => U,
@@ -11,10 +11,10 @@ export class Transaction<T, U> {
 	public dataBefore: U
 
 	constructor(
-		private root: TransactionConstructorParams<T, U>[0],
-		private data: TransactionConstructorParams<T, U>[1],
-		private read: TransactionConstructorParams<T, U>[2],
-		private write: TransactionConstructorParams<T, U>[3],
+		private root: TransactionArgs<T, U>[0],
+		private data: TransactionArgs<T, U>[1],
+		private read: TransactionArgs<T, U>[2],
+		private write: TransactionArgs<T, U>[3],
 	) {
 		this.dataBefore = this.read(this.root)
 	}
@@ -88,7 +88,7 @@ export class TransactionQueue {
 		public onRedo?: () => void,
 	) {}
 
-	commit<T, U>(...args: TransactionConstructorParams<T, U>) {
+	commit<T, U>(...args: TransactionArgs<T, U>) {
 		const transaction = new Transaction(...args)
 		transaction.commit()
 		this.commitedQueue.push(transaction)

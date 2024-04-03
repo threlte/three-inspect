@@ -1,5 +1,5 @@
 import { useStudio } from '../../internal/extensions'
-import type { TransactionConstructorParams } from './TransactionQueue'
+import type { TransactionArgs } from './TransactionQueue'
 import { syncScope, type SyncActions, type SyncState } from './types'
 
 export const useSync = () => {
@@ -7,8 +7,8 @@ export const useSync = () => {
 
 	const { run } = getExtension<SyncState, SyncActions>(syncScope)
 
-	const commit = <T, U>(...args: TransactionConstructorParams<T, U>) => {
-		run('commit', ...(args as TransactionConstructorParams<unknown, unknown>))
+	const commit = <T, U>(...args: TransactionArgs<T, U>) => {
+		run('commit', ...(args as TransactionArgs<unknown, unknown>))
 	}
 
 	const undo = () => {
