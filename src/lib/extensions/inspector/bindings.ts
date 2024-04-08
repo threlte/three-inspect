@@ -22,10 +22,13 @@ export type Attribute = (object: any) => boolean
 export type Read<T> = (object: T) => any
 export type Apply<T> = (object: T, value: any) => void
 
+export type Sync<T, U> = (value: T) => U
+
 type Property = {
 	label: string
 	read: Read<any>
 	apply: Apply<any>
+	sync?: Sync<any, any>
 	default: any
 	isDefault?: (value: any) => boolean
 }
@@ -87,6 +90,7 @@ export const defaultBindings: Bindings = [
 				apply(object: Object3D, value: { x: number; y: number; z: number }) {
 					object.position.set(value.x, value.y, value.z)
 				},
+				sync: (value) => [value.x, value.y, value.z],
 				default: { x: 0, y: 0, z: 0 },
 			},
 			{
@@ -99,6 +103,7 @@ export const defaultBindings: Bindings = [
 				apply(object: Object3D, value: { x: number; y: number; z: number }) {
 					object.rotation.set(value.x * DEG2RAD, value.y * DEG2RAD, value.z * DEG2RAD)
 				},
+				sync: (value) => [value.x * DEG2RAD, value.y * DEG2RAD, value.z * DEG2RAD],
 				default: { x: 0, y: 0, z: 0 },
 			},
 			{
@@ -107,6 +112,7 @@ export const defaultBindings: Bindings = [
 				apply(object: Object3D, value: { x: number; y: number; z: number }) {
 					object.scale.set(value.x, value.y, value.z)
 				},
+				sync: (value) => [value.x, value.y, value.z],
 				default: { x: 1, y: 1, z: 1 },
 			},
 			{

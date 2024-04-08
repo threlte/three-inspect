@@ -69,14 +69,20 @@
 		if ($mode === 'translate') {
 			const value = $selectedObjects[0].position.clone()
 			$selectedObjects[0].position.copy(initialValue)
-			commit(
-				$selectedObjects[0],
-				value,
-				(object) => object.position.clone(),
-				(object, value) => {
-					object.position.copy(value)
+			commit({
+				object: $selectedObjects[0],
+				propertyPath: 'position',
+				read(root) {
+					return root.position.clone()
 				},
-			)
+				write(root, data) {
+					root.position.copy(data)
+				},
+				value,
+				sync(value) {
+					return [value.x, value.y, value.z]
+				},
+			})
 		}
 		initialValue = undefined
 	}

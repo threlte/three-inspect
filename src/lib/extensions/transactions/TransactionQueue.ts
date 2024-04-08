@@ -1,31 +1,19 @@
 /* eslint-disable max-classes-per-file */
 
-export type TransactionArgs<T, U> = [
-	root: T,
-	data: U,
-	read: (root: T) => U,
-	write: (root: T, data: U) => void,
-]
+import { SyncQueue } from './SyncQueue'
+import { getThrelteStudioUserData } from './vite-plugin/runtimeUtils'
 
-export class Transaction<T, U> {
-	public dataBefore: U
+export type Transaction<T, U, Q> = {
+	object: T
+	propertyPath: string
+	value: U
+	read: (root: T) => U
+	write: (root: T, data: U) => void
+	sync?: (value: U) => Q
+}
 
-	constructor(
-		private root: TransactionArgs<T, U>[0],
-		private data: TransactionArgs<T, U>[1],
-		private read: TransactionArgs<T, U>[2],
-		private write: TransactionArgs<T, U>[3],
-	) {
-		this.dataBefore = this.read(this.root)
-	}
-
-	commit() {
-		this.write(this.root, this.data)
-	}
-
-	undo() {
-		this.write(this.root, this.dataBefore)
-	}
+type TransactionQueueItem = Transaction<any, any, any> & {
+	historicValue: any
 }
 
 /**
@@ -78,9 +66,11 @@ export class Transaction<T, U> {
  */
 export class TransactionQueue {
 	/** Queue of transactions that have been commited and can be undone */
-	public commitedQueue: Transaction<any, any>[] = []
+	public commitedQueue: TransactionQueueItem[] = []
 	/** Queue of transactions that have been undone and can be redone */
-	public undoneQueue: Transaction<any, any>[] = []
+	public undoneQueue: TransactionQueueItem[] = []
+
+	public syncQueue = new SyncQueue()
 
 	constructor(
 		public onCommit?: () => void,
@@ -88,27 +78,82 @@ export class TransactionQueue {
 		public onRedo?: () => void,
 	) {}
 
-	commit<T, U>(...args: TransactionArgs<T, U>) {
-		const transaction = new Transaction(...args)
-		transaction.commit()
-		this.commitedQueue.push(transaction)
+	commit<T, U, Q>(transaction: Transaction<T, U, Q>) {
+		const userData = getThrelteStudioUserData(transaction.object)
+		if (!userData) {
+			throw new Error('Cannot commit transaction without inspectorOptions')
+		}
+
+		// const { target, key } = resolvePropertyPath(transaction.object, transaction.propertyPath)
+		const transactionQueueItem: TransactionQueueItem = {
+			...transaction,
+			historicValue: transaction.read(transaction.object),
+		}
+		transaction.write(transaction.object, transaction.value)
+		this.commitedQueue.push(transactionQueueItem)
 		this.undoneQueue = []
 		this.onCommit?.()
+
+		this.syncQueue.add({
+			attributeName: transaction.propertyPath,
+			attributeValue: transaction.sync ? transaction.sync(transaction.value) : transaction.value,
+			componentIndex: userData.index,
+			id: userData.moduleId,
+			moduleId: userData.moduleId,
+			parserType: 'json',
+			signature: userData.signature,
+		})
 	}
 
 	undo() {
 		const transaction = this.commitedQueue.pop()
 		if (!transaction) return
-		transaction.undo()
+
+		const userData = getThrelteStudioUserData(transaction.object)
+		if (!userData) {
+			throw new Error('Cannot commit transaction without inspectorOptions')
+		}
+
+		transaction.write(transaction.object, transaction.historicValue)
 		this.undoneQueue.push(transaction)
+
+		this.syncQueue.add({
+			attributeName: transaction.propertyPath,
+			attributeValue: transaction.sync
+				? transaction.sync(transaction.historicValue)
+				: transaction.historicValue,
+			componentIndex: 0,
+			id: userData.moduleId,
+			moduleId: userData.moduleId,
+			parserType: 'json',
+			signature: userData.signature,
+		})
+
 		this.onUndo?.()
 	}
 
 	redo() {
 		const transaction = this.undoneQueue.pop()
 		if (!transaction) return
-		transaction.commit()
+
+		const userData = getThrelteStudioUserData(transaction.object)
+		if (!userData) {
+			throw new Error('Cannot commit transaction without inspectorOptions')
+		}
+
+		transaction.write(transaction.object, transaction.value)
 		this.commitedQueue.push(transaction)
+
+		this.syncQueue.add({
+			attributeName: transaction.propertyPath,
+			attributeValue: transaction.sync ? transaction.sync(transaction.value) : transaction.value,
+			componentIndex: 0,
+			id: userData.moduleId,
+			moduleId: userData.moduleId,
+			parserType: 'json',
+			signature: userData.signature,
+		})
+
 		this.onRedo?.()
 	}
 }

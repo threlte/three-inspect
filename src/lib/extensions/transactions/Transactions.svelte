@@ -22,8 +22,8 @@
 			setEnabled({ select }, enabled) {
 				select((s) => s.enabled).set(enabled)
 			},
-			commit(_, object, value, read, write) {
-				queue.commit(object, value, read, write)
+			commit(_, transaction) {
+				queue.commit(transaction)
 				invalidate()
 			},
 			undo() {

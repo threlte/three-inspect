@@ -44,12 +44,16 @@
 								value={readFromFirst(property.read)}
 								label={property.label}
 								on:change={(event) => {
-									commit(
-										$selectedObjects,
-										$selectedObjects.map(() => event.detail.value),
-										(objs) => objs.map(property.read),
-										(objs, data) => objs.forEach((obj, i) => property.apply(obj, data[i])),
-									)
+									$selectedObjects.forEach((object) => {
+										commit({
+											object,
+											propertyPath: property.label,
+											value: event.detail.value,
+											read: property.read,
+											write: property.apply,
+											sync: property.sync,
+										})
+									})
 								}}
 							/>
 						{/each}
@@ -60,12 +64,16 @@
 							value={readFromFirst(property.read)}
 							label={property.label}
 							on:change={(event) => {
-								commit(
-									$selectedObjects,
-									$selectedObjects.map(() => event.detail.value),
-									(objs) => objs.map(property.read),
-									(objs, data) => objs.forEach((obj, i) => property.apply(obj, data[i])),
-								)
+								$selectedObjects.forEach((object) => {
+									commit({
+										object,
+										propertyPath: property.label,
+										value: event.detail.value,
+										read: property.read,
+										write: property.apply,
+										sync: property.sync,
+									})
+								})
 							}}
 						/>
 					{/each}

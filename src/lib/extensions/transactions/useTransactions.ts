@@ -1,5 +1,5 @@
 import { useStudio } from '../../internal/extensions'
-import type { TransactionArgs } from './TransactionQueue'
+import type { Transaction } from './TransactionQueue'
 import { transactionsScope, type TransactionsActions, type TransactionsState } from './types'
 
 export const useTransactions = () => {
@@ -7,8 +7,8 @@ export const useTransactions = () => {
 
 	const { run } = getExtension<TransactionsState, TransactionsActions>(transactionsScope)
 
-	const commit = <T, U>(...args: TransactionArgs<T, U>) => {
-		run('commit', ...(args as TransactionArgs<unknown, unknown>))
+	const commit = <T, U, Q>(transaction: Transaction<T, U, Q>) => {
+		run('commit', transaction)
 	}
 
 	const undo = () => {
