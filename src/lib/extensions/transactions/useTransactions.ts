@@ -1,4 +1,4 @@
-import { useStudio } from '../../internal/extensions'
+import { useStudio } from '../../internal/extensions.svelte'
 import type { Transaction } from './TransactionQueue'
 import { transactionsScope, type TransactionsActions, type TransactionsState } from './types'
 

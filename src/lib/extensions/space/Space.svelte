@@ -10,19 +10,17 @@
 
 	const { state, run } = addExtension<SpaceState, SpaceActions>({
 		scope: spaceScope,
-		state({ persist }) {
+		state() {
 			return {
-				space: persist('local'),
+				space: 'local',
 			}
 		},
 		actions: {
-			setSpace({ select }, space) {
-				select((s) => s.space).set(space)
+			setSpace({ state }, space) {
+				state.value.space = space
 			},
-			toggleSpace({ select }) {
-				select((s) => s.space).update((space) => {
-					return space === 'local' ? 'world' : 'local'
-				})
+			toggleSpace({ state }) {
+				state.value.space = state.value.space === 'local' ? 'world' : 'local'
 			},
 		},
 		keyMap() {
@@ -35,14 +33,12 @@
 	onDestroy(() => {
 		removeExtension(spaceScope)
 	})
-
-	const space = state.select((s) => s.space)
 </script>
 
 <ToolbarItem>
 	<HorizontalButtonGroup>
 		<ToolbarButton
-			active={$space === 'local'}
+			active={state.value.space === 'local'}
 			icon="mdiAxisArrow"
 			label="Local"
 			tooltip="Local (W)"
@@ -51,7 +47,7 @@
 			}}
 		/>
 		<ToolbarButton
-			active={$space === 'world'}
+			active={state.value.space === 'world'}
 			icon="mdiEarth"
 			label="World"
 			tooltip="World (W)"

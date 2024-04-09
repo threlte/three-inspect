@@ -1,8 +1,9 @@
 import type { Expression, Node } from 'estree'
 import MagicString from 'magic-string'
 import { createHash } from 'node:crypto'
-import { parse, walk } from 'svelte/compiler'
+import { parse } from 'svelte/compiler'
 import { parsers, type Parser } from './parsers'
+import { walk } from 'estree-walker'
 
 export const componentNeedsTransform = (code: string): boolean => {
 	return code.includes('<T.') || code.includes('<T ') || code.includes('<T\n')

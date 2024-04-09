@@ -12,13 +12,7 @@ export const createActions = () => {
 		actions.delete(scope)
 	}
 
-	const runAction = (
-		scope: string,
-		actionId: string,
-		state: SubImmerStore<any>,
-		record: (callback: (...args: any[]) => any) => void,
-		...args: any[]
-	) => {
+	const runAction = (scope: string, actionId: string, state: any, ...args: any[]) => {
 		if (!actions.has(scope)) {
 			console.warn(`Extension with scope "${scope}" does not exist`)
 			return undefined
@@ -33,15 +27,8 @@ export const createActions = () => {
 
 		const action = extensionActions[actionId]
 
-		const selectProxy = (...args: Parameters<SubImmerStore<any>['select']>) => {
-			return state.select(...args)
-		}
-
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		return action(
-			{ select: selectProxy as Parameters<ExtensionAction<any>>[0]['select'], record },
-			...args,
-		)
+		return action({ state }, ...args)
 	}
 
 	return {

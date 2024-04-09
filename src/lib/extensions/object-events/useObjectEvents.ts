@@ -1,4 +1,4 @@
-import { useStudio } from '../../internal/extensions'
+import { useStudio } from '../../internal/extensions.svelte'
 import { objectEventsScope, type ObjectEventsActions, type ObjectEventsState } from './types'
 
 export const useObjectEvents = () => {

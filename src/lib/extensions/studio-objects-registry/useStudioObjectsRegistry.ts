@@ -1,5 +1,5 @@
 import type { Object3D } from 'three'
-import { useStudio } from '../../internal/extensions'
+import { useStudio } from '../../internal/extensions.svelte'
 import {
 	studioObjectsRegistryScope,
 	type StudioObjectsRegistryActions,

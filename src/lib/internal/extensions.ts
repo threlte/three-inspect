@@ -1,14 +1,11 @@
 import { getContext, setContext } from 'svelte'
-import type { SubImmerStore } from 'svelte-immer-store'
 import { createActions } from './actions'
 import { createKeyboardControls, hotkeyFns } from './keyboard'
-import { createState } from './state'
+import { createState } from './state.svelte'
 import { beforeUnload } from './useBeforeUnload'
 
 type ExtensionAction = <ExtensionState extends Record<string, unknown>>(
-	params: {
-		select: SubImmerStore<ExtensionState>['select']
-	},
+	state: ExtensionState,
 	...args: any[]
 ) => Promise<void> | void
 
@@ -18,7 +15,7 @@ export const createRootContext = () => {
 	const state = createState()
 	const actions = createActions()
 	const keyboardControls = createKeyboardControls((scope, actionId) => {
-		actions.runAction(scope, actionId, state.getScopedState(scope), state.record)
+		actions.runAction(scope, actionId, state.getScopedState(scope))
 	})
 
 	const getExtension = <
@@ -28,17 +25,11 @@ export const createRootContext = () => {
 		scope: string,
 	) => {
 		const run = <K extends keyof Actions>(id: K, ...args: Parameters<Actions[K]>) => {
-			actions.runAction(
-				scope,
-				id as string,
-				state.getScopedState<State>(scope),
-				state.record,
-				...args,
-			)
+			actions.runAction(scope, id as string, state.getScopedState<State>(scope), ...args)
 		}
 
 		return {
-			state: state.getScopedReadableState<State>(scope),
+			state: state.getScopedState<State>(scope),
 			run,
 		}
 	}
@@ -52,8 +43,7 @@ export const createRootContext = () => {
 		actions: {
 			[K in keyof Actions]: (
 				params: {
-					select: SubImmerStore<State>['select']
-					record: (callback: (...args: any[]) => any) => void
+					state: { value: State }
 				},
 				...args: Parameters<Actions[K]>
 			) => ReturnType<Actions[K]>

@@ -1,4 +1,4 @@
-import { useStudio } from '../../internal/extensions'
+import { useStudio } from '../../internal/extensions.svelte'
 import { snappingScope, type SnappingActions, type SnappingState } from './types'
 
 export const useSnapping = () => {

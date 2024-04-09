@@ -14,27 +14,27 @@
 		scope: snappingScope,
 		state({ persist }) {
 			return {
-				enabled: persist(true),
-				translate: persist(0.1),
-				rotate: persist(15),
-				scale: persist(0.1),
+				enabled: true,
+				translate: 0.1,
+				rotate: 15,
+				scale: 0.1,
 			}
 		},
 		actions: {
-			toggleEnabled({ select }) {
-				select((s) => s.enabled).update((enabled) => !enabled)
+			toggleEnabled({ state }) {
+				state.value.enabled = !state.value.enabled
 			},
-			setEnabled({ select }, enabled) {
-				select((s) => s.enabled).set(enabled)
+			setEnabled({ state }, enabled) {
+				state.value.enabled = enabled
 			},
-			setRotate({ select }, rotate) {
-				select((s) => s.rotate).set(rotate)
+			setRotate({ state }, rotate) {
+				state.value.rotate = rotate
 			},
-			setScale({ select }, scale) {
-				select((s) => s.scale).set(scale)
+			setScale({ state }, scale) {
+				state.value.scale = scale
 			},
-			setTranslate({ select }, translate) {
-				select((s) => s.translate).set(translate)
+			setTranslate({ state }, translate) {
+				state.value.translate = translate
 			},
 		},
 		keyMap() {
@@ -48,16 +48,16 @@
 		removeExtension(snappingScope)
 	})
 
-	const enabled = state.select((s) => s.enabled)
-	const translate = state.select((s) => s.translate)
-	const rotate = state.select((s) => s.rotate)
-	const scale = state.select((s) => s.scale)
+	// const enabled = state.select((s) => s.enabled)
+	// const translate = state.select((s) => s.translate)
+	// const rotate = state.select((s) => s.rotate)
+	// const scale = state.select((s) => s.scale)
 </script>
 
 <ToolbarItem>
 	<HorizontalButtonGroup>
 		<ToolbarButton
-			active={$enabled}
+			active={state.value.enabled}
 			icon="mdiMagnet"
 			label="Snapping"
 			tooltip="Snapping (M)"
@@ -69,7 +69,7 @@
 			<Slider
 				label="Move"
 				min={0}
-				value={$translate}
+				value={state.value.translate}
 				on:change={(e) => {
 					run('setTranslate', e.detail.value)
 				}}
@@ -77,7 +77,7 @@
 			<Slider
 				label="Rotate"
 				min={0}
-				value={$rotate}
+				value={state.value.rotate}
 				format={(v) => `${v}°`}
 				on:change={(e) => {
 					run('setRotate', e.detail.value)
@@ -86,7 +86,7 @@
 			<Slider
 				label="Scale"
 				min={0}
-				value={$scale}
+				value={state.value.scale}
 				on:change={(e) => {
 					run('setScale', e.detail.value)
 				}}

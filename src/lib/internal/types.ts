@@ -1,11 +1,8 @@
-import type { SubImmerStore } from 'svelte-immer-store'
-
 export type ExtensionState = Record<string, unknown>
 
 export type ExtensionAction<State extends ExtensionState> = (
 	params: {
-		select: SubImmerStore<State>['select']
-		record: (callback: (...args: any[]) => any) => void
+		state: State
 	},
 	...args: any[]
 ) => Promise<void> | void
