@@ -44,7 +44,7 @@
 </script>
 
 <script lang="ts">
-	import { T, forwardEventHandlers, type Events } from '@threlte/core'
+	import { T, type Events } from '@threlte/core'
 	import {
 		BufferGeometry,
 		CanvasTexture,
@@ -57,13 +57,10 @@
 
 	type $$Events = Events<typeof Sprite>
 
-	const component = forwardEventHandlers()
-
 	const points = new Points(geometry, material)
 </script>
 
 <T
 	is={points}
-	bind:this={$component}
 	userData={{ ignoreOverrideMaterial: true }}
 />

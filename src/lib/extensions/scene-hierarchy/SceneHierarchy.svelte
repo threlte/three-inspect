@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte'
 	import { Element, Pane } from 'svelte-tweakpane-ui'
 	import Portal from '../../components/Internal/Portal.svelte'
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
@@ -12,9 +11,9 @@
 		type SceneHierarchyState,
 	} from './types'
 
-	const { addExtension, removeExtension } = useStudio()
+	const { useExtension } = useStudio()
 
-	const { run, state } = addExtension<SceneHierarchyState, SceneHierarchyActions>({
+	const { run, state } = useExtension<SceneHierarchyState, SceneHierarchyActions>({
 		scope: sceneHierarchyScope,
 		state({ persist }) {
 			return {
@@ -22,20 +21,14 @@
 			}
 		},
 		actions: {
-			toggleEnabled({ select }) {
-				select((s) => s.enabled).update((enabled) => !enabled)
+			toggleEnabled({ state }) {
+				state.enabled = !state.enabled
 			},
-			setEnabled({ select }, enabled) {
-				select((s) => s.enabled).set(enabled)
+			setEnabled({ state }, enabled) {
+				state.enabled = enabled
 			},
 		},
 	})
-
-	onDestroy(() => {
-		removeExtension(sceneHierarchyScope)
-	})
-
-	const enabled = state.select((s) => s.enabled)
 </script>
 
 <ToolbarItem position="right">
@@ -45,11 +38,11 @@
 		on:click={() => {
 			run('toggleEnabled')
 		}}
-		active={$enabled}
+		active={state.enabled}
 	/>
 </ToolbarItem>
 
-{#if $enabled}
+{#if state.enabled}
 	<Portal>
 		<Pane
 			title="Scene Hierarchy"

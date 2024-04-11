@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { useThrelte, watch } from '@threlte/core'
+	import { useThrelte } from '@threlte/core'
 	import { TreeViewItem, TreeViewWebComponent } from 'flexible-tree'
 	import type * as THREE from 'three'
 	import { useOnAdd } from '../../hooks/useOnAdd'
 	import { useOnRemove } from '../../hooks/useOnRemove'
-	import { useObjectSelection } from '../object-selection/useObjectSelection'
+	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
 
 	const treeview = new TreeViewWebComponent()
 	treeview.scrollable = true
@@ -16,7 +16,7 @@
   `
 
 	const { scene } = useThrelte()
-	const { selectedObjects, removeFromSelection, addToSelection } = useObjectSelection()
+	const objectSelection = useObjectSelection()
 
 	const treeroot = new TreeViewItem({ text: 'Scene' })
 	treeview.append(treeroot)
@@ -38,8 +38,8 @@
 		const item = objectToTreeItem.get(object)
 		objectToTreeItem.delete(object)
 
-		if ($selectedObjects.includes(object)) {
-			removeFromSelection([object])
+		if (objectSelection.selectedObjects.includes(object)) {
+			objectSelection.removeFromSelection([object])
 		}
 
 		// @TODO investigate
@@ -60,7 +60,7 @@
 		const text = `${name ? `${name} ` : ''}(${object.type})`
 		const item = new TreeViewItem({ text })
 		item.open = true
-		item.selected = $selectedObjects.includes(object)
+		item.selected = objectSelection.selectedObjects.includes(object)
 		// item.selected = object3D === $selectedObject
 		objectToTreeItem.set(object, item)
 		treeItemToObject.set(item, object)
@@ -88,7 +88,7 @@
 		selectedItems.add(item)
 		const object = treeItemToObject.get(item)
 		if (!object) return
-		addToSelection([object])
+		objectSelection.addToSelection([object])
 	}
 
 	treeview.on('deselect', (item: TreeViewItem) => {
@@ -96,7 +96,7 @@
 		selectedItems.delete(item)
 		const object = treeItemToObject.get(item)
 		if (!object) return
-		removeFromSelection([object])
+		objectSelection.removeFromSelection([object])
 	})
 
 	treeview.on('select', handleSelect)
@@ -115,10 +115,10 @@
 
 	const noUndef = <T,>(v: T | undefined): v is T => v !== undefined
 
-	watch(selectedObjects, (objects) => {
+	$effect(() => {
 		observeChanges = false
 
-		const treeItems = objects
+		const treeItems = objectSelection.selectedObjects
 			.map((object) => {
 				const treeitem = objectToTreeItem.get(object)
 				return treeitem

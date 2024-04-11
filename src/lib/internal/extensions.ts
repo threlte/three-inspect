@@ -1,4 +1,4 @@
-import { getContext, setContext } from 'svelte'
+import { getContext, onDestroy, setContext } from 'svelte'
 import { createActions } from './actions'
 import { createKeyboardControls, hotkeyFns } from './keyboard'
 import { createState } from './state.svelte'
@@ -21,6 +21,7 @@ export const createRootContext = () => {
 	const getExtension = <
 		State extends Record<string, unknown>,
 		Actions extends Record<string, (...args: any[]) => Promise<void> | void>,
+		NonPartial extends boolean = false,
 	>(
 		scope: string,
 	) => {
@@ -29,12 +30,19 @@ export const createRootContext = () => {
 		}
 
 		return {
-			state: state.getScopedState<State>(scope),
+			state: state.getScopedState<State, NonPartial>(scope),
 			run,
 		}
 	}
 
-	const addExtension = <
+	const removeExtension = (scope: string) => {
+		state.persistState(scope)
+		state.removeScopedState(scope)
+		actions.removeExtensionActions(scope)
+		keyboardControls.removeKeys(scope)
+	}
+
+	const useExtension = <
 		State extends Record<string, unknown>,
 		Actions extends Record<string, (...args: any[]) => Promise<void> | void>,
 	>(options: {
@@ -43,7 +51,7 @@ export const createRootContext = () => {
 		actions: {
 			[K in keyof Actions]: (
 				params: {
-					state: { value: State }
+					state: State
 				},
 				...args: Parameters<Actions[K]>
 			) => ReturnType<Actions[K]>
@@ -61,21 +69,17 @@ export const createRootContext = () => {
 			keyboardControls.addKeys(options.scope, keyMap)
 		}
 
-		return getExtension<State, Actions>(options.scope)
-	}
+		onDestroy(() => {
+			removeExtension(options.scope)
+		})
 
-	const removeExtension = (scope: string) => {
-		state.persistState(scope)
-		state.removeScopedState(scope)
-		actions.removeExtensionActions(scope)
-		keyboardControls.removeKeys(scope)
+		return getExtension<State, Actions, true>(options.scope)
 	}
 
 	const context = {
 		state,
 		actions,
-		addExtension,
-		removeExtension,
+		useExtension,
 		getExtension,
 	}
 

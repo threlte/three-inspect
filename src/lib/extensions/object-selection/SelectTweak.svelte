@@ -3,13 +3,13 @@
 	import { onMount } from 'svelte'
 	import * as THREE from 'three'
 	import { Raycaster } from 'three'
-	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
-	import { useObjectSelection } from './useObjectSelection'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
+	import { useObjectSelection } from './useObjectSelection.svelte'
 
 	const raycaster = new Raycaster()
 
 	const { clearSelection, selectObjects, toggleSelection } = useObjectSelection()
-	const { studioObjects } = useStudioObjectsRegistry()
+	const studioObjectsRegistry = useStudioObjectsRegistry()
 
 	const { renderer, camera, scene } = useThrelte()
 
@@ -38,7 +38,7 @@
 		let hit = hits.shift()
 
 		const isOrIsChildOfStudioObject = (object: THREE.Object3D): boolean => {
-			if ($studioObjects.has(object)) return true
+			if (studioObjectsRegistry.objects.has(object)) return true
 			if (object.parent) return isOrIsChildOfStudioObject(object.parent)
 			return false
 		}

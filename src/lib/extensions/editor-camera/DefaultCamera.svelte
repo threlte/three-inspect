@@ -2,7 +2,6 @@
 	import { useTask, useThrelte } from '@threlte/core'
 	import { onMount } from 'svelte'
 	import { Element, Pane } from 'svelte-tweakpane-ui'
-	import { get } from 'svelte/store'
 	import {
 		Vector2,
 		Vector4,
@@ -12,27 +11,29 @@
 	} from 'three'
 	import Portal from '../../components/Internal/Portal.svelte'
 	import { useStudio } from '../../internal/extensions'
-	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 	import { editorCameraScope, type EditorCameraActions, type EditorCameraState } from './types'
 
 	const { getExtension } = useStudio()
 	const { renderer, scene, autoRenderTask, invalidate } = useThrelte()
 
-	const { state } = getExtension<EditorCameraState, EditorCameraActions>(editorCameraScope)
+	const { state: editorCameraState } = getExtension<EditorCameraState, EditorCameraActions, true>(
+		editorCameraScope,
+	)
 
-	const { studioObjects } = useStudioObjectsRegistry()
-	const defaultCameraObject = state.select((s) => s.defaultCamera.object)
-	const width = state.select((s) => s.defaultCamera.width)
-	const height = state.select((s) => s.defaultCamera.height)
+	const studioObjectsRegistry = useStudioObjectsRegistry()
+	const defaultCameraObject = $derived(editorCameraState.defaultCamera.object)
+	const width = $derived(editorCameraState.defaultCamera.width)
+	const height = $derived(editorCameraState.defaultCamera.height)
 
-	let canvasEl: HTMLCanvasElement
-	$: context = canvasEl?.getContext('2d') ?? undefined
+	let canvasEl = $state<HTMLCanvasElement | undefined>(undefined)
+	const context = $derived(canvasEl ? canvasEl.getContext('2d') : undefined)
 
 	let previousAspect = 0
 	const setupPerspectiveCamera = (camera: PerspectiveCamera) => {
 		previousAspect = camera.aspect
 		// set up perspective cam to be 16/9
-		camera.aspect = $width / $height
+		camera.aspect = width / height
 		camera.updateProjectionMatrix()
 	}
 
@@ -41,7 +42,7 @@
 	const updateOrthographicCamera = (camera: OrthographicCamera) => {
 		// set up ortho cam to be 16/9
 		const frustumHeight = camera.top - camera.bottom
-		const aspect = $width / $height
+		const aspect = width / height
 		previousLeft = camera.left
 		previousRight = camera.right
 		camera.left = -frustumHeight * aspect
@@ -80,10 +81,12 @@
 	const size = new Vector2()
 	let dpr = 0
 
+	const studioObjectsArray = $derived(Array.from(studioObjectsRegistry.objects))
+
 	useTask(
 		() => {
-			if (!context) return
-			const defaultCamera = get(defaultCameraObject)
+			if (!context || !canvasEl) return
+			const defaultCamera = defaultCameraObject
 			if (!defaultCamera) return
 
 			updateCamera(defaultCamera)
@@ -96,17 +99,18 @@
 			dpr = renderer.getPixelRatio()
 
 			if (setupCanvas) {
-				canvasEl.width = $width * dpr
-				canvasEl.height = $height * dpr
+				canvasEl.width = width * dpr
+				canvasEl.height = height * dpr
 			}
 
 			// set viewport
-			renderer.setViewport(0, 0, $width, $height)
+			renderer.setViewport(0, 0, width, height)
 
-			$studioObjects.forEach((obj) => {
+			for (let index = 0; index < studioObjectsArray.length; index++) {
+				const obj = studioObjectsArray[index]
 				obj.userData.__threlte_studio_default_camera_visible = obj.visible
 				obj.visible = false
-			})
+			}
 
 			const originalOverrideMaterial = scene.overrideMaterial
 			scene.overrideMaterial = null
@@ -115,25 +119,26 @@
 
 			scene.overrideMaterial = originalOverrideMaterial
 
-			$studioObjects.forEach((obj) => {
+			for (let index = 0; index < studioObjectsArray.length; index++) {
+				const obj = studioObjectsArray[index]
 				obj.visible = obj.userData.__threlte_studio_default_camera_visible
-			})
+			}
 
 			// reset viewport
 			renderer.setViewport(viewport)
 
 			// draw to canvas
-			context.clearRect(0, 0, $width * dpr, $height * dpr)
+			context.clearRect(0, 0, width * dpr, height * dpr)
 			context.drawImage(
 				renderer.domElement,
 				0,
-				(size.y - $height) * dpr,
-				$width * dpr,
-				$height * dpr,
+				(size.y - height) * dpr,
+				width * dpr,
+				height * dpr,
 				0,
 				0,
-				$width * dpr,
-				$height * dpr,
+				width * dpr,
+				height * dpr,
 			)
 
 			resetCamera(defaultCamera)
@@ -150,7 +155,7 @@
 <Portal>
 	<Pane
 		position="draggable"
-		width={$width}
+		{width}
 		title="Default Camera"
 		userExpandable={false}
 		expanded
@@ -162,7 +167,7 @@
 		<Element>
 			<canvas
 				bind:this={canvasEl}
-				style="width: {$width}px; height: {$height}px; display: block"
+				style="width: {width}px; height: {height}px; display: block"
 			/>
 		</Element>
 	</Pane>

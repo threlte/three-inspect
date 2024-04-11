@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte'
+	import { Set } from 'svelte/reactivity'
 	import { useStudio } from '../../internal/extensions'
 	import {
 		studioObjectsRegistryScope,
@@ -7,9 +7,9 @@
 		type StudioObjectsRegistryState,
 	} from './types'
 
-	const { addExtension, removeExtension } = useStudio()
+	const { useExtension } = useStudio()
 
-	addExtension<StudioObjectsRegistryState, StudioObjectsRegistryActions>({
+	useExtension<StudioObjectsRegistryState, StudioObjectsRegistryActions>({
 		scope: studioObjectsRegistryScope,
 		state() {
 			return {
@@ -17,22 +17,12 @@
 			}
 		},
 		actions: {
-			addObject({ select }, object) {
-				select((s) => s.objects).update((objects) => {
-					objects.add(object)
-					return objects
-				})
+			addObject({ state }, object) {
+				state.objects.add(object)
 			},
-			removeObject({ select }, object) {
-				select((s) => s.objects).update((objects) => {
-					objects.delete(object)
-					return objects
-				})
+			removeObject({ state }, object) {
+				state.objects.delete(object)
 			},
 		},
-	})
-
-	onDestroy(() => {
-		removeExtension(studioObjectsRegistryScope)
 	})
 </script>

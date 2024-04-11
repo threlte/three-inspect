@@ -13,13 +13,13 @@
 	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
 	import { useStudio } from '../../internal/extensions'
-	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 	import { gridScope, type GridActions, type GridState } from './types'
 
-	const { addExtension, removeExtension } = useStudio()
-	const { addObject, removeObject } = useStudioObjectsRegistry()
+	const { useExtension } = useStudio()
+	const studioObjectsRegistry = useStudioObjectsRegistry()
 
-	const { state, run: runGridAction } = addExtension<GridState, GridActions>({
+	const { state, run: runGridAction } = useExtension<GridState, GridActions>({
 		scope: gridScope,
 		state({ persist }) {
 			return {
@@ -30,32 +30,23 @@
 			}
 		},
 		actions: {
-			setEnabled({ select }, enabled) {
-				select((s) => s.enabled).set(enabled)
+			setEnabled({ state }, enabled) {
+				state.enabled = enabled
 			},
-			toggleEnabled({ select }) {
-				select((s) => s.enabled).update((enabled) => !enabled)
+			toggleEnabled({ state }) {
+				state.enabled = !state.enabled
 			},
-			setColor({ select }, color) {
-				select((s) => s.color).set(color)
+			setColor({ state }, color) {
+				state.color = color
 			},
-			setStep({ select }, step) {
-				select((s) => s.step).set(step)
+			setStep({ state }, step) {
+				state.step = step
 			},
-			setPlane({ select }, plane) {
-				select((s) => s.plane).set(plane)
+			setPlane({ state }, plane) {
+				state.plane = plane
 			},
 		},
 	})
-
-	onDestroy(() => {
-		removeExtension(gridScope)
-	})
-
-	const enabled = state.select((s) => s.enabled)
-	const color = state.select((s) => s.color)
-	const step = state.select((s) => s.step)
-	const plane = state.select((s) => s.plane)
 
 	const onColorChange = (e: CustomEvent<{ value: ColorValue }>) => {
 		runGridAction('setColor', e.detail.value as string)
@@ -76,7 +67,7 @@
 			on:click={() => {
 				runGridAction('toggleEnabled')
 			}}
-			active={$enabled}
+			active={state.enabled}
 			label="Grid"
 			icon="mdiGrid"
 			tooltip="Grid"
@@ -84,19 +75,19 @@
 
 		<DropDownPane title="Grid Settings">
 			<Color
-				value={$color}
+				value={state.color}
 				label="Color"
 				on:change={onColorChange}
 			/>
 
 			<Slider
-				value={$step}
+				value={state.step}
 				label="Step"
 				min={0}
 				on:change={onStepChange}
 			/>
 			<RadioGrid
-				value={$plane}
+				value={state.plane}
 				values={['xy', 'xz', 'yz']}
 				rows={1}
 				label="Plane"
@@ -106,20 +97,20 @@
 	</HorizontalButtonGroup>
 </ToolbarItem>
 
-{#if $enabled}
+{#if state.enabled}
 	<Grid
 		on:create={({ ref, cleanup }) => {
-			addObject(ref)
+			studioObjectsRegistry.addObject(ref)
 			cleanup(() => {
-				removeObject(ref)
+				studioObjectsRegistry.removeObject(ref)
 			})
 		}}
 		userData={{ ignoreOverrideMaterial: true }}
 		infiniteGrid
-		cellSize={$step}
-		sectionColor={$color}
-		cellColor={$color}
-		plane={$plane}
+		cellSize={state.step}
+		sectionColor={state.color}
+		cellColor={state.color}
+		plane={state.plane}
 		renderOrder={9999}
 	/>
 {/if}

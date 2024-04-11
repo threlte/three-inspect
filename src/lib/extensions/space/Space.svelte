@@ -1,26 +1,25 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte'
-	import { useStudio } from '../../internal/extensions'
-	import { type SpaceActions, type SpaceState, spaceScope } from './types'
-	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
+	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
+	import { useStudio } from '../../internal/extensions'
+	import { spaceScope, type SpaceActions, type SpaceState } from './types'
 
-	const { addExtension, removeExtension } = useStudio()
+	const { useExtension } = useStudio()
 
-	const { state, run } = addExtension<SpaceState, SpaceActions>({
+	const { state, run } = useExtension<SpaceState, SpaceActions>({
 		scope: spaceScope,
-		state() {
+		state({ persist }) {
 			return {
-				space: 'local',
+				space: persist('local'),
 			}
 		},
 		actions: {
 			setSpace({ state }, space) {
-				state.value.space = space
+				state.space = space
 			},
 			toggleSpace({ state }) {
-				state.value.space = state.value.space === 'local' ? 'world' : 'local'
+				state.space = state.space === 'local' ? 'world' : 'local'
 			},
 		},
 		keyMap() {
@@ -29,16 +28,12 @@
 			}
 		},
 	})
-
-	onDestroy(() => {
-		removeExtension(spaceScope)
-	})
 </script>
 
 <ToolbarItem>
 	<HorizontalButtonGroup>
 		<ToolbarButton
-			active={state.value.space === 'local'}
+			active={state.space === 'local'}
 			icon="mdiAxisArrow"
 			label="Local"
 			tooltip="Local (W)"
@@ -47,7 +42,7 @@
 			}}
 		/>
 		<ToolbarButton
-			active={state.value.space === 'world'}
+			active={state.space === 'world'}
 			icon="mdiEarth"
 			label="World"
 			tooltip="World (W)"

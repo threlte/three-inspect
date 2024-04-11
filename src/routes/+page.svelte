@@ -3,19 +3,13 @@
 	import Studio from '../lib/components/Studio/Studio.svelte'
 </script>
 
-<Canvas renderMode="always">
+<Canvas>
 	<Studio>
-		<T.Mesh
-			orange
-			position={[0,7.298160960050886,-1.5014306325005897]}
-		>
+		<T.Mesh>
 			<T.BoxGeometry args={[1, 1, 1]} />
 			<T.MeshBasicMaterial color="orange" />
 		</T.Mesh>
-		<T.Mesh
-			red
-			position={[6.731787789509122,2,0]}
-		>
+		<T.Mesh position.y={2}>
 			<T.BoxGeometry args={[1, 1, 1]} />
 			<T.MeshBasicMaterial color="red" />
 		</T.Mesh>

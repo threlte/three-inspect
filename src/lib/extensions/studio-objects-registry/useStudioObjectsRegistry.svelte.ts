@@ -1,16 +1,18 @@
 import type { Object3D } from 'three'
-import { useStudio } from '../../internal/extensions.svelte'
+import { useStudio } from '../../internal/extensions'
 import {
 	studioObjectsRegistryScope,
 	type StudioObjectsRegistryActions,
 	type StudioObjectsRegistryState,
 } from './types'
+import { Set } from 'svelte/reactivity'
 
 export const useStudioObjectsRegistry = () => {
 	const { getExtension } = useStudio()
-	const { run, state } = getExtension<StudioObjectsRegistryState, StudioObjectsRegistryActions>(
-		studioObjectsRegistryScope,
-	)
+	const { run, state } = getExtension<
+		Partial<StudioObjectsRegistryState>,
+		StudioObjectsRegistryActions
+	>(studioObjectsRegistryScope)
 
 	const addObject = (object: Object3D) => {
 		run('addObject', object)
@@ -20,9 +22,13 @@ export const useStudioObjectsRegistry = () => {
 		run('removeObject', object)
 	}
 
+	const objects = $derived(state.objects ?? new Set<Object3D>())
+
 	return {
 		addObject,
 		removeObject,
-		studioObjects: state.select((s) => s.objects),
+		get objects() {
+			return objects
+		},
 	}
 }

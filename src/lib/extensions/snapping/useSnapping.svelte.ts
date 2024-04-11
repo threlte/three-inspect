@@ -1,4 +1,4 @@
-import { useStudio } from '../../internal/extensions.svelte'
+import { useStudio } from '../../internal/extensions'
 import { snappingScope, type SnappingActions, type SnappingState } from './types'
 
 export const useSnapping = () => {
@@ -27,10 +27,18 @@ export const useSnapping = () => {
 	}
 
 	return {
-		enabled: state.select((s) => s.enabled),
-		translate: state.select((s) => s.translate),
-		rotate: state.select((s) => s.rotate),
-		scale: state.select((s) => s.scale),
+		get enabled() {
+			return state.enabled
+		},
+		get translate() {
+			return state.translate
+		},
+		get rotate() {
+			return state.rotate
+		},
+		get scale() {
+			return state.scale
+		},
 		setEnabled,
 		toggleEnabled,
 		setTranslate,

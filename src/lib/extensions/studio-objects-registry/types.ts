@@ -1,4 +1,5 @@
 import type { Object3D } from 'three'
+import type { Set } from 'svelte/reactivity'
 
 export const studioObjectsRegistryScope = 'studio-objects-registry'
 

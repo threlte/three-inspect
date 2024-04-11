@@ -2,12 +2,11 @@
 	import { useThrelte } from '@threlte/core'
 	import { AutoValue, Folder } from 'svelte-tweakpane-ui'
 	import type { Object3D } from 'three'
-	import { useObjectSelection } from '../object-selection/useObjectSelection'
+	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
 	import { useTransactions } from '../transactions/useTransactions'
 	import { defaultBindings, type Attribute, type Read } from './bindings'
 
 	const { selectedObjects } = useObjectSelection()
-	const { invalidate } = useThrelte()
 
 	const { commit } = useTransactions()
 

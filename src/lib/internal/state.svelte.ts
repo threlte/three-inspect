@@ -48,40 +48,39 @@ export const createState = () => {
 
 		persistedStatePaths[scope] = persistedPaths
 
-		// for (const path of persistedPaths) {
-		// 	const scopedKey = scopeId(scope, path)
-		// 	const stringValue = localStorage[scopedKey] as string | undefined
-		// 	if (stringValue) {
-		// 		const parsedValue = JSON.parse(stringValue) as unknown
-		// 		const pathParts = path.split('.')
-		// 		const lastPart = pathParts.pop()
-		// 		if (!lastPart) {
-		// 			throw new Error(`Path "${path}" is not valid`)
-		// 		}
-		// 		let value: unknown = extensionState
-		// 		for (const pathPart of pathParts) {
-		// 			if (!isObject(value)) {
-		// 				throw new Error(`Path "${path}" is not valid`)
-		// 			}
-		// 			value = value[pathPart]
-		// 		}
-		// 		if (!isObject(value)) {
-		// 			throw new Error(`Path "${path}" is not valid`)
-		// 		}
-		// 		value[lastPart] = parsedValue
-		// 	}
-		// }
+		for (const path of persistedPaths) {
+			const scopedKey = scopeId(scope, path)
+			const stringValue = localStorage[scopedKey] as string | undefined
+			if (stringValue) {
+				const parsedValue = JSON.parse(stringValue) as unknown
+				const pathParts = path.split('.')
+				const lastPart = pathParts.pop()
+				if (!lastPart) {
+					throw new Error(`Path "${path}" is not valid`)
+				}
+				let value: unknown = extensionState
+				for (const pathPart of pathParts) {
+					if (!isObject(value)) {
+						throw new Error(`Path "${path}" is not valid`)
+					}
+					value = value[pathPart]
+				}
+				if (!isObject(value)) {
+					throw new Error(`Path "${path}" is not valid`)
+				}
+				value[lastPart] = parsedValue
+			}
+		}
 
 		state[scope] = extensionState
 		return state[scope] as T
 	}
 
-	const getScopedState = <T extends Record<string, unknown>>(scope: string): { value: T } => {
-		return {
-			get value() {
-				return state[scope] as T
-			},
-		}
+	const getScopedState = <T extends Record<string, unknown>, NonPartial extends boolean = false>(
+		scope: string,
+	) => {
+		const scopedState = $derived(state[scope] ?? {})
+		return scopedState as NonPartial extends true ? T : Partial<T>
 	}
 
 	const removeScopedState = (scope: string): void => {
@@ -93,7 +92,7 @@ export const createState = () => {
 
 	const persistState = (scope?: string) => {
 		for (const [currentScope, paths] of Object.entries(persistedStatePaths)) {
-			if (scope !== undefined && currentScope !== scope) continue
+			if (scope && currentScope !== scope) continue
 			const state = getScopedState(currentScope)
 			for (const path of paths) {
 				const scopedKey = scopeId(currentScope, path)

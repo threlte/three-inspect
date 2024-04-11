@@ -1,40 +1,39 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte'
-	import { useStudio } from '../../internal/extensions'
-	import { type SnappingState, type SnappingActions, snappingScope } from './types'
-	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
-	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
-	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
-	import DropDownPane from '../../components/DropDownPane/DropDownPane.svelte'
 	import { Slider } from 'svelte-tweakpane-ui'
+	import DropDownPane from '../../components/DropDownPane/DropDownPane.svelte'
+	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
+	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
+	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
+	import { useStudio } from '../../internal/extensions'
+	import { snappingScope, type SnappingActions, type SnappingState } from './types'
 
-	const { addExtension, removeExtension } = useStudio()
+	const { useExtension } = useStudio()
 
-	const { state, run } = addExtension<SnappingState, SnappingActions>({
+	const { state, run } = useExtension<SnappingState, SnappingActions>({
 		scope: snappingScope,
 		state({ persist }) {
 			return {
-				enabled: true,
-				translate: 0.1,
-				rotate: 15,
-				scale: 0.1,
+				enabled: persist(true),
+				translate: persist(0.1),
+				rotate: persist(15),
+				scale: persist(0.1),
 			}
 		},
 		actions: {
 			toggleEnabled({ state }) {
-				state.value.enabled = !state.value.enabled
+				state.enabled = !state.enabled
 			},
 			setEnabled({ state }, enabled) {
-				state.value.enabled = enabled
+				state.enabled = enabled
 			},
 			setRotate({ state }, rotate) {
-				state.value.rotate = rotate
+				state.rotate = rotate
 			},
 			setScale({ state }, scale) {
-				state.value.scale = scale
+				state.scale = scale
 			},
 			setTranslate({ state }, translate) {
-				state.value.translate = translate
+				state.translate = translate
 			},
 		},
 		keyMap() {
@@ -43,21 +42,12 @@
 			}
 		},
 	})
-
-	onDestroy(() => {
-		removeExtension(snappingScope)
-	})
-
-	// const enabled = state.select((s) => s.enabled)
-	// const translate = state.select((s) => s.translate)
-	// const rotate = state.select((s) => s.rotate)
-	// const scale = state.select((s) => s.scale)
 </script>
 
 <ToolbarItem>
 	<HorizontalButtonGroup>
 		<ToolbarButton
-			active={state.value.enabled}
+			active={state.enabled}
 			icon="mdiMagnet"
 			label="Snapping"
 			tooltip="Snapping (M)"
@@ -69,7 +59,7 @@
 			<Slider
 				label="Move"
 				min={0}
-				value={state.value.translate}
+				value={state.translate}
 				on:change={(e) => {
 					run('setTranslate', e.detail.value)
 				}}
@@ -77,7 +67,7 @@
 			<Slider
 				label="Rotate"
 				min={0}
-				value={state.value.rotate}
+				value={state.rotate}
 				format={(v) => `${v}°`}
 				on:change={(e) => {
 					run('setRotate', e.detail.value)
@@ -86,7 +76,7 @@
 			<Slider
 				label="Scale"
 				min={0}
-				value={state.value.scale}
+				value={state.scale}
 				on:change={(e) => {
 					run('setScale', e.detail.value)
 				}}

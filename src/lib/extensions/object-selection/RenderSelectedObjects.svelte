@@ -12,13 +12,13 @@
 		type OrthographicCamera,
 		type PerspectiveCamera,
 	} from 'three'
-	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 	import fragmentShader from './_fs.glsl?raw'
 	import vertexShader from './_vs.glsl?raw'
-	import { useObjectSelection } from './useObjectSelection'
+	import { useObjectSelection } from './useObjectSelection.svelte'
 
 	const { invalidate } = useThrelte()
-	const { selectedObjects } = useObjectSelection()
+	const objectSelection = useObjectSelection()
 	const { addObject, removeObject } = useStudioObjectsRegistry()
 
 	const { size, renderer, autoRenderTask, scene, camera } = useThrelte()
@@ -68,13 +68,12 @@
 		() => {
 			// TODO: Make perf optimizations in terms of not rendering when no objects
 			// are selected
-
 			const originalMaterials = new Map()
 			const originalRenderTarget = renderer.getRenderTarget()
 			const currentCameraMask = camera.current.layers.mask
 			camera.current.layers.set(31)
 			const currentSceneBackground = scene.background
-			$selectedObjects.forEach((object, i) => {
+			objectSelection.selectedObjects.forEach((object, i) => {
 				object.userData.originalLayer = object.layers.mask
 				object.layers.enable(31)
 				object.userData.originalVisible = object.visible
@@ -94,7 +93,7 @@
 			camera.current.layers.mask = currentCameraMask
 			renderer.setClearAlpha(currentClearAlpha)
 			scene.background = currentSceneBackground
-			$selectedObjects.forEach((object) => {
+			objectSelection.selectedObjects.forEach((object) => {
 				object.layers.mask = object.userData.originalLayer
 				object.visible = object.userData.originalVisible
 				if (hasMaterial(object)) {

@@ -1,4 +1,4 @@
-import { useStudio } from '../../internal/extensions.svelte'
+import { useStudio } from '../../internal/extensions'
 import { spaceScope, type SpaceActions, type SpaceState } from './types'
 
 export const useSpace = () => {
@@ -14,8 +14,12 @@ export const useSpace = () => {
 		run('toggleSpace')
 	}
 
+	const space = $derived(state.space)
+
 	return {
-		space: state.select((s) => s.space),
+		get space() {
+			return space
+		},
 		setSpace,
 		toggleSpace,
 	}

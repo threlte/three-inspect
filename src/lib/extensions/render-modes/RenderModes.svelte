@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { useThrelte, watch } from '@threlte/core'
+	import { useTask, useThrelte } from '@threlte/core'
 	import { onDestroy } from 'svelte'
 	import {
 		BackSide,
@@ -25,22 +25,35 @@
 		return 'onBeforeRender' in material
 	}
 
-	const { addExtension, removeExtension } = useStudio()
-	const { scene, invalidate, renderer } = useThrelte()
+	const { useExtension } = useStudio()
+	const { scene, invalidate, renderer, autoRenderTask } = useThrelte()
 
-	const { state, run } = addExtension<RenderModesState, RenderModesActions>({
+	useTask(
+		() => {
+			console.log('RenderModes extension initialized')
+		},
+		{
+			after: autoRenderTask,
+			autoInvalidate: false,
+		},
+	)
+
+	const { state, run } = useExtension<RenderModesState, RenderModesActions>({
 		scope: renderModesScope,
 		state: ({ persist }) => ({
 			renderMode: persist<RenderModesState['renderMode']>('rendered'),
 		}),
 		actions: {
-			cycleRenderMode({ select }) {
-				select((s) => s.renderMode).update((mode) => {
-					return mode === 'wireframe' ? 'solid' : mode === 'solid' ? 'rendered' : 'wireframe'
-				})
+			cycleRenderMode({ state }) {
+				state.renderMode =
+					state.renderMode === 'wireframe'
+						? 'solid'
+						: state.renderMode === 'solid'
+							? 'rendered'
+							: 'wireframe'
 			},
-			setRenderMode({ select }, mode) {
-				select((s) => s.renderMode).set(mode)
+			setRenderMode({ state }, mode) {
+				state.renderMode = mode
 			},
 		},
 		keyMap() {
@@ -81,10 +94,8 @@
 		renderer.renderBufferDirect = ogRenderBufferDirect
 	})
 
-	const renderMode = state.select((s) => s.renderMode)
-
-	watch(renderMode, (renderMode) => {
-		switch (renderMode) {
+	$effect(() => {
+		switch (state.renderMode) {
 			case 'rendered': {
 				scene.overrideMaterial = null
 				break
@@ -106,10 +117,6 @@
 		}
 		invalidate()
 	})
-
-	onDestroy(() => {
-		removeExtension(renderModesScope)
-	})
 </script>
 
 <ToolbarItem position="left">
@@ -120,7 +127,7 @@
 			on:click={() => {
 				run('setRenderMode', 'wireframe')
 			}}
-			active={$renderMode === 'wireframe'}
+			active={state.renderMode === 'wireframe'}
 			tooltip="Wireframe (V)"
 		/>
 		<ToolbarButton
@@ -129,7 +136,7 @@
 			on:click={() => {
 				run('setRenderMode', 'solid')
 			}}
-			active={$renderMode === 'solid'}
+			active={state.renderMode === 'solid'}
 			tooltip="Solid (V)"
 		/>
 		<ToolbarButton
@@ -138,7 +145,7 @@
 			on:click={() => {
 				run('setRenderMode', 'rendered')
 			}}
-			active={$renderMode === 'rendered'}
+			active={state.renderMode === 'rendered'}
 			tooltip="Rendered (V)"
 		/>
 	</HorizontalButtonGroup>

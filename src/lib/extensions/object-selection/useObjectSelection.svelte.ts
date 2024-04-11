@@ -1,4 +1,3 @@
-import { derived } from 'svelte/store'
 import type { Object3D } from 'three'
 import { useStudio } from '../../internal/extensions'
 import {
@@ -11,13 +10,6 @@ export const useObjectSelection = () => {
 	const { getExtension } = useStudio()
 	const { state, run } = getExtension<ObjectSelectionState, ObjectSelectionActions>(
 		objectSelectionScope,
-	)
-
-	const selectedObjects = derived(
-		state.select((s) => s.selectedObjects),
-		(objects) => {
-			return (objects as Object3D[] | undefined) ?? []
-		},
 	)
 
 	const selectObjects = (objects: Object3D[]) => {
@@ -40,8 +32,12 @@ export const useObjectSelection = () => {
 		run('toggleSelection', objects)
 	}
 
+	const selectedObjects = $derived(state.selectedObjects ?? [])
+
 	return {
-		selectedObjects,
+		get selectedObjects() {
+			return selectedObjects
+		},
 		selectObjects,
 		clearSelection,
 		addToSelection,

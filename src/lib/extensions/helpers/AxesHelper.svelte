@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as THREE from 'three'
-	import { T, forwardEventHandlers, type Events } from '@threlte/core'
+	import { T, type Events } from '@threlte/core'
 	import { Line2 } from 'three/examples/jsm/lines/Line2.js'
 	import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'
 	import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
@@ -49,13 +49,10 @@
 		})
 		lineGeometry.setColors(colorArray)
 	}
-
-	const component = forwardEventHandlers()
 </script>
 
 <T
 	is={line2}
-	bind:this={$component}
 	userData={{ ignoreOverrideMaterial: true }}
 >
 	<T is={lineGeometry} />

@@ -33,33 +33,29 @@
 </script>
 
 <script lang="ts">
-	import { useTask, useThrelte, watch } from '@threlte/core'
-	import { createEventDispatcher, onMount, tick } from 'svelte'
+	import { useTask, useThrelte } from '@threlte/core'
+	import { onMount, tick } from 'svelte'
 	import { useStudio } from '../../internal/extensions'
-	import {
-		transformControlsScope,
-		type TransformControlsActions,
-		type TransformControlsState,
-	} from '../transform-controls/types'
 	import {
 		objectSelectionScope,
 		type ObjectSelectionActions,
 		type ObjectSelectionState,
 	} from '../object-selection/types'
-	import { derived } from 'svelte/store'
+	import {
+		transformControlsScope,
+		type TransformControlsActions,
+		type TransformControlsState,
+	} from '../transform-controls/types'
 
-	export let initialPosition: Vector3
-	export let initialTarget: Vector3
+	interface Props {
+		camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
+		initialPosition: Vector3
+		initialTarget: Vector3
+		cc: (cc: CameraControls) => void
+		rest: (rest: { position: Vector3; target: Vector3 }) => void
+	}
 
-	const dispatch = createEventDispatcher<{
-		cc: CameraControls
-		rest: {
-			position: Vector3
-			target: Vector3
-		}
-	}>()
-
-	export let camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
+	const { camera, initialPosition, initialTarget, cc, rest }: Props = $props()
 
 	const { renderer, invalidate } = useThrelte()
 
@@ -70,7 +66,7 @@
 
 	onMount(async () => {
 		await tick()
-		dispatch('cc', cameraControls)
+		cc(cameraControls)
 		cameraControls.setPosition(...initialPosition.toArray(), false)
 		cameraControls.setTarget(...initialTarget.toArray(), false)
 	})
@@ -89,7 +85,7 @@
 		const target = new Vector3()
 		cameraControls.getPosition(position)
 		cameraControls.getTarget(target)
-		dispatch('rest', {
+		rest({
 			position,
 			target,
 		})
@@ -116,15 +112,13 @@
 		ObjectSelectionActions
 	>(objectSelectionScope)
 
-	const transformControlsInUse = transformControlsState.select((s) => s.inUse)
-	const objectSelectionInUse = objectSelectionState.select((s) => s.inUse)
+	const transformControlsInUse = $derived(transformControlsState.inUse)
+	const objectSelectionInUse = $derived(objectSelectionState.inUse)
 
-	const anyInUse = derived([transformControlsInUse, objectSelectionInUse], ([a, b]) => {
-		return a || b
-	})
+	const anyInUse = $derived(transformControlsInUse || objectSelectionInUse)
 
 	// disable camera controls when transform controls are in use
-	watch(anyInUse, (inUse) => {
-		cameraControls.enabled = !inUse
+	$effect(() => {
+		cameraControls.enabled = !anyInUse
 	})
 </script>

@@ -4,10 +4,10 @@
 	import { Object3D } from 'three'
 	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 	import { useStudio } from '../../internal/extensions'
-	import { useObjectSelection } from '../object-selection/useObjectSelection'
-	import { useSnapping } from '../snapping/useSnapping'
-	import { useSpace } from '../space/useSpace'
-	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
+	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
+	import { useSnapping } from '../snapping/useSnapping.svelte'
+	import { useSpace } from '../space/useSpace.svelte'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 	import { useTransactions } from '../transactions/useTransactions'
 	import {
 		transformControlsScope,
@@ -16,17 +16,16 @@
 	} from './types'
 
 	const { getExtension } = useStudio()
-	const { run, state } = getExtension<TransformControlsState, TransformControlsActions>(
+	const { run, state } = getExtension<TransformControlsState, TransformControlsActions, true>(
 		transformControlsScope,
 	)
 
-	const { selectedObjects } = useObjectSelection()
-	const { space } = useSpace()
-	const { enabled: snappingEnabled, scale, rotate, translate } = useSnapping()
+	const objectSelection = useObjectSelection()
+	const space = useSpace()
+	const snapping = useSnapping()
+	const studioObjectsRegistry = useStudioObjectsRegistry()
 
-	const { addObject, removeObject } = useStudioObjectsRegistry()
-
-	const mode = state.select((s) => s.mode)
+	const mode = $derived(state.mode)
 
 	const isObject3D = (object: any): object is Object3D => {
 		return 'isObject3D' in object
@@ -41,11 +40,11 @@
 			node.userData.ignoreOverrideMaterial = true
 		})
 		objects.forEach((object) => {
-			addObject(object)
+			studioObjectsRegistry.addObject(object)
 		})
 		cleanup(() => {
 			for (const object of objects) {
-				removeObject(object)
+				studioObjectsRegistry.removeObject(object)
 			}
 		})
 	}
@@ -58,19 +57,19 @@
 
 	let initialValue: any
 	const onMouseDown = () => {
-		$selectedObjects[0]
-		if ($mode === 'translate') {
-			initialValue = $selectedObjects[0].position.clone()
+		objectSelection.selectedObjects[0]
+		if (mode === 'translate') {
+			initialValue = objectSelection.selectedObjects[0].position.clone()
 		}
 	}
 
 	const onMouseUp = () => {
 		if (!initialValue) return
-		if ($mode === 'translate') {
-			const value = $selectedObjects[0].position.clone()
-			$selectedObjects[0].position.copy(initialValue)
+		if (mode === 'translate') {
+			const value = objectSelection.selectedObjects[0].position.clone()
+			objectSelection.selectedObjects[0].position.copy(initialValue)
 			commit({
-				object: $selectedObjects[0],
+				object: objectSelection.selectedObjects[0],
 				propertyPath: 'position',
 				read(root) {
 					return root.position.clone()
@@ -89,12 +88,12 @@
 </script>
 
 <TransformControls
-	object={$selectedObjects[0]}
-	mode={$mode}
-	space={$space}
-	translationSnap={$snappingEnabled ? $translate : null}
-	rotationSnap={$snappingEnabled ? $rotate * DEG2RAD : null}
-	scaleSnap={$snappingEnabled ? $scale : null}
+	object={objectSelection.selectedObjects[0]}
+	{mode}
+	space={space.space}
+	translationSnap={snapping.enabled ? snapping.translate ?? 0 : null}
+	rotationSnap={snapping.enabled ? (snapping.rotate ?? 0) * DEG2RAD : null}
+	scaleSnap={snapping.enabled ? snapping.scale ?? 0 : null}
 	on:mouseDown={() => {
 		run('setInUse', true)
 		onMouseDown()

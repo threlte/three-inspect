@@ -1,22 +1,21 @@
 <script lang="ts">
 	import { T } from '@threlte/core'
 	import { Gizmo, Portal } from '@threlte/extras'
-	import { onDestroy } from 'svelte'
 	import { Light, Object3D, type Camera, type Group } from 'three'
 	import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js'
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
 	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
 	import { useStudio } from '../../internal/extensions'
-	import { useObjectSelection } from '../object-selection/useObjectSelection'
-	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
+	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 	import AxesHelper from './AxesHelper.svelte'
 	import GroupHelper from './GroupHelper.svelte'
 	import { helpersScope, type HelpersActions, type HelpersState } from './types'
 
-	const { addExtension, removeExtension } = useStudio()
+	const { useExtension } = useStudio()
 
-	const { state, run } = addExtension<HelpersState, HelpersActions>({
+	const { state, run } = useExtension<HelpersState, HelpersActions>({
 		scope: helpersScope,
 		state({ persist }) {
 			return {
@@ -24,22 +23,16 @@
 			}
 		},
 		actions: {
-			toggleEnabled({ select }) {
-				select((s) => s.enabled).update((enabled) => !enabled)
+			toggleEnabled({ state }) {
+				state.enabled = !state.enabled
 			},
-			setEnabled({ select }, enabled) {
-				select((s) => s.enabled).set(enabled)
+			setEnabled({ state }, enabled) {
+				state.enabled = enabled
 			},
 		},
 	})
 
-	onDestroy(() => {
-		removeExtension(helpersScope)
-	})
-
-	const enabled = state.select((s) => s.enabled)
-
-	const { selectedObjects } = useObjectSelection()
+	const objectSelection = useObjectSelection()
 
 	const { addObject, removeObject } = useStudioObjectsRegistry()
 
@@ -69,7 +62,7 @@
 			on:click={() => {
 				run('toggleEnabled')
 			}}
-			active={$enabled}
+			active={state.enabled}
 			label="Helpers"
 			icon="mdiFitToScreen"
 			tooltip="Helpers"
@@ -77,7 +70,7 @@
 	</HorizontalButtonGroup>
 </ToolbarItem>
 
-{#if $enabled}
+{#if state.enabled}
 	<Gizmo
 		paddingX={6}
 		paddingY={6}
@@ -92,7 +85,7 @@
 		on:create={onCreate}
 	/>
 
-	{#each $selectedObjects as object (object.uuid)}
+	{#each objectSelection.selectedObjects as object (object.uuid)}
 		<Portal {object}>
 			<AxesHelper
 				length={0.5}

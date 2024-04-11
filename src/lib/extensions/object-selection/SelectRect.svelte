@@ -5,23 +5,24 @@
 	import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox.js'
 	import { SelectionHelper } from 'three/examples/jsm/interactive/SelectionHelper.js'
 	import { useStudio } from '../../internal/extensions'
-	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 	import {
 		objectSelectionScope,
 		type ObjectSelectionActions,
 		type ObjectSelectionState,
 	} from './types'
+	import { useObjectSelection } from './useObjectSelection.svelte'
 
 	const { camera, scene, renderer } = useThrelte()
 
 	const { getExtension } = useStudio()
-
+	const { addToSelection, removeFromSelection, selectObjects } = useObjectSelection()
 	const { run } = getExtension<ObjectSelectionState, ObjectSelectionActions>(objectSelectionScope)
 
 	const selectionBox = new SelectionBox(camera.current, scene)
 	const helper = new SelectionHelper(renderer, 'selectBox')
 
-	const { studioObjects } = useStudioObjectsRegistry()
+	const studioObjectsRegistry = useStudioObjectsRegistry()
 
 	watch(camera, (camera) => {
 		selectionBox.camera = camera
@@ -29,7 +30,7 @@
 
 	const filter = (objects: Object3D[]): Object3D[] => {
 		let objs = objects.filter((object) => {
-			return !$studioObjects.has(object)
+			return !studioObjectsRegistry.objects.has(object)
 		})
 		return objs
 	}
@@ -65,11 +66,11 @@
 		)
 		const allSelected = filter(selectionBox.select())
 		if (selectionMode === 'add') {
-			run('addToSelection', allSelected)
+			addToSelection(allSelected)
 		} else if (selectionMode === 'remove') {
-			run('removeFromSelection', allSelected)
+			removeFromSelection(allSelected)
 		} else {
-			run('selectObjects', allSelected)
+			selectObjects(allSelected)
 		}
 		lastEvent = event
 	}
@@ -84,11 +85,11 @@
 
 		const allSelected = filter(selectionBox.select())
 		if (selectionMode === 'add') {
-			run('addToSelection', allSelected)
+			addToSelection(allSelected)
 		} else if (selectionMode === 'remove') {
-			run('removeFromSelection', allSelected)
+			removeFromSelection(allSelected)
 		} else {
-			run('selectObjects', allSelected)
+			selectObjects(allSelected)
 		}
 		run('setInUse', false)
 	}

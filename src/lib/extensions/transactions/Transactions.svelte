@@ -5,7 +5,7 @@
 	import { TransactionQueue } from './TransactionQueue'
 	import { transactionsScope, type TransactionsActions, type TransactionsState } from './types'
 
-	const { addExtension, removeExtension } = useStudio()
+	const { useExtension: addExtension, removeExtension } = useStudio()
 	const { invalidate } = useThrelte()
 
 	const queue = new TransactionQueue()
