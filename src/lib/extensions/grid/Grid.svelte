@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { Grid } from '@threlte/extras'
-	import { onDestroy } from 'svelte'
 	import {
 		Color,
 		RadioGrid,
@@ -14,6 +12,7 @@
 	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
 	import { useStudio } from '../../internal/extensions'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
+	import GridImpl from './Impl/Grid/GridImpl.svelte'
 	import { gridScope, type GridActions, type GridState } from './types'
 
 	const { useExtension } = useStudio()
@@ -98,7 +97,7 @@
 </ToolbarItem>
 
 {#if state.enabled}
-	<Grid
+	<GridImpl
 		on:create={({ ref, cleanup }) => {
 			studioObjectsRegistry.addObject(ref)
 			cleanup(() => {

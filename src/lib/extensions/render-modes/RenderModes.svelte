@@ -26,17 +26,7 @@
 	}
 
 	const { useExtension } = useStudio()
-	const { scene, invalidate, renderer, autoRenderTask } = useThrelte()
-
-	useTask(
-		() => {
-			console.log('RenderModes extension initialized')
-		},
-		{
-			after: autoRenderTask,
-			autoInvalidate: false,
-		},
-	)
+	const { scene, invalidate, renderer } = useThrelte()
 
 	const { state, run } = useExtension<RenderModesState, RenderModesActions>({
 		scope: renderModesScope,

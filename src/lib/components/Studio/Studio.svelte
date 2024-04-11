@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { useTask, useThrelte } from '@threlte/core'
 	import EditorCamera from '../../extensions/editor-camera/EditorCamera.svelte'
 	import Grid from '../../extensions/grid/Grid.svelte'
 	import Helpers from '../../extensions/helpers/Helpers.svelte'
@@ -15,6 +16,18 @@
 	import Toolbar from '../Toolbar/Toolbar.svelte'
 
 	createRootContext()
+
+	const { autoRenderTask, shouldRender } = useThrelte()
+
+	useTask(
+		() => {
+			console.log('Render')
+		},
+		{
+			after: autoRenderTask,
+			autoInvalidate: false,
+		},
+	)
 </script>
 
 <Toolbar />
