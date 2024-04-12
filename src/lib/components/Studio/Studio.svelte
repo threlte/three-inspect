@@ -10,24 +10,12 @@
 	import Snapping from '../../extensions/snapping/Snapping.svelte'
 	import Space from '../../extensions/space/Space.svelte'
 	import StudioObjectsRegistry from '../../extensions/studio-objects-registry/StudioObjectsRegistry.svelte'
-	// import Transactions from '../../extensions/transactions/Transactions.svelte'
+	import Transactions from '../../extensions/transactions/Transactions.svelte'
 	import TransformControls from '../../extensions/transform-controls/TransformControls.svelte'
 	import { createRootContext } from '../../internal/extensions'
 	import Toolbar from '../Toolbar/Toolbar.svelte'
 
 	createRootContext()
-
-	const { autoRenderTask, shouldRender } = useThrelte()
-
-	useTask(
-		() => {
-			console.log('Render')
-		},
-		{
-			after: autoRenderTask,
-			autoInvalidate: false,
-		},
-	)
 </script>
 
 <Toolbar />
@@ -43,6 +31,6 @@
 <Helpers />
 <SceneHierarchy />
 <!-- <Inspector /> -->
-<!-- <Transactions> -->
-<slot />
-<!-- </Transactions> -->
+<Transactions>
+	<slot />
+</Transactions>

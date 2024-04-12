@@ -8,7 +8,7 @@ export const useTransactions = () => {
 	const { run } = getExtension<TransactionsState, TransactionsActions>(transactionsScope)
 
 	const commit = <T, U, Q>(transaction: Transaction<T, U, Q>) => {
-		run('commit', transaction)
+		run('commit', transaction as any)
 	}
 
 	const undo = () => {
