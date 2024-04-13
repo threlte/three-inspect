@@ -1,36 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable unicorn/no-unused-properties */
 
-import type {
-	Color,
-	DirectionalLight,
-	HemisphereLight,
-	Light,
-	Material,
-	Mesh,
-	Object3D,
-	OrthographicCamera,
-	PerspectiveCamera,
-	PointLight,
-	RectAreaLight,
-	Scene,
-	SpotLight,
+import {
+	Vector3,
+	type Color,
+	type DirectionalLight,
+	type HemisphereLight,
+	type Light,
+	type Material,
+	type Mesh,
+	type Object3D,
+	type OrthographicCamera,
+	type PerspectiveCamera,
+	type PointLight,
+	type RectAreaLight,
+	type Scene,
+	type SpotLight,
 } from 'three'
-import { DEG2RAD, RAD2DEG } from 'three/src/math/MathUtils.js'
+import type { Transaction } from '../transactions/TransactionQueue'
+import { buildTransaction } from './buildTransaction'
 
 export type Attribute = (object: any) => boolean
-export type Read<T> = (object: T) => any
-export type Apply<T> = (object: T, value: any) => void
-
-export type Sync<T, U> = (value: T) => U
 
 type Property = {
+	/** The label of the property, typically corresponds to the property name, e.g. "position" */
 	label: string
-	read: Read<any>
-	apply: Apply<any>
-	sync?: Sync<any, any>
-	default: any
-	isDefault?: (value: any) => boolean
+	/** Read the value from the object and return a format that svelte-tweakpane-ui understands */
+	read: (object: any) => any
+	/** Build a transaction to be used to actually apply a new value */
+	buildTransaction: (object: any, value: any) => Transaction<any, any>
 }
 
 type Binding = {
@@ -74,76 +72,77 @@ export const defaultBindings: Bindings = [
 		properties: [
 			{
 				label: 'visible',
-				read: (object: Object3D) => object.visible,
-				apply(object: Object3D, value: boolean) {
-					object.visible = value
+				read(object) {
+					return object.visible
 				},
-				default: true,
+				buildTransaction(object, value) {
+					return {
+						object,
+						read(root) {
+							return root.visible
+						},
+						write(root, data) {
+							root.visible = data
+						},
+						value,
+						sync: {
+							attributeName: 'visible',
+							attributeValue: (value: boolean) => value,
+							parserType: 'json',
+							object,
+						},
+					}
+				},
 			},
 			{
 				label: 'position',
-				read: (object: Object3D) => ({
+				read: (object) => ({
 					x: object.position.x,
 					y: object.position.y,
 					z: object.position.z,
 				}),
-				apply(object: Object3D, value: { x: number; y: number; z: number }) {
-					object.position.set(value.x, value.y, value.z)
+				buildTransaction: (object, value) => {
+					return buildTransaction(object, 'position', new Vector3(value.x, value.y, value.z))
 				},
-				sync: (value) => [value.x, value.y, value.z],
-				default: { x: 0, y: 0, z: 0 },
 			},
-			{
-				label: 'rotation',
-				read: (object: Object3D) => ({
-					x: object.rotation.x * RAD2DEG,
-					y: object.rotation.y * RAD2DEG,
-					z: object.rotation.z * RAD2DEG,
-				}),
-				apply(object: Object3D, value: { x: number; y: number; z: number }) {
-					object.rotation.set(value.x * DEG2RAD, value.y * DEG2RAD, value.z * DEG2RAD)
-				},
-				sync: (value) => [value.x * DEG2RAD, value.y * DEG2RAD, value.z * DEG2RAD],
-				default: { x: 0, y: 0, z: 0 },
-			},
-			{
-				label: 'scale',
-				read: (object: Object3D) => ({ x: object.scale.x, y: object.scale.y, z: object.scale.z }),
-				apply(object: Object3D, value: { x: number; y: number; z: number }) {
-					object.scale.set(value.x, value.y, value.z)
-				},
-				sync: (value) => [value.x, value.y, value.z],
-				default: { x: 1, y: 1, z: 1 },
-			},
-			{
-				label: 'renderOrder',
-				read: (object: Object3D) => object.renderOrder,
-				apply(object: Object3D, value: number) {
-					object.renderOrder = value
-				},
-				default: 0,
-			},
+			// {
+			// 	label: 'scale',
+			// 	read: (object: Object3D) => ({ x: object.scale.x, y: object.scale.y, z: object.scale.z }),
+			// 	apply(object: Object3D, value: { x: number; y: number; z: number }) {
+			// 		object.scale.set(value.x, value.y, value.z)
+			// 	},
+			// 	sync: (value) => [value.x, value.y, value.z],
+			// 	default: { x: 1, y: 1, z: 1 },
+			// },
+			// {
+			// 	label: 'renderOrder',
+			// 	read: (object: Object3D) => object.renderOrder,
+			// 	apply(object: Object3D, value: number) {
+			// 		object.renderOrder = value
+			// 	},
+			// 	default: 0,
+			// },
 		],
 	},
-	{
-		attributes: [
-			attributes.mesh.isMesh,
-			attributes.mesh.material.hasMaterial,
-			attributes.mesh.material.hasColor,
-		],
-		folder: {
-			label: 'Material',
-			open: false,
-		},
-		properties: [
-			{
-				label: 'color',
-				read: (object: { material: Material }) => `#${object.material.color.getHexString()}`,
-				apply(object: { material: Material }, value: number) {
-					object.material.color.set(value)
-				},
-				default: '#ffffff',
-			},
-		],
-	},
+	// {
+	// 	attributes: [
+	// 		attributes.mesh.isMesh,
+	// 		attributes.mesh.material.hasMaterial,
+	// 		attributes.mesh.material.hasColor,
+	// 	],
+	// 	folder: {
+	// 		label: 'Material',
+	// 		open: false,
+	// 	},
+	// 	properties: [
+	// 		{
+	// 			label: 'color',
+	// 			read: (object: { material: Material }) => `#${object.material.color.getHexString()}`,
+	// 			apply(object: { material: Material }, value: number) {
+	// 				object.material.color.set(value)
+	// 			},
+	// 			default: '#ffffff',
+	// 		},
+	// 	],
+	// },
 ]

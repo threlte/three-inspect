@@ -1,18 +1,24 @@
 /* eslint-disable max-classes-per-file */
 
-import { SyncQueue } from './SyncQueue'
+import { Mesh } from 'three'
+import { SyncQueue, type SyncRequest } from './SyncQueue'
 import { getThrelteStudioUserData } from './vite-plugin/runtimeUtils'
+import type { ParserType } from './vite-plugin/utils/parsers'
 
-export type Transaction<T, U, Q> = {
+export type Transaction<T, U> = {
+	/** The object to modify */
 	object: T
-	propertyPath: string
+	/** The value of the transaction */
 	value: U
+	/** Read from the object into a serializable format */
 	read: (root: T) => U
+	/** Write a value on the object from the format resolved by the read property */
 	write: (root: T, data: U) => void
-	sync?: (value: U) => Q
+	/** The sync configuration */
+	sync?: SyncRequest
 }
 
-type TransactionQueueItem = Transaction<any, any, any> & {
+type TransactionQueueItem = Transaction<any, any> & {
 	historicValue: any
 }
 
@@ -78,12 +84,7 @@ export class TransactionQueue {
 		public onRedo?: () => void,
 	) {}
 
-	commit<T, U, Q>(transaction: Transaction<T, U, Q>) {
-		const userData = getThrelteStudioUserData(transaction.object)
-		if (!userData) {
-			throw new Error('Cannot commit transaction without inspectorOptions')
-		}
-
+	commit<T, U>(transaction: Transaction<T, U>) {
 		// const { target, key } = resolvePropertyPath(transaction.object, transaction.propertyPath)
 		const transactionQueueItem: TransactionQueueItem = {
 			...transaction,
@@ -94,40 +95,40 @@ export class TransactionQueue {
 		this.undoneQueue = []
 		this.onCommit?.()
 
-		this.syncQueue.add({
-			attributeName: transaction.propertyPath,
-			attributeValue: transaction.sync ? transaction.sync(transaction.value) : transaction.value,
-			componentIndex: userData.index,
-			id: userData.moduleId,
-			moduleId: userData.moduleId,
-			parserType: 'json',
-			signature: userData.signature,
-		})
+		// this.syncQueue.add({
+		// 	attributeName: transaction.propertyPath,
+		// 	attributeValue: transaction.sync ? transaction.sync(transaction.value) : transaction.value,
+		// 	componentIndex: userData.index,
+		// 	id: userData.moduleId,
+		// 	moduleId: userData.moduleId,
+		// 	parserType: 'json',
+		// 	signature: userData.signature,
+		// })
 	}
 
 	undo() {
 		const transaction = this.commitedQueue.pop()
 		if (!transaction) return
 
-		const userData = getThrelteStudioUserData(transaction.object)
-		if (!userData) {
-			throw new Error('Cannot commit transaction without inspectorOptions')
-		}
+		// const userData = getThrelteStudioUserData(transaction.object)
+		// if (!userData) {
+		// 	throw new Error('Cannot commit transaction without inspectorOptions')
+		// }
 
 		transaction.write(transaction.object, transaction.historicValue)
 		this.undoneQueue.push(transaction)
 
-		this.syncQueue.add({
-			attributeName: transaction.propertyPath,
-			attributeValue: transaction.sync
-				? transaction.sync(transaction.historicValue)
-				: transaction.historicValue,
-			componentIndex: 0,
-			id: userData.moduleId,
-			moduleId: userData.moduleId,
-			parserType: 'json',
-			signature: userData.signature,
-		})
+		// this.syncQueue.add({
+		// 	attributeName: transaction.propertyPath,
+		// 	attributeValue: transaction.sync
+		// 		? transaction.sync(transaction.historicValue)
+		// 		: transaction.historicValue,
+		// 	componentIndex: 0,
+		// 	id: userData.moduleId,
+		// 	moduleId: userData.moduleId,
+		// 	parserType: 'json',
+		// 	signature: userData.signature,
+		// })
 
 		this.onUndo?.()
 	}
@@ -136,23 +137,23 @@ export class TransactionQueue {
 		const transaction = this.undoneQueue.pop()
 		if (!transaction) return
 
-		const userData = getThrelteStudioUserData(transaction.object)
-		if (!userData) {
-			throw new Error('Cannot commit transaction without inspectorOptions')
-		}
+		// const userData = getThrelteStudioUserData(transaction.object)
+		// if (!userData) {
+		// 	throw new Error('Cannot commit transaction without inspectorOptions')
+		// }
 
 		transaction.write(transaction.object, transaction.value)
 		this.commitedQueue.push(transaction)
 
-		this.syncQueue.add({
-			attributeName: transaction.propertyPath,
-			attributeValue: transaction.sync ? transaction.sync(transaction.value) : transaction.value,
-			componentIndex: 0,
-			id: userData.moduleId,
-			moduleId: userData.moduleId,
-			parserType: 'json',
-			signature: userData.signature,
-		})
+		// this.syncQueue.add({
+		// 	attributeName: transaction.propertyPath,
+		// 	attributeValue: transaction.sync ? transaction.sync(transaction.value) : transaction.value,
+		// 	componentIndex: 0,
+		// 	id: userData.moduleId,
+		// 	moduleId: userData.moduleId,
+		// 	parserType: 'json',
+		// 	signature: userData.signature,
+		// })
 
 		this.onRedo?.()
 	}

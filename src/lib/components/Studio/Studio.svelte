@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { useTask, useThrelte } from '@threlte/core'
 	import EditorCamera from '../../extensions/editor-camera/EditorCamera.svelte'
 	import Grid from '../../extensions/grid/Grid.svelte'
 	import Helpers from '../../extensions/helpers/Helpers.svelte'
-	// import Inspector from '../../extensions/inspector/Inspector.svelte'
+	import Inspector from '../../extensions/inspector/Inspector.svelte'
 	import ObjectSelection from '../../extensions/object-selection/ObjectSelection.svelte'
 	import RenderModes from '../../extensions/render-modes/RenderModes.svelte'
 	import SceneHierarchy from '../../extensions/scene-hierarchy/SceneHierarchy.svelte'
@@ -30,7 +29,7 @@
 <Grid />
 <Helpers />
 <SceneHierarchy />
-<!-- <Inspector /> -->
+<Inspector />
 <Transactions>
 	<slot />
 </Transactions>
