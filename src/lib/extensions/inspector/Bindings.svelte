@@ -4,6 +4,7 @@
 	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
 	import { defaultBindings, type Attribute } from './bindings'
 	import { useTransactions } from '../transactions/useTransactions'
+	import Object3DBinding from './bindings/Object3D.svelte'
 
 	const objectSelection = useObjectSelection()
 
@@ -30,9 +31,11 @@
 
 {#if objectSelection.selectedObjects.length}
 	{#key keyFromObjects(objectSelection.selectedObjects)}
-		{#each defaultBindings as binding}
-			{#if appliesToAllObjects(binding.attributes)}
-				<!-- {#if binding.folder}
+		<Object3DBinding objects={objectSelection.selectedObjects} />
+
+		<!-- {#each defaultBindings as binding}
+			{#if appliesToAllObjects(binding.attributes)} -->
+		<!-- {#if binding.folder}
 					<Folder
 						title={binding.folder.label}
 						expanded={binding.folder.open}
@@ -57,30 +60,31 @@
 						{/each}
 					</Folder>
 				{:else} -->
-				{#each binding.properties as property}
+		<!-- {#each binding.properties as property}
 					<AutoValue
 						value={readFromFirst(property.read)}
 						label={property.label}
 						on:change={(event) => {
 							objectSelection.selectedObjects.forEach((object) => {
+								console.log('object', object)
 								const transaction = property.buildTransaction(object, event.detail.value)
 								commit(transaction)
 							})
-							// $selectedObjects.forEach((object) => {
-							// 	commit({
-							// 		object,
-							// 		propertyPath: property.label,
-							// 		value: event.detail.value,
-							// 		read: property.read,
-							// 		write: property.apply,
-							// 		sync: property.sync,
-							// 	})
-							// })
+							$selectedObjects.forEach((object) => {
+								commit({
+									object,
+									propertyPath: property.label,
+									value: event.detail.value,
+									read: property.read,
+									write: property.apply,
+									sync: property.sync,
+								})
+							})
 						}}
-					/>
-				{/each}
+		 			/>
+		 		{/each}
 			{/if}
-			<!-- {/if} -->
-		{/each}
+		 	{/if}
+		{/each} -->
 	{/key}
 {/if}

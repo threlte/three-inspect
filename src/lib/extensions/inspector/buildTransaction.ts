@@ -20,12 +20,12 @@ export const buildTransaction = (object: any, propertyPath: string, value: any) 
 			}
 			target[key] = data
 		},
-		sync: {
-			attributeName: propertyPath,
-			attributeValue: value,
-			parserType: 'json',
-			object,
-		},
+		// sync: {
+		// 	attributeName: propertyPath,
+		// 	attributeValue: value,
+		// 	parserType: 'json',
+		// 	object,
+		// },
 	}
 
 	return transaction

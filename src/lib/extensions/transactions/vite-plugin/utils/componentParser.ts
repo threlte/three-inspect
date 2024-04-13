@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto'
 import { parse } from 'svelte/compiler'
 import { parsers, type Parser } from './parsers'
 import { walk } from 'estree-walker'
+import type { StudioProps } from '../types'
 
 export const componentNeedsTransform = (code: string): boolean => {
 	return code.includes('<T.') || code.includes('<T ') || code.includes('<T\n')
@@ -369,8 +370,8 @@ export const addStudioRuntimeProps = (markup: MagicString, id: string): void => 
 	walk(ast.html as Node, {
 		enter(node) {
 			if (!isTComponentNode(node)) return
-			const prop = { moduleId: id, index, signature }
-			upsertAttribute(markup, node, 'threlteStudio', prop, parsers.json, 'last')
+			const props: StudioProps = { moduleId: id, index, signature }
+			upsertAttribute(markup, node, 'threlteStudio', props, parsers.json, 'last')
 			index += 1
 		},
 	})
