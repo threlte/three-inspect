@@ -8,7 +8,6 @@ import {
 	upsertAttribute,
 } from '../componentParser'
 import { assembleComponent, disassembleComponent } from '../componentUtils'
-import { parsers } from '../parsers'
 import { recreateMagicString } from '../magicStringUtils'
 import {
 	buildTestComponent,
@@ -16,7 +15,6 @@ import {
 	dummyScriptModule,
 	dummyStyle,
 	expectedInsertPropsMarkup,
-	updatePropsMarkup,
 	expectedUpdatePropsMarkup,
 	insertPropsMarkup,
 	markup,
@@ -27,6 +25,7 @@ import {
 	script,
 	scriptModule,
 	style,
+	updatePropsMarkup,
 } from './testComponent'
 
 describe('sync utilities', () => {
@@ -137,11 +136,11 @@ describe('sync utilities', () => {
 		expect(material2Node).toBeDefined()
 		expect(material2Node?.name).toEqual('T.MeshBasicMaterial')
 
-		upsertAttribute(input, meshNode!, 'visible', false, parsers.json, 'last')
-		upsertAttribute(input, meshNode!, 'renderOrder', 1, parsers.json, 'last')
-		upsertAttribute(input, materialNode!, 'metalness', 1, parsers.json, 'last')
-		upsertAttribute(input, materialNode!, 'roughness', 0, parsers.json, 'last')
-		upsertAttribute(input, material2Node!, 'color', 'black', parsers.string, 'last')
+		upsertAttribute(input, meshNode!, 'visible', false, 'last')
+		upsertAttribute(input, meshNode!, 'renderOrder', 1, 'last')
+		upsertAttribute(input, materialNode!, 'metalness', 1, 'last')
+		upsertAttribute(input, materialNode!, 'roughness', 0, 'last')
+		upsertAttribute(input, material2Node!, 'color', 'black', 'last')
 
 		expect(input.toString()).toEqual(expectedMarkup)
 	})
@@ -160,7 +159,7 @@ describe('sync utilities', () => {
 		expect(meshNode).toBeDefined()
 		expect(meshNode?.name).toEqual('T.Mesh')
 
-		upsertAttribute(input, meshNode!, 'position', [1, 1, 1], parsers.position, 'last')
+		upsertAttribute(input, meshNode!, 'position', [1, 1, 1], 'last')
 
 		expect(input.toString()).toEqual(expectedMarkup)
 	})
@@ -192,7 +191,7 @@ describe('sync utilities', () => {
 
 		if (!meshNode) throw new Error('Mesh node not found')
 
-		const value = readAttribute(input, meshNode, 'position', parsers.position)
+		const value = readAttribute(input, meshNode, 'position')
 
 		expect(value).toStrictEqual([0, 1, 0])
 	})
@@ -221,145 +220,132 @@ describe('sync utilities', () => {
 		const meshNode = findNodeByIndex(input, 0)
 
 		const v1 = true
-		upsertAttribute(input, meshNode!, 'mustache1', v1, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'mustache1', v1, 'last')
 		expect(
 			readAttribute(
 				recreateMagicString(input),
 				findNodeByIndex(recreateMagicString(input), 0)!,
 				'mustache1',
-				parsers.json,
 			),
 		).toStrictEqual(v1)
 
 		const v2 = 'string'
-		upsertAttribute(input, meshNode!, 'mustache2', v2, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'mustache2', v2, 'last')
 		expect(
 			readAttribute(
 				recreateMagicString(input),
 				findNodeByIndex(recreateMagicString(input), 0)!,
 				'mustache2',
-				parsers.json,
 			),
 		).toStrictEqual(v2)
 
 		const v3 = ['mustache value']
-		upsertAttribute(input, meshNode!, 'mustache3', v3, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'mustache3', v3, 'last')
 		expect(
 			readAttribute(
 				recreateMagicString(input),
 				findNodeByIndex(recreateMagicString(input), 0)!,
 				'mustache3',
-				parsers.json,
 			),
 		).toStrictEqual(v3)
 
 		const v4 = true
-		upsertAttribute(input, meshNode!, 'bool1', v4, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'bool1', v4, 'last')
 		expect(
 			readAttribute(
 				recreateMagicString(input),
 				findNodeByIndex(recreateMagicString(input), 0)!,
 				'bool1',
-				parsers.json,
 			),
 		).toStrictEqual(v4)
 
 		const v5 = false
-		upsertAttribute(input, meshNode!, 'bool2', v5, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'bool2', v5, 'last')
 		expect(
 			readAttribute(
 				recreateMagicString(input),
 				findNodeByIndex(recreateMagicString(input), 0)!,
 				'bool2',
-				parsers.json,
 			),
 		).toStrictEqual(v5)
 
 		const v6 = 'string in bool prop'
-		upsertAttribute(input, meshNode!, 'bool3', v6, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'bool3', v6, 'last')
 		expect(
 			readAttribute(
 				recreateMagicString(input),
 				findNodeByIndex(recreateMagicString(input), 0)!,
 				'bool3',
-				parsers.json,
 			),
 		).toStrictEqual(v6)
 
 		const v7 = ['mustache value in bool prop']
-		upsertAttribute(input, meshNode!, 'bool4', v7, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'bool4', v7, 'last')
 		expect(
 			readAttribute(
 				recreateMagicString(input),
 				findNodeByIndex(recreateMagicString(input), 0)!,
 				'bool4',
-				parsers.json,
 			),
 		).toStrictEqual(v7)
 
 		const v8 = true
-		upsertAttribute(input, meshNode!, 'string1', v8, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'string1', v8, 'last')
 		expect(
 			readAttribute(
 				recreateMagicString(input),
 				findNodeByIndex(recreateMagicString(input), 0)!,
 				'string1',
-				parsers.json,
 			),
 		).toStrictEqual(v8)
 
 		const v9 = 'string2'
-		upsertAttribute(input, meshNode!, 'string2', v9, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'string2', v9, 'last')
 		expect(
 			readAttribute(
 				recreateMagicString(input),
 				findNodeByIndex(recreateMagicString(input), 0)!,
 				'string2',
-				parsers.json,
 			),
 		).toStrictEqual(v9)
 
 		const v10 = ['mustache value in string prop']
-		upsertAttribute(input, meshNode!, 'string3', v10, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'string3', v10, 'last')
 		expect(
 			readAttribute(
 				recreateMagicString(input),
 				findNodeByIndex(recreateMagicString(input), 0)!,
 				'string3',
-				parsers.json,
 			),
 		).toStrictEqual(v10)
 
 		const v11 = true
-		upsertAttribute(input, meshNode!, 'shorthand1', v11, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'shorthand1', v11, 'last')
 		expect(
 			readAttribute(
 				recreateMagicString(input),
 				findNodeByIndex(recreateMagicString(input), 0)!,
 				'shorthand1',
-				parsers.json,
 			),
 		).toStrictEqual(v11)
 
 		const v12 = 'string in shorthand prop'
-		upsertAttribute(input, meshNode!, 'shorthand2', v12, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'shorthand2', v12, 'last')
 		expect(
 			readAttribute(
 				recreateMagicString(input),
 				findNodeByIndex(recreateMagicString(input), 0)!,
 				'shorthand2',
-				parsers.json,
 			),
 		).toStrictEqual(v12)
 
 		const v13 = ['mustache value in shorthand prop']
-		upsertAttribute(input, meshNode!, 'shorthand3', v13, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'shorthand3', v13, 'last')
 		expect(
 			readAttribute(
 				recreateMagicString(input),
 				findNodeByIndex(recreateMagicString(input), 0)!,
 				'shorthand3',
-				parsers.json,
 			),
 		).toStrictEqual(v13)
 
@@ -377,11 +363,11 @@ describe('sync utilities', () => {
 		const materialNode = findNodeByIndex(input, 2)
 
 		// insert props
-		upsertAttribute(input, meshNode!, 'insert1', 1, parsers.json, 'last')
-		upsertAttribute(input, meshNode!, 'insert2', true, parsers.json, 'last')
-		upsertAttribute(input, meshNode!, 'insert3', 'test', parsers.json, 'last')
-		upsertAttribute(input, geometryNode!, 'insert4', 4, parsers.json, 'last')
-		upsertAttribute(input, materialNode!, 'insert5', 5, parsers.json, 'last')
+		upsertAttribute(input, meshNode!, 'insert1', 1, 'last')
+		upsertAttribute(input, meshNode!, 'insert2', true, 'last')
+		upsertAttribute(input, meshNode!, 'insert3', 'test', 'last')
+		upsertAttribute(input, geometryNode!, 'insert4', 4, 'last')
+		upsertAttribute(input, materialNode!, 'insert5', 5, 'last')
 
 		expect(input.toString()).toEqual(expectedInsertPropsMarkup)
 	})

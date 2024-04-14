@@ -1,12 +1,11 @@
 import type { Plugin } from 'vite'
 import { createRPCServer } from 'vite-dev-rpc'
+import type { ClientFunctions, ServerFunctions } from '../rpc'
+import * as componentParser from './utils/componentParser'
 import { addStudioRuntimeProps, componentNeedsTransform } from './utils/componentParser'
 import * as componentUtils from './utils/componentUtils'
 import * as fileUtils from './utils/fileUtils'
-import * as componentParser from './utils/componentParser'
 import { toMagicString } from './utils/magicStringUtils'
-import type { ClientFunctions, ServerFunctions } from '../rpc'
-import { parsers } from './utils/parsers'
 
 const HmrIgnoredModuleIds = new Set<string>()
 
@@ -56,7 +55,6 @@ export const plugin: () => Plugin = () => {
 						node,
 						transaction.attributeName,
 						transaction.attributeValue,
-						parsers[transaction.parserType],
 						'last',
 					)
 					const finalComponent = componentUtils.assembleComponent(

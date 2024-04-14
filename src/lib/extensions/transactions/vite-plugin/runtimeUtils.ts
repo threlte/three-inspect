@@ -1,9 +1,5 @@
-type ThrelteStudioUserData = {
-	index: number
-	moduleId: string
-	signature: string
-}
+import type { StudioProps } from './types'
 
-export const getThrelteStudioUserData = (object: any): ThrelteStudioUserData | undefined => {
-	return object.userData.threlteStudio as ThrelteStudioUserData
+export const getThrelteStudioUserData = (object: any): StudioProps | undefined => {
+	return object.userData.threlteStudio as StudioProps
 }

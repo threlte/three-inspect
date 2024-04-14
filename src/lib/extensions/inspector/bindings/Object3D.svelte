@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { Object3D } from 'three'
-	import { useTransactions } from '../../transactions/useTransactions'
-	import { buildTransaction } from '../buildTransaction'
-	import SerializableBinding from './SerializableBinding.svelte'
+	import TransactionalBinding from './TransactionalBinding.svelte'
 	import { haveProperty } from './utils'
-
-	const { commit } = useTransactions()
 
 	type Props = {
 		objects: Object3D[]
@@ -15,17 +11,65 @@
 </script>
 
 {#if haveProperty(objects, 'visible')}
-	{@const firstObject = objects[0]}
-
-	<SerializableBinding
-		object={firstObject}
-		key="position"
-		label="position"
-		on:change={(e) => {
-			objects.forEach((object) => {
-				const transaction = buildTransaction(object, 'position', e.detail.value)
-				commit(transaction)
-			})
-		}}
+	<TransactionalBinding
+		{objects}
+		key="visible"
+		label="visible"
 	/>
 {/if}
+
+<TransactionalBinding
+	{objects}
+	key="position"
+	label="position"
+/>
+
+<TransactionalBinding
+	{objects}
+	key="rotation"
+	label="rotation"
+/>
+
+<TransactionalBinding
+	{objects}
+	key="scale"
+	label="scale"
+/>
+
+{#if haveProperty(objects, 'isMesh') || haveProperty(objects, 'isPointLight') || haveProperty(objects, 'isSpotLight') || haveProperty(objects, 'isDirectionalLight')}
+	<TransactionalBinding
+		{objects}
+		key="castShadow"
+		label="castShadow"
+	/>
+{/if}
+
+{#if haveProperty(objects, 'isMesh')}
+	<TransactionalBinding
+		{objects}
+		key="receiveShadow"
+		label="receiveShadow"
+	/>
+{/if}
+
+<TransactionalBinding
+	{objects}
+	key="frustumCulled"
+	label="frustumCulled"
+/>
+<TransactionalBinding
+	{objects}
+	key="matrixAutoUpdate"
+	label="matrixAutoUpdate"
+/>
+<TransactionalBinding
+	{objects}
+	key="matrixWorldAutoUpdate"
+	label="matrixWorldAutoUpdate"
+/>
+<TransactionalBinding
+	{objects}
+	key="renderOrder"
+	label="renderOrder"
+	options={{ step: 1 }}
+/>

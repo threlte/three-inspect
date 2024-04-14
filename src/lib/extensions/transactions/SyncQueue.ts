@@ -1,27 +1,24 @@
+import type { Color, Euler, Vector3 } from 'three'
 import { clientRpc } from './vite-plugin/clientRpc'
-import type { ParserType } from './vite-plugin/utils/parsers'
 
 export type UpsertRequest = {
 	/** The name of the component attribute, e.g. `"position"` or `"position.x"` */
 	attributeName: string
 	/** The value of the component attribute derived by the value of the transaction */
 	attributeValue: any
-	/** The type of parser to use, use `"json"` for a parser based on `JSON.x` */
-	parserType: ParserType
-} & (
-	| {
-			/** The index of the component */
-			componentIndex: number
-			/** The module id of the component */
-			moduleId: string
-			/** The signature of the component */
-			signature: string
-	  }
-	| {
-			/** The object carrying the component data as userData.threlteStudio */
-			object: any
-	  }
-)
+	/** The index of the component */
+	componentIndex: number
+	/** The module id of the component */
+	moduleId: string
+	/** The signature of the component */
+	signature: string
+}
+
+const parser = {
+	isVector3: (value: Vector3) => [value.x, value.y, value.z],
+	isEuler: (value: Euler) => [value.x, value.y, value.z],
+	isColor: (value: Color) => `#${value.getHexString()}`,
+} satisfies Record<string, (value: any) => any>
 
 export type SyncRequest = UpsertRequest
 
@@ -29,7 +26,17 @@ export class SyncQueue {
 	private queue: SyncRequest[] = []
 
 	add(request: SyncRequest) {
-		this.queue.push(request)
+		// transform the value based on the parser type
+		let value = request.attributeValue
+		Object.entries(parser).forEach(([key, parse]) => {
+			if (typeof value === 'object' && key in value) {
+				value = parse(value)
+			}
+		})
+		this.queue.push({
+			...request,
+			attributeValue: value,
+		})
 		this.run()
 	}
 

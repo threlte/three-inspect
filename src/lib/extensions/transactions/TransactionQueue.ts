@@ -1,9 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
-import { Mesh } from 'three'
 import { SyncQueue, type SyncRequest } from './SyncQueue'
-import { getThrelteStudioUserData } from './vite-plugin/runtimeUtils'
-import type { ParserType } from './vite-plugin/utils/parsers'
 
 export type Transaction<T, U> = {
 	/** The object to modify */
@@ -95,15 +92,9 @@ export class TransactionQueue {
 		this.undoneQueue = []
 		this.onCommit?.()
 
-		// this.syncQueue.add({
-		// 	attributeName: transaction.propertyPath,
-		// 	attributeValue: transaction.sync ? transaction.sync(transaction.value) : transaction.value,
-		// 	componentIndex: userData.index,
-		// 	id: userData.moduleId,
-		// 	moduleId: userData.moduleId,
-		// 	parserType: 'json',
-		// 	signature: userData.signature,
-		// })
+		if (transaction.sync) {
+			this.syncQueue.add(transaction.sync)
+		}
 	}
 
 	undo() {
