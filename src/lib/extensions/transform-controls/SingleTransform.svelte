@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { TransformControls } from '@threlte/extras'
 	import { onDestroy } from 'svelte'
-	import type { Group } from 'three'
+	import type { Group, Vector3 } from 'three'
 	import type { TransformControls as TC } from 'three/examples/jsm/controls/TransformControls.js'
 	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 	import { useStudio } from '../../internal/extensions'
@@ -40,9 +40,8 @@
 
 	const { commit } = useTransactions()
 
-	let initialValue: any
+	let initialValue: Vector3 | undefined
 	const onMouseDown = () => {
-		objectSelection.selectedObjects[0]
 		if (mode === 'translate') {
 			initialValue = objectSelection.selectedObjects[0].position.clone()
 		}

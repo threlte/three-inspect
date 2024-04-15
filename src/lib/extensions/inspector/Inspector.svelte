@@ -58,7 +58,7 @@
 			x={browser ? innerWidth - 6 - 320 : 6}
 			y={6 + 60 + 6}
 		>
-			<!-- <Bindings /> -->
+			<Bindings />
 		</Pane>
 	</Portal>
 {/if}

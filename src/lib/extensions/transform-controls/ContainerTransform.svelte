@@ -15,6 +15,9 @@
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from './types'
+	import { getThrelteStudioUserData } from '../transactions/vite-plugin/runtimeUtils'
+	import { useTransactions } from '../transactions/useTransactions'
+	import type { Transaction } from '../transactions/TransactionQueue'
 
 	const objectSelection = useObjectSelection()
 	const { getExtension } = useStudio()
@@ -76,6 +79,56 @@
 		}
 	}
 
+	const commitObjects = $derived([...objectSelection.selectedObjects, centerObject])
+
+	let initialValues: Vector3[] = []
+	const onMouseDown = () => {
+		if (mode === 'translate') {
+			initialValues = commitObjects.map((object) => object.position.clone())
+		}
+	}
+
+	const { commit } = useTransactions()
+
+	const onMouseUp = () => {
+		if (commitObjects.length !== initialValues.length) return
+
+		if (mode === 'translate') {
+			const transactions = commitObjects.map((object, index) => {
+				const isCenterObject = object === centerObject
+				const userData = getThrelteStudioUserData(object)
+				const initialValue = initialValues[index]
+				const value = object.position.clone()
+				object.position.copy(initialValue)
+				return {
+					object,
+					read(root) {
+						return root.position.clone()
+					},
+					write(root, data) {
+						root.position.copy(data)
+						if (isCenterObject) {
+							// update lastPosition to enable undo/redo
+							lastPosition.copy(data)
+						}
+					},
+					value,
+					sync: userData
+						? {
+								attributeName: 'position',
+								componentIndex: userData.index,
+								moduleId: userData.moduleId,
+								signature: userData.signature,
+							}
+						: undefined,
+				} satisfies Transaction<any, any>
+			})
+			commit(transactions)
+		}
+
+		initialValues = []
+	}
+
 	onDestroy(() => {
 		transformControlsExtension.run('setInUse', false)
 	})
@@ -95,9 +148,11 @@
 	on:change={onChange}
 	on:mouseDown={() => {
 		transformControlsExtension.run('setInUse', true)
+		onMouseDown()
 	}}
 	on:mouseUp={() => {
 		transformControlsExtension.run('setInUse', false)
+		onMouseUp()
 	}}
 	{mode}
 	bind:controls={controls.ref}

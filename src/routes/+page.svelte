@@ -14,7 +14,7 @@
 
 		<T.Mesh
 			scale={[2, 2, 2]}
-			position={[0.30000000000000004, 0.9, 0]}
+			position={[-0.10000000000000023,-0.29999999999999816,0]}
 		>
 			<T.BoxGeometry args={[1, 1, 1]} />
 			<T.MeshBasicMaterial color="#ffa500" />
@@ -22,7 +22,7 @@
 
 		<T.Mesh
 			material={new MeshBasicMaterial()}
-			position={[1.3, 8, 1]}
+			position={[-0.10000000000000023,1.6999999999999988,0]}
 			scale={[2, 2, 2]}
 			material.color="#ffffff"
 		>
