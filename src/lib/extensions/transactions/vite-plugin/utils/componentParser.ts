@@ -1,9 +1,8 @@
 import type { Expression, Node } from 'estree'
+import { walk } from 'estree-walker'
 import MagicString from 'magic-string'
 import { createHash } from 'node:crypto'
 import { parse } from 'svelte/compiler'
-import { parsers, type Parser } from './parsers'
-import { walk } from 'estree-walker'
 import type { StudioProps } from '../types'
 
 export const componentNeedsTransform = (code: string): boolean => {
@@ -233,7 +232,6 @@ export const upsertAttribute = (
 	node: TComponentNode,
 	attributeName: string,
 	value: unknown,
-	parser: Parser<any>,
 	position: 'first' | 'last',
 ) => {
 	const attribute = node.attributes.find((attr) => attr.name === attributeName)
@@ -247,7 +245,7 @@ export const upsertAttribute = (
 				markup.appendLeft(attribute.end, `="${value}"`)
 			} else {
 				// it's a mustache tag value, so we need to stringify it: `name` -> `name={value}`
-				markup.appendLeft(attribute.end, `={${parser.stringify(value)}}`)
+				markup.appendLeft(attribute.end, `={${JSON.stringify(value)}}`)
 			}
 		} else if (isAttributeWithTextValue(attribute)) {
 			const firstValue = attribute.value[0]
@@ -259,7 +257,7 @@ export const upsertAttribute = (
 				markup.remove(firstValue.start - 2, firstValue.end + 1)
 			} else {
 				// it's a mustache tag value, so we need to stringify it: `name="old"` -> `name={new}`
-				markup.overwrite(firstValue.start - 1, firstValue.end + 1, `{${parser.stringify(value)}}`)
+				markup.overwrite(firstValue.start - 1, firstValue.end + 1, `{${JSON.stringify(value)}}`)
 			}
 		} else if (isAttributeWithMustacheTagValue(attribute)) {
 			const firstValue = attribute.value[0]
@@ -271,7 +269,7 @@ export const upsertAttribute = (
 				markup.remove(firstValue.start - 1, firstValue.end)
 			} else {
 				// it's a mustache tag value, so we can update it: `name={old}` -> `name={new}`
-				markup.overwrite(firstValue.start + 1, firstValue.end - 1, parser.stringify(value))
+				markup.overwrite(firstValue.start + 1, firstValue.end - 1, JSON.stringify(value))
 			}
 		} else if (isAttributeWithShorthandValue(attribute)) {
 			if (typeof value === 'string') {
@@ -285,7 +283,7 @@ export const upsertAttribute = (
 				markup.overwrite(
 					attribute.start,
 					attribute.end,
-					`${attributeName}={${parser.stringify(value)}}`,
+					`${attributeName}={${JSON.stringify(value)}}`,
 				)
 			}
 		}
@@ -309,7 +307,7 @@ export const upsertAttribute = (
 		} else if (typeof value === 'string') {
 			markup.appendLeft(start, `${space}${indent}${attributeName}="${value}"`)
 		} else {
-			markup.appendLeft(start, `${space}${indent}${attributeName}={${parser.stringify(value)}}`)
+			markup.appendLeft(start, `${space}${indent}${attributeName}={${JSON.stringify(value)}}`)
 		}
 	}
 }
@@ -338,24 +336,17 @@ export const removeAttribute = (
 /**
  * Read the value of an attribute from a `<T>` component.
  */
-export const readAttribute = <P extends Parser<any>>(
-	markup: MagicString,
-	node: TComponentNode,
-	attributeName: string,
-	parser: P,
-): ReturnType<P['parse']> => {
+export const readAttribute = (markup: MagicString, node: TComponentNode, attributeName: string) => {
 	const attribute = node.attributes.find((attr) => attr.name === attributeName)
 	if (!attribute) throw new Error('Attribute not found')
 
 	if (isAttributeWithBooleanValue(attribute)) {
-		return true as ReturnType<P['parse']>
+		return true
 	} else if (isAttributeWithTextValue(attribute)) {
-		return attribute.value[0].data as ReturnType<P['parse']>
+		return attribute.value[0].data
 	} else if (isAttributeWithMustacheTagValue(attribute)) {
 		const firstValue = attribute.value[0]
-		return parser.parse(markup.slice(firstValue.start + 1, firstValue.end - 1)) as ReturnType<
-			P['parse']
-		>
+		return JSON.parse(markup.slice(firstValue.start + 1, firstValue.end - 1))
 	} else if (isAttributeWithShorthandValue(attribute)) {
 		throw new Error('Shorthand attributes are not supported')
 	} else {
@@ -371,7 +362,7 @@ export const addStudioRuntimeProps = (markup: MagicString, id: string): void => 
 		enter(node) {
 			if (!isTComponentNode(node)) return
 			const props: StudioProps = { moduleId: id, index, signature }
-			upsertAttribute(markup, node, 'threlteStudio', props, parsers.json, 'last')
+			upsertAttribute(markup, node, 'threlteStudio', props, 'last')
 			index += 1
 		},
 	})
