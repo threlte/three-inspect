@@ -4,40 +4,40 @@ import { snappingScope, type SnappingActions, type SnappingState } from './types
 export const useSnapping = () => {
 	const { getExtension } = useStudio()
 
-	const { run, state } = getExtension<SnappingState, SnappingActions>(snappingScope)
+	const extension = getExtension<SnappingState, SnappingActions>(snappingScope)
 
 	const setEnabled = (enabled: boolean) => {
-		run('setEnabled', enabled)
+		extension.run('setEnabled', enabled)
 	}
 
 	const toggleEnabled = () => {
-		run('toggleEnabled')
+		extension.run('toggleEnabled')
 	}
 
 	const setTranslate = (translate: number) => {
-		run('setTranslate', translate)
+		extension.run('setTranslate', translate)
 	}
 
 	const setRotate = (rotate: number) => {
-		run('setRotate', rotate)
+		extension.run('setRotate', rotate)
 	}
 
 	const setScale = (scale: number) => {
-		run('setScale', scale)
+		extension.run('setScale', scale)
 	}
 
 	return {
 		get enabled() {
-			return state.enabled
+			return extension.state.enabled
 		},
 		get translate() {
-			return state.translate
+			return extension.state.translate
 		},
 		get rotate() {
-			return state.rotate
+			return extension.state.rotate
 		},
 		get scale() {
-			return state.scale
+			return extension.state.scale
 		},
 		setEnabled,
 		toggleEnabled,

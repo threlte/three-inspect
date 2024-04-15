@@ -35,17 +35,8 @@
 <script lang="ts">
 	import { useTask, useThrelte } from '@threlte/core'
 	import { onMount, tick } from 'svelte'
-	import { useStudio } from '../../internal/extensions'
-	import {
-		objectSelectionScope,
-		type ObjectSelectionActions,
-		type ObjectSelectionState,
-	} from '../object-selection/types'
-	import {
-		transformControlsScope,
-		type TransformControlsActions,
-		type TransformControlsState,
-	} from '../transform-controls/types'
+	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
+	import { useTransformControls } from '../transform-controls/useTransformControls'
 
 	interface Props {
 		camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
@@ -101,21 +92,10 @@
 		}
 	})
 
-	const { getExtension } = useStudio()
+	const objectSelection = useObjectSelection()
+	const transformControls = useTransformControls()
 
-	const { state: transformControlsState } = getExtension<
-		TransformControlsState,
-		TransformControlsActions
-	>(transformControlsScope)
-	const { state: objectSelectionState } = getExtension<
-		ObjectSelectionState,
-		ObjectSelectionActions
-	>(objectSelectionScope)
-
-	const transformControlsInUse = $derived(transformControlsState.inUse)
-	const objectSelectionInUse = $derived(objectSelectionState.inUse)
-
-	const anyInUse = $derived(transformControlsInUse || objectSelectionInUse)
+	const anyInUse = $derived(transformControls.inUse || objectSelection.inUse)
 
 	// disable camera controls when transform controls are in use
 	$effect(() => {

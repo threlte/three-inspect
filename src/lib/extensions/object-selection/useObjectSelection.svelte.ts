@@ -8,35 +8,36 @@ import {
 
 export const useObjectSelection = () => {
 	const { getExtension } = useStudio()
-	const { state, run } = getExtension<ObjectSelectionState, ObjectSelectionActions>(
-		objectSelectionScope,
-	)
+	const extension = getExtension<ObjectSelectionState, ObjectSelectionActions>(objectSelectionScope)
 
 	const selectObjects = (objects: Object3D[]) => {
-		run('selectObjects', objects)
+		extension.run('selectObjects', objects)
 	}
 
 	const clearSelection = () => {
-		run('clearSelection')
+		extension.run('clearSelection')
 	}
 
 	const addToSelection = (objects: Object3D[]) => {
-		run('addToSelection', objects)
+		extension.run('addToSelection', objects)
 	}
 
 	const removeFromSelection = (objects: Object3D[]) => {
-		run('removeFromSelection', objects)
+		extension.run('removeFromSelection', objects)
 	}
 
 	const toggleSelection = (objects: Object3D[]) => {
-		run('toggleSelection', objects)
+		extension.run('toggleSelection', objects)
 	}
 
-	const selectedObjects = $derived(state.selectedObjects ?? [])
+	const selectedObjects = $derived(extension.state.selectedObjects ?? [])
 
 	return {
 		get selectedObjects() {
 			return selectedObjects
+		},
+		get inUse() {
+			return extension.state.inUse
 		},
 		selectObjects,
 		clearSelection,

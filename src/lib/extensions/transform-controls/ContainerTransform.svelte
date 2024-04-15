@@ -7,7 +7,7 @@
 	import { useStudio } from '../../internal/extensions'
 	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
 	import { useSnapping } from '../snapping/useSnapping.svelte'
-	import { useSpace } from '../space/useSpace.svelte'
+	import { useSpace } from '../space/useSpace'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 	import {
 		transformControlsScope,
@@ -17,12 +17,14 @@
 
 	const objectSelection = useObjectSelection()
 	const { getExtension } = useStudio()
-	const { run, state } = getExtension<TransformControlsState, TransformControlsActions, true>(
-		transformControlsScope,
-	)
+	const transformControlsExtension = getExtension<
+		TransformControlsState,
+		TransformControlsActions,
+		true
+	>(transformControlsScope)
 	const space = useSpace()
 	const snapping = useSnapping()
-	const mode = $derived(state.mode)
+	const mode = $derived(transformControlsExtension.state.mode)
 
 	let centerObject = new Object3D()
 	let lastPosition = new Vector3()
@@ -92,7 +94,7 @@
 	}
 
 	onDestroy(() => {
-		run('setInUse', false)
+		transformControlsExtension.run('setInUse', false)
 	})
 </script>
 
@@ -106,10 +108,10 @@
 	scaleSnap={snapping.enabled ? snapping.scale ?? 0 : null}
 	on:change={onChange}
 	on:mouseDown={() => {
-		run('setInUse', true)
+		transformControlsExtension.run('setInUse', true)
 	}}
 	on:mouseUp={() => {
-		run('setInUse', false)
+		transformControlsExtension.run('setInUse', false)
 	}}
 	{mode}
 	on:create={({ ref, cleanup }) => {

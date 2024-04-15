@@ -44,23 +44,27 @@
 </script>
 
 <script lang="ts">
-	import { T, type Events } from '@threlte/core'
+	import { T } from '@threlte/core'
 	import {
 		BufferGeometry,
 		CanvasTexture,
 		Float32BufferAttribute,
 		Points,
 		PointsMaterial,
-		Sprite,
 		Texture,
+		type Object3D,
 	} from 'three'
 
-	type $$Events = Events<typeof Sprite>
+	export let onCreate: (e: {
+		ref: Object3D
+		cleanup: (callback: () => void) => void
+	}) => void = () => {}
 
 	const points = new Points(geometry, material)
 </script>
 
 <T
+	on:create={onCreate}
 	is={points}
 	userData={{ ignoreOverrideMaterial: true }}
 />

@@ -17,14 +17,14 @@
 	const { getExtension } = useStudio()
 	const { renderer, scene, autoRenderTask, invalidate } = useThrelte()
 
-	const { state: editorCameraState } = getExtension<EditorCameraState, EditorCameraActions, true>(
+	const editorCameraExtension = getExtension<EditorCameraState, EditorCameraActions, true>(
 		editorCameraScope,
 	)
 
 	const studioObjectsRegistry = useStudioObjectsRegistry()
-	const defaultCameraObject = $derived(editorCameraState.defaultCamera.object)
-	const width = $derived(editorCameraState.defaultCamera.width)
-	const height = $derived(editorCameraState.defaultCamera.height)
+	const defaultCameraObject = $derived(editorCameraExtension.state.defaultCamera.object)
+	const width = $derived(editorCameraExtension.state.defaultCamera.width)
+	const height = $derived(editorCameraExtension.state.defaultCamera.height)
 
 	let canvasEl = $state<HTMLCanvasElement | undefined>(undefined)
 	const context = $derived(canvasEl ? canvasEl.getContext('2d') : undefined)

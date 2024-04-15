@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { useThrelte } from '@threlte/core'
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
 	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
@@ -13,6 +14,7 @@
 	} from './types'
 
 	const { useExtension } = useStudio()
+	const { invalidate } = useThrelte()
 
 	const { state, run } = useExtension<ObjectSelectionState, ObjectSelectionActions>({
 		scope: objectSelectionScope,
@@ -25,15 +27,19 @@
 		actions: {
 			selectObjects({ state }, objects) {
 				state.selectedObjects = objects
+				invalidate()
 			},
 			clearSelection({ state }) {
 				state.selectedObjects = []
+				invalidate()
 			},
 			addToSelection({ state }, objects) {
 				state.selectedObjects.push(...objects)
+				invalidate()
 			},
 			removeFromSelection({ state }, objects) {
 				state.selectedObjects = state.selectedObjects.filter((object) => !objects.includes(object))
+				invalidate()
 			},
 			toggleSelection({ state }, objects) {
 				const toAdd = objects.filter((object) => !state.selectedObjects.includes(object))
@@ -42,6 +48,7 @@
 					...state.selectedObjects.filter((object) => !toRemove.includes(object)),
 					...toAdd,
 				]
+				invalidate()
 			},
 			toggleEnabled({ state }) {
 				state.enabled = !state.enabled

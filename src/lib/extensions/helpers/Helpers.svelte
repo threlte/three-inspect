@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { T } from '@threlte/core'
-	import { Gizmo, Portal } from '@threlte/extras'
+	import { Gizmo } from '@threlte/extras'
 	import { Light, Object3D, type Camera, type Group } from 'three'
 	import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js'
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
@@ -11,6 +11,7 @@
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 	import AxesHelper from './AxesHelper.svelte'
 	import GroupHelper from './GroupHelper.svelte'
+	import Mounter from './Mounter.svelte'
 	import { helpersScope, type HelpersActions, type HelpersState } from './types'
 
 	const { useExtension } = useStudio()
@@ -82,25 +83,23 @@
 	<AxesHelper
 		length={999}
 		width={0.2}
-		on:create={onCreate}
+		{onCreate}
 	/>
 
 	{#each objectSelection.selectedObjects as object (object.uuid)}
-		<Portal {object}>
+		<Mounter parent={object}>
 			<AxesHelper
 				length={0.5}
 				width={0.2}
-				on:create={onCreate}
+				{onCreate}
 				opacity={0.3}
 				overlay
 			/>
-		</Portal>
 
-		{#if isGroup(object)}
-			<Portal {object}>
-				<GroupHelper on:create={onCreate} />
-			</Portal>
-		{/if}
+			{#if isGroup(object)}
+				<GroupHelper {onCreate} />
+			{/if}
+		</Mounter>
 
 		{#if isCamera(object)}
 			<T.CameraHelper

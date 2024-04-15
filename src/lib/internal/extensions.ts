@@ -15,7 +15,7 @@ export const createRootContext = () => {
 	const state = createState()
 	const actions = createActions()
 	const keyboardControls = createKeyboardControls((scope, actionId) => {
-		actions.runAction(scope, actionId, state.getScopedState(scope))
+		actions.runAction(scope, actionId, state.getScopedState(scope).state)
 	})
 
 	const getExtension = <
@@ -26,11 +26,13 @@ export const createRootContext = () => {
 		scope: string,
 	) => {
 		const run = <K extends keyof Actions>(id: K, ...args: Parameters<Actions[K]>) => {
-			actions.runAction(scope, id as string, state.getScopedState<State>(scope), ...args)
+			actions.runAction(scope, id as string, state.getScopedState<State>(scope).state, ...args)
 		}
 
 		return {
-			state: state.getScopedState<State, NonPartial>(scope),
+			get state() {
+				return state.getScopedState<State, NonPartial>(scope).state
+			},
 			run,
 		}
 	}

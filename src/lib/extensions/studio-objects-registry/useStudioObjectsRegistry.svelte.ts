@@ -1,3 +1,4 @@
+import { Set } from 'svelte/reactivity'
 import type { Object3D } from 'three'
 import { useStudio } from '../../internal/extensions'
 import {
@@ -5,24 +6,29 @@ import {
 	type StudioObjectsRegistryActions,
 	type StudioObjectsRegistryState,
 } from './types'
-import { Set } from 'svelte/reactivity'
 
 export const useStudioObjectsRegistry = () => {
 	const { getExtension } = useStudio()
-	const { run, state } = getExtension<
-		Partial<StudioObjectsRegistryState>,
-		StudioObjectsRegistryActions
-	>(studioObjectsRegistryScope)
+	const extension = getExtension<Partial<StudioObjectsRegistryState>, StudioObjectsRegistryActions>(
+		studioObjectsRegistryScope,
+	)
 
 	const addObject = (object: Object3D) => {
-		run('addObject', object)
+		extension.run('addObject', object)
 	}
 
 	const removeObject = (object: Object3D) => {
-		run('removeObject', object)
+		extension.run('removeObject', object)
 	}
 
-	const objects = $derived(state.objects ?? new Set<Object3D>())
+	const objects = $derived(extension.state.objects ?? new Set<Object3D>())
+
+	const isOrIsChildOfStudioObject = (object: THREE.Object3D): boolean => {
+		if (!extension.state.objects) return false
+		if (extension.state.objects.has(object)) return true
+		if (object.parent) return isOrIsChildOfStudioObject(object.parent)
+		return false
+	}
 
 	return {
 		addObject,
@@ -30,5 +36,6 @@ export const useStudioObjectsRegistry = () => {
 		get objects() {
 			return objects
 		},
+		isOrIsChildOfStudioObject,
 	}
 }

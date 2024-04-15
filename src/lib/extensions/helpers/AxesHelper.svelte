@@ -1,17 +1,20 @@
 <script lang="ts">
+	import { T } from '@threlte/core'
+	import { onDestroy } from 'svelte'
 	import * as THREE from 'three'
-	import { T, type Events } from '@threlte/core'
 	import { Line2 } from 'three/examples/jsm/lines/Line2.js'
 	import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'
 	import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
-
-	type $$Events = Events<typeof Line2>
 
 	export let length = 1
 	export let width = 0.2
 	export let colors = ['red', 'green', 'blue']
 	export let opacity = 1
 	export let overlay = false
+	export let onCreate: (e: {
+		ref: Line2
+		cleanup: (callback: () => void) => void
+	}) => void = () => {}
 
 	const lineGeometry = new LineGeometry()
 	const lineMaterial = new LineMaterial({
@@ -52,9 +55,7 @@
 </script>
 
 <T
-	is={line2}
 	userData={{ ignoreOverrideMaterial: true }}
->
-	<T is={lineGeometry} />
-	<T is={lineMaterial} />
-</T>
+	on:create={onCreate}
+	is={line2}
+></T>

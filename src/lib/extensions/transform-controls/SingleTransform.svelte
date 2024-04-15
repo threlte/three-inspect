@@ -6,7 +6,7 @@
 	import { useStudio } from '../../internal/extensions'
 	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
 	import { useSnapping } from '../snapping/useSnapping.svelte'
-	import { useSpace } from '../space/useSpace.svelte'
+	import { useSpace } from '../space/useSpace'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 	import { useTransactions } from '../transactions/useTransactions'
 	import {
@@ -17,16 +17,18 @@
 	import { getThrelteStudioUserData } from '../transactions/vite-plugin/runtimeUtils'
 
 	const { getExtension } = useStudio()
-	const { run, state } = getExtension<TransformControlsState, TransformControlsActions, true>(
-		transformControlsScope,
-	)
+	const transformControlsExtension = getExtension<
+		TransformControlsState,
+		TransformControlsActions,
+		true
+	>(transformControlsScope)
 
 	const objectSelection = useObjectSelection()
 	const space = useSpace()
 	const snapping = useSnapping()
 	const studioObjectsRegistry = useStudioObjectsRegistry()
 
-	const mode = $derived(state.mode)
+	const mode = $derived(transformControlsExtension.state.mode)
 
 	const isObject3D = (object: any): object is Object3D => {
 		return 'isObject3D' in object
@@ -51,7 +53,7 @@
 	}
 
 	onDestroy(() => {
-		run('setInUse', false)
+		transformControlsExtension.run('setInUse', false)
 	})
 
 	const { commit } = useTransactions()
@@ -105,11 +107,11 @@
 	rotationSnap={snapping.enabled ? (snapping.rotate ?? 0) * DEG2RAD : null}
 	scaleSnap={snapping.enabled ? snapping.scale ?? 0 : null}
 	on:mouseDown={() => {
-		run('setInUse', true)
+		transformControlsExtension.run('setInUse', true)
 		onMouseDown()
 	}}
 	on:mouseUp={() => {
-		run('setInUse', false)
+		transformControlsExtension.run('setInUse', false)
 		onMouseUp()
 	}}
 	on:create={({ ref, cleanup }) => {

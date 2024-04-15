@@ -4,21 +4,19 @@ import { spaceScope, type SpaceActions, type SpaceState } from './types'
 export const useSpace = () => {
 	const { getExtension } = useStudio()
 
-	const { run, state } = getExtension<SpaceState, SpaceActions>(spaceScope)
+	const extension = getExtension<SpaceState, SpaceActions>(spaceScope)
 
 	const setSpace = (space: SpaceState['space']) => {
-		run('setSpace', space)
+		extension.run('setSpace', space)
 	}
 
 	const toggleSpace = () => {
-		run('toggleSpace')
+		extension.run('toggleSpace')
 	}
-
-	const space = $derived(state.space)
 
 	return {
 		get space() {
-			return space
+			return extension.state.space
 		},
 		setSpace,
 		toggleSpace,

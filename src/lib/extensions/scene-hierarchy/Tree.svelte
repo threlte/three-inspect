@@ -5,6 +5,8 @@
 	import { useOnAdd } from '../../hooks/useOnAdd'
 	import { useOnRemove } from '../../hooks/useOnRemove'
 	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
+	import { tick } from 'svelte'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 
 	const treeview = new TreeViewWebComponent()
 	treeview.scrollable = true
@@ -17,6 +19,7 @@
 
 	const { scene } = useThrelte()
 	const objectSelection = useObjectSelection()
+	const studioObjectsRegistry = useStudioObjectsRegistry()
 
 	const treeroot = new TreeViewItem({ text: 'Scene' })
 	treeview.append(treeroot)
@@ -101,11 +104,15 @@
 
 	treeview.on('select', handleSelect)
 
-	useOnAdd((object) => {
+	useOnAdd(async (object) => {
+		await tick()
+		if (studioObjectsRegistry.isOrIsChildOfStudioObject(object)) return
 		register(object)
 	})
 
-	useOnRemove((object) => {
+	useOnRemove(async (object) => {
+		await tick()
+		if (studioObjectsRegistry.isOrIsChildOfStudioObject(object)) return
 		deregister(object)
 	})
 

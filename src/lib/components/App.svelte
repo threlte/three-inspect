@@ -23,6 +23,7 @@
 	import Keyboard from './Tools/Keyboard.svelte'
 	import Raycast from './Tools/Raycast.svelte'
 	import TransformControls from './Tools/TransformControls.svelte'
+	import { browser } from '../internal/browser'
 
 	const { position } = useInspector()
 	const { scene } = useThrelte()

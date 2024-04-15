@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
 	import { T, useTask, useThrelte, watch } from '@threlte/core'
 	import { Portal } from '@threlte/extras'
