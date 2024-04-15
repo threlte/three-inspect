@@ -4,13 +4,12 @@
 	import Material from './bindings/Material.svelte'
 	import Object3DBinding from './bindings/Object3D.svelte'
 	import { Folder, Textarea } from 'svelte-tweakpane-ui'
+	import { haveProperty } from './bindings/utils'
 
 	const objectSelection = useObjectSelection()
 	const keyFromObjects = (objects: Object3D[]) => {
 		return objects.map((object) => object.uuid).join()
 	}
-
-	const materials = $derived(objectSelection.selectedObjects.map((o) => o.material))
 
 	const firstObjectUserData = $derived(
 		JSON.stringify(objectSelection.selectedObjects[0].userData, null, 2),
@@ -21,7 +20,9 @@
 	{#key keyFromObjects(objectSelection.selectedObjects)}
 		<Object3DBinding objects={objectSelection.selectedObjects} />
 
-		<Material {materials} />
+		{#if haveProperty(objectSelection.selectedObjects, 'material')}
+			<Material objects={objectSelection.selectedObjects} />
+		{/if}
 	{/key}
 {/if}
 
