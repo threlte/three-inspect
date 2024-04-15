@@ -23,7 +23,7 @@
 <Snapping />
 <ObjectSelection />
 <StudioObjectsRegistry />
-<!-- <TransformControls /> -->
+<TransformControls />
 <EditorCamera />
 <RenderModes />
 <Grid />

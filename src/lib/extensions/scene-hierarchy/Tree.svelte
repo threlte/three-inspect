@@ -106,7 +106,9 @@
 
 	useOnAdd(async (object) => {
 		await tick()
-		if (studioObjectsRegistry.isOrIsChildOfStudioObject(object)) return
+		if (studioObjectsRegistry.isOrIsChildOfStudioObject(object)) {
+			return
+		}
 		register(object)
 	})
 

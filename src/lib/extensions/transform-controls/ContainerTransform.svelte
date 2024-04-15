@@ -8,12 +8,12 @@
 	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
 	import { useSnapping } from '../snapping/useSnapping.svelte'
 	import { useSpace } from '../space/useSpace'
-	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 	import {
 		transformControlsScope,
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from './types'
+	import { useRegisterControlObjects } from './useRegisterControlObjects.svelte'
 
 	const objectSelection = useObjectSelection()
 	const { getExtension } = useStudio()
@@ -24,6 +24,8 @@
 	>(transformControlsScope)
 	const space = useSpace()
 	const snapping = useSnapping()
+	const reg = useRegisterControlObjects()
+
 	const mode = $derived(transformControlsExtension.state.mode)
 
 	let centerObject = new Object3D()
@@ -69,30 +71,6 @@
 		}
 	}
 
-	const studioObjectsRegistry = useStudioObjectsRegistry()
-
-	const isObject3D = (object: any): object is Object3D => {
-		return 'isObject3D' in object
-	}
-
-	const onCreate = (ref: any, cleanup: (callback: () => void) => void) => {
-		const objects: Object3D[] = [ref]
-		ref.traverse((node: any) => {
-			if (isObject3D(node)) {
-				objects.push(node)
-			}
-			node.userData.ignoreOverrideMaterial = true
-		})
-		objects.forEach((object) => {
-			studioObjectsRegistry.addObject(object)
-		})
-		cleanup(() => {
-			for (const object of objects) {
-				studioObjectsRegistry.removeObject(object)
-			}
-		})
-	}
-
 	onDestroy(() => {
 		transformControlsExtension.run('setInUse', false)
 	})
@@ -114,7 +92,6 @@
 		transformControlsExtension.run('setInUse', false)
 	}}
 	{mode}
-	on:create={({ ref, cleanup }) => {
-		onCreate(ref, cleanup)
-	}}
+	bind:controls={reg.controls}
+	bind:group={reg.group}
 />

@@ -1,20 +1,19 @@
 <script lang="ts">
 	import { TransformControls } from '@threlte/extras'
 	import { onDestroy } from 'svelte'
-	import { Object3D } from 'three'
 	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 	import { useStudio } from '../../internal/extensions'
 	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
 	import { useSnapping } from '../snapping/useSnapping.svelte'
 	import { useSpace } from '../space/useSpace'
-	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 	import { useTransactions } from '../transactions/useTransactions'
+	import { getThrelteStudioUserData } from '../transactions/vite-plugin/runtimeUtils'
 	import {
 		transformControlsScope,
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from './types'
-	import { getThrelteStudioUserData } from '../transactions/vite-plugin/runtimeUtils'
+	import { useRegisterControlObjects } from './useRegisterControlObjects.svelte'
 
 	const { getExtension } = useStudio()
 	const transformControlsExtension = getExtension<
@@ -26,31 +25,10 @@
 	const objectSelection = useObjectSelection()
 	const space = useSpace()
 	const snapping = useSnapping()
-	const studioObjectsRegistry = useStudioObjectsRegistry()
 
 	const mode = $derived(transformControlsExtension.state.mode)
 
-	const isObject3D = (object: any): object is Object3D => {
-		return 'isObject3D' in object
-	}
-
-	const onCreate = (ref: any, cleanup: (callback: () => void) => void) => {
-		const objects: Object3D[] = [ref]
-		ref.traverse((node: any) => {
-			if (isObject3D(node)) {
-				objects.push(node)
-			}
-			node.userData.ignoreOverrideMaterial = true
-		})
-		objects.forEach((object) => {
-			studioObjectsRegistry.addObject(object)
-		})
-		cleanup(() => {
-			for (const object of objects) {
-				studioObjectsRegistry.removeObject(object)
-			}
-		})
-	}
+	const reg = useRegisterControlObjects()
 
 	onDestroy(() => {
 		transformControlsExtension.run('setInUse', false)
@@ -114,7 +92,6 @@
 		transformControlsExtension.run('setInUse', false)
 		onMouseUp()
 	}}
-	on:create={({ ref, cleanup }) => {
-		onCreate(ref, cleanup)
-	}}
+	bind:controls={reg.controls}
+	bind:group={reg.group}
 />
