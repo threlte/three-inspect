@@ -14,6 +14,7 @@
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from './types'
+	import { getThrelteStudioUserData } from '../transactions/vite-plugin/runtimeUtils'
 
 	const { getExtension } = useStudio()
 	const { run, state } = getExtension<TransformControlsState, TransformControlsActions, true>(
@@ -65,23 +66,32 @@
 
 	const onMouseUp = () => {
 		if (!initialValue) return
+
+		const userData = getThrelteStudioUserData(objectSelection.selectedObjects[0])
+
 		if (mode === 'translate') {
 			const value = objectSelection.selectedObjects[0].position.clone()
 			objectSelection.selectedObjects[0].position.copy(initialValue)
-			commit({
-				object: objectSelection.selectedObjects[0],
-				propertyPath: 'position',
-				read(root) {
-					return root.position.clone()
+			commit([
+				{
+					object: objectSelection.selectedObjects[0],
+					read(root) {
+						return root.position.clone()
+					},
+					write(root, data) {
+						root.position.copy(data)
+					},
+					value,
+					sync: userData
+						? {
+								attributeName: 'position',
+								componentIndex: userData.index,
+								moduleId: userData.moduleId,
+								signature: userData.signature,
+							}
+						: undefined,
 				},
-				write(root, data) {
-					root.position.copy(data)
-				},
-				value,
-				sync(value) {
-					return [value.x, value.y, value.z]
-				},
-			})
+			])
 		}
 		initialValue = undefined
 	}

@@ -1,4 +1,4 @@
-import type { Transaction } from './TransactionQueue'
+import type { TransactionQueueCommitArgs } from './TransactionQueue'
 
 export const transactionsScope = 'transactions'
 
@@ -9,7 +9,7 @@ export type TransactionsState = {
 
 export type TransactionsActions = {
 	setEnabled: (enabled: boolean) => void
-	commit: <T, U, Q>(transaction: Transaction<T, U, Q>) => void
+	commit: (transactions: TransactionQueueCommitArgs) => void
 	undo: () => void
 	redo: () => void
 }

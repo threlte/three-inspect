@@ -39,9 +39,7 @@
 	{label}
 	on:change
 	on:change={(e) => {
-		objects.forEach((object) => {
-			commit(buildTransaction(object, key, e.detail.value))
-		})
+		commit(objects.map((object) => buildTransaction(object, key, e.detail.value)))
 	}}
 	{...rest}
 />

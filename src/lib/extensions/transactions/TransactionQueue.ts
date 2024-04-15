@@ -12,8 +12,10 @@ export type Transaction<T, U> = {
 	/** Write a value on the object from the format resolved by the read property */
 	write: (root: T, data: U) => void
 	/** The sync configuration */
-	sync?: SyncRequest
+	sync?: Omit<SyncRequest, 'attributeValue'>
 }
+
+export type TransactionQueueCommitArgs = Transaction<any, any>[]
 
 type TransactionQueueItem = Transaction<any, any> & {
 	historicValue: any
@@ -69,9 +71,9 @@ type TransactionQueueItem = Transaction<any, any> & {
  */
 export class TransactionQueue {
 	/** Queue of transactions that have been commited and can be undone */
-	public commitedQueue: TransactionQueueItem[] = []
+	public commitedQueue: TransactionQueueItem[][] = []
 	/** Queue of transactions that have been undone and can be redone */
-	public undoneQueue: TransactionQueueItem[] = []
+	public undoneQueue: TransactionQueueItem[][] = []
 
 	public syncQueue = new SyncQueue()
 
@@ -81,71 +83,70 @@ export class TransactionQueue {
 		public onRedo?: () => void,
 	) {}
 
-	commit<T, U>(transaction: Transaction<T, U>) {
-		// const { target, key } = resolvePropertyPath(transaction.object, transaction.propertyPath)
-		const transactionQueueItem: TransactionQueueItem = {
-			...transaction,
-			historicValue: transaction.read(transaction.object),
-		}
-		transaction.write(transaction.object, transaction.value)
-		this.commitedQueue.push(transactionQueueItem)
+	commit(transactions: TransactionQueueCommitArgs) {
+		const transactionQueueItems: TransactionQueueItem[] = transactions.map((transaction) => {
+			return {
+				...transaction,
+				historicValue: transaction.read(transaction.object),
+			}
+		})
+		transactions.forEach((transaction) => {
+			transaction.write(transaction.object, transaction.value)
+		})
+
+		this.commitedQueue.push(transactionQueueItems)
 		this.undoneQueue = []
 		this.onCommit?.()
 
-		if (transaction.sync) {
-			this.syncQueue.add(transaction.sync)
-		}
+		transactions.forEach((transaction) => {
+			if (transaction.sync) {
+				this.syncQueue.add({
+					...transaction.sync,
+					attributeValue: transaction.value,
+				})
+			}
+		})
 	}
 
 	undo() {
-		const transaction = this.commitedQueue.pop()
-		if (!transaction) return
+		const transactions = this.commitedQueue.pop()
+		if (!transactions) return
 
-		// const userData = getThrelteStudioUserData(transaction.object)
-		// if (!userData) {
-		// 	throw new Error('Cannot commit transaction without inspectorOptions')
-		// }
+		transactions.forEach((transaction) => {
+			transaction.write(transaction.object, transaction.historicValue)
+		})
 
-		transaction.write(transaction.object, transaction.historicValue)
-		this.undoneQueue.push(transaction)
-
-		// this.syncQueue.add({
-		// 	attributeName: transaction.propertyPath,
-		// 	attributeValue: transaction.sync
-		// 		? transaction.sync(transaction.historicValue)
-		// 		: transaction.historicValue,
-		// 	componentIndex: 0,
-		// 	id: userData.moduleId,
-		// 	moduleId: userData.moduleId,
-		// 	parserType: 'json',
-		// 	signature: userData.signature,
-		// })
-
+		this.undoneQueue.push(transactions)
 		this.onUndo?.()
+
+		transactions.forEach((transaction) => {
+			if (transaction.sync) {
+				this.syncQueue.add({
+					...transaction.sync,
+					attributeValue: transaction.historicValue,
+				})
+			}
+		})
 	}
 
 	redo() {
-		const transaction = this.undoneQueue.pop()
-		if (!transaction) return
+		const transactions = this.undoneQueue.pop()
+		if (!transactions) return
 
-		// const userData = getThrelteStudioUserData(transaction.object)
-		// if (!userData) {
-		// 	throw new Error('Cannot commit transaction without inspectorOptions')
-		// }
+		transactions.forEach((transaction) => {
+			transaction.write(transaction.object, transaction.value)
+		})
 
-		transaction.write(transaction.object, transaction.value)
-		this.commitedQueue.push(transaction)
-
-		// this.syncQueue.add({
-		// 	attributeName: transaction.propertyPath,
-		// 	attributeValue: transaction.sync ? transaction.sync(transaction.value) : transaction.value,
-		// 	componentIndex: 0,
-		// 	id: userData.moduleId,
-		// 	moduleId: userData.moduleId,
-		// 	parserType: 'json',
-		// 	signature: userData.signature,
-		// })
-
+		this.commitedQueue.push(transactions)
 		this.onRedo?.()
+
+		transactions.forEach((transaction) => {
+			if (transaction.sync) {
+				this.syncQueue.add({
+					...transaction.sync,
+					attributeValue: transaction.value,
+				})
+			}
+		})
 	}
 }

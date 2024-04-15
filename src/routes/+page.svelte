@@ -6,13 +6,15 @@
 
 <Canvas>
 	<Studio>
-		<T.Mesh>
+		<T.Mesh scale={[2,2,2]} position={[-3,0.9,0]}>
 			<T.BoxGeometry args={[1, 1, 1]} />
 			<T.MeshBasicMaterial color="orange" />
 		</T.Mesh>
+
 		<T.Mesh
-			position.y={2}
 			material={new MeshBasicMaterial()}
+			position={[4.2,-2.8000000000000003,-1.8]}
+			scale={[2,2,2]}
 		>
 			<T.BoxGeometry args={[1, 1, 1]} />
 		</T.Mesh>

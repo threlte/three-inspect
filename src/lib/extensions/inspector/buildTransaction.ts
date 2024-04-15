@@ -37,7 +37,6 @@ export const buildTransaction = (object: any, propertyPath: string, value: any) 
 		sync: userData
 			? {
 					attributeName: [...(userData.pathItems ?? []), propertyPath].join('.'),
-					attributeValue: value,
 					componentIndex: userData.index,
 					moduleId: userData.moduleId,
 					signature: userData.signature,
