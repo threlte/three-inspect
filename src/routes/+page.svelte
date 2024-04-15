@@ -1,20 +1,20 @@
 <script lang="ts">
 	import { Canvas, T } from '@threlte/core'
-	import Studio from '../lib/components/Studio/Studio.svelte'
 	import { MeshBasicMaterial } from 'three'
-	import { browser } from '../lib/internal/browser'
-
-	if (browser) {
-		console.log('Browser detected')
-		window.console.trace = () => {}
-	}
+	import Studio from '../lib/components/Studio/Studio.svelte'
 </script>
 
 <Canvas>
 	<Studio>
+		<T.PerspectiveCamera
+			makeDefault
+			position={[0,5,12]}
+			far={30}
+		/>
+
 		<T.Mesh
 			scale={[2, 2, 2]}
-			position={[0.30000000000000004,0.9,0]}
+			position={[0.30000000000000004, 0.9, 0]}
 		>
 			<T.BoxGeometry args={[1, 1, 1]} />
 			<T.MeshBasicMaterial color="#ffa500" />
@@ -22,7 +22,7 @@
 
 		<T.Mesh
 			material={new MeshBasicMaterial()}
-			position={[4.2, -2.8000000000000003, -1.8]}
+			position={[1.3, 8, 1]}
 			scale={[2, 2, 2]}
 			material.color="#ffffff"
 		>

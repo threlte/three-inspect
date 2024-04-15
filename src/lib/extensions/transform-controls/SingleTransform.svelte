@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { TransformControls } from '@threlte/extras'
 	import { onDestroy } from 'svelte'
+	import type { Group } from 'three'
+	import type { TransformControls as TC } from 'three/examples/jsm/controls/TransformControls.js'
 	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 	import { useStudio } from '../../internal/extensions'
 	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
 	import { useSnapping } from '../snapping/useSnapping.svelte'
 	import { useSpace } from '../space/useSpace'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 	import { useTransactions } from '../transactions/useTransactions'
 	import { getThrelteStudioUserData } from '../transactions/vite-plugin/runtimeUtils'
 	import {
@@ -13,7 +16,6 @@
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from './types'
-	import { useRegisterControlObjects } from './useRegisterControlObjects.svelte'
 
 	const { getExtension } = useStudio()
 	const transformControlsExtension = getExtension<
@@ -28,7 +30,9 @@
 
 	const mode = $derived(transformControlsExtension.state.mode)
 
-	const reg = useRegisterControlObjects()
+	const { studioObjectRef } = useStudioObjectsRegistry()
+	const controls = studioObjectRef<TC>()
+	const group = studioObjectRef<Group>()
 
 	onDestroy(() => {
 		transformControlsExtension.run('setInUse', false)
@@ -92,6 +96,6 @@
 		transformControlsExtension.run('setInUse', false)
 		onMouseUp()
 	}}
-	bind:controls={reg.controls}
-	bind:group={reg.group}
+	bind:controls={controls.ref}
+	bind:group={group.ref}
 />

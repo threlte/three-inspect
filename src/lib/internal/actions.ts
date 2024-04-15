@@ -1,5 +1,6 @@
-import type { SubImmerStore } from 'svelte-immer-store'
-import type { ExtensionAction, ExtensionActions } from './types'
+import result from 'postcss/lib/result'
+import { setStateDangerously } from './setStateDangerously'
+import type { ExtensionActions } from './types'
 
 export const createActions = () => {
 	const actions = new Map<string, ExtensionActions<Record<string, any>>>()
@@ -27,8 +28,7 @@ export const createActions = () => {
 
 		const action = extensionActions[actionId]
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		return action({ state }, ...args)
+		return setStateDangerously(() => action({ state }, ...args))
 	}
 
 	return {

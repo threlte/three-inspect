@@ -1,3 +1,4 @@
+import { onDestroy } from 'svelte'
 import { Set } from 'svelte/reactivity'
 import type { Object3D } from 'three'
 import { useStudio } from '../../internal/extensions'
@@ -7,6 +8,9 @@ import {
 	type StudioObjectsRegistryState,
 } from './types'
 
+const isObject3D = (object: any): object is Object3D => {
+	return 'isObject3D' in object
+}
 export const useStudioObjectsRegistry = () => {
 	const { getExtension } = useStudio()
 	const extension = getExtension<Partial<StudioObjectsRegistryState>, StudioObjectsRegistryActions>(
@@ -30,6 +34,43 @@ export const useStudioObjectsRegistry = () => {
 		return false
 	}
 
+	const studioObjectRef = <T extends Object3D>() => {
+		const objects = new Set<Object3D>()
+
+		let ref = $state<T | undefined>()
+
+		const studioObjectsRegistry = useStudioObjectsRegistry()
+
+		$effect(() => {
+			if (!ref) return
+			objects.add(ref)
+			ref.traverse((node: any) => {
+				if (isObject3D(node)) {
+					objects.add(node)
+				}
+				node.userData.ignoreOverrideMaterial = true
+			})
+			objects.forEach((object) => {
+				studioObjectsRegistry.addObject(object)
+			})
+		})
+
+		onDestroy(() => {
+			objects.forEach((object) => {
+				studioObjectsRegistry.removeObject(object)
+			})
+		})
+
+		return {
+			get ref() {
+				return ref
+			},
+			set ref(value: T | undefined) {
+				ref = value
+			},
+		}
+	}
+
 	return {
 		addObject,
 		removeObject,
@@ -37,5 +78,6 @@ export const useStudioObjectsRegistry = () => {
 			return objects
 		},
 		isOrIsChildOfStudioObject,
+		studioObjectRef,
 	}
 }

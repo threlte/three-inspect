@@ -1,20 +1,19 @@
 <script lang="ts">
 	import { T } from '@threlte/core'
-	import { onDestroy } from 'svelte'
 	import * as THREE from 'three'
 	import { Line2 } from 'three/examples/jsm/lines/Line2.js'
 	import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'
 	import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
+
+	const { studioObjectRef } = useStudioObjectsRegistry()
+	let axesHelper = studioObjectRef<Line2>()
 
 	export let length = 1
 	export let width = 0.2
 	export let colors = ['red', 'green', 'blue']
 	export let opacity = 1
 	export let overlay = false
-	export let onCreate: (e: {
-		ref: Line2
-		cleanup: (callback: () => void) => void
-	}) => void = () => {}
 
 	const lineGeometry = new LineGeometry()
 	const lineMaterial = new LineMaterial({
@@ -56,6 +55,6 @@
 
 <T
 	userData={{ ignoreOverrideMaterial: true }}
-	on:create={onCreate}
 	is={line2}
+	bind:ref={axesHelper.ref}
 ></T>

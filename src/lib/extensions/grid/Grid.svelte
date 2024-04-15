@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Grid } from '@threlte/extras'
 	import {
 		Color,
 		RadioGrid,
@@ -6,17 +7,19 @@
 		type ColorValue,
 		type RadioGridChangeEvent,
 	} from 'svelte-tweakpane-ui'
+	import type { Mesh } from 'three'
 	import DropDownPane from '../../components/DropDownPane/DropDownPane.svelte'
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
 	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
 	import { useStudio } from '../../internal/extensions'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
-	import { Grid } from '@threlte/extras'
 	import { gridScope, type GridActions, type GridState } from './types'
 
 	const { useExtension } = useStudio()
 	const studioObjectsRegistry = useStudioObjectsRegistry()
+
+	let grid = studioObjectsRegistry.studioObjectRef<Mesh>()
 
 	const { state, run: runGridAction } = useExtension<GridState, GridActions>({
 		scope: gridScope,
@@ -98,12 +101,6 @@
 
 {#if state.enabled}
 	<Grid
-		on:create={({ ref, cleanup }) => {
-			studioObjectsRegistry.addObject(ref)
-			cleanup(() => {
-				studioObjectsRegistry.removeObject(ref)
-			})
-		}}
 		userData={{ ignoreOverrideMaterial: true }}
 		infiniteGrid
 		cellSize={state.step}
@@ -111,5 +108,6 @@
 		cellColor={state.color}
 		plane={state.plane}
 		renderOrder={9999}
+		bind:ref={grid.ref}
 	/>
 {/if}

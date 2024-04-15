@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { T } from '@threlte/core'
+	import { T, useThrelte } from '@threlte/core'
 	import { Gizmo } from '@threlte/extras'
 	import { Light, Object3D, type Camera, type Group } from 'three'
 	import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js'
@@ -14,6 +14,7 @@
 	import Mounter from './Mounter.svelte'
 	import { helpersScope, type HelpersActions, type HelpersState } from './types'
 
+	const { camera } = useThrelte()
 	const { useExtension } = useStudio()
 
 	const { state, run } = useExtension<HelpersState, HelpersActions>({
@@ -83,7 +84,6 @@
 	<AxesHelper
 		length={999}
 		width={0.2}
-		{onCreate}
 	/>
 
 	{#each objectSelection.selectedObjects as object (object.uuid)}
@@ -91,7 +91,6 @@
 			<AxesHelper
 				length={0.5}
 				width={0.2}
-				{onCreate}
 				opacity={0.3}
 				overlay
 			/>

@@ -64,7 +64,6 @@
 		const item = new TreeViewItem({ text })
 		item.open = true
 		item.selected = objectSelection.selectedObjects.includes(object)
-		// item.selected = object3D === $selectedObject
 		objectToTreeItem.set(object, item)
 		treeItemToObject.set(item, object)
 
@@ -117,10 +116,6 @@
 		if (studioObjectsRegistry.isOrIsChildOfStudioObject(object)) return
 		deregister(object)
 	})
-
-	for (const child of scene.children) {
-		register(child)
-	}
 
 	const noUndef = <T,>(v: T | undefined): v is T => v !== undefined
 

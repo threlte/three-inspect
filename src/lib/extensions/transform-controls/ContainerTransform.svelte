@@ -2,18 +2,19 @@
 	import { T } from '@threlte/core'
 	import { TransformControls } from '@threlte/extras'
 	import { onDestroy } from 'svelte'
-	import { Box3, Object3D, Vector3 } from 'three'
+	import { Box3, Object3D, Vector3, type Group } from 'three'
+	import type { TransformControls as TC } from 'three/examples/jsm/controls/TransformControls.js'
 	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 	import { useStudio } from '../../internal/extensions'
 	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
 	import { useSnapping } from '../snapping/useSnapping.svelte'
 	import { useSpace } from '../space/useSpace'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 	import {
 		transformControlsScope,
 		type TransformControlsActions,
 		type TransformControlsState,
 	} from './types'
-	import { useRegisterControlObjects } from './useRegisterControlObjects.svelte'
 
 	const objectSelection = useObjectSelection()
 	const { getExtension } = useStudio()
@@ -24,7 +25,11 @@
 	>(transformControlsScope)
 	const space = useSpace()
 	const snapping = useSnapping()
-	const reg = useRegisterControlObjects()
+
+	const { studioObjectRef } = useStudioObjectsRegistry()
+	const controls = studioObjectRef<TC>()
+	const group = studioObjectRef<Group>()
+	const center = studioObjectRef<Object3D>()
 
 	const mode = $derived(transformControlsExtension.state.mode)
 
@@ -76,7 +81,10 @@
 	})
 </script>
 
-<T is={centerObject} />
+<T
+	is={centerObject}
+	bind:ref={center.ref}
+/>
 
 <TransformControls
 	object={centerObject}
@@ -92,6 +100,6 @@
 		transformControlsExtension.run('setInUse', false)
 	}}
 	{mode}
-	bind:controls={reg.controls}
-	bind:group={reg.group}
+	bind:controls={controls.ref}
+	bind:group={group.ref}
 />
