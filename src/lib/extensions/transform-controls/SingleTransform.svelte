@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { TransformControls } from '@threlte/extras'
 	import { onDestroy } from 'svelte'
-	import { Quaternion, Vector3, type Group } from 'three'
+	import { Euler, Vector3, type Group } from 'three'
 	import type { TransformControls as TC } from 'three/examples/jsm/controls/TransformControls.js'
 	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 	import { useStudio } from '../../internal/extensions'
@@ -44,12 +44,12 @@
 
 	let initialValue = {
 		position: new Vector3(),
-		quaternion: new Quaternion(),
+		rotation: new Euler(),
 		scale: new Vector3(),
 	}
 	const onMouseDown = () => {
 		initialValue.position.copy(object.position)
-		initialValue.quaternion.copy(object.quaternion)
+		initialValue.rotation.copy(object.rotation)
 		initialValue.scale.copy(object.scale)
 	}
 
@@ -60,12 +60,12 @@
 
 		const value = {
 			position: object.position.clone(),
-			quaternion: object.quaternion.clone(),
+			rotation: object.rotation.clone(),
 			scale: object.scale.clone(),
 		}
 		const props = Object.keys(value) as unknown as (keyof typeof value)[]
 		object.position.copy(initialValue.position)
-		object.quaternion.copy(initialValue.quaternion)
+		object.rotation.copy(initialValue.rotation)
 		object.scale.copy(initialValue.scale)
 		commit(
 			props.map((prop) => ({
