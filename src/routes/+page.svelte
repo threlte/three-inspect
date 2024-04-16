@@ -28,7 +28,7 @@
 
 		<T.Mesh
 			material={new MeshStandardMaterial()}
-			position={[0, 1, 0]}
+			position={[0,1,0]}
 			scale={[2, 2, 2]}
 			material.color="#2afc71"
 			material.visible

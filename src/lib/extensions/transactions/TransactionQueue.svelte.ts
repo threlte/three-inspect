@@ -99,6 +99,8 @@ export class TransactionQueue {
 
 	public syncQueue: SyncRequest[] = $state([])
 
+	private syncTimeout: ReturnType<typeof setTimeout> | undefined
+
 	constructor(
 		public onCommit?: () => void,
 		public onUndo?: () => void,
@@ -184,10 +186,14 @@ export class TransactionQueue {
 			...request,
 			attributeValue: value,
 		})
-		// this.sync()
 	}
 
-	async sync() {
+	sync() {
+		if (this.syncTimeout) clearTimeout(this.syncTimeout)
+		this.syncTimeout = setTimeout(() => this.doSync(), 300)
+	}
+
+	private async doSync() {
 		while (this.syncQueue.length > 0) {
 			const request = this.syncQueue.shift()
 			if (!request) return

@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { injectPlugin, useThrelte } from '@threlte/core'
 	import { onMount } from 'svelte'
-	import { Checkbox, RadioGrid, Element } from 'svelte-tweakpane-ui'
+	import { Checkbox, Element, RadioGrid } from 'svelte-tweakpane-ui'
 	import DropDownPane from '../../components/DropDownPane/DropDownPane.svelte'
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
 	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
 	import { useStudio } from '../../internal/extensions'
+	import Changes from './Changes.svelte'
 	import { TransactionQueue } from './TransactionQueue.svelte'
 	import { transactionsScope, type TransactionsActions, type TransactionsState } from './types'
 	import type { StudioProps } from './vite-plugin/types'
-	import Changes from './Changes.svelte'
 
 	const { useExtension } = useStudio()
 	const { invalidate } = useThrelte()
@@ -98,6 +98,7 @@
 			return {
 				undo: meta('z'),
 				redo: shift(meta('z')),
+				sync: meta('s'),
 			}
 		},
 	})
@@ -107,6 +108,15 @@
 			run('sync')
 		}
 	})
+
+	const tooltip = $derived.by(() => {
+		if (!state.enabled) return 'Sync disabled'
+		if (state.mode === 'manual') {
+			if (!state.queue.syncQueue.length) return 'Up-to-date'
+			return `Sync ${state.queue.syncQueue.length} change${state.queue.syncQueue.length > 1 ? 's' : ''}`
+		}
+		return 'Auto-sync'
+	})
 </script>
 
 <ToolbarItem position="right">
@@ -115,9 +125,11 @@
 			success={state.enabled && state.mode === 'auto'}
 			warn={state.enabled && state.mode === 'manual' && state.queue.syncQueue.length > 0}
 			disabled={!state.enabled}
-			icon="mdiContentSave"
+			icon={state.mode === 'auto' && state.queue.syncQueue.length > 0
+				? 'mdiLoading'
+				: 'mdiContentSave'}
 			label="Sync"
-			tooltip="Sync"
+			{tooltip}
 			on:click={() => {
 				run('sync')
 			}}
