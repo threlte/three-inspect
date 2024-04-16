@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Canvas, T } from '@threlte/core'
-	import { MeshBasicMaterial, MeshStandardMaterial, DirectionalLight, AmbientLight } from 'three'
+	import { MeshStandardMaterial } from 'three'
 	import Studio from '../lib/components/Studio/Studio.svelte'
 </script>
 
@@ -8,7 +8,7 @@
 	<Studio>
 		<T.PerspectiveCamera
 			makeDefault
-			position={[0, 5, 12]}
+			position={[0, 0, 10]}
 			far={30}
 		/>
 
@@ -17,25 +17,26 @@
 
 		<T.Mesh
 			scale={[2, 2, 2]}
-			position={[0, -0.9999999999999984, 0]}
+			position={[0, -1, 0]}
 		>
 			<T.BoxGeometry args={[1, 1, 1]} />
 			<T.MeshStandardMaterial
-				color="#ffa500"
+				color="#2afc71"
 				roughness={1}
 			/>
 		</T.Mesh>
 
 		<T.Mesh
 			material={new MeshStandardMaterial()}
-			position={[-1,0.9999999999999979,0]}
+			position={[0, 1, 0]}
 			scale={[2, 2, 2]}
-			material.color="#ffffff"
+			material.color="#2afc71"
 			material.visible
 			material.transparent={false}
 			material.opacity={1}
 			material.roughness={1}
 			material.metalness={0}
+			material.emissiveIntensity={0}
 		>
 			<T.BoxGeometry args={[1, 1, 1]} />
 		</T.Mesh>

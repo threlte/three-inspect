@@ -159,6 +159,7 @@
 		title="Default Camera"
 		userExpandable={false}
 		expanded
+		resizable={false}
 		padding={'6px'}
 		storePositionLocally={false}
 		x={99999}

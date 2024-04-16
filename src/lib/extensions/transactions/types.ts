@@ -1,15 +1,21 @@
-import type { TransactionQueueCommitArgs } from './TransactionQueue'
+import type { TransactionQueue, TransactionQueueCommitArgs } from './TransactionQueue.svelte'
 
 export const transactionsScope = 'transactions'
 
 export type TransactionsState = {
 	enabled: boolean
 	mode: 'auto' | 'manual'
+	precision: number
+	queue: TransactionQueue
 }
 
 export type TransactionsActions = {
+	toggleEnabled: () => void
 	setEnabled: (enabled: boolean) => void
+	setPrecision: (precision: number) => void
+	setMode: (mode: TransactionsState['mode']) => void
 	commit: (transactions: TransactionQueueCommitArgs) => void
 	undo: () => void
 	redo: () => void
+	sync: () => void
 }

@@ -1,48 +1,19 @@
 <script lang="ts">
 	import { injectPlugin, useThrelte } from '@threlte/core'
+	import { onMount } from 'svelte'
+	import { Checkbox, RadioGrid, Element } from 'svelte-tweakpane-ui'
+	import DropDownPane from '../../components/DropDownPane/DropDownPane.svelte'
+	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
+	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
+	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
 	import { useStudio } from '../../internal/extensions'
-	import { TransactionQueue } from './TransactionQueue'
+	import { TransactionQueue } from './TransactionQueue.svelte'
 	import { transactionsScope, type TransactionsActions, type TransactionsState } from './types'
 	import type { StudioProps } from './vite-plugin/types'
-	import { onMount } from 'svelte'
+	import Changes from './Changes.svelte'
 
 	const { useExtension } = useStudio()
 	const { invalidate } = useThrelte()
-
-	const queue = new TransactionQueue()
-
-	useExtension<TransactionsState, TransactionsActions>({
-		scope: transactionsScope,
-		state: ({ persist }) => {
-			return {
-				enabled: persist<boolean>(true),
-				mode: persist<'auto' | 'manual'>('auto'),
-			}
-		},
-		actions: {
-			setEnabled({ state }, enabled) {
-				state.enabled = enabled
-			},
-			commit(_, transaction) {
-				queue.commit(transaction)
-				invalidate()
-			},
-			undo() {
-				queue.undo()
-				invalidate()
-			},
-			redo() {
-				queue.redo()
-				invalidate()
-			},
-		},
-		keyMap({ meta, shift }) {
-			return {
-				undo: meta('z'),
-				redo: shift(meta('z')),
-			}
-		},
-	})
 
 	const applyToProperties = ['shadow', 'light', 'material', 'camera']
 
@@ -83,6 +54,98 @@
 			pluginProps: ['threlteStudio'],
 		}
 	})
+
+	const { run, state } = useExtension<TransactionsState, TransactionsActions>({
+		scope: transactionsScope,
+		state: ({ persist }) => {
+			return {
+				enabled: persist<boolean>(true),
+				mode: persist<'auto' | 'manual'>('auto'),
+				precision: persist<number>(4),
+				queue: new TransactionQueue(),
+			}
+		},
+		actions: {
+			toggleEnabled({ state }) {
+				state.enabled = !state.enabled
+			},
+			setEnabled({ state }, enabled) {
+				state.enabled = enabled
+			},
+			setMode({ state }, mode) {
+				state.mode = mode
+			},
+			setPrecision({ state }, precision) {
+				state.precision = precision
+			},
+			commit({ state }, transaction) {
+				state.queue.commit(transaction)
+				invalidate()
+			},
+			undo({ state }) {
+				state.queue.undo()
+				invalidate()
+			},
+			redo({ state }) {
+				state.queue.redo()
+				invalidate()
+			},
+			sync({ state }) {
+				state.queue.sync()
+			},
+		},
+		keyMap({ meta, shift }) {
+			return {
+				undo: meta('z'),
+				redo: shift(meta('z')),
+			}
+		},
+	})
+
+	$effect(() => {
+		if (state.enabled && state.mode === 'auto' && state.queue.syncQueue.length) {
+			run('sync')
+		}
+	})
 </script>
+
+<ToolbarItem position="right">
+	<HorizontalButtonGroup>
+		<ToolbarButton
+			success={state.enabled && state.mode === 'auto'}
+			warn={state.enabled && state.mode === 'manual' && state.queue.syncQueue.length > 0}
+			disabled={!state.enabled}
+			icon="mdiContentSave"
+			label="Sync"
+			tooltip="Sync"
+			on:click={() => {
+				run('sync')
+			}}
+		/>
+
+		<DropDownPane title="Sync Settings">
+			<Checkbox
+				label="Enabled"
+				value={state.enabled}
+				on:change={(e) => {
+					run('setEnabled', e.detail.value)
+				}}
+			/>
+			<RadioGrid
+				label="Mode"
+				columns={2}
+				values={['manual', 'auto']}
+				on:change={(e) => {
+					run('setMode', e.detail.value as 'manual' | 'auto')
+				}}
+				value={state.mode}
+			/>
+
+			<Element>
+				<Changes />
+			</Element>
+		</DropDownPane>
+	</HorizontalButtonGroup>
+</ToolbarItem>
 
 <slot />

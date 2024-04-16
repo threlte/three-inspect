@@ -224,6 +224,12 @@ export const markupSignature = (markup: MagicString): string => {
 	return createHash('sha256').update(JSON.stringify(nodes)).digest('hex')
 }
 
+const stringifyAttributeValue = (value: unknown, precision = 4): string => {
+	return JSON.stringify(value, (_, val) => {
+		return val.toFixed ? Number(val.toFixed(precision)) : val
+	})
+}
+
 /**
  * Upserts an attribute to a `<T>` component.
  */
@@ -233,6 +239,7 @@ export const upsertAttribute = (
 	attributeName: string,
 	value: unknown,
 	position: 'first' | 'last',
+	precision?: number,
 ) => {
 	const attribute = node.attributes.find((attr) => attr.name === attributeName)
 
@@ -245,7 +252,7 @@ export const upsertAttribute = (
 				markup.appendLeft(attribute.end, `="${value}"`)
 			} else {
 				// it's a mustache tag value, so we need to stringify it: `name` -> `name={value}`
-				markup.appendLeft(attribute.end, `={${JSON.stringify(value)}}`)
+				markup.appendLeft(attribute.end, `={${stringifyAttributeValue(value, precision)}}`)
 			}
 		} else if (isAttributeWithTextValue(attribute)) {
 			const firstValue = attribute.value[0]
@@ -257,7 +264,11 @@ export const upsertAttribute = (
 				markup.remove(firstValue.start - 2, firstValue.end + 1)
 			} else {
 				// it's a mustache tag value, so we need to stringify it: `name="old"` -> `name={new}`
-				markup.overwrite(firstValue.start - 1, firstValue.end + 1, `{${JSON.stringify(value)}}`)
+				markup.overwrite(
+					firstValue.start - 1,
+					firstValue.end + 1,
+					`{${stringifyAttributeValue(value, precision)}}`,
+				)
 			}
 		} else if (isAttributeWithMustacheTagValue(attribute)) {
 			const firstValue = attribute.value[0]
@@ -269,7 +280,11 @@ export const upsertAttribute = (
 				markup.remove(firstValue.start - 1, firstValue.end)
 			} else {
 				// it's a mustache tag value, so we can update it: `name={old}` -> `name={new}`
-				markup.overwrite(firstValue.start + 1, firstValue.end - 1, JSON.stringify(value))
+				markup.overwrite(
+					firstValue.start + 1,
+					firstValue.end - 1,
+					stringifyAttributeValue(value, precision),
+				)
 			}
 		} else if (isAttributeWithShorthandValue(attribute)) {
 			if (typeof value === 'string') {
@@ -283,7 +298,7 @@ export const upsertAttribute = (
 				markup.overwrite(
 					attribute.start,
 					attribute.end,
-					`${attributeName}={${JSON.stringify(value)}}`,
+					`${attributeName}={${stringifyAttributeValue(value, precision)}}`,
 				)
 			}
 		}
@@ -307,7 +322,10 @@ export const upsertAttribute = (
 		} else if (typeof value === 'string') {
 			markup.appendLeft(start, `${space}${indent}${attributeName}="${value}"`)
 		} else {
-			markup.appendLeft(start, `${space}${indent}${attributeName}={${JSON.stringify(value)}}`)
+			markup.appendLeft(
+				start,
+				`${space}${indent}${attributeName}={${stringifyAttributeValue(value, precision)}}`,
+			)
 		}
 	}
 }

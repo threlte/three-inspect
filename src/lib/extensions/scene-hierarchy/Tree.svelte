@@ -5,7 +5,7 @@
 	import { useOnAdd } from '../../hooks/useOnAdd'
 	import { useOnRemove } from '../../hooks/useOnRemove'
 	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
-	import { tick } from 'svelte'
+	import { onMount, tick } from 'svelte'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 
 	const treeview = new TreeViewWebComponent()
@@ -32,6 +32,8 @@
 	objectToTreeItem.set(scene, treeroot)
 
 	const deregister = (object: THREE.Object3D) => {
+		if (studioObjectsRegistry.isOrIsChildOfStudioObject(object)) return
+
 		object.traverse((child) => {
 			if (object !== child) {
 				deregister(child)
@@ -57,6 +59,9 @@
 	let observeChanges = true
 
 	const register = (object: THREE.Object3D) => {
+		if (studioObjectsRegistry.isOrIsChildOfStudioObject(object)) {
+			return
+		}
 		const { parent } = object
 		const name = object.name
 		const parentItem = parent === scene ? treeroot : objectToTreeItem.get(parent!)
@@ -81,9 +86,19 @@
 		}
 
 		for (const child of object.children) {
-			register(child)
+			if (!studioObjectsRegistry.isOrIsChildOfStudioObject(object)) {
+				register(child)
+			}
 		}
 	}
+
+	let initialized = $state(false)
+	onMount(() => {
+		scene.children.forEach((object) => {
+			register(object)
+		})
+		initialized = true
+	})
 
 	const handleSelect = async (item: TreeViewItem) => {
 		if (!observeChanges) return
@@ -104,16 +119,14 @@
 	treeview.on('select', handleSelect)
 
 	useOnAdd(async (object) => {
+		if (!initialized) return
 		await tick()
-		if (studioObjectsRegistry.isOrIsChildOfStudioObject(object)) {
-			return
-		}
 		register(object)
 	})
 
 	useOnRemove(async (object) => {
+		if (!initialized) return
 		await tick()
-		if (studioObjectsRegistry.isOrIsChildOfStudioObject(object)) return
 		deregister(object)
 	})
 

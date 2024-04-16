@@ -13,16 +13,25 @@
 	import CameraControls from './CameraControls.svelte'
 	import DefaultCamera from './DefaultCamera.svelte'
 	import { editorCameraScope, type EditorCameraActions, type EditorCameraState } from './types'
+	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
 
 	const { useExtension } = useStudio()
 	const { camera } = useThrelte()
+	const { addObject, removeObject } = useStudioObjectsRegistry()
 
 	const editorCameraPerspective = new PerspectiveCamera()
 	editorCameraPerspective.userData.editorCamera = true
 	editorCameraPerspective.userData.perspective = true
+	addObject(editorCameraPerspective)
 	const editorCameraOrthographic = new OrthographicCamera()
 	editorCameraOrthographic.userData.editorCamera = true
 	editorCameraOrthographic.userData.orthographic = true
+	addObject(editorCameraOrthographic)
+
+	onDestroy(() => {
+		removeObject(editorCameraPerspective)
+		removeObject(editorCameraOrthographic)
+	})
 
 	let cameraControls: CC | undefined
 

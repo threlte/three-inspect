@@ -1,5 +1,5 @@
 import { resolvePropertyPath } from '@threlte/core'
-import type { Transaction } from '../transactions/TransactionQueue'
+import type { Transaction } from '../transactions/TransactionQueue.svelte'
 import { getThrelteStudioUserData } from '../transactions/vite-plugin/runtimeUtils'
 
 export const buildTransaction = (object: any, propertyPath: string, value: any) => {

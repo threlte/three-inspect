@@ -17,7 +17,7 @@
 	} from './types'
 	import { getThrelteStudioUserData } from '../transactions/vite-plugin/runtimeUtils'
 	import { useTransactions } from '../transactions/useTransactions'
-	import type { Transaction } from '../transactions/TransactionQueue'
+	import type { Transaction } from '../transactions/TransactionQueue.svelte'
 
 	const objectSelection = useObjectSelection()
 	const { getExtension } = useStudio()

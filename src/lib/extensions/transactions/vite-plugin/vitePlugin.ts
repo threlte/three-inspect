@@ -56,6 +56,7 @@ export const plugin: () => Plugin = () => {
 						transaction.attributeName,
 						transaction.attributeValue,
 						'last',
+						transaction.precision,
 					)
 					const finalComponent = componentUtils.assembleComponent(
 						magicMarkup,

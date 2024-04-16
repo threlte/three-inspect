@@ -1,5 +1,5 @@
 import { useStudio } from '../../internal/extensions'
-import type { TransactionQueueCommitArgs } from './TransactionQueue'
+import type { TransactionQueueCommitArgs } from './TransactionQueue.svelte'
 import { transactionsScope, type TransactionsActions, type TransactionsState } from './types'
 
 export const useTransactions = () => {

@@ -5,7 +5,8 @@ export type ServerFunctions = {
 		componentIndex: number
 		moduleId: string
 		signature: string
+		precision?: number
 	}) => void
 }
 
-export type ClientFunctions = {}
+export type ClientFunctions = Record<string, never>

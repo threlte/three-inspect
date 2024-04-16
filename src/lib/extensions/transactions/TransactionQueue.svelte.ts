@@ -1,6 +1,28 @@
 /* eslint-disable max-classes-per-file */
 
-import { SyncQueue, type SyncRequest } from './SyncQueue'
+import type { Color, Euler, Vector3 } from 'three'
+import { clientRpc } from './vite-plugin/clientRpc'
+
+export type SyncRequest = {
+	/** The name of the component attribute, e.g. `"position"` or `"position.x"` */
+	attributeName: string
+	/** The value of the component attribute derived by the value of the transaction */
+	attributeValue: any
+	/** The index of the component */
+	componentIndex: number
+	/** The module id of the component */
+	moduleId: string
+	/** The signature of the component */
+	signature: string
+	/** The decimal precision of floats, defaults to 4 */
+	precision?: number
+}
+
+const parser = {
+	isVector3: (value: Vector3) => [value.x, value.y, value.z],
+	isEuler: (value: Euler) => [value.x, value.y, value.z],
+	isColor: (value: Color) => `#${value.getHexString()}`,
+} satisfies Record<string, (value: any) => any>
 
 export type Transaction<T, U> = {
 	/** The object to modify */
@@ -71,11 +93,11 @@ type TransactionQueueItem = Transaction<any, any> & {
  */
 export class TransactionQueue {
 	/** Queue of transactions that have been commited and can be undone */
-	public commitedQueue: TransactionQueueItem[][] = []
+	private commitedQueue: TransactionQueueItem[][] = $state([])
 	/** Queue of transactions that have been undone and can be redone */
-	public undoneQueue: TransactionQueueItem[][] = []
+	private undoneQueue: TransactionQueueItem[][] = $state([])
 
-	public syncQueue = new SyncQueue()
+	public syncQueue: SyncRequest[] = $state([])
 
 	constructor(
 		public onCommit?: () => void,
@@ -100,7 +122,7 @@ export class TransactionQueue {
 
 		transactions.forEach((transaction) => {
 			if (transaction.sync) {
-				this.syncQueue.add({
+				this.addSyncRequest({
 					...transaction.sync,
 					attributeValue: transaction.value,
 				})
@@ -121,7 +143,7 @@ export class TransactionQueue {
 
 		transactions.forEach((transaction) => {
 			if (transaction.sync) {
-				this.syncQueue.add({
+				this.addSyncRequest({
 					...transaction.sync,
 					attributeValue: transaction.historicValue,
 				})
@@ -142,11 +164,34 @@ export class TransactionQueue {
 
 		transactions.forEach((transaction) => {
 			if (transaction.sync) {
-				this.syncQueue.add({
+				this.addSyncRequest({
 					...transaction.sync,
 					attributeValue: transaction.value,
 				})
 			}
 		})
+	}
+
+	addSyncRequest(request: SyncRequest) {
+		// transform the value based on the parser type
+		let value = request.attributeValue
+		Object.entries(parser).forEach(([key, parse]) => {
+			if (typeof value === 'object' && key in value) {
+				value = parse(value)
+			}
+		})
+		this.syncQueue.push({
+			...request,
+			attributeValue: value,
+		})
+		// this.sync()
+	}
+
+	async sync() {
+		while (this.syncQueue.length > 0) {
+			const request = this.syncQueue.shift()
+			if (!request) return
+			await clientRpc?.syncTransaction(request)
+		}
 	}
 }
