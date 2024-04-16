@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { TransformControls } from '@threlte/extras'
 	import { onDestroy } from 'svelte'
-	import type { Group, Vector3 } from 'three'
+	import { Quaternion, Vector3, type Group } from 'three'
 	import type { TransformControls as TC } from 'three/examples/jsm/controls/TransformControls.js'
 	import { DEG2RAD } from 'three/src/math/MathUtils.js'
 	import { useStudio } from '../../internal/extensions'
@@ -40,48 +40,58 @@
 
 	const { commit } = useTransactions()
 
-	let initialValue: Vector3 | undefined
+	const object = $derived(objectSelection.selectedObjects[0])
+
+	let initialValue = {
+		position: new Vector3(),
+		quaternion: new Quaternion(),
+		scale: new Vector3(),
+	}
 	const onMouseDown = () => {
-		if (mode === 'translate') {
-			initialValue = objectSelection.selectedObjects[0].position.clone()
-		}
+		initialValue.position.copy(object.position)
+		initialValue.quaternion.copy(object.quaternion)
+		initialValue.scale.copy(object.scale)
 	}
 
 	const onMouseUp = () => {
 		if (!initialValue) return
 
-		const userData = getThrelteStudioUserData(objectSelection.selectedObjects[0])
+		const userData = getThrelteStudioUserData(object)
 
-		if (mode === 'translate') {
-			const value = objectSelection.selectedObjects[0].position.clone()
-			objectSelection.selectedObjects[0].position.copy(initialValue)
-			commit([
-				{
-					object: objectSelection.selectedObjects[0],
-					read(root) {
-						return root.position.clone()
-					},
-					write(root, data) {
-						root.position.copy(data)
-					},
-					value,
-					sync: userData
-						? {
-								attributeName: 'position',
-								componentIndex: userData.index,
-								moduleId: userData.moduleId,
-								signature: userData.signature,
-							}
-						: undefined,
-				},
-			])
+		const value = {
+			position: object.position.clone(),
+			quaternion: object.quaternion.clone(),
+			scale: object.scale.clone(),
 		}
-		initialValue = undefined
+		const props = Object.keys(value) as unknown as (keyof typeof value)[]
+		object.position.copy(initialValue.position)
+		object.quaternion.copy(initialValue.quaternion)
+		object.scale.copy(initialValue.scale)
+		commit(
+			props.map((prop) => ({
+				object: object,
+				read(root: any) {
+					return root[prop].clone()
+				},
+				write(root: any, data: any) {
+					root[prop].copy(data)
+				},
+				value: value[prop],
+				sync: userData
+					? {
+							attributeName: prop,
+							componentIndex: userData.index,
+							moduleId: userData.moduleId,
+							signature: userData.signature,
+						}
+					: undefined,
+			})),
+		)
 	}
 </script>
 
 <TransformControls
-	object={objectSelection.selectedObjects[0]}
+	{object}
 	{mode}
 	space={space.space}
 	translationSnap={snapping.enabled ? snapping.translate ?? 0 : null}
