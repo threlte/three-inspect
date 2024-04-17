@@ -22,18 +22,21 @@
 	{objects}
 	key="position"
 	label="position"
+	autoUpdate
 />
 
 <TransactionalBinding
 	{objects}
 	key="rotation"
 	label="rotation"
+	autoUpdate
 />
 
 <TransactionalBinding
 	{objects}
 	key="scale"
 	label="scale"
+	autoUpdate
 />
 
 {#if haveProperty(objects, 'isMesh') || haveProperty(objects, 'isPointLight') || haveProperty(objects, 'isSpotLight') || haveProperty(objects, 'isDirectionalLight')}

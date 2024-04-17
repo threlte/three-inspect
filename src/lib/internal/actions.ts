@@ -28,7 +28,7 @@ export const createActions = () => {
 
 		const action = extensionActions[actionId]
 
-		return setStateDangerously(() => action({ state }, ...args))
+		return action({ state }, ...args)
 	}
 
 	return {
