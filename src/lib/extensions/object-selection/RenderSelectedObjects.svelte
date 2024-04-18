@@ -175,7 +175,7 @@
 						value: 1.5,
 					},
 					outlineColor: {
-						value: new Color('yellow'),
+						value: new Color('#FFFF00'),
 					},
 					edgeFactor: {
 						value: 0.0001,
