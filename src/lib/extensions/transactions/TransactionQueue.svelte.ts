@@ -195,9 +195,8 @@ export class TransactionQueue {
 
 	private async doSync() {
 		while (this.syncQueue.length > 0) {
-			const request = this.syncQueue.shift()
-			if (!request) return
-			await clientRpc?.syncTransaction(request)
+			await clientRpc?.syncTransactions(this.syncQueue)
+			this.syncQueue = []
 		}
 	}
 }

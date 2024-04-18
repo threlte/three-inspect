@@ -172,7 +172,7 @@
 						value: renderTarget.texture,
 					},
 					lineWidth: {
-						value: 2,
+						value: 1.5,
 					},
 					outlineColor: {
 						value: new Color('yellow'),

@@ -104,10 +104,12 @@
 		userData={{ ignoreOverrideMaterial: true }}
 		infiniteGrid
 		cellSize={state.step}
+		sectionSize={state.step * 10}
 		sectionColor={state.color}
 		cellColor={state.color}
 		plane={state.plane}
 		renderOrder={9999}
 		bind:ref={grid.ref}
+		fadeDistance={state.step * 500}
 	/>
 {/if}
