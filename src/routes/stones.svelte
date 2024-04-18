@@ -69,7 +69,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Mid_4_MID_0.geometry}
 			material={gltf.materials.material}
-			position={[4.6162,3.7856,5.1952]}
+			position={[35.9166,-4.1976,43.0574]}
 			rotation={[0, 0, 0]}
 			scale={[1.7298, 1.7298, 1.7298]}
 			visible
@@ -81,7 +81,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Big_5_BiG_0.geometry}
 			material={gltf.materials.material_1}
-			position={[-8.6537,8.2,-15.3536]}
+			position={[16.4436,-1.8148,34.9583]}
 			rotation={[0,1.1752,0]}
 			scale={[2.5693,2.5693,2.5693]}
 			visible
@@ -92,7 +92,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Small_8_SMall_0.geometry}
 			material={gltf.materials.SMall}
-			position={[10.2046,3.7856,4.99]}
+			position={[26.299,0.9173,49.4268]}
 			visible
 		/>
 		<T.Mesh
@@ -101,7 +101,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Mid_5_MID_0.geometry}
 			material={gltf.materials.material}
-			position={[12.0771,3.7856,0.14]}
+			position={[34.3744,-4.1976,38.0022]}
 			rotation={[0, 0, 0]}
 			scale={[1.6033, 1.6033, 1.6033]}
 			visible
@@ -112,7 +112,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.BIG_1_BiG_0.geometry}
 			material={gltf.materials.material_1}
-			position={[-10.7754,3.7856,-7.88]}
+			position={[11.5219,3.6675,17.5066]}
 			visible
 		/>
 		<T.Mesh
@@ -121,7 +121,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Big_2_BiG_0.geometry}
 			material={gltf.materials.material_1}
-			position={[-3.6254,3.7856,-8.04]}
+			position={[5.0476,22.9307,37.1574]}
 			visible
 		/>
 		<T.Mesh
@@ -130,7 +130,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Big_3_BiG_0.geometry}
 			material={gltf.materials.material_1}
-			position={[11.2358,3.7856,-15.0035]}
+			position={[41.8448,-2.3157,20.7571]}
 			rotation={[0, 0.0602, 0]}
 			scale={[2.4903, 2.4903, 2.4903]}
 			visible
@@ -141,7 +141,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Big_4_BiG_0.geometry}
 			material={gltf.materials.material_1}
-			position={[8.5246,3.7856,-6.26]}
+			position={[30.8219,-4.1976,31.6022]}
 			visible
 		/>
 		<T.Mesh
@@ -150,7 +150,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Mid_1_MID_0.geometry}
 			material={gltf.materials.material}
-			position={[-12.0298,3.7856,0.2854]}
+			position={[13.0675,9.4663,28.9001]}
 			rotation={[0, 0, 0]}
 			scale={[2.7583, 2.7583, 2.7583]}
 			visible
@@ -161,7 +161,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Mid_2_MID_0.geometry}
 			material={gltf.materials.material}
-			position={[-3.7254,3.7856,-2.0776]}
+			position={[4.9476,11,35.4638]}
 			rotation={[0, 0, 0]}
 			scale={[1, 1, 1]}
 			visible
@@ -172,7 +172,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Mid_3_MID_0.geometry}
 			material={gltf.materials.material}
-			position={[0.6546,3.7856,-0.08]}
+			position={[9.3276,-1,30.8869]}
 			rotation={[0, 0, 0]}
 			scale={[1.5505, 1.5505, 1.5505]}
 			visible
@@ -183,7 +183,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Small_1_SMall_0.geometry}
 			material={gltf.materials.SMall}
-			position={[-7.1554,3.7856,5.07]}
+			position={[3.0477,51.4168,42.9369]}
 			visible
 		/>
 		<T.Mesh
@@ -192,7 +192,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Small_2_SMall_0.geometry}
 			material={gltf.materials.SMall}
-			position={[-4.7654,3.7856,4.99]}
+			position={[-13.6983,22.7149,40.0314]}
 			visible
 		/>
 		<T.Mesh
@@ -201,7 +201,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Small_3_SMall_0.geometry}
 			material={gltf.materials.SMall}
-			position={[-5.3758,-0.5416,-0.7415]}
+			position={[25.9246,23.6026,46.5207]}
 			rotation={[0, 0, 0]}
 			scale={[12.2374, 4.1069, 14.3491]}
 			visible
@@ -212,7 +212,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Small_4_SMall_0.geometry}
 			material={gltf.materials.SMall}
-			position={[0.6446,3.7856,4.94]}
+			position={[31.945,-4.1976,42.8022]}
 			visible
 		/>
 		<T.Mesh
@@ -221,7 +221,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Small_5_SMall_0.geometry}
 			material={gltf.materials.SMall}
-			position={[3.5946,3.7856,4.93]}
+			position={[34.895,-4.1976,42.7922]}
 			visible
 		/>
 		<T.Mesh
@@ -230,7 +230,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Small_6_SMall_0.geometry}
 			material={gltf.materials.SMall}
-			position={[5.9946,3.7856,5.01]}
+			position={[22.089,0.9173,49.4468]}
 			visible
 		/>
 		<T.Mesh
@@ -239,7 +239,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Small_7_SMall_0.geometry}
 			material={gltf.materials.SMall}
-			position={[8.0646,3.7856,5]}
+			position={[24.159,0.9173,49.4368]}
 			visible
 		/>
 		<T.Mesh
@@ -248,7 +248,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Runic_1_Runic_0.geometry}
 			material={gltf.materials.Runic}
-			position={[-2.7254,3.7856,8.05]}
+			position={[25.0836,-4.2255,39.0169]}
 			visible
 		/>
 		<T.Mesh
@@ -257,7 +257,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Runic_2_Runic_0.geometry}
 			material={gltf.materials.Runic}
-			position={[-1.5854,3.7856,7.95]}
+			position={[26.2236,-4.2255,38.9169]}
 			visible
 		/>
 		<T.Mesh
@@ -266,7 +266,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Runic_3_Runic_0.geometry}
 			material={gltf.materials.Runic}
-			position={[-0.4954,3.7856,7.97]}
+			position={[27.3136,-4.2255,38.9369]}
 			visible
 		/>
 		<T.Mesh
@@ -275,7 +275,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Runic_4_Runic_0.geometry}
 			material={gltf.materials.Runic}
-			position={[0.8846,3.7856,8]}
+			position={[11.0877,7.4894,52.5159]}
 			visible
 		/>
 		<T.Mesh
@@ -284,7 +284,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Runic_5_Runic_0.geometry}
 			material={gltf.materials.Runic}
-			position={[3.4122,3.7856,-8.1462]}
+			position={[25.7095,-4.1976,29.716]}
 			rotation={[0, 0, 0]}
 			scale={[3.9429, 3.9429, 3.9429]}
 			visible
@@ -295,7 +295,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Runic_6_Runic_0.geometry}
 			material={gltf.materials.Runic}
-			position={[4.0646,3.7856,8.03]}
+			position={[14.2677,7.4894,52.5459]}
 			visible
 		/>
 		<T.Mesh
@@ -304,7 +304,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Runic_7_Runic_0.geometry}
 			material={gltf.materials.Runic}
-			position={[5.5446,3.7856,8.03]}
+			position={[21.639,0.9173,52.4668]}
 			visible
 		/>
 		<T.Mesh
@@ -313,7 +313,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.p1_p1_0.geometry}
 			material={gltf.materials.material_4}
-			position={[1.2246,3.7856,8.22]}
+			position={[29.0336,27.9019,48.5869]}
 			rotation={[0, 0, 0]}
 			scale={[4.2, 4.2, 4.2]}
 			visible
@@ -324,7 +324,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.p2_p2_0.geometry}
 			material={gltf.materials.material_5}
-			position={[1.2346,3.7856,8.25]}
+			position={[11.4377,7.4894,52.7659]}
 			visible
 		/>
 	{:catch error}

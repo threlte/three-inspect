@@ -6,6 +6,7 @@
 	import { SelectionHelper } from 'three/examples/jsm/interactive/SelectionHelper.js'
 	import { useStudio } from '../../internal/extensions'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
+	import { useTransformControls } from '../transform-controls/useTransformControls'
 	import {
 		objectSelectionScope,
 		type ObjectSelectionActions,
@@ -17,10 +18,12 @@
 
 	const { getExtension } = useStudio()
 	const { addToSelection, removeFromSelection, selectObjects } = useObjectSelection()
+	const transformControls = useTransformControls()
+
 	const { run } = getExtension<ObjectSelectionState, ObjectSelectionActions>(objectSelectionScope)
 
-	const selectionBox = new SelectionBox(camera.current, scene)
-	const helper = new SelectionHelper(renderer, 'selectBox')
+	let selectionBox = new SelectionBox(camera.current, scene)
+	let selectionHelper = new SelectionHelper(renderer, 'selectBox')
 
 	const studioObjectsRegistry = useStudioObjectsRegistry()
 
@@ -39,6 +42,13 @@
 	let lastEvent: MouseEvent
 
 	const onPointerDown = (event: MouseEvent) => {
+		if (transformControls.inUse) {
+			// if transform controls are in use, we don't want to select objects and
+			// cancel the selection.
+			selectionHelper.isDown = false
+			run('setInUse', false)
+			return
+		}
 		if (event.shiftKey) {
 			event.preventDefault()
 			selectionMode = 'add'
@@ -58,7 +68,14 @@
 	}
 
 	const onPointerMove = (event: MouseEvent) => {
-		if (!helper.isDown) return
+		if (transformControls.inUse) {
+			// if transform controls are in use, we don't want to select objects and
+			// cancel the selection.
+			selectionHelper.isDown = false
+			run('setInUse', false)
+			return
+		}
+		if (!selectionHelper.isDown) return
 		selectionBox.endPoint.set(
 			(event.clientX / window.innerWidth) * 2 - 1,
 			-(event.clientY / window.innerHeight) * 2 + 1,
@@ -76,13 +93,19 @@
 	}
 
 	const onPointerUp = (event: MouseEvent) => {
-		if (!helper.isDown) return
+		if (transformControls.inUse) {
+			// if transform controls are in use, we don't want to select objects and
+			// cancel the selection.
+			selectionHelper.isDown = false
+			run('setInUse', false)
+			return
+		}
+		if (!selectionHelper.isDown) return
 		selectionBox.endPoint.set(
 			(event.clientX / window.innerWidth) * 2 - 1,
 			-(event.clientY / window.innerHeight) * 2 + 1,
 			0.5,
 		)
-
 		const allSelected = filter(selectionBox.select())
 		if (selectionMode === 'add') {
 			addToSelection(allSelected)
@@ -105,12 +128,12 @@
 			renderer.domElement.removeEventListener('pointerup', onPointerUp)
 			try {
 				// this sometimes throws an error, but we fail silently
-				const h = helper as any
+				const h = selectionHelper as any
 				if (h.element && h.element.parentElement) h.onSelectOver()
 			} catch (error) {
 				console.warn(error)
 			}
-			helper.dispose()
+			selectionHelper.dispose()
 		}
 	})
 </script>
