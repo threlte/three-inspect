@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Canvas, T } from '@threlte/core'
-	import { MeshStandardMaterial } from 'three'
 	import Studio from '../lib/components/Studio/Studio.svelte'
 	import Stones from './stones.svelte'
 </script>
@@ -9,40 +8,25 @@
 	<Studio>
 		<T.PerspectiveCamera
 			makeDefault
-			position={[0, 0, 10]}
-			far={30}
+			position={[0, 6.7288, 17.1646]}
+			far={50}
+			rotation={[-0.2662, 0, 0]}
+			scale={[1, 1, 1]}
 		/>
 
-		<T.DirectionalLight position={[5, 10, 8]} />
+		<T.DirectionalLight
+			position={[5, 10, 8]}
+			castShadow
+			shadow.camera.top={30}
+			shadow.camera.bottom={-30}
+			shadow.camera.left={-30}
+			shadow.camera.right={30}
+			shadow.mapSize.width={2048}
+			shadow.mapSize.height={2048}
+		/>
 		<T.AmbientLight intensity={0.2} />
 
-		<T.Mesh
-			scale={[2, 2, 2]}
-			position={[0, -1, 0]}
-		>
-			<T.BoxGeometry args={[1, 1, 1]} />
-			<T.MeshStandardMaterial
-				color="#2afc71"
-				roughness={1}
-			/>
-		</T.Mesh>
-
 		<Stones />
-
-		<T.Mesh
-			material={new MeshStandardMaterial()}
-			position={[0, 1, 0]}
-			scale={[2, 2, 2]}
-			material.color="#2afc71"
-			material.visible
-			material.transparent={false}
-			material.opacity={1}
-			material.roughness={1}
-			material.metalness={0}
-			material.emissiveIntensity={0}
-		>
-			<T.BoxGeometry args={[1, 1, 1]} />
-		</T.Mesh>
 	</Studio>
 </Canvas>
 
@@ -50,6 +34,6 @@
 	:global(body) {
 		height: 100vh;
 		margin: 0;
-		background-color: midnightblue;
+		background-color: black;
 	}
 </style>
