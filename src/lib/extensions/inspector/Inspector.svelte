@@ -62,3 +62,10 @@
 		</Pane>
 	</Portal>
 {/if}
+
+<style>
+	:global(.tp-rotv_c) {
+		max-height: 50vh !important;
+		overflow: auto !important;
+	}
+</style>
