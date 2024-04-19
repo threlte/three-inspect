@@ -1,5 +1,16 @@
 import { resolvePropertyPath } from '@threlte/core'
-import type { Material, Object3D, OrthographicCamera, PerspectiveCamera } from 'three'
+import type {
+	AmbientLight,
+	DirectionalLight,
+	HemisphereLight,
+	Material,
+	Object3D,
+	OrthographicCamera,
+	PerspectiveCamera,
+	PointLight,
+	RectAreaLight,
+	SpotLight,
+} from 'three'
 
 export const haveProperty = <T = any>(objects: any[], property: string): objects is T[] => {
 	return objects.every((object) => property in object)
@@ -20,6 +31,26 @@ export const areCamera = (
 	return (
 		areOfType<PerspectiveCamera>(objects, 'isPerspectiveCamera') ||
 		areOfType<OrthographicCamera>(objects, 'isOrthographicCamera')
+	)
+}
+
+export const areLight = (
+	objects: any[],
+): objects is (
+	| AmbientLight
+	| DirectionalLight
+	| PointLight
+	| SpotLight
+	| HemisphereLight
+	| RectAreaLight
+)[] => {
+	return (
+		areOfType<DirectionalLight>(objects, 'isDirectionalLight') ||
+		areOfType<PointLight>(objects, 'isPointLight') ||
+		areOfType<SpotLight>(objects, 'isSpotLight') ||
+		areOfType<HemisphereLight>(objects, 'isHemisphereLight') ||
+		areOfType<RectAreaLight>(objects, 'isRectAreaLight') ||
+		areOfType<AmbientLight>(objects, 'isAmbientLight')
 	)
 }
 
