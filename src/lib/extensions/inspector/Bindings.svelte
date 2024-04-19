@@ -5,7 +5,7 @@
 	import Camera from './bindings/Camera.svelte'
 	import Material from './bindings/Material.svelte'
 	import Object3DBinding from './bindings/Object3D.svelte'
-	import { areCamera, haveProperty } from './bindings/utils'
+	import { areCamera, haveMaterialProperty } from './bindings/utils'
 
 	const objectSelection = useObjectSelection()
 	const keyFromObjects = (objects: Object3D[]) => {
@@ -32,7 +32,7 @@
 			</Folder>
 		{/if}
 
-		{#if haveProperty(objects, 'material')}
+		{#if haveMaterialProperty(objects)}
 			<Material {objects} />
 		{/if}
 	{/key}

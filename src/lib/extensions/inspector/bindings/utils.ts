@@ -1,5 +1,5 @@
 import { resolvePropertyPath } from '@threlte/core'
-import type { OrthographicCamera, PerspectiveCamera } from 'three'
+import type { Material, Object3D, OrthographicCamera, PerspectiveCamera } from 'three'
 
 export const haveProperty = <T = any>(objects: any[], property: string): objects is T[] => {
 	return objects.every((object) => property in object)
@@ -21,4 +21,10 @@ export const areCamera = (
 		areOfType<PerspectiveCamera>(objects, 'isPerspectiveCamera') ||
 		areOfType<OrthographicCamera>(objects, 'isOrthographicCamera')
 	)
+}
+
+export const haveMaterialProperty = (
+	objects: any[],
+): objects is (Object3D & { material: Material })[] => {
+	return haveProperty<Object3D & { material: Material }>(objects, 'material')
 }
