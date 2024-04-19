@@ -124,7 +124,7 @@
 		<ToolbarButton
 			success={state.enabled && state.mode === 'auto'}
 			warn={state.enabled && state.mode === 'manual' && state.queue.syncQueue.length > 0}
-			disabled={!state.enabled}
+			disabled={!state.enabled || state.mode === 'auto'}
 			icon={state.mode === 'auto' && state.queue.syncQueue.length > 0
 				? 'mdiLoading'
 				: 'mdiContentSave'}
@@ -157,6 +157,29 @@
 				<Changes />
 			</Element>
 		</DropDownPane>
+	</HorizontalButtonGroup>
+</ToolbarItem>
+
+<ToolbarItem position="right">
+	<HorizontalButtonGroup>
+		<ToolbarButton
+			icon="mdiUndo"
+			label="Undo"
+			disabled={!state.queue.canUndo}
+			tooltip="Undo (Cmd+Z)"
+			on:click={() => {
+				run('undo')
+			}}
+		/>
+		<ToolbarButton
+			icon="mdiRedo"
+			label="Redo"
+			disabled={!state.queue.canRedo}
+			tooltip="Redo (Shift+Cmd+Z)"
+			on:click={() => {
+				run('redo')
+			}}
+		/>
 	</HorizontalButtonGroup>
 </ToolbarItem>
 

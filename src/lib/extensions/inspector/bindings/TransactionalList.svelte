@@ -44,7 +44,15 @@
 	{options}
 	{label}
 	on:change={(e) => {
-		commit(objects.map((object) => buildTransaction(object, key, e.detail.value)))
+		commit(
+			objects.map((object) =>
+				buildTransaction({
+					object,
+					propertyPath: key,
+					value: e.detail.value,
+				}),
+			),
+		)
 	}}
 	on:change
 	{...rest}

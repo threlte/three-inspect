@@ -30,12 +30,23 @@ export type Transaction<T, U> = {
 	/** The value of the transaction */
 	value: U
 	/** Read from the object into a serializable format */
-	read: (root: T) => U
+
 	/** Write a value on the object from the format resolved by the read property */
 	write: (root: T, data: U) => void
+	/** If true, no history record will be recorded and the value will not be
+	 * synced to disk */
+	noHistory?: boolean
+	noSync?: boolean
 	/** The sync configuration */
 	sync?: Omit<SyncRequest, 'attributeValue'>
-}
+} & (
+	| {
+			read: (root: T) => U
+	  }
+	| {
+			historicValue: U
+	  }
+)
 
 export type TransactionQueueCommitArgs = Transaction<any, any>[]
 
@@ -101,35 +112,80 @@ export class TransactionQueue {
 
 	private syncTimeout: ReturnType<typeof setTimeout> | undefined
 
-	constructor(
-		public onCommit?: () => void,
-		public onUndo?: () => void,
-		public onRedo?: () => void,
-	) {}
+	// Callbacks
+	private onCommitCallbacks = new Set<() => void>()
+	public onCommit(callback: () => void) {
+		this.onCommitCallbacks.add(callback)
+		return () => {
+			this.onCommitCallbacks.delete(callback)
+		}
+	}
+
+	private onUndoCallbacks = new Set<() => void>()
+	public onUndo(callback: () => void) {
+		this.onUndoCallbacks.add(callback)
+		return () => {
+			this.onUndoCallbacks.delete(callback)
+		}
+	}
+
+	private onRedoCallbacks = new Set<() => void>()
+	public onRedo(callback: () => void) {
+		this.onRedoCallbacks.add(callback)
+		return () => {
+			this.onRedoCallbacks.delete(callback)
+		}
+	}
+
+	// Fires for every transaction
+	private onTransactionCallbacks = new Set<() => void>()
+	public onTransaction(callback: () => void) {
+		this.onTransactionCallbacks.add(callback)
+		return () => {
+			this.onTransactionCallbacks.delete(callback)
+		}
+	}
 
 	commit(transactions: TransactionQueueCommitArgs) {
-		const transactionQueueItems: TransactionQueueItem[] = transactions.map((transaction) => {
-			return {
-				...transaction,
-				historicValue: transaction.read(transaction.object),
-			}
-		})
+		const queueItems: TransactionQueueItem[] = []
+
 		transactions.forEach((transaction) => {
+			if (!transaction.noHistory) {
+				const historicValue =
+					'historicValue' in transaction
+						? transaction.historicValue
+						: transaction.read(transaction.object)
+				queueItems.push({
+					...transaction,
+					historicValue,
+				})
+			}
 			transaction.write(transaction.object, transaction.value)
 		})
 
-		this.commitedQueue.push(transactionQueueItems)
+		if (queueItems.length > 0) this.commitedQueue.push(queueItems)
 		this.undoneQueue = []
-		this.onCommit?.()
-
-		transactions.forEach((transaction) => {
-			if (transaction.sync) {
-				this.addSyncRequest({
-					...transaction.sync,
-					attributeValue: transaction.value,
-				})
-			}
+		this.onCommitCallbacks.forEach((callback) => {
+			callback()
 		})
+		this.onTransactionCallbacks.forEach((callback) => {
+			callback()
+		})
+
+		transactions
+			.filter((t) => !t.noHistory || !t.noSync)
+			.forEach((transaction) => {
+				if (transaction.sync) {
+					this.addSyncRequest({
+						...transaction.sync,
+						attributeValue: transaction.value,
+					})
+				}
+			})
+	}
+
+	public get canUndo() {
+		return this.commitedQueue.length > 0
 	}
 
 	undo() {
@@ -141,10 +197,16 @@ export class TransactionQueue {
 		})
 
 		this.undoneQueue.push(transactions)
-		this.onUndo?.()
+
+		this.onUndoCallbacks.forEach((callback) => {
+			callback()
+		})
+		this.onTransactionCallbacks.forEach((callback) => {
+			callback()
+		})
 
 		transactions.forEach((transaction) => {
-			if (transaction.sync) {
+			if (transaction.sync && !transaction.noSync) {
 				this.addSyncRequest({
 					...transaction.sync,
 					attributeValue: transaction.historicValue,
@@ -153,8 +215,13 @@ export class TransactionQueue {
 		})
 	}
 
+	public get canRedo() {
+		return this.undoneQueue.length > 0
+	}
+
 	redo() {
 		const transactions = this.undoneQueue.pop()
+
 		if (!transactions) return
 
 		transactions.forEach((transaction) => {
@@ -162,10 +229,16 @@ export class TransactionQueue {
 		})
 
 		this.commitedQueue.push(transactions)
-		this.onRedo?.()
+
+		this.onRedoCallbacks.forEach((callback) => {
+			callback()
+		})
+		this.onTransactionCallbacks.forEach((callback) => {
+			callback()
+		})
 
 		transactions.forEach((transaction) => {
-			if (transaction.sync) {
+			if (transaction.sync && !transaction.noSync) {
 				this.addSyncRequest({
 					...transaction.sync,
 					attributeValue: transaction.value,

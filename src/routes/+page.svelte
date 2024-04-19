@@ -8,7 +8,7 @@
 	<Studio>
 		<T.PerspectiveCamera
 			makeDefault
-			position={[0, 15.6009, 36.6882]}
+			position={[0,14.1442,52.633]}
 			far={100}
 			rotation={[-0.2662, 0, 0]}
 			fov={30}
@@ -23,7 +23,7 @@
 			shadow.camera.right={30}
 			shadow.mapSize.width={2048}
 			shadow.mapSize.height={512}
-			color="#e28c8c"
+			color="#f8b7b7"
 			intensity={4}
 			rotation={[0, 0, 0]}
 			matrixAutoUpdate
@@ -31,12 +31,14 @@
 			shadow.autoUpdate
 			shadow.bias={0}
 			shadow.camera.near={0.1}
-			target.position={[3,0,0.8]}
+			target.position={[0,0,0]}
+			visible
 		/>
 		<T.AmbientLight
 			intensity={2}
-			color="#949be1"
+			color="#bdc1f5"
 			position={[0, 4.8, 0]}
+			visible
 		/>
 
 		<Stones />

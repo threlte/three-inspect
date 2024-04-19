@@ -1,27 +1,47 @@
 import { useStudio } from '../../internal/extensions'
-import type { TransactionQueueCommitArgs } from './TransactionQueue.svelte'
+import type { TransactionQueue, TransactionQueueCommitArgs } from './TransactionQueue.svelte'
 import { transactionsScope, type TransactionsActions, type TransactionsState } from './types'
 
 export const useTransactions = () => {
 	const { getExtension } = useStudio()
 
-	const { run } = getExtension<TransactionsState, TransactionsActions>(transactionsScope)
+	const ext = getExtension<TransactionsState, TransactionsActions>(transactionsScope)
 
 	const commit = (transactions: TransactionQueueCommitArgs) => {
-		run('commit', transactions)
+		ext.run('commit', transactions)
 	}
 
 	const undo = () => {
-		run('undo')
+		ext.run('undo')
 	}
 
 	const redo = () => {
-		run('redo')
+		ext.run('redo')
+	}
+
+	const onTransaction = (...args: Parameters<TransactionQueue['onTransaction']>) => {
+		return ext.state.queue?.onTransaction(...args)
+	}
+
+	const onCommit = (...args: Parameters<TransactionQueue['onCommit']>) => {
+		return ext.state.queue?.onCommit(...args)
+	}
+
+	const onUndo = (...args: Parameters<TransactionQueue['onUndo']>) => {
+		return ext.state.queue?.onUndo(...args)
+	}
+
+	const onRedo = (...args: Parameters<TransactionQueue['onRedo']>) => {
+		return ext.state.queue?.onRedo(...args)
 	}
 
 	return {
 		commit,
 		undo,
 		redo,
+		onTransaction,
+		onCommit,
+		onUndo,
+		onRedo,
 	}
 }
