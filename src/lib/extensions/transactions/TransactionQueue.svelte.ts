@@ -178,7 +178,7 @@ export class TransactionQueue {
 		// transform the value based on the parser type
 		let value = request.attributeValue
 		Object.entries(parser).forEach(([key, parse]) => {
-			if (typeof value === 'object' && key in value) {
+			if (typeof value === 'object' && value !== null && key in value) {
 				value = parse(value)
 			}
 		})

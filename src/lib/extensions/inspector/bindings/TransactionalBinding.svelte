@@ -14,7 +14,6 @@
 		label: string
 		options?: BindingParams
 		autoUpdate?: boolean
-		debounce?: number
 	}
 
 	let { objects, key, label, autoUpdate, ...rest }: Props = $props()
@@ -26,6 +25,7 @@
 
 	if (
 		typeof target[targetKey] === 'object' &&
+		target[targetKey] !== null &&
 		'clone' in target[targetKey] &&
 		typeof target[targetKey].clone === 'function'
 	) {
@@ -41,7 +41,7 @@
 	const { start, stop } = useTask(
 		async () => {
 			if (!ref) return
-			if (typeof carrier[targetKey] === 'object') {
+			if (typeof carrier[targetKey] === 'object' && carrier[targetKey] !== null) {
 				if ('equals' in carrier[targetKey] && typeof carrier[targetKey].equals === 'function') {
 					if (carrier[targetKey].equals(target[targetKey])) {
 						return

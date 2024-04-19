@@ -13,6 +13,7 @@ export const buildTransaction = (object: any, propertyPath: string, value: any) 
 		read() {
 			if (
 				typeof target[key] === 'object' &&
+				target[key] !== null &&
 				'clone' in target[key] &&
 				typeof target[key].clone === 'function'
 			) {
@@ -23,9 +24,11 @@ export const buildTransaction = (object: any, propertyPath: string, value: any) 
 		write(_, data) {
 			if (
 				typeof data === 'object' &&
+				data !== null &&
 				'copy' in data &&
 				typeof data.copy === 'function' &&
 				typeof target[key] === 'object' &&
+				target[key] !== null &&
 				'copy' in target[key] &&
 				typeof target[key].copy === 'function'
 			) {
