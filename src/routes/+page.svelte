@@ -8,10 +8,10 @@
 	<Studio>
 		<T.PerspectiveCamera
 			makeDefault
-			position={[0, 6.7288, 17.1646]}
-			far={50}
-			rotation={[-0.2662, 0, 0]}
-			scale={[1, 1, 1]}
+			position={[0,15.6009,36.6882]}
+			far={100}
+			rotation={[-0.2662,0,0]}
+			fov={30}
 		/>
 
 		<T.DirectionalLight

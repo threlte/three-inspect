@@ -82,5 +82,6 @@
 		if (ignoreChangeEvent) return
 		commit(objects.map((object) => buildTransaction(object, key, e.detail.value)))
 	}}
+	on:change
 	{...rest}
 />

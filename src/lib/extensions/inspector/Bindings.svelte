@@ -1,10 +1,11 @@
 <script lang="ts">
+	import { Folder, Textarea } from 'svelte-tweakpane-ui'
 	import type { Object3D } from 'three'
 	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
+	import Camera from './bindings/Camera.svelte'
 	import Material from './bindings/Material.svelte'
 	import Object3DBinding from './bindings/Object3D.svelte'
-	import { Folder, Textarea } from 'svelte-tweakpane-ui'
-	import { haveProperty } from './bindings/utils'
+	import { areCamera, haveProperty } from './bindings/utils'
 
 	const objectSelection = useObjectSelection()
 	const keyFromObjects = (objects: Object3D[]) => {
@@ -14,14 +15,25 @@
 	const firstObjectUserData = $derived(
 		JSON.stringify(objectSelection.selectedObjects[0].userData, null, 2),
 	)
+
+	const objects = $derived(objectSelection.selectedObjects)
 </script>
 
-{#if objectSelection.selectedObjects.length}
-	{#key keyFromObjects(objectSelection.selectedObjects)}
-		<Object3DBinding objects={objectSelection.selectedObjects} />
+{#if objects.length}
+	{#key keyFromObjects(objects)}
+		<Object3DBinding {objects} />
 
-		{#if haveProperty(objectSelection.selectedObjects, 'material')}
-			<Material objects={objectSelection.selectedObjects} />
+		{#if areCamera(objects)}
+			<Folder
+				title="Camera"
+				expanded
+			>
+				<Camera {objects} />
+			</Folder>
+		{/if}
+
+		{#if haveProperty(objects, 'material')}
+			<Material {objects} />
 		{/if}
 	{/key}
 {/if}

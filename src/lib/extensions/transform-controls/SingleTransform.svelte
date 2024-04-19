@@ -42,18 +42,28 @@
 
 	const object = $derived(objectSelection.selectedObjects[0])
 
+	let usedModes = new Set<'translate' | 'rotate' | 'scale'>()
+	let listenToModes = $state(false)
+	$effect(() => {
+		if (!listenToModes) return
+		usedModes.add(mode)
+	})
+
 	let initialValue = {
 		position: new Vector3(),
 		rotation: new Euler(),
 		scale: new Vector3(),
 	}
+
 	const onMouseDown = () => {
+		listenToModes = true
 		initialValue.position.copy(object.position)
 		initialValue.rotation.copy(object.rotation)
 		initialValue.scale.copy(object.scale)
 	}
 
 	const onMouseUp = () => {
+		listenToModes = false
 		if (!initialValue) return
 
 		const userData = getThrelteStudioUserData(object)
@@ -63,7 +73,13 @@
 			rotation: object.rotation.clone(),
 			scale: object.scale.clone(),
 		}
-		const props = Object.keys(value) as unknown as (keyof typeof value)[]
+		const props = Object.keys(value).filter((key) => {
+			if (usedModes.has('translate') && key === 'position') return true
+			if (usedModes.has('rotate') && key === 'rotation') return true
+			if (usedModes.has('scale') && key === 'scale') return true
+			return false
+		}) as unknown as (keyof typeof value)[]
+
 		object.position.copy(initialValue.position)
 		object.rotation.copy(initialValue.rotation)
 		object.scale.copy(initialValue.scale)
