@@ -14,7 +14,8 @@
 	treeview.dom.style.cssText = `
   font-family: monospace;
   font-size: 11px;
-  height: 280px;
+  height: auto;
+	max-height: 50vh;
   `
 
 	const { scene } = useThrelte()
