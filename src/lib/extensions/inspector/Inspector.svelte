@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Pane } from 'svelte-tweakpane-ui'
-	import Portal from '../../components/Internal/Portal.svelte'
+	import { type Pane as TpPane } from 'tweakpane'
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
 	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import { browser } from '../../internal/browser'
@@ -11,7 +11,7 @@
 
 	const { useExtension } = useStudio()
 
-	const { run, state } = useExtension<InspectorState, InspectorActions>({
+	const ext = useExtension<InspectorState, InspectorActions>({
 		scope: inspectorScope,
 		state({ persist }) {
 			return {
@@ -41,6 +41,15 @@
 			return `${objectSelection.selectedObjects[0].name} (${objectSelection.selectedObjects[0].type})`
 		return `${objectSelection.selectedObjects.length} objects`
 	})
+
+	let pane = $state<TpPane>()
+	$effect(() => {
+		if (!pane) return
+		const contentEl = pane.element.querySelector('.tp-rotv_c') as HTMLElement
+		if (!contentEl) return
+		contentEl.style.maxHeight = '50vh'
+		contentEl.style.overflow = 'auto'
+	})
 </script>
 
 <ToolbarItem position="right">
@@ -48,22 +57,21 @@
 		label="Inspector"
 		icon="mdiPencil"
 		on:click={() => {
-			run('toggleEnabled')
+			ext.run('toggleEnabled')
 		}}
-		active={state.enabled}
+		active={ext.state.enabled}
 	/>
 </ToolbarItem>
 
-{#if state.enabled && objectSelection.selectedObjects.length > 0}
-	<Portal>
-		<Pane
-			{title}
-			position="fixed"
-			width={320}
-			x={browser ? innerWidth - 6 - 320 : 6}
-			y={6 + 60 + 6}
-		>
-			<Bindings />
-		</Pane>
-	</Portal>
+{#if ext.state.enabled && objectSelection.selectedObjects.length > 0}
+	<Pane
+		bind:tpPane={pane}
+		{title}
+		position="fixed"
+		width={320}
+		x={browser ? innerWidth - 6 - 320 : 6}
+		y={6 + 60 + 6}
+	>
+		<Bindings />
+	</Pane>
 {/if}

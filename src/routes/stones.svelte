@@ -87,8 +87,8 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 			receiveShadow
 			geometry={gltf.nodes.Big_5_BiG_0.geometry}
 			material={gltf.materials.material_1}
-			position={[-1.2641,-4.0769,-28.1901]}
-			rotation={[0, 1.1752, 0]}
+			position={[-9.5517,0.7,-6.8434]}
+			rotation={[0,0.128,0]}
 			scale={[2.5693, 2.5693, 2.5693]}
 			visible
 			material.flatShading

@@ -4,6 +4,7 @@
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
 	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import { useStudio } from '../../internal/extensions'
+	import { type Pane as TpPane } from 'tweakpane'
 	import Tree from './Tree.svelte'
 	import {
 		sceneHierarchyScope,
@@ -13,7 +14,7 @@
 
 	const { useExtension } = useStudio()
 
-	const { run, state } = useExtension<SceneHierarchyState, SceneHierarchyActions>({
+	const ext = useExtension<SceneHierarchyState, SceneHierarchyActions>({
 		scope: sceneHierarchyScope,
 		state({ persist }) {
 			return {
@@ -34,6 +35,15 @@
 			}
 		},
 	})
+
+	let pane = $state<TpPane>()
+	$effect(() => {
+		if (!pane) return
+		const contentEl = pane.element.querySelector('.tp-rotv_c') as HTMLElement
+		if (!contentEl) return
+		contentEl.style.maxHeight = '50vh'
+		contentEl.style.overflow = 'auto'
+	})
 </script>
 
 <ToolbarItem position="right">
@@ -41,19 +51,20 @@
 		label="Scene Hierarchy"
 		icon="mdiFormatListBulletedSquare"
 		on:click={() => {
-			run('toggleEnabled')
+			ext.run('toggleEnabled')
 		}}
-		active={state.enabled}
+		active={ext.state.enabled}
 	/>
 </ToolbarItem>
 
-{#if state.enabled}
+{#if ext.state.enabled}
 	<Portal>
 		<Pane
 			title="Scene Hierarchy"
 			position="fixed"
 			y={72}
 			x={6}
+			bind:tpPane={pane}
 		>
 			<Element>
 				<Tree />
