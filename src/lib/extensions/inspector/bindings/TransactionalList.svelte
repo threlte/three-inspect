@@ -32,14 +32,20 @@
 	} else {
 		carrier[targetKey] = target[targetKey]
 	}
+
+	if (key === 'mapSize.width') {
+		console.log(target[targetKey])
+		console.log(typeof target[targetKey] === 'object')
+	}
 </script>
 
 <List
-	bind:value={carrier[key]}
+	bind:value={carrier[targetKey]}
 	{options}
 	{label}
 	on:change={(e) => {
 		commit(objects.map((object) => buildTransaction(object, key, e.detail.value)))
 	}}
+	on:change
 	{...rest}
 />

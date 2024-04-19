@@ -115,7 +115,7 @@
 					value,
 					sync: userData
 						? {
-								attributeName: 'position',
+								attributeName: [...(userData.pathItems ?? []), 'position'].join('.'),
 								componentIndex: userData.index,
 								moduleId: userData.moduleId,
 								signature: userData.signature,

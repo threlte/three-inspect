@@ -95,7 +95,7 @@
 				value: value[prop],
 				sync: userData
 					? {
-							attributeName: prop,
+							attributeName: [...(userData.pathItems ?? []), prop].join('.'),
 							componentIndex: userData.index,
 							moduleId: userData.moduleId,
 							signature: userData.signature,

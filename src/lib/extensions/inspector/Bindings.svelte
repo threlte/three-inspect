@@ -45,7 +45,7 @@
 
 {#if firstObjectUserData}
 	<Folder
-		title="userData"
+		title="User Data"
 		expanded={false}
 	>
 		<Textarea

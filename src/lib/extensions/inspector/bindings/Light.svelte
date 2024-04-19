@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Folder } from 'svelte-tweakpane-ui'
 	import type {
 		AmbientLight,
 		DirectionalLight,
@@ -8,8 +9,8 @@
 		SpotLight,
 	} from 'three'
 	import TransactionalBinding from './TransactionalBinding.svelte'
-	import { Folder } from 'svelte-tweakpane-ui'
 	import { haveProperty } from './utils'
+	import Shadow from './Shadow.svelte'
 
 	type Props = {
 		lights: (
@@ -40,99 +41,95 @@
 		objects={lights}
 		key="intensity"
 		label="intensity"
-		options={{ step: 0.05 }}
+		options={{ step: 0.01, min: 0 }}
 	/>
 
 	{#if haveProperty(lights, 'isDirectionalLight')}
-		<!-- <TransactionalBinding
+		<TransactionalBinding
 			objects={lights}
 			key="target.position"
 			label="target"
-		/> -->
-		<!-- {:else if 'isPointLight' in object}
-	<TransactionalBinding
-		objects={lights}
-		key="decay"
-		label="decay"
-	/>
-	<TransactionalBinding
-		objects={lights}
-		key="distance"
-		label="distance"
-	/>
-	<TransactionalBinding
-		objects={lights}
-		key="power"
-		label="power"
-	/>
-{:else if 'isSpotLight' in object}
-	<TransactionalBinding
-		objects={lights}={object.target}
-		key="position"
-		label="target"
-	/>
-	<TransactionalBinding
-		objects={lights}
-		key="angle"
-		label="angle"
-		options={{ min: 0, max: Math.PI / 2 }}
-	/>
-	<TransactionalBinding
-		objects={lights}
-		key="decay"
-		label="decay"
-	/>
-	<TransactionalBinding
-		objects={lights}
-		key="distance"
-		label="distance"
-	/>
-	<TransactionalBinding
-		objects={lights}
-		key="penumbra"
-		label="penumbra"
-		options={{ min: 0, max: 1 }}
-	/>
-	<TransactionalBinding
-		objects={lights}
-		key="power"
-		label="power"
-	/>
-	<TransactionalBinding
-		objects={lights}
-		key="position"
-		label="position"
-	/>
-{:else if 'isHemisphereLight' in object}
-	<TransactionalBinding
-		objects={lights}
-		key="groundColor"
-		label="groundColor"
-	/>
-{:else if 'isRectAreaLight' in object}
-	<TransactionalBinding
-		objects={lights}
-		key="power"
-		label="power"
-	/>
-	<TransactionalBinding
-		objects={lights}
-		key="width"
-		label="width"
-	/>
-	<TransactionalBinding
-		objects={lights}
-		key="height"
-		label="height"
-	/> -->
+		/>
+	{:else if haveProperty(lights, 'isPointLight')}
+		<TransactionalBinding
+			objects={lights}
+			key="decay"
+			label="decay"
+		/>
+		<TransactionalBinding
+			objects={lights}
+			key="distance"
+			label="distance"
+		/>
+		<TransactionalBinding
+			objects={lights}
+			key="power"
+			label="power"
+		/>
+	{:else if haveProperty(lights, 'isSpotLight')}
+		<TransactionalBinding
+			objects={lights}
+			key="target.position"
+			label="target"
+		/>
+		<TransactionalBinding
+			objects={lights}
+			key="angle"
+			label="angle"
+			options={{ min: 0, max: Math.PI / 2 }}
+		/>
+		<TransactionalBinding
+			objects={lights}
+			key="decay"
+			label="decay"
+		/>
+		<TransactionalBinding
+			objects={lights}
+			key="distance"
+			label="distance"
+		/>
+		<TransactionalBinding
+			objects={lights}
+			key="penumbra"
+			label="penumbra"
+			options={{ min: 0, max: 1 }}
+		/>
+		<TransactionalBinding
+			objects={lights}
+			key="power"
+			label="power"
+		/>
+	{:else if haveProperty(lights, 'isHemisphereLight')}
+		<TransactionalBinding
+			objects={lights}
+			key="groundColor"
+			label="groundColor"
+		/>
+	{:else if haveProperty(lights, 'isRectAreaLight')}
+		<TransactionalBinding
+			objects={lights}
+			key="power"
+			label="power"
+		/>
+		<TransactionalBinding
+			objects={lights}
+			key="width"
+			label="width"
+		/>
+		<TransactionalBinding
+			objects={lights}
+			key="height"
+			label="height"
+		/>
 	{/if}
 
-	<!-- {#if object.shadow && object.castShadow}
-	<Folder
-		expanded={false}
-		title="shadow"
-	>
-		<Shadow object={object.shadow} />
-	</Folder>
-{/if} -->
+	{#if haveProperty(lights, 'shadow')}
+		{@const shadow = lights.map((light) => light.shadow)}
+		<Folder
+			expanded={false}
+			title="Shadow"
+		>
+			<Shadow objects={shadow} />
+		</Folder>
+	{/if}
 </Folder>

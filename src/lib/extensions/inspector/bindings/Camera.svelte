@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { OrthographicCamera, PerspectiveCamera } from 'three'
+	import { Camera, type OrthographicCamera, type PerspectiveCamera } from 'three'
 	import TransactionalBinding from './TransactionalBinding.svelte'
 	import { areOfType } from './utils'
 

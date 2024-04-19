@@ -26,6 +26,11 @@
 				state.enabled = !state.enabled
 			},
 		},
+		keyMap({ meta }) {
+			return {
+				toggleEnabled: meta('i'),
+			}
+		},
 	})
 
 	const objectSelection = useObjectSelection()

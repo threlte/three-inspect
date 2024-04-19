@@ -28,6 +28,11 @@
 				state.enabled = enabled
 			},
 		},
+		keyMap({ meta }) {
+			return {
+				toggleEnabled: meta('h'),
+			}
+		},
 	})
 </script>
 
@@ -46,7 +51,6 @@
 	<Portal>
 		<Pane
 			title="Scene Hierarchy"
-			userExpandable={false}
 			position="fixed"
 			y={72}
 			x={6}

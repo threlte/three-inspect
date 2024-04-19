@@ -75,7 +75,7 @@
 
 <Binding
 	object={carrier}
-	{key}
+	key={targetKey}
 	{label}
 	bind:ref
 	on:change={(e) => {

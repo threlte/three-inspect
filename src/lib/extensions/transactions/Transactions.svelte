@@ -15,7 +15,7 @@
 	const { useExtension } = useStudio()
 	const { invalidate } = useThrelte()
 
-	const applyToProperties = ['shadow', 'light', 'material', 'camera']
+	const applyToProperties = ['shadow', 'light', 'material', 'camera', 'target']
 
 	const insertStudioProps = (object: any, props: StudioProps) => {
 		for (const key of Object.keys(object)) {

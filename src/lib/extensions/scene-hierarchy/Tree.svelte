@@ -18,11 +18,21 @@
 	max-height: 50vh;
   `
 
+	const style = document.createElement('style')
+	style.innerHTML =
+		'.tv-container:nth-child(2)::before { top: -2px } .tv-item-icon:before { width: 12px } .tv-item-icon:after { filter: saturate(0) brightness(10); display: inline-flex; justify-content: center; align-items: center; }'
+	treeview.shadowRoot.appendChild(style)
+
 	const { scene } = useThrelte()
 	const objectSelection = useObjectSelection()
 	const studioObjectsRegistry = useStudioObjectsRegistry()
 
-	const treeroot = new TreeViewItem({ text: 'Scene' })
+	const treeroot = new TreeViewItem({
+		text: 'Scene',
+		allowSelect: false,
+		allowDrag: false,
+		allowDrop: false,
+	})
 	treeview.append(treeroot)
 
 	const objectToTreeItem = new WeakMap<THREE.Object3D, TreeViewItem>()
@@ -63,11 +73,36 @@
 		if (studioObjectsRegistry.isOrIsChildOfStudioObject(object)) {
 			return
 		}
+
+		if ('userData' in object && 'hideInTree' in object.userData && object.userData.hideInTree) {
+			return
+		}
+
 		const { parent } = object
 		const name = object.name
 		const parentItem = parent === scene ? treeroot : objectToTreeItem.get(parent!)
 		const text = `${name ? `${name} ` : ''}(${object.type})`
-		const item = new TreeViewItem({ text })
+		const icons = {
+			isCamera: '🎥',
+			isLight: '💡',
+			isMesh: '📐',
+			isGroup: '⚪️',
+			isObject3D: '📦',
+		}
+		const findIcon = (object: THREE.Object3D) => {
+			for (const [key, value] of Object.entries(icons)) {
+				if (key in object) {
+					return value
+				}
+			}
+			return '📦'
+		}
+		const item = new TreeViewItem({
+			text,
+			allowDrag: false,
+			allowDrop: false,
+			icon: findIcon(object).codePointAt(0).toString(16),
+		})
 		item.open = true
 		item.selected = objectSelection.selectedObjects.includes(object)
 		objectToTreeItem.set(object, item)

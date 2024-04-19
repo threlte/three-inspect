@@ -107,6 +107,7 @@
 			return {
 				toggleEnabled: 'c',
 				focusSelectedObjects: shift('f'),
+				toggleDefaultCameraEnabled: shift('c'),
 			}
 		},
 	})
