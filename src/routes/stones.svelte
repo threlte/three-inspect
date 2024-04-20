@@ -76,6 +76,7 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
       geometry={gltf.nodes.Big_5_BiG_0.geometry}
       material={gltf.materials.material_1}
       position={[11.6874,0,-4.2857]}
+      rotation={[0,-1.0472,0]}
     />
     <T.Mesh
       name="Small_8_SMall_0"
