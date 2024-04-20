@@ -33,7 +33,7 @@
 	"license": "MIT",
 	"scripts": {
 		"start": "vite --host --open",
-		"build": "vite build && npm run package",
+		"build": "vite build",
 		"package": "svelte-kit sync && svelte-package && npm run package:vanilla && publint",
 		"package:vanilla": "vite build --config vite.lib.config.ts && tsc --project tsconfig.lib.json --emitDeclarationOnly",
 		"prepublishOnly": "npm run package",
@@ -61,9 +61,11 @@
 		"svelte-splitpanes": "^0.8.0",
 		"svelte-tweakpane-ui": "^1.2.3",
 		"three": "^0.163.0",
-		"three-perf": "^1.0.10"
+		"three-perf": "^1.0.10",
+		"tweakpane": "^4.0.3"
 	},
 	"devDependencies": {
+		"@sveltejs/adapter-auto": "^3.2.0",
 		"@sveltejs/adapter-static": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/package": "^2.0.0",
