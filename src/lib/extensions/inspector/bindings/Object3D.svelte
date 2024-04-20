@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { Object3D } from 'three'
+	import { DEG2RAD, RAD2DEG } from 'three/src/math/MathUtils.js'
+	import { useSnapping } from '../../snapping/useSnapping.svelte'
 	import TransactionalBinding from './TransactionalBinding.svelte'
 	import { haveProperty } from './utils'
 
@@ -8,6 +10,8 @@
 	}
 
 	let { objects }: Props = $props()
+
+	const snapping = useSnapping()
 </script>
 
 {#if haveProperty(objects, 'visible')}
@@ -23,6 +27,9 @@
 	key="position"
 	label="position"
 	autoUpdate
+	options={{
+		step: snapping.enabled ? snapping.translate : undefined,
+	}}
 />
 
 <TransactionalBinding
@@ -30,6 +37,18 @@
 	key="rotation"
 	label="rotation"
 	autoUpdate
+	transform={{
+		read(value) {
+			return value.set(value.x * RAD2DEG, value.y * RAD2DEG, value.z * RAD2DEG)
+		},
+		write(value) {
+			return value.set(value.x * DEG2RAD, value.y * DEG2RAD, value.z * DEG2RAD)
+		},
+	}}
+	options={{
+		format: (n) => `${n}°`,
+		step: snapping.enabled ? snapping.rotate : undefined,
+	}}
 />
 
 <TransactionalBinding

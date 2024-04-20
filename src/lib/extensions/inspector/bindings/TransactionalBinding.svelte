@@ -1,7 +1,33 @@
+<script
+	lang="ts"
+	context="module"
+>
+	/**
+	 * If the target is an object,it very likely has a clone method. We use that
+	 * to clone the object. Otherwise, we just return the value. Example: carrier
+	 * is an object with a property 'position' that is a Vector3. The result is a
+	 * clone of the Vector3.
+	 */
+	const getClonedValue = (target: any, key: string) => {
+		if (
+			typeof target[key] === 'object' &&
+			target[key] !== null &&
+			'clone' in target[key] &&
+			typeof target[key].clone === 'function'
+		) {
+			return target[key].clone()
+		}
+		if (typeof target[key] === 'object' && target[key] !== null) {
+			console.error('The object does not have a clone method', target[key])
+		}
+		return target[key]
+	}
+</script>
+
 <script lang="ts">
 	import { resolvePropertyPath, useTask } from '@threlte/core'
 	import { onMount, tick } from 'svelte'
-	import { Binding, type BindingRef } from 'svelte-tweakpane-ui'
+	import { Binding, type BindingRef, type Plugin } from 'svelte-tweakpane-ui'
 	import type { BindingParams } from 'tweakpane'
 	import { useTransactions } from '../../transactions/useTransactions'
 	import { buildTransaction } from '../buildTransaction'
@@ -13,30 +39,36 @@
 		key: string
 		label: string
 		options?: BindingParams
+		plugin?: Plugin
 		autoUpdate?: boolean
+		/** Transform values from and to display values, e.g. radians to degrees and vice versa */
+		transform?: {
+			/** The transformation applied when reading the initial value */
+			read: (value: any) => any
+			/** The transformation applied when writing the value back to the object */
+			write: (value: any) => any
+		}
 		ref?: BindingRef
 	}
 
-	let { objects, key, label, autoUpdate, ref = $bindable(), ...rest }: Props = $props()
+	let { objects, key, label, autoUpdate, ref = $bindable(), transform, ...rest }: Props = $props()
 
 	const firstObject = $derived(objects[0])
 
 	const carrier: Record<string, any> = {}
+
+	// This first resolves the target object and the key of the property we want to
+	// bind. Example: firstObject is an object with a property 'position' that is a
+	// Vector3. The result is target = firstObject and targetKey = 'position'. We
+	// use this to clone the object.
 	const { target, key: targetKey } = resolvePropertyPath(firstObject, key)
 
-	const clone = (carrier: any, key: string) => {
-		if (
-			typeof carrier[key] === 'object' &&
-			carrier[key] !== null &&
-			'clone' in carrier[key] &&
-			typeof carrier[key].clone === 'function'
-		) {
-			return carrier[key].clone()
-		}
-		return carrier[key]
-	}
+	carrier[targetKey] = getClonedValue(target, targetKey)
 
-	carrier[targetKey] = clone(target, targetKey)
+	// Maybe transform, e.g. radian to degree
+	if (transform) {
+		carrier[targetKey] = transform.read(carrier[targetKey])
+	}
 
 	let ignoreChangeEvent = false
 
@@ -44,16 +76,14 @@
 		async () => {
 			if (!ref) return
 			if (typeof carrier[targetKey] === 'object' && carrier[targetKey] !== null) {
-				if ('equals' in carrier[targetKey] && typeof carrier[targetKey].equals === 'function') {
-					if (carrier[targetKey].equals(target[targetKey])) {
-						return
-					}
-				}
 				if ('copy' in carrier[targetKey] && typeof carrier[targetKey].copy === 'function') {
 					carrier[targetKey].copy(target[targetKey])
 				}
 			} else {
 				carrier[targetKey] = target[targetKey]
+			}
+			if (transform) {
+				carrier[targetKey] = transform.read(carrier[targetKey])
 			}
 			ignoreChangeEvent = true
 			ref.refresh()
@@ -82,18 +112,22 @@
 	// change event.
 	let historicValue: any | undefined
 
+	// This function is called when the value of the binding changes. It writes
+	// the value to the target object and commits the change to the transaction
+	// queue. Arguably, this is the most important part of the binding.
 	const changeHandler = (e: { last: boolean; value: any }) => {
 		if (ignoreChangeEvent) return
+
 		// Only write the value to the target object if it's the last or the first
 		// change event.
 		if (isFirst) {
-			historicValue =
-				typeof target[targetKey] === 'object' &&
-				target[targetKey] !== null &&
-				'clone' in target[targetKey] &&
-				typeof target[targetKey].clone === 'function'
-					? target[targetKey].clone()
-					: target[targetKey]
+			// no need to transform here, because the value is already transformed
+			historicValue = getClonedValue(target, targetKey)
+		}
+
+		const value = getClonedValue(carrier, targetKey)
+		if (transform) {
+			transform.write(value)
 		}
 
 		// we commit the changes made to the object, but we only record history on
@@ -104,7 +138,7 @@
 				buildTransaction({
 					object,
 					propertyPath: key,
-					value: clone(carrier, targetKey),
+					value,
 					noHistory: !e.last,
 					noSync: !e.last,
 					historicValue,
