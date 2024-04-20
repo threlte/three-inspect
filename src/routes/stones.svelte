@@ -4,362 +4,283 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
 -->
 
 <script lang="ts">
-	import type * as THREE from 'three'
-	import { Group } from 'three'
-	import { T } from '@threlte/core'
-	import { useGltf, useSuspense } from '@threlte/extras'
+  import type * as THREE from 'three'
+  import { Group } from 'three'
+  import { T } from '@threlte/core'
+  import { useGltf, useSuspense } from '@threlte/extras'
 
-	export const ref = new Group()
+  export const ref = new Group()
 
-	const suspend = useSuspense()
+  const suspend = useSuspense()
 
-	type GLTFResult = {
-		nodes: {
-			Mid_4_MID_0: THREE.Mesh
-			Big_5_BiG_0: THREE.Mesh
-			Small_8_SMall_0: THREE.Mesh
-			Mid_5_MID_0: THREE.Mesh
-			BIG_1_BiG_0: THREE.Mesh
-			Big_2_BiG_0: THREE.Mesh
-			Big_3_BiG_0: THREE.Mesh
-			Big_4_BiG_0: THREE.Mesh
-			Mid_1_MID_0: THREE.Mesh
-			Mid_2_MID_0: THREE.Mesh
-			Mid_3_MID_0: THREE.Mesh
-			Small_1_SMall_0: THREE.Mesh
-			Small_2_SMall_0: THREE.Mesh
-			Small_3_SMall_0: THREE.Mesh
-			Small_4_SMall_0: THREE.Mesh
-			Small_5_SMall_0: THREE.Mesh
-			Small_6_SMall_0: THREE.Mesh
-			Small_7_SMall_0: THREE.Mesh
-			Runic_1_Runic_0: THREE.Mesh
-			Runic_2_Runic_0: THREE.Mesh
-			Runic_3_Runic_0: THREE.Mesh
-			Runic_4_Runic_0: THREE.Mesh
-			Runic_5_Runic_0: THREE.Mesh
-			Runic_6_Runic_0: THREE.Mesh
-			Runic_7_Runic_0: THREE.Mesh
-			p1_p1_0: THREE.Mesh
-			p2_p2_0: THREE.Mesh
-		}
-		materials: {
-			material: THREE.MeshStandardMaterial
-			material_1: THREE.MeshStandardMaterial
-			SMall: THREE.MeshStandardMaterial
-			Runic: THREE.MeshStandardMaterial
-			material_4: THREE.MeshStandardMaterial
-			material_5: THREE.MeshStandardMaterial
-		}
-	}
+  type GLTFResult = {
+    nodes: {
+      Mid_4_MID_0: THREE.Mesh
+      Big_5_BiG_0: THREE.Mesh
+      Small_8_SMall_0: THREE.Mesh
+      Mid_5_MID_0: THREE.Mesh
+      BIG_1_BiG_0: THREE.Mesh
+      Big_2_BiG_0: THREE.Mesh
+      Big_3_BiG_0: THREE.Mesh
+      Big_4_BiG_0: THREE.Mesh
+      Mid_1_MID_0: THREE.Mesh
+      Mid_2_MID_0: THREE.Mesh
+      Mid_3_MID_0: THREE.Mesh
+      Small_1_SMall_0: THREE.Mesh
+      Small_2_SMall_0: THREE.Mesh
+      Small_3_SMall_0: THREE.Mesh
+      Small_4_SMall_0: THREE.Mesh
+      Small_5_SMall_0: THREE.Mesh
+      Small_6_SMall_0: THREE.Mesh
+      Small_7_SMall_0: THREE.Mesh
+      Runic_1_Runic_0: THREE.Mesh
+      Runic_2_Runic_0: THREE.Mesh
+      Runic_3_Runic_0: THREE.Mesh
+      Runic_4_Runic_0: THREE.Mesh
+      Runic_5_Runic_0: THREE.Mesh
+      Runic_6_Runic_0: THREE.Mesh
+      Runic_7_Runic_0: THREE.Mesh
+      p1_p1_0: THREE.Mesh
+      p2_p2_0: THREE.Mesh
+    }
+    materials: {
+      material: THREE.MeshStandardMaterial
+      material_1: THREE.MeshStandardMaterial
+      SMall: THREE.MeshStandardMaterial
+      Runic: THREE.MeshStandardMaterial
+      material_4: THREE.MeshStandardMaterial
+      material_5: THREE.MeshStandardMaterial
+    }
+  }
 
-	const gltf = suspend(useGltf<GLTFResult>('/stones.glb'))
+  const gltf = suspend(useGltf<GLTFResult>('/stones.glb'))
 </script>
 
-<T
-	is={ref}
-	dispose={false}
-	position={[3.5,-0.3,0]}
->
-	{#await gltf}
-		<slot name="fallback" />
-	{:then gltf}
-		<T.Mesh
-			name="Mid_4_MID_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Mid_4_MID_0.geometry}
-			material={gltf.materials.material}
-			position={[2.1914,-1.9439,24.7276]}
-			rotation={[0, 0, 0]}
-			scale={[1.7298, 1.7298, 1.7298]}
-			visible
-			material.color="#ffffff"
-			material.polygonOffset={false}
-			material.polygonOffsetFactor={0}
-			material.dithering={false}
-			material.toneMapped
-			material.flatShading={false}
-		/>
-		<T.Mesh
-			name="Big_5_BiG_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Big_5_BiG_0.geometry}
-			material={gltf.materials.material_1}
-			position={[-9.5517,0.7,-29.8174]}
-			rotation={[0,0.128,0]}
-			scale={[2.5693, 2.5693, 2.5693]}
-			visible
-			material.flatShading
-			material.wireframe={false}
-			material.roughness={1}
-			material.clipShadows={false}
-			material.metalness={0}
-			material.toneMapped={false}
-		/>
-		<T.Mesh
-			name="Small_8_SMall_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Small_8_SMall_0.geometry}
-			material={gltf.materials.SMall}
-			position={[-7.4262,3.0345,4.978]}
-			visible
-			material.side={0}
-			material.roughness={1}
-			material.toneMapped={false}
-			material.flatShading
-			material.emissiveIntensity={0.05}
-			material.emissive="#000000"
-			material.color="#ffffff"
-			material.visible
-		/>
-		<T.Mesh
-			name="Mid_5_MID_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Mid_5_MID_0.geometry}
-			material={gltf.materials.material}
-			position={[0.6492,2.0365,23.6744]}
-			rotation={[0, 0, 0]}
-			scale={[1.6033, 1.6033, 1.6033]}
-			visible
-		/>
-		<T.Mesh
-			name="BIG_1_BiG_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.BIG_1_BiG_0.geometry}
-			material={gltf.materials.material_1}
-			position={[16.2,4.6,-26.9422]}
-			visible
-		/>
-		<T.Mesh
-			name="Big_2_BiG_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Big_2_BiG_0.geometry}
-			material={gltf.materials.material_1}
-			position={[-14.3,3.4,25.6]}
-			visible
-		/>
-		<T.Mesh
-			name="Big_3_BiG_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Big_3_BiG_0.geometry}
-			material={gltf.materials.material_1}
-			position={[8.1196,-0.062,2.4273]}
-			rotation={[0, 0.0602, 0]}
-			scale={[2.4903, 2.4903, 2.4903]}
-			visible
-		/>
-		<T.Mesh
-			name="Big_4_BiG_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Big_4_BiG_0.geometry}
-			material={gltf.materials.material_1}
-			position={[-2.9033,-1.9439,13.2724]}
-			visible
-		/>
-		<T.Mesh
-			name="Mid_1_MID_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Mid_1_MID_0.geometry}
-			material={gltf.materials.material}
-			position={[4.364,-3.1859,10.5703]}
-			rotation={[0, 0, 0]}
-			scale={[2.7583, 2.7583, 2.7583]}
-			visible
-		/>
-		<T.Mesh
-			name="Mid_2_MID_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Mid_2_MID_0.geometry}
-			material={gltf.materials.material}
-			position={[4.9476,-1.6522,17.134]}
-			rotation={[0, 0, 0]}
-			scale={[1, 1, 1]}
-			visible
-		/>
-		<T.Mesh
-			name="Mid_3_MID_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Mid_3_MID_0.geometry}
-			material={gltf.materials.material}
-			position={[-0.3077,1.7596,-7.7298]}
-			rotation={[0,0,0]}
-			scale={[1.5505,1.5505,1.5505]}
-			visible
-			frustumCulled
-		/>
-		<T.Mesh
-			name="Small_1_SMall_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Small_1_SMall_0.geometry}
-			material={gltf.materials.SMall}
-			position={[-5.9536,15.0139,13.1754]}
-			visible
-		/>
-		<T.Mesh
-			name="Small_2_SMall_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Small_2_SMall_0.geometry}
-			material={gltf.materials.SMall}
-			position={[-24.2015,-3.1762,10.2699]}
-			visible
-		/>
-		<T.Mesh
-			name="Small_3_SMall_0"
-			castShadow={false}
-			receiveShadow
-			geometry={gltf.nodes.Small_3_SMall_0.geometry}
-			material={gltf.materials.SMall}
-			position={[-7.0035,0,28.1909]}
-			rotation={[0,0,0]}
-			scale={[12.2374,4.1069,14.3491]}
-			visible
-			renderOrder={1}
-			frustumCulled
-			matrixWorldAutoUpdate
-			matrixAutoUpdate
-		/>
-		<T.Mesh
-			name="Small_4_SMall_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Small_4_SMall_0.geometry}
-			material={gltf.materials.SMall}
-			position={[-1.7802,-2.0804,-1.6466]}
-			visible
-		/>
-		<T.Mesh
-			name="Small_5_SMall_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Small_5_SMall_0.geometry}
-			material={gltf.materials.SMall}
-			position={[1.1698,-1.9439,24.4624]}
-			visible
-		/>
-		<T.Mesh
-			name="Small_6_SMall_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Small_6_SMall_0.geometry}
-			material={gltf.materials.SMall}
-			position={[20.5872,-1.2231,31.117]}
-			visible
-		/>
-		<T.Mesh
-			name="Small_7_SMall_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Small_7_SMall_0.geometry}
-			material={gltf.materials.SMall}
-			position={[-9.5662,3.0345,4.988]}
-			visible
-		/>
-		<T.Mesh
-			name="Runic_1_Runic_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Runic_1_Runic_0.geometry}
-			material={gltf.materials.Runic}
-			position={[-8.6416,-2.1083,-5.4319]}
-			visible
-			material.toneMapped={false}
-			material.flatShading
-		/>
-		<T.Mesh
-			name="Runic_2_Runic_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Runic_2_Runic_0.geometry}
-			material={gltf.materials.Runic}
-			position={[-7.5016,-2.1083,-5.5319]}
-			visible
-		/>
-		<T.Mesh
-			name="Runic_3_Runic_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Runic_3_Runic_0.geometry}
-			material={gltf.materials.Runic}
-			position={[-6.4116,-2.1083,-5.5119]}
-			visible
-		/>
-		<T.Mesh
-			name="Runic_4_Runic_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Runic_4_Runic_0.geometry}
-			material={gltf.materials.Runic}
-			position={[11.0877,-5.1628,34.1861]}
-			visible
-		/>
-		<T.Mesh
-			name="Runic_5_Runic_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Runic_5_Runic_0.geometry}
-			material={gltf.materials.Runic}
-			position={[-8.0157,-2.0804,-14.7328]}
-			rotation={[0, 0, 0]}
-			scale={[3.9429, 3.9429, 3.9429]}
-			visible
-		/>
-		<T.Mesh
-			name="Runic_6_Runic_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Runic_6_Runic_0.geometry}
-			material={gltf.materials.Runic}
-			position={[14.2677,-5.1628,25.8867]}
-			visible
-		/>
-		<T.Mesh
-			name="Runic_7_Runic_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.Runic_7_Runic_0.geometry}
-			material={gltf.materials.Runic}
-			position={[20.1372,-1.2231,25.8076]}
-			visible
-		/>
-		<T.Mesh
-			name="p1_p1_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.p1_p1_0.geometry}
-			material={gltf.materials.material_4}
-			position={[20.0323,-8.3645,36.615]}
-			rotation={[0, 0, 0]}
-			scale={[4.2, 4.2, 4.2]}
-			visible
-		/>
-		<T.Mesh
-			name="p2_p2_0"
-			castShadow
-			receiveShadow
-			geometry={gltf.nodes.p2_p2_0.geometry}
-			material={gltf.materials.material_5}
-			position={[11.4377,-5.1628,34.4361]}
-			visible
-		/>
-	{:catch error}
-		<slot
-			name="error"
-			{error}
-		/>
-	{/await}
+<T is={ref} dispose={false}>
+  {#await gltf}
+    <slot name="fallback" />
+  {:then gltf}
+    <T.Mesh
+      name="Mid_4_MID_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Mid_4_MID_0.geometry}
+      material={gltf.materials.material}
+      position={[3.7718,0,1.3919]}
+      material.color="#ffffff"
+    />
+    <T.Mesh
+      name="Big_5_BiG_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Big_5_BiG_0.geometry}
+      material={gltf.materials.material_1}
+      position={[11.6874,0,-4.2857]}
+    />
+    <T.Mesh
+      name="Small_8_SMall_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Small_8_SMall_0.geometry}
+      material={gltf.materials.SMall}
+      position={[8.2274,0,6.6043]}
+    />
+    <T.Mesh
+      name="Mid_5_MID_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Mid_5_MID_0.geometry}
+      material={gltf.materials.material}
+      position={[9.2174,0,1.7543]}
+    />
+    <T.Mesh
+      name="BIG_1_BiG_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.BIG_1_BiG_0.geometry}
+      material={gltf.materials.material_1}
+      position={[-12.7526,0,-6.2657]}
+    />
+    <T.Mesh
+      name="Big_2_BiG_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Big_2_BiG_0.geometry}
+      material={gltf.materials.material_1}
+      position={[-5.6026,0,-6.4257]}
+    />
+    <T.Mesh
+      name="Big_3_BiG_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Big_3_BiG_0.geometry}
+      material={gltf.materials.material_1}
+      position={[1.3574,0,-5.5057]}
+    />
+    <T.Mesh
+      name="Big_4_BiG_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Big_4_BiG_0.geometry}
+      material={gltf.materials.material_1}
+      position={[6.5474,0,-4.6457]}
+    />
+    <T.Mesh
+      name="Mid_1_MID_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Mid_1_MID_0.geometry}
+      material={gltf.materials.material}
+      position={[-11.6974,0,1.5472]}
+      visible
+    />
+    <T.Mesh
+      name="Mid_2_MID_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Mid_2_MID_0.geometry}
+      material={gltf.materials.material}
+      position={[-5.9426,0,1.2743]}
+    />
+    <T.Mesh
+      name="Mid_3_MID_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Mid_3_MID_0.geometry}
+      material={gltf.materials.material}
+      position={[-1.3226,0,1.5343]}
+    />
+    <T.Mesh
+      name="Small_1_SMall_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Small_1_SMall_0.geometry}
+      material={gltf.materials.SMall}
+      position={[-9.1326,0,6.6843]}
+    />
+    <T.Mesh
+      name="Small_2_SMall_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Small_2_SMall_0.geometry}
+      material={gltf.materials.SMall}
+      position={[-6.7426,0,6.6043]}
+    />
+    <T.Mesh
+      name="Small_3_SMall_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Small_3_SMall_0.geometry}
+      material={gltf.materials.SMall}
+      position={[-4.2626,0,6.5643]}
+    />
+    <T.Mesh
+      name="Small_4_SMall_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Small_4_SMall_0.geometry}
+      material={gltf.materials.SMall}
+      position={[-1.3326,0,6.5543]}
+    />
+    <T.Mesh
+      name="Small_5_SMall_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Small_5_SMall_0.geometry}
+      material={gltf.materials.SMall}
+      position={[1.6174,0,6.5443]}
+    />
+    <T.Mesh
+      name="Small_6_SMall_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Small_6_SMall_0.geometry}
+      material={gltf.materials.SMall}
+      position={[4.0174,0,6.6243]}
+    />
+    <T.Mesh
+      name="Small_7_SMall_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Small_7_SMall_0.geometry}
+      material={gltf.materials.SMall}
+      position={[6.0874,0,6.6143]}
+    />
+    <T.Mesh
+      name="Runic_1_Runic_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Runic_1_Runic_0.geometry}
+      material={gltf.materials.Runic}
+      position={[-4.7026,0,9.6643]}
+    />
+    <T.Mesh
+      name="Runic_2_Runic_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Runic_2_Runic_0.geometry}
+      material={gltf.materials.Runic}
+      position={[-3.5626,0,9.5643]}
+    />
+    <T.Mesh
+      name="Runic_3_Runic_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Runic_3_Runic_0.geometry}
+      material={gltf.materials.Runic}
+      position={[-2.4726,0,9.5843]}
+    />
+    <T.Mesh
+      name="Runic_4_Runic_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Runic_4_Runic_0.geometry}
+      material={gltf.materials.Runic}
+      position={[-1.0926,0,9.6143]}
+    />
+    <T.Mesh
+      name="Runic_5_Runic_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Runic_5_Runic_0.geometry}
+      material={gltf.materials.Runic}
+      position={[0.4974,0,9.5943]}
+    />
+    <T.Mesh
+      name="Runic_6_Runic_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Runic_6_Runic_0.geometry}
+      material={gltf.materials.Runic}
+      position={[2.0874,0,9.6443]}
+    />
+    <T.Mesh
+      name="Runic_7_Runic_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.Runic_7_Runic_0.geometry}
+      material={gltf.materials.Runic}
+      position={[3.5674,0,9.6443]}
+    />
+    <T.Mesh
+      name="p1_p1_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.p1_p1_0.geometry}
+      material={gltf.materials.material_4}
+      position={[-0.7526,0,9.8343]}
+    />
+    <T.Mesh
+      name="p2_p2_0"
+      castShadow
+      receiveShadow
+      geometry={gltf.nodes.p2_p2_0.geometry}
+      material={gltf.materials.material_5}
+      position={[-0.7426,0,9.8643]}
+    />
+  {:catch error}
+    <slot name="error" {error} />
+  {/await}
 
-	<slot {ref} />
+  <slot {ref} />
 </T>

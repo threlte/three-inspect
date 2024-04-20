@@ -1,3 +1,4 @@
+import type { Object3D } from 'three'
 import type { TransactionQueue, TransactionQueueCommitArgs } from './TransactionQueue.svelte'
 
 export const transactionsScope = 'transactions'
@@ -18,4 +19,6 @@ export type TransactionsActions = {
 	undo: () => void
 	redo: () => void
 	sync: () => void
+	openInEditor: (object: Object3D) => void
+	openSelectedInEditor: () => void
 }

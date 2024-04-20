@@ -9,6 +9,11 @@ export type ServerFunctions = {
 			precision?: number
 		}[],
 	) => void
+	getColumnAndRow: (
+		moduleId: string,
+		componentIndex: number,
+		signature: string,
+	) => { column: number; row: number }
 }
 
 export type ClientFunctions = Record<string, never>

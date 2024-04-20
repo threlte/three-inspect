@@ -101,7 +101,7 @@
 			text,
 			allowDrag: false,
 			allowDrop: false,
-			icon: findIcon(object).codePointAt(0).toString(16),
+			icon: findIcon(object).codePointAt(0)?.toString(16),
 		})
 		item.open = true
 		item.selected = objectSelection.selectedObjects.includes(object)

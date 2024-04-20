@@ -1,3 +1,4 @@
+import type { Object3D } from 'three'
 import { useStudio } from '../../internal/extensions'
 import type { TransactionQueue, TransactionQueueCommitArgs } from './TransactionQueue.svelte'
 import { transactionsScope, type TransactionsActions, type TransactionsState } from './types'
@@ -35,6 +36,14 @@ export const useTransactions = () => {
 		return ext.state.queue?.onRedo(...args)
 	}
 
+	const openInEditor = (object: Object3D) => {
+		ext.run('openInEditor', object)
+	}
+
+	const openSelectedInEditor = () => {
+		ext.run('openSelectedInEditor')
+	}
+
 	return {
 		commit,
 		undo,
@@ -43,5 +52,7 @@ export const useTransactions = () => {
 		onCommit,
 		onUndo,
 		onRedo,
+		openInEditor,
+		openSelectedInEditor,
 	}
 }

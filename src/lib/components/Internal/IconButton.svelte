@@ -95,6 +95,11 @@
 		color: var(--text-color);
 		border-radius: var(--bs-br);
 		position: relative;
+		cursor: pointer;
+	}
+
+	button:disabled {
+		cursor: not-allowed;
 	}
 
 	button::after {

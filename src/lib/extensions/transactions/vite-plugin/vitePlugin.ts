@@ -2,10 +2,11 @@ import type { Plugin } from 'vite'
 import { createRPCServer } from 'vite-dev-rpc'
 import type { ClientFunctions, ServerFunctions } from '../rpc'
 import * as componentParser from './utils/componentParser'
-import { addStudioRuntimeProps, componentNeedsTransform } from './utils/componentParser'
+import { addStudioRuntimeProps, hasTComponent } from './utils/componentParser'
 import * as componentUtils from './utils/componentUtils'
 import * as fileUtils from './utils/fileUtils'
 import { toMagicString } from './utils/magicStringUtils'
+import indexToPosition from 'index-to-position'
 
 const HmrIgnoredModuleTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 const HmrIgnoredModuleIds = new Set<string>()
@@ -29,9 +30,10 @@ export const plugin: () => Plugin = () => {
 	return {
 		name: 'Threlte-Inspector',
 		enforce: 'pre',
+		apply: 'serve',
 		transform(code, id) {
 			if (!id.endsWith('.svelte')) return
-			if (!componentNeedsTransform(code)) return
+			if (!hasTComponent(code)) return
 			const { markup, script, scriptModule, style } = componentUtils.disassembleComponent(code)
 			const magicMarkup = toMagicString(markup)
 			addStudioRuntimeProps(magicMarkup, id)
@@ -63,7 +65,7 @@ export const plugin: () => Plugin = () => {
 
 					for (const [moduleId, transactions] of transactionsByModuleId.entries()) {
 						const code = fileUtils.readComponent(moduleId)
-						if (!componentNeedsTransform(code)) {
+						if (!hasTComponent(code)) {
 							console.error('Component does not need transform')
 							continue
 						}
@@ -101,6 +103,42 @@ export const plugin: () => Plugin = () => {
 						HmrIgnoredModuleIds.add(moduleId)
 						fileUtils.writeComponent(moduleId, finalComponent)
 					}
+				},
+				getColumnAndRow(moduleId, componentIndex, signature) {
+					const code = fileUtils.readComponent(moduleId)
+					if (!hasTComponent(code)) {
+						console.error('Component does not need transform')
+						return { column: 0, row: 0 }
+					}
+					const { markup, script, scriptModule, style } = componentUtils.disassembleComponent(code)
+					const magicMarkup = toMagicString(markup)
+					const node = componentParser.findNodeByIndex(magicMarkup, componentIndex)
+					if (!node) {
+						console.error('Could not find node by index', componentIndex)
+						return { column: 0, row: 0 }
+					}
+					const serverSignature = componentParser.markupSignature(magicMarkup)
+					if (serverSignature !== signature) {
+						console.error('Signature mismatch')
+						return { column: 0, row: 0 }
+					}
+					const start = node.start
+					// slice the markup to the start of the node
+					const slice = toMagicString(markup.slice(0, start))
+					// assemble the component back together to get the index
+					const finalComponent = componentUtils.assembleComponent(
+						slice,
+						script,
+						scriptModule,
+						style,
+					)
+					// get the index of the last character
+					const index = finalComponent.length - 1
+					// convert the index to a position
+					const pos = indexToPosition(finalComponent, index, {
+						oneBased: true,
+					})
+					return { column: pos.column, row: pos.line }
 				},
 			})
 		},

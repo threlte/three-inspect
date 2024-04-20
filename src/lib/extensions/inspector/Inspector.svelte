@@ -1,15 +1,19 @@
 <script lang="ts">
-	import { Pane } from 'svelte-tweakpane-ui'
+	import { Element, Pane, Separator } from 'svelte-tweakpane-ui'
 	import { type Pane as TpPane } from 'tweakpane'
+	import IconButton from '../../components/Internal/IconButton.svelte'
+	import Tooltip from '../../components/Internal/Tooltip.svelte'
 	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
 	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
 	import { browser } from '../../internal/browser'
 	import { useStudio } from '../../internal/extensions'
 	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
+	import { useTransactions } from '../transactions/useTransactions'
 	import Bindings from './Bindings.svelte'
 	import { inspectorScope, type InspectorActions, type InspectorState } from './types'
 
 	const { useExtension } = useStudio()
+	const { openInEditor } = useTransactions()
 
 	const ext = useExtension<InspectorState, InspectorActions>({
 		scope: inspectorScope,
@@ -72,6 +76,24 @@
 		x={browser ? innerWidth - 6 - 320 : 6}
 		y={6 + 60 + 6}
 	>
+		{#if objectSelection.selectedObjects.length === 1}
+			<Element>
+				<div style="display: flex; justify-content: end; margin-bottom: 4px;">
+					<Tooltip>
+						<IconButton
+							label="Open In Editor"
+							icon="mdiMenuOpen"
+							on:click={() => {
+								openInEditor(objectSelection.selectedObjects[0])
+							}}
+							disabled={objectSelection.selectedObjects.length !== 1}
+						/>
+						<span slot="tooltip">Open In Editor</span>
+					</Tooltip>
+				</div>
+			</Element>
+			<Separator />
+		{/if}
 		<Bindings />
 	</Pane>
 {/if}

@@ -5,10 +5,9 @@ import { createHash } from 'node:crypto'
 import { parse } from 'svelte/compiler'
 import type { StudioProps } from '../types'
 
-export const componentNeedsTransform = (code: string): boolean => {
+export const hasTComponent = (code: string): boolean => {
 	return code.includes('<T.') || code.includes('<T ') || code.includes('<T\n')
 }
-
 type BaseAttribute = {
 	name: string
 	start: number
@@ -159,7 +158,7 @@ export const findNodeByIndex = (markup: MagicString, index: number): TComponentN
 	const ast = parse(markup.toString())
 	let currentIndex = -1
 	let finalNode: TComponentNode | undefined
-	walk(ast.html as Node, {
+	walk((ast as any).html as Node, {
 		enter(node) {
 			if (!isTComponentNode(node)) return
 			currentIndex += 1
@@ -196,7 +195,7 @@ export const markupSignature = (markup: MagicString): string => {
 	const ast = parse(markup.toString())
 	const nodes: [name: string, index: number, attributes: string][] = []
 	let index = 0
-	walk(ast.html as Node, {
+	walk((ast as any).html as Node, {
 		enter(node) {
 			if (!isTComponentNode(node)) return
 			const name = node.name
@@ -376,7 +375,7 @@ export const addStudioRuntimeProps = (markup: MagicString, id: string): void => 
 	const ast = parse(markup.toString())
 	let index = 0
 	const signature = markupSignature(markup)
-	walk(ast.html as Node, {
+	walk((ast as any).html as Node, {
 		enter(node) {
 			if (!isTComponentNode(node)) return
 			const props: StudioProps = { moduleId: id, index, signature }

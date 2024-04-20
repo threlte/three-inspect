@@ -32,11 +32,6 @@
 	} else {
 		carrier[targetKey] = target[targetKey]
 	}
-
-	if (key === 'mapSize.width') {
-		console.log(target[targetKey])
-		console.log(typeof target[targetKey] === 'object')
-	}
 </script>
 
 <List

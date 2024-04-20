@@ -11,6 +11,9 @@
 	import { TransactionQueue } from './TransactionQueue.svelte'
 	import { transactionsScope, type TransactionsActions, type TransactionsState } from './types'
 	import type { StudioProps } from './vite-plugin/types'
+	import { clientRpc } from './vite-plugin/clientRpc'
+	import { getThrelteStudioUserData } from './vite-plugin/runtimeUtils'
+	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
 
 	const { useExtension } = useStudio()
 	const { invalidate } = useThrelte()
@@ -55,6 +58,8 @@
 		}
 	})
 
+	const objectSelection = useObjectSelection()
+
 	const { run, state } = useExtension<TransactionsState, TransactionsActions>({
 		scope: transactionsScope,
 		state: ({ persist }) => {
@@ -93,12 +98,30 @@
 			sync({ state }) {
 				state.queue.sync()
 			},
+			async openInEditor(_, object) {
+				if (!clientRpc) return
+				const userData = getThrelteStudioUserData(object)
+				if (!userData) return
+				const pos = await clientRpc.getColumnAndRow(
+					userData.moduleId,
+					userData.index,
+					userData.signature,
+				)
+				const fileLoc = `${userData.moduleId}:${pos.row}:${pos.column + 1}`
+				fetch(`/__open-in-editor?file=${encodeURIComponent(fileLoc)}`)
+			},
+			openSelectedInEditor() {
+				const objects = objectSelection.selectedObjects
+				if (objects.length !== 1) return
+				run('openInEditor', objects[0])
+			},
 		},
 		keyMap({ meta, shift }) {
 			return {
 				undo: meta('z'),
 				redo: shift(meta('z')),
 				sync: meta('s'),
+				openSelectedInEditor: meta('o'),
 			}
 		},
 	})
