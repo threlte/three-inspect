@@ -12,15 +12,34 @@
 	treeview.scrollable = true
 	treeview.allowRenaming = false
 	treeview.dom.style.cssText = `
-  font-family: monospace;
-  font-size: 11px;
-  height: auto;
-	max-height: 50vh;
-  `
+--text-secondary: #bbbcc4b3;
+font-family: Roboto Mono, Source Code Pro, Menlo, Courier, monospace;
+font-size: 11px;
+height: auto;
+max-height: 50vh;
+`
 
 	const style = document.createElement('style')
-	style.innerHTML =
-		'.tv-container:nth-child(2)::before { top: -2px } .tv-item-icon:before { width: 12px } .tv-item-icon:after { filter: saturate(0) brightness(10); display: inline-flex; justify-content: center; align-items: center; }'
+	style.innerHTML = `
+.tv-container:nth-child(2)::before {
+	top: -2px
+} 
+
+.tv-item-icon:before {
+	width: 12px;
+}
+
+.tv-item-icon:after {
+	filter: saturate(0) brightness(10);
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.font-regular {
+	font-weight: 500;
+}
+`
 	treeview.shadowRoot.appendChild(style)
 
 	const { scene } = useThrelte()
