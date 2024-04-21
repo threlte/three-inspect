@@ -1,22 +1,50 @@
 <script lang="ts">
 	import { Canvas, T } from '@threlte/core'
+	import { CSM, Float } from '@threlte/extras'
 	import Studio from '../lib/components/Studio/Studio.svelte'
-	import Stones from './stones.svelte'
+	import Env from './Env.svelte'
+	import FloatingIsland from './FloatingIsland.svelte'
+	import Ship from './Ship.svelte'
+	import Stones from './stones2.svelte'
 </script>
 
 <Canvas>
 	<Studio>
+		<Env />
+
 		<T.PerspectiveCamera
 			makeDefault
-			position={[0, 14.1442, 52.633]}
-			fov={21}
-			rotation={[-0.2105,0,0]}
+			position={[-2.2, 11.601, 35.1519]}
+			fov={37.25}
+			rotation={[-0.2649, 0, 0]}
+			zoom={1}
+			filmOffset={0}
+			filmGauge={35}
 		/>
 
-		<T.DirectionalLight />
-		<T.AmbientLight />
+		<CSM
+			lightDirection={[-1, -1, -1]}
+			args={{
+				shadowMapSize: 4096,
+			}}
+			lightIntensity={10}
+		/>
 
-		<Stones />
+		<Float
+			floatIntensity={10}
+			seed={2}
+		>
+			<FloatingIsland />
+			<Stones />
+		</Float>
+
+		<Float
+			floatIntensity={10}
+			rotationIntensity={0.2}
+			seed={1}
+		>
+			<Ship />
+		</Float>
 	</Studio>
 </Canvas>
 
@@ -24,6 +52,6 @@
 	:global(body) {
 		height: 100vh;
 		margin: 0;
-		background-color: black;
+		/* background-color: black; */
 	}
 </style>
