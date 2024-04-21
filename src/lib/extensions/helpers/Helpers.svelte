@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { T, useThrelte } from '@threlte/core'
+	import { T, useTask, useThrelte } from '@threlte/core'
 	import { Gizmo } from '@threlte/extras'
 	import { Light, Object3D, type Camera, type Group } from 'three'
 	import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js'
@@ -14,7 +14,7 @@
 	import Mounter from './Mounter.svelte'
 	import { helpersScope, type HelpersActions, type HelpersState } from './types'
 
-	const { camera } = useThrelte()
+	const { autoRenderTask } = useThrelte()
 	const { useExtension } = useStudio()
 
 	const { state, run } = useExtension<HelpersState, HelpersActions>({
@@ -38,10 +38,28 @@
 
 	const { addObject, removeObject } = useStudioObjectsRegistry()
 
+	const activeHelpers = new Set<Object3D>()
+
+	useTask(
+		() => {
+			for (const helper of activeHelpers) {
+				if ('update' in helper && typeof helper.update === 'function') {
+					helper.update()
+				}
+			}
+		},
+		{
+			autoInvalidate: false,
+			before: autoRenderTask,
+		},
+	)
+
 	const onCreate = (args: { ref: Object3D; cleanup: (callback: () => void) => void }) => {
 		addObject(args.ref)
+		activeHelpers.add(args.ref)
 		args.cleanup(() => {
 			removeObject(args.ref)
+			activeHelpers.delete(args.ref)
 		})
 	}
 
@@ -141,8 +159,8 @@
 				/>
 			{:else if 'isRectAreaLight' in object}
 				<T
-					userData={{ ignoreOverrideMaterial: true }}
 					is={RectAreaLightHelper}
+					userData={{ ignoreOverrideMaterial: true }}
 					on:create={onCreate}
 					args={[object]}
 				/>
