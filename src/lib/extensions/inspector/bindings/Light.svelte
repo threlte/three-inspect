@@ -8,9 +8,9 @@
 		RectAreaLight,
 		SpotLight,
 	} from 'three'
+	import Shadow from './Shadow.svelte'
 	import TransactionalBinding from './TransactionalBinding.svelte'
 	import { haveProperty } from './utils'
-	import Shadow from './Shadow.svelte'
 
 	type Props = {
 		lights: (

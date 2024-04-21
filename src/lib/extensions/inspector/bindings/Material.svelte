@@ -1,9 +1,39 @@
 <script lang="ts">
 	import { Folder } from 'svelte-tweakpane-ui'
-	import { BackSide, DoubleSide, FrontSide, type Material, type Object3D } from 'three'
+	import {
+		BackSide,
+		DoubleSide,
+		FrontSide,
+		MultiplyOperation,
+		type Material,
+		type Object3D,
+		MixOperation,
+		AddOperation,
+		ZeroFactor,
+		OneFactor,
+		SrcColorFactor,
+		OneMinusSrcColorFactor,
+		SrcAlphaFactor,
+		OneMinusSrcAlphaFactor,
+		DstAlphaFactor,
+		OneMinusDstAlphaFactor,
+		AddEquation,
+		SubtractEquation,
+		ReverseSubtractEquation,
+		MinEquation,
+		MaxEquation,
+		DstColorFactor,
+		OneMinusDstColorFactor,
+		SrcAlphaSaturateFactor,
+		ConstantColorFactor,
+		OneMinusConstantColorFactor,
+		ConstantAlphaFactor,
+		OneMinusConstantAlphaFactor,
+	} from 'three'
 	import TransactionalBinding from './TransactionalBinding.svelte'
 	import TransactionalList from './TransactionalList.svelte'
-	import { haveProperty } from './utils'
+	// import TransactionalTextureImage from './TransactionalTextureImage.svelte'
+	import { haveProperty, mutualType } from './utils'
 
 	type Props = {
 		objects: (Object3D & { material: Material })[]
@@ -15,9 +45,17 @@
 </script>
 
 <Folder
-	title="material"
+	title="material {mutualType(materials)}"
 	expanded
 >
+	<!-- {#if haveProperty(materials, 'map')}
+		<TransactionalTextureImage
+			objects={materials}
+			key="map"
+			label="map"
+		/>
+	{/if} -->
+
 	{#if haveProperty(materials, 'visible')}
 		<TransactionalBinding
 			objects={materials}
@@ -225,23 +263,47 @@
 			label="blendDst"
 		/>
 
-		<!-- Unsupported: null | number -->
-		<!-- {#if haveProperty(materials, 'blendDstAlpha')}
-			<TransactionalBinding
+		{#if haveProperty(materials, 'blendDstAlpha')}
+			<TransactionalList
 				objects={materials}
 				key="blendDstAlpha"
 				label="blendDstAlpha"
+				options={{
+					null: null,
+					ZeroFactor: ZeroFactor,
+					OneFactor: OneFactor,
+					SrcColorFactor: SrcColorFactor,
+					OneMinusSrcColorFactor: OneMinusSrcColorFactor,
+					SrcAlphaFactor: SrcAlphaFactor,
+					OneMinusSrcAlphaFactor: OneMinusSrcAlphaFactor,
+					DstAlphaFactor: DstAlphaFactor,
+					OneMinusDstAlphaFactor: OneMinusDstAlphaFactor,
+					DstColorFactor: DstColorFactor,
+					OneMinusDstColorFactor: OneMinusDstColorFactor,
+					SrcAlphaSaturateFactor: SrcAlphaSaturateFactor,
+					ConstantColorFactor: ConstantColorFactor,
+					OneMinusConstantColorFactor: OneMinusConstantColorFactor,
+					ConstantAlphaFactor: ConstantAlphaFactor,
+					OneMinusConstantAlphaFactor: OneMinusConstantAlphaFactor,
+				}}
 			/>
-		{/if} -->
+		{/if}
 
-		<!-- Unsupported: null | number -->
-		<!-- {#if haveProperty(materials, 'blendEquationAlpha')}
-			<TransactionalBinding
+		{#if haveProperty(materials, 'blendEquationAlpha')}
+			<TransactionalList
 				objects={materials}
 				key="blendEquationAlpha"
 				label="blendEquationAlpha"
+				options={{
+					null: null,
+					AddEquation: AddEquation,
+					SubtractEquation: SubtractEquation,
+					ReverseSubtractEquation: ReverseSubtractEquation,
+					MinEquation: MinEquation,
+					MaxEquation: MaxEquation,
+				}}
 			/>
-		{/if} -->
+		{/if}
 
 		<TransactionalBinding
 			objects={materials}
@@ -254,14 +316,31 @@
 			label="blendSrc"
 		/>
 
-		<!-- Unsupported: null | number -->
-		<!-- {#if haveProperty(materials, 'blendSrcAlpha')}
-			<TransactionalBinding
+		{#if haveProperty(materials, 'blendSrcAlpha')}
+			<TransactionalList
 				objects={materials}
 				key="blendSrcAlpha"
 				label="blendSrcAlpha"
+				options={{
+					null: null,
+					ZeroFactor: ZeroFactor,
+					OneFactor: OneFactor,
+					SrcColorFactor: SrcColorFactor,
+					OneMinusSrcColorFactor: OneMinusSrcColorFactor,
+					SrcAlphaFactor: SrcAlphaFactor,
+					OneMinusSrcAlphaFactor: OneMinusSrcAlphaFactor,
+					DstAlphaFactor: DstAlphaFactor,
+					OneMinusDstAlphaFactor: OneMinusDstAlphaFactor,
+					DstColorFactor: DstColorFactor,
+					OneMinusDstColorFactor: OneMinusDstColorFactor,
+					SrcAlphaSaturateFactor: SrcAlphaSaturateFactor,
+					ConstantColorFactor: ConstantColorFactor,
+					OneMinusConstantColorFactor: OneMinusConstantColorFactor,
+					ConstantAlphaFactor: ConstantAlphaFactor,
+					OneMinusConstantAlphaFactor: OneMinusConstantAlphaFactor,
+				}}
 			/>
-		{/if} -->
+		{/if}
 	</Folder>
 
 	<TransactionalBinding
@@ -280,17 +359,18 @@
 		label="colorWrite"
 	/>
 
-	<!-- {#if 'combine' in object}
-	<List
-		bind:value={object.combine}
-		label="combine"
-		options={{
-			MultiplyOperation: THREE.MultiplyOperation,
-			MixOperation: THREE.MixOperation,
-			AddOperation: THREE.AddOperation,
-		}}
-	/>
-{/if} -->
+	{#if haveProperty(materials, 'combine')}
+		<TransactionalList
+			objects={materials}
+			key="combine"
+			label="combine"
+			options={{
+				MultiplyOperation: MultiplyOperation,
+				MixOperation: MixOperation,
+				AddOperation: AddOperation,
+			}}
+		/>
+	{/if}
 
 	<Folder
 		title="depth"
@@ -400,23 +480,20 @@
 			DoubleSide,
 		}}
 	/>
-	<!-- <TransactionalBinding
-		objects={materials}
-		label="side"
-		key="side"
-	/> -->
 
-	<!-- {#if 'shadowSide' in object}
-	<List
-		bind:value={object.shadowSide}
-		label="shadowSide"
-		options={{
-			FrontSide: THREE.FrontSide,
-			BackSide: THREE.BackSide,
-			DoubleSide: THREE.DoubleSide,
-		}}
-	/>
-{/if} -->
+	{#if haveProperty(materials, 'shadowSide')}
+		<TransactionalList
+			objects={materials}
+			key="shadowSide"
+			label="shadowSide"
+			options={{
+				null: null,
+				FrontSide,
+				BackSide,
+				DoubleSide,
+			}}
+		/>
+	{/if}
 
 	<TransactionalBinding
 		objects={materials}

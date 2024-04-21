@@ -3,10 +3,10 @@
 	import type { Object3D } from 'three'
 	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
 	import Camera from './bindings/Camera.svelte'
+	import Light from './bindings/Light.svelte'
 	import Material from './bindings/Material.svelte'
 	import Object3DBinding from './bindings/Object3D.svelte'
 	import { areCamera, areLight, haveMaterialProperty } from './bindings/utils'
-	import Light from './bindings/Light.svelte'
 
 	const objectSelection = useObjectSelection()
 	const keyFromObjects = (objects: Object3D[]) => {

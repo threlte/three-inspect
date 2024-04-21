@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Camera, type OrthographicCamera, type PerspectiveCamera } from 'three'
+	import * as CamerakitPlugin from '@tweakpane/plugin-camerakit'
+	import { type OrthographicCamera, type PerspectiveCamera } from 'three'
 	import TransactionalBinding from './TransactionalBinding.svelte'
 	import { areOfType } from './utils'
 
@@ -9,37 +10,81 @@
 
 	let { objects }: Props = $props()
 
-	const keys = ['near', 'far', 'zoom'] as const
-	const perspectiveKeys = ['fov', 'filmOffset', 'filmGauge'] as const
 	const orthographicKeys = ['bottom', 'left', 'top', 'right'] as const
 </script>
 
-{#each keys as key (key)}
+<TransactionalBinding
+	{objects}
+	key="near"
+	label="near"
+	on:change={() => {
+		objects.forEach((object) => {
+			object.updateProjectionMatrix()
+		})
+	}}
+/>
+<TransactionalBinding
+	{objects}
+	key="far"
+	label="far"
+	on:change={() => {
+		objects.forEach((object) => {
+			object.updateProjectionMatrix()
+		})
+	}}
+/>
+<TransactionalBinding
+	{objects}
+	key="zoom"
+	label="zoom"
+	options={{
+		min: 0,
+	}}
+	on:change={() => {
+		objects.forEach((object) => {
+			object.updateProjectionMatrix()
+		})
+	}}
+/>
+
+{#if areOfType(objects, 'isPerspectiveCamera')}
 	<TransactionalBinding
 		{objects}
-		{key}
-		label={key}
+		key="fov"
+		label="fov"
+		plugin={CamerakitPlugin}
+		options={{
+			view: 'cameraring',
+			min: 0,
+			max: 180,
+			format: (n) => `${n}°`,
+		}}
 		on:change={() => {
 			objects.forEach((object) => {
 				object.updateProjectionMatrix()
 			})
 		}}
 	/>
-{/each}
-
-{#if areOfType(objects, 'isPerspectiveCamera')}
-	{#each perspectiveKeys as key (key)}
-		<TransactionalBinding
-			{objects}
-			{key}
-			label={key}
-			on:change={() => {
-				objects.forEach((object) => {
-					object.updateProjectionMatrix()
-				})
-			}}
-		/>
-	{/each}
+	<TransactionalBinding
+		{objects}
+		key="filmOffset"
+		label="filmOffset"
+		on:change={() => {
+			objects.forEach((object) => {
+				object.updateProjectionMatrix()
+			})
+		}}
+	/>
+	<TransactionalBinding
+		{objects}
+		key="filmGauge"
+		label="filmGauge"
+		on:change={() => {
+			objects.forEach((object) => {
+				object.updateProjectionMatrix()
+			})
+		}}
+	/>
 {:else if areOfType(objects, 'isOrthographicCamera')}
 	{#each orthographicKeys as key (key)}
 		<TransactionalBinding

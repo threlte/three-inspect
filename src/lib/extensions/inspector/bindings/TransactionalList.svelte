@@ -10,11 +10,10 @@
 		objects: any[]
 		key: string
 		label: string
-		autoUpdate?: boolean
 		options: ListOptions<any>
 	}
 
-	let { objects, key, label, autoUpdate, options, ...rest }: Props = $props()
+	let { objects, key, label, options, ...rest }: Props = $props()
 
 	const firstObject = $derived(objects[0])
 

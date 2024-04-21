@@ -11,6 +11,9 @@ dependencies:
   '@floating-ui/dom':
     specifier: ^1.5.4
     version: 1.6.3
+  '@kitschpatrol/tweakpane-image-plugin':
+    specifier: ^2.0.0
+    version: 2.0.0(tweakpane@4.0.3)
   '@mdi/js':
     specifier: ^7.4.47
     version: 7.4.47
@@ -20,6 +23,9 @@ dependencies:
   '@threlte/extras':
     specifier: ^9.0.0-next.4
     version: 9.0.0-next.4(@types/three@0.160.0)(svelte@5.0.0-next.106)(three@0.163.0)
+  '@tweakpane/plugin-camerakit':
+    specifier: ^0.3.0
+    version: 0.3.0(tweakpane@4.0.3)
   camera-controls:
     specifier: ^2.7.3
     version: 2.8.3(three@0.163.0)
@@ -32,6 +38,9 @@ dependencies:
   index-to-position:
     specifier: ^1.0.0
     version: 1.0.0
+  magic-string:
+    specifier: ^0.30.10
+    version: 0.30.10
   svelte:
     specifier: 5.0.0-next.106
     version: 5.0.0-next.106
@@ -98,7 +107,7 @@ devDependencies:
     specifier: ^8.4.33
     version: 8.4.38
   postprocessing:
-    specifier: ^6.34.1
+    specifier: ^6.35.3
     version: 6.35.3(three@0.163.0)
   prettier:
     specifier: ^3.2.2

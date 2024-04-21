@@ -34,6 +34,15 @@ export const areCamera = (
 	)
 }
 
+export const mutualType = (objects: any[]): `(${string})` | undefined => {
+	const types = objects.map((object) => object.type) as string[]
+	const uniqueTypes = new Set(types)
+	if (uniqueTypes.size === 1 && types[0]) {
+		return `(${types[0]})`
+	}
+	return undefined
+}
+
 export const areLight = (
 	objects: any[],
 ): objects is (
