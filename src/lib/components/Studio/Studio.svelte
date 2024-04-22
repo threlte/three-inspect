@@ -62,6 +62,10 @@
 
 <Toolbar />
 
+<Transactions>
+  <slot />
+</Transactions>
+
 <Space />
 <Snapping />
 <ObjectSelection />
@@ -73,6 +77,3 @@
 <Helpers />
 <SceneHierarchy />
 <Inspector />
-<Transactions>
-  <slot />
-</Transactions>

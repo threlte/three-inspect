@@ -57,7 +57,6 @@
   )
 
   const onCreate = (args: { ref: Object3D; cleanup: (callback: () => void) => void }) => {
-    console.log('onCreate', args.ref)
     addObject(args.ref)
     activeHelpers.add(args.ref)
     args.cleanup(() => {
