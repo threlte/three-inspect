@@ -17,7 +17,7 @@
 	const { autoRenderTask } = useThrelte()
 	const { useExtension } = useStudio()
 
-	const { state, run } = useExtension<HelpersState, HelpersActions>({
+	const ext = useExtension<HelpersState, HelpersActions>({
 		scope: helpersScope,
 		state({ persist }) {
 			return {
@@ -55,6 +55,7 @@
 	)
 
 	const onCreate = (args: { ref: Object3D; cleanup: (callback: () => void) => void }) => {
+		console.log('onCreate', args.ref)
 		addObject(args.ref)
 		activeHelpers.add(args.ref)
 		args.cleanup(() => {
@@ -74,15 +75,26 @@
 	const isGroup = (object: any): object is Group => {
 		return object.isGroup
 	}
+
+	let frame = $state(0)
+	useTask(
+		() => {
+			frame++
+		},
+		{
+			before: autoRenderTask,
+			autoInvalidate: false,
+		},
+	)
 </script>
 
 <ToolbarItem position="left">
 	<HorizontalButtonGroup>
 		<ToolbarButton
 			on:click={() => {
-				run('toggleEnabled')
+				ext.run('toggleEnabled')
 			}}
-			active={state.enabled}
+			active={ext.state.enabled}
 			label="Helpers"
 			icon="mdiFitToScreen"
 			tooltip="Helpers"
@@ -90,7 +102,7 @@
 	</HorizontalButtonGroup>
 </ToolbarItem>
 
-{#if state.enabled}
+{#if ext.state.enabled}
 	<Gizmo
 		paddingX={6}
 		paddingY={6}
@@ -125,7 +137,7 @@
 				on:create={onCreate}
 			/>
 		{:else if isLight(object)}
-			{#if object.shadow}
+			{#if object.shadow && frame && object.castShadow}
 				<T.CameraHelper
 					userData={{ ignoreOverrideMaterial: true }}
 					args={[object.shadow.camera]}
