@@ -1,63 +1,63 @@
 <script lang="ts">
-	import { injectPlugin, useThrelte } from '@threlte/core'
-	import { onDestroy } from 'svelte'
-	import type { DirectionalLight, SpotLight } from 'three'
-	import EditorCamera from '../../extensions/editor-camera/EditorCamera.svelte'
-	import Grid from '../../extensions/grid/Grid.svelte'
-	import Helpers from '../../extensions/helpers/Helpers.svelte'
-	import Inspector from '../../extensions/inspector/Inspector.svelte'
-	import ObjectSelection from '../../extensions/object-selection/ObjectSelection.svelte'
-	import RenderModes from '../../extensions/render-modes/RenderModes.svelte'
-	import SceneHierarchy from '../../extensions/scene-hierarchy/SceneHierarchy.svelte'
-	import Snapping from '../../extensions/snapping/Snapping.svelte'
-	import Space from '../../extensions/space/Space.svelte'
-	import StudioObjectsRegistry from '../../extensions/studio-objects-registry/StudioObjectsRegistry.svelte'
-	import Transactions from '../../extensions/transactions/Transactions.svelte'
-	import TransformControls from '../../extensions/transform-controls/TransformControls.svelte'
-	import { createRootContext } from '../../internal/extensions'
-	import Toolbar from '../Toolbar/Toolbar.svelte'
+  import { injectPlugin, useThrelte } from '@threlte/core'
+  import { onDestroy } from 'svelte'
+  import type { DirectionalLight, SpotLight } from 'three'
+  import EditorCamera from '../../extensions/editor-camera/EditorCamera.svelte'
+  import Grid from '../../extensions/grid/Grid.svelte'
+  import Helpers from '../../extensions/helpers/Helpers.svelte'
+  import Inspector from '../../extensions/inspector/Inspector.svelte'
+  import ObjectSelection from '../../extensions/object-selection/ObjectSelection.svelte'
+  import RenderModes from '../../extensions/render-modes/RenderModes.svelte'
+  import SceneHierarchy from '../../extensions/scene-hierarchy/SceneHierarchy.svelte'
+  import Snapping from '../../extensions/snapping/Snapping.svelte'
+  import Space from '../../extensions/space/Space.svelte'
+  import StudioObjectsRegistry from '../../extensions/studio-objects-registry/StudioObjectsRegistry.svelte'
+  import Transactions from '../../extensions/transactions/Transactions.svelte'
+  import TransformControls from '../../extensions/transform-controls/TransformControls.svelte'
+  import { createRootContext } from '../../internal/extensions'
+  import Toolbar from '../Toolbar/Toolbar.svelte'
 
-	const { scene } = useThrelte()
+  const { scene } = useThrelte()
 
-	createRootContext()
+  createRootContext()
 
-	const isDirectionalLight = (object: any): object is DirectionalLight => {
-		return object && 'isDirectionalLight' in object
-	}
+  const isDirectionalLight = (object: any): object is DirectionalLight => {
+    return object && 'isDirectionalLight' in object
+  }
 
-	const isSpotLight = (object: any): object is SpotLight => {
-		return object && 'isSpotLight' in object
-	}
+  const isSpotLight = (object: any): object is SpotLight => {
+    return object && 'isSpotLight' in object
+  }
 
-	const isValidLight = (object: any): object is DirectionalLight | SpotLight => {
-		return isDirectionalLight(object) || isSpotLight(object)
-	}
+  const isValidLight = (object: any): object is DirectionalLight | SpotLight => {
+    return isDirectionalLight(object) || isSpotLight(object)
+  }
 
-	injectPlugin<{ manual?: boolean }>('directional-light-target', ({ ref, props }) => {
-		if (props.manual || !isValidLight(ref)) return
+  injectPlugin<{ manual?: boolean }>('directional-light-target', ({ ref, props }) => {
+    if (props.manual || !isValidLight(ref)) return
 
-		let instance = ref
-		if (instance.target.name === '') {
-			instance.target.name = 'Target'
-		}
-		scene.add(instance.target)
+    let instance = ref
+    if (instance.target.name === '') {
+      instance.target.name = 'Target'
+    }
+    scene.add(instance.target)
 
-		onDestroy(() => {
-			scene.remove(instance.target)
-		})
-		return {
-			onRefChange(ref) {
-				scene.remove(instance.target)
-				if (isValidLight(ref)) {
-					instance = ref
-					if (instance.target.name === '') {
-						instance.target.name = 'Target'
-					}
-					scene.add(instance.target)
-				}
-			},
-		}
-	})
+    onDestroy(() => {
+      scene.remove(instance.target)
+    })
+    return {
+      onRefChange(ref) {
+        scene.remove(instance.target)
+        if (isValidLight(ref)) {
+          instance = ref
+          if (instance.target.name === '') {
+            instance.target.name = 'Target'
+          }
+          scene.add(instance.target)
+        }
+      },
+    }
+  })
 </script>
 
 <Toolbar />
@@ -74,5 +74,5 @@
 <SceneHierarchy />
 <Inspector />
 <Transactions>
-	<slot />
+  <slot />
 </Transactions>

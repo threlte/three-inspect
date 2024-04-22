@@ -38,12 +38,12 @@ If you are using Threlte, simply create the inspector by importing the `<Inspect
 
 ```html
 <script>
-	import { Canvas } from '@threlte/core'
-	import { Inspector } from 'three-inspect'
+  import { Canvas } from '@threlte/core'
+  import { Inspector } from 'three-inspect'
 </script>
 
 <canvas>
-	<Inspector />
+  <Inspector />
 </canvas>
 ```
 
@@ -55,33 +55,33 @@ Once running, the inspector can be toggled with the `i` key.
 
 ```html
 <script>
-	import { Canvas } from '@threlte/core'
-	import { Inspector } from 'three-inspect'
+  import { Canvas } from '@threlte/core'
+  import { Inspector } from 'three-inspect'
 
-	let foo = 1
-	let bar = 0
+  let foo = 1
+  let bar = 0
 </script>
 
 <canvas>
-	<Inspector>
-		<TabPage
-			slot="inspector"
-			title="world"
-		>
-			<Slider
-				bind:value="{foo}"
-				label="Foo"
-				min="{1}"
-				max="{30}"
-			/>
-			<Slider
-				bind:value="{bar}"
-				label="Bar"
-				min="{0}"
-				max="{1}"
-			/>
-		</TabPage>
-	</Inspector>
+  <Inspector>
+    <TabPage
+      slot="inspector"
+      title="world"
+    >
+      <Slider
+        bind:value="{foo}"
+        label="Foo"
+        min="{1}"
+        max="{30}"
+      />
+      <Slider
+        bind:value="{bar}"
+        label="Bar"
+        min="{0}"
+        max="{1}"
+      />
+    </TabPage>
+  </Inspector>
 </canvas>
 ```
 

@@ -1,38 +1,38 @@
 <script lang="ts">
-	import type * as THREE from 'three'
-	import SerializedBinding from './SerializedBinding.svelte'
+  import type * as THREE from 'three'
+  import SerializedBinding from './SerializedBinding.svelte'
 
-	export let object: THREE.PerspectiveCamera | THREE.OrthographicCamera
+  export let object: THREE.PerspectiveCamera | THREE.OrthographicCamera
 
-	$: object.updateProjectionMatrix()
+  $: object.updateProjectionMatrix()
 
-	const keys = ['near', 'far', 'zoom'] as const
-	const perspectiveKeys = ['fov', 'filmOffset', 'filmGauge'] as const
-	const orthographicKeys = ['bottom', 'left', 'top', 'right'] as const
+  const keys = ['near', 'far', 'zoom'] as const
+  const perspectiveKeys = ['fov', 'filmOffset', 'filmGauge'] as const
+  const orthographicKeys = ['bottom', 'left', 'top', 'right'] as const
 </script>
 
 {#each keys as key (key)}
-	<SerializedBinding
-		bind:object
-		{key}
-		label={key}
-	/>
+  <SerializedBinding
+    bind:object
+    {key}
+    label={key}
+  />
 {/each}
 
 {#if 'isPerspectiveCamera' in object}
-	{#each perspectiveKeys as key (key)}
-		<SerializedBinding
-			bind:object
-			{key}
-			label={key}
-		/>
-	{/each}
+  {#each perspectiveKeys as key (key)}
+    <SerializedBinding
+      bind:object
+      {key}
+      label={key}
+    />
+  {/each}
 {:else if 'isOrthographicCamera' in object}
-	{#each orthographicKeys as key (key)}
-		<SerializedBinding
-			bind:object
-			{key}
-			label={key}
-		/>
-	{/each}
+  {#each orthographicKeys as key (key)}
+    <SerializedBinding
+      bind:object
+      {key}
+      label={key}
+    />
+  {/each}
 {/if}

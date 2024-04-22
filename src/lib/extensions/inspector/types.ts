@@ -1,10 +1,10 @@
 export const inspectorScope = 'inspector'
 
 export type InspectorState = {
-	enabled: boolean
+  enabled: boolean
 }
 
 export type InspectorActions = {
-	toggleEnabled: () => void
-	setEnabled: (enabled: boolean) => void
+  toggleEnabled: () => void
+  setEnabled: (enabled: boolean) => void
 }

@@ -1,115 +1,115 @@
 <script lang="ts">
-	import { useThrelte } from '@threlte/core'
-	import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
-	import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
-	import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
-	import { useStudio } from '../../internal/extensions'
-	import RenderSelectedObjects from './RenderSelectedObjects.svelte'
-	import SelectRect from './SelectRect.svelte'
-	import SelectTweak from './SelectTweak.svelte'
-	import {
-		objectSelectionScope,
-		type ObjectSelectionActions,
-		type ObjectSelectionState,
-	} from './types'
+  import { useThrelte } from '@threlte/core'
+  import ToolbarButton from '../../components/ToolbarButton/ToolbarButton.svelte'
+  import ToolbarItem from '../../components/ToolbarItem/ToolbarItem.svelte'
+  import HorizontalButtonGroup from '../../components/Tools/HorizontalButtonGroup.svelte'
+  import { useStudio } from '../../internal/extensions'
+  import RenderSelectedObjects from './RenderSelectedObjects.svelte'
+  import SelectRect from './SelectRect.svelte'
+  import SelectTweak from './SelectTweak.svelte'
+  import {
+    objectSelectionScope,
+    type ObjectSelectionActions,
+    type ObjectSelectionState,
+  } from './types'
 
-	const { useExtension } = useStudio()
-	const { invalidate } = useThrelte()
+  const { useExtension } = useStudio()
+  const { invalidate } = useThrelte()
 
-	const { state, run } = useExtension<ObjectSelectionState, ObjectSelectionActions>({
-		scope: objectSelectionScope,
-		state: ({ persist }) => ({
-			selectedObjects: [],
-			enabled: persist(false),
-			mode: persist('tweak'),
-			inUse: false,
-		}),
-		actions: {
-			selectObjects({ state }, objects) {
-				state.selectedObjects = objects
-				invalidate()
-			},
-			clearSelection({ state }) {
-				state.selectedObjects = []
-				invalidate()
-			},
-			addToSelection({ state }, objects) {
-				state.selectedObjects.push(...objects)
-				invalidate()
-			},
-			removeFromSelection({ state }, objects) {
-				state.selectedObjects = state.selectedObjects.filter((object) => !objects.includes(object))
-				invalidate()
-			},
-			toggleSelection({ state }, objects) {
-				const toAdd = objects.filter((object) => !state.selectedObjects.includes(object))
-				const toRemove = objects.filter((object) => state.selectedObjects.includes(object))
-				state.selectedObjects = [
-					...state.selectedObjects.filter((object) => !toRemove.includes(object)),
-					...toAdd,
-				]
-				invalidate()
-			},
-			toggleEnabled({ state }) {
-				state.enabled = !state.enabled
-			},
-			setEnabled({ state }, enabled) {
-				state.enabled = enabled
-			},
-			setMode({ state }, mode) {
-				state.mode = mode
-				if (mode === 'tweak') state.inUse = false
-			},
-			toggleMode({ state }) {
-				state.mode = state.mode === 'tweak' ? 'rect' : 'tweak'
-				if (state.mode === 'tweak') state.inUse = false
-			},
-			setInUse({ state }, inUse) {
-				state.inUse = inUse
-			},
-			setModeTweak({ state }) {
-				state.mode = 'tweak'
-			},
-			setModeRect({ state }) {
-				state.mode = 'rect'
-			},
-		},
-		keyMap() {
-			return {
-				toggleMode: 'a',
-			}
-		},
-	})
+  const { state, run } = useExtension<ObjectSelectionState, ObjectSelectionActions>({
+    scope: objectSelectionScope,
+    state: ({ persist }) => ({
+      selectedObjects: [],
+      enabled: persist(false),
+      mode: persist('tweak'),
+      inUse: false,
+    }),
+    actions: {
+      selectObjects({ state }, objects) {
+        state.selectedObjects = objects
+        invalidate()
+      },
+      clearSelection({ state }) {
+        state.selectedObjects = []
+        invalidate()
+      },
+      addToSelection({ state }, objects) {
+        state.selectedObjects.push(...objects)
+        invalidate()
+      },
+      removeFromSelection({ state }, objects) {
+        state.selectedObjects = state.selectedObjects.filter((object) => !objects.includes(object))
+        invalidate()
+      },
+      toggleSelection({ state }, objects) {
+        const toAdd = objects.filter((object) => !state.selectedObjects.includes(object))
+        const toRemove = objects.filter((object) => state.selectedObjects.includes(object))
+        state.selectedObjects = [
+          ...state.selectedObjects.filter((object) => !toRemove.includes(object)),
+          ...toAdd,
+        ]
+        invalidate()
+      },
+      toggleEnabled({ state }) {
+        state.enabled = !state.enabled
+      },
+      setEnabled({ state }, enabled) {
+        state.enabled = enabled
+      },
+      setMode({ state }, mode) {
+        state.mode = mode
+        if (mode === 'tweak') state.inUse = false
+      },
+      toggleMode({ state }) {
+        state.mode = state.mode === 'tweak' ? 'rect' : 'tweak'
+        if (state.mode === 'tweak') state.inUse = false
+      },
+      setInUse({ state }, inUse) {
+        state.inUse = inUse
+      },
+      setModeTweak({ state }) {
+        state.mode = 'tweak'
+      },
+      setModeRect({ state }) {
+        state.mode = 'rect'
+      },
+    },
+    keyMap() {
+      return {
+        toggleMode: 'a',
+      }
+    },
+  })
 </script>
 
 {#if state.mode === 'tweak'}
-	<SelectTweak />
+  <SelectTweak />
 {:else if state.mode === 'rect'}
-	<SelectRect />
+  <SelectRect />
 {/if}
 
 <RenderSelectedObjects />
 
 <ToolbarItem>
-	<HorizontalButtonGroup>
-		<ToolbarButton
-			label="Select Tweak"
-			on:click={() => {
-				run('setMode', 'tweak')
-			}}
-			active={state.mode === 'tweak'}
-			icon="mdiCursorPointer"
-			tooltip="Tweak Selection (A)"
-		/>
+  <HorizontalButtonGroup>
+    <ToolbarButton
+      label="Select Tweak"
+      on:click={() => {
+        run('setMode', 'tweak')
+      }}
+      active={state.mode === 'tweak'}
+      icon="mdiCursorPointer"
+      tooltip="Tweak Selection (A)"
+    />
 
-		<ToolbarButton
-			label="Select Box"
-			on:click={() => {
-				run('setMode', 'rect')
-			}}
-			active={state.mode === 'rect'}
-			icon="mdiSelect"
-			tooltip="Box Selection (A)"
-		/>
-	</HorizontalButtonGroup>
+    <ToolbarButton
+      label="Select Box"
+      on:click={() => {
+        run('setMode', 'rect')
+      }}
+      active={state.mode === 'rect'}
+      icon="mdiSelect"
+      tooltip="Box Selection (A)"
+    />
+  </HorizontalButtonGroup>
 </ToolbarItem>

@@ -4,21 +4,21 @@ import type { TransactionQueue, TransactionQueueCommitArgs } from './Transaction
 export const transactionsScope = 'transactions'
 
 export type TransactionsState = {
-	enabled: boolean
-	mode: 'auto' | 'manual'
-	precision: number
-	queue: TransactionQueue
+  enabled: boolean
+  mode: 'auto' | 'manual'
+  precision: number
+  queue: TransactionQueue
 }
 
 export type TransactionsActions = {
-	toggleEnabled: () => void
-	setEnabled: (enabled: boolean) => void
-	setPrecision: (precision: number) => void
-	setMode: (mode: TransactionsState['mode']) => void
-	commit: (transactions: TransactionQueueCommitArgs) => void
-	undo: () => void
-	redo: () => void
-	sync: () => void
-	openInEditor: (object: Object3D) => void
-	openSelectedInEditor: () => void
+  toggleEnabled: () => void
+  setEnabled: (enabled: boolean) => void
+  setPrecision: (precision: number) => void
+  setMode: (mode: TransactionsState['mode']) => void
+  commit: (transactions: TransactionQueueCommitArgs) => void
+  undo: () => void
+  redo: () => void
+  sync: () => void
+  openInEditor: (object: Object3D) => void
+  openSelectedInEditor: () => void
 }

@@ -1,28 +1,28 @@
 <script lang="ts">
-	import { Set } from 'svelte/reactivity'
-	import { useStudio } from '../../internal/extensions'
-	import {
-		studioObjectsRegistryScope,
-		type StudioObjectsRegistryActions,
-		type StudioObjectsRegistryState,
-	} from './types'
+  import { Set } from 'svelte/reactivity'
+  import { useStudio } from '../../internal/extensions'
+  import {
+    studioObjectsRegistryScope,
+    type StudioObjectsRegistryActions,
+    type StudioObjectsRegistryState,
+  } from './types'
 
-	const { useExtension } = useStudio()
+  const { useExtension } = useStudio()
 
-	useExtension<StudioObjectsRegistryState, StudioObjectsRegistryActions>({
-		scope: studioObjectsRegistryScope,
-		state() {
-			return {
-				objects: new Set(),
-			}
-		},
-		actions: {
-			addObject({ state }, object) {
-				state.objects.add(object)
-			},
-			removeObject({ state }, object) {
-				state.objects.delete(object)
-			},
-		},
-	})
+  useExtension<StudioObjectsRegistryState, StudioObjectsRegistryActions>({
+    scope: studioObjectsRegistryScope,
+    state() {
+      return {
+        objects: new Set(),
+      }
+    },
+    actions: {
+      addObject({ state }, object) {
+        state.objects.add(object)
+      },
+      removeObject({ state }, object) {
+        state.objects.delete(object)
+      },
+    },
+  })
 </script>

@@ -1,51 +1,51 @@
 <script lang="ts">
-	import type * as THREE from 'three'
-	import { Folder, List } from 'svelte-tweakpane-ui'
-	import Camera from './Camera.svelte'
-	import SerializedBinding from './SerializedBinding.svelte'
+  import type * as THREE from 'three'
+  import { Folder, List } from 'svelte-tweakpane-ui'
+  import Camera from './Camera.svelte'
+  import SerializedBinding from './SerializedBinding.svelte'
 
-	export let object: THREE.LightShadow
+  export let object: THREE.LightShadow
 
-	let mapSize = object.mapSize.width
+  let mapSize = object.mapSize.width
 
-	$: {
-		object.mapSize.width = mapSize
-		object.mapSize.height = mapSize
-		object.dispose()
-		object.map = null
-	}
+  $: {
+    object.mapSize.width = mapSize
+    object.mapSize.height = mapSize
+    object.dispose()
+    object.map = null
+  }
 
-	$: camera = object.camera as THREE.PerspectiveCamera | THREE.OrthographicCamera
+  $: camera = object.camera as THREE.PerspectiveCamera | THREE.OrthographicCamera
 
-	const keys = ['autoUpdate', 'bias', 'blurSamples', 'normalBias', 'radius'] as const
+  const keys = ['autoUpdate', 'bias', 'blurSamples', 'normalBias', 'radius'] as const
 </script>
 
 <List
-	bind:value={mapSize}
-	label="mapSize"
-	options={{
-		128: 128,
-		256: 256,
-		512: 512,
-		1024: 1024,
-		2048: 2048,
-		4096: 4096,
-	}}
+  bind:value={mapSize}
+  label="mapSize"
+  options={{
+    128: 128,
+    256: 256,
+    512: 512,
+    1024: 1024,
+    2048: 2048,
+    4096: 4096,
+  }}
 />
 
 {#each keys as key (key)}
-	<SerializedBinding
-		bind:object
-		{key}
-		label={key}
-	/>
+  <SerializedBinding
+    bind:object
+    {key}
+    label={key}
+  />
 {/each}
 
 {#if 'isPerspectiveCamera' in camera || 'isOrthographicCamera' in camera}
-	<Folder
-		title="shadow camera"
-		expanded={false}
-	>
-		<Camera object={camera} />
-	</Folder>
+  <Folder
+    title="shadow camera"
+    expanded={false}
+  >
+    <Camera object={camera} />
+  </Folder>
 {/if}

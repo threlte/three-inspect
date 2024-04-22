@@ -5,16 +5,16 @@ import { studioPlugin } from './src/lib/plugin'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	// plugins: [Inspect(), sveltekit()],
-	plugins: [Inspect(), studioPlugin(), sveltekit()],
-	// build: {
-	// 	minify: true,
-	// 	target: 'esnext',
-	// },
-	server: {
-		port: 5000,
-	},
-	ssr: {
-		noExternal: ['three'],
-	},
+  // plugins: [Inspect(), sveltekit()],
+  plugins: [Inspect(), studioPlugin(), sveltekit()],
+  // build: {
+  // 	minify: true,
+  // 	target: 'esnext',
+  // },
+  server: {
+    port: 5000,
+  },
+  ssr: {
+    noExternal: ['three'],
+  },
 })

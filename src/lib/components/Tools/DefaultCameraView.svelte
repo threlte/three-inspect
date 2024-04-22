@@ -1,136 +1,136 @@
 <script lang="ts">
-	import { useTask, useThrelte } from '@threlte/core'
-	import { Element } from 'svelte-tweakpane-ui'
-	import { Camera, OrthographicCamera, PerspectiveCamera, Vector2, Vector4 } from 'three'
-	import { getInternalContext } from '../../internal/context'
+  import { useTask, useThrelte } from '@threlte/core'
+  import { Element } from 'svelte-tweakpane-ui'
+  import { Camera, OrthographicCamera, PerspectiveCamera, Vector2, Vector4 } from 'three'
+  import { getInternalContext } from '../../internal/context'
 
-	export let width = 160
-	export let height = 90
+  export let width = 160
+  export let height = 90
 
-	const { autoRenderTask, renderer, scene } = useThrelte()
-	const { defaultCamera, studioObjects } = getInternalContext()
+  const { autoRenderTask, renderer, scene } = useThrelte()
+  const { defaultCamera, studioObjects } = getInternalContext()
 
-	let canvasEl: HTMLCanvasElement
+  let canvasEl: HTMLCanvasElement
 
-	$: context = canvasEl?.getContext('2d') ?? undefined
+  $: context = canvasEl?.getContext('2d') ?? undefined
 
-	let previousAspect = 0
-	const setupPerspectiveCamera = (camera: PerspectiveCamera) => {
-		previousAspect = camera.aspect
-		// set up perspective cam to be 16/9
-		camera.aspect = width / height
-		camera.updateProjectionMatrix()
-	}
+  let previousAspect = 0
+  const setupPerspectiveCamera = (camera: PerspectiveCamera) => {
+    previousAspect = camera.aspect
+    // set up perspective cam to be 16/9
+    camera.aspect = width / height
+    camera.updateProjectionMatrix()
+  }
 
-	let previousLeft = 0
-	let previousRight = 0
-	const updateOrthographicCamera = (camera: OrthographicCamera) => {
-		// set up ortho cam to be 16/9
-		const frustumHeight = camera.top - camera.bottom
-		const aspect = width / height
-		previousLeft = camera.left
-		previousRight = camera.right
-		camera.left = -frustumHeight * aspect
-		camera.right = frustumHeight * aspect
-		camera.updateProjectionMatrix()
-	}
+  let previousLeft = 0
+  let previousRight = 0
+  const updateOrthographicCamera = (camera: OrthographicCamera) => {
+    // set up ortho cam to be 16/9
+    const frustumHeight = camera.top - camera.bottom
+    const aspect = width / height
+    previousLeft = camera.left
+    previousRight = camera.right
+    camera.left = -frustumHeight * aspect
+    camera.right = frustumHeight * aspect
+    camera.updateProjectionMatrix()
+  }
 
-	const updateCamera = (camera: Camera) => {
-		if ((camera as any).isPerspectiveCamera) {
-			setupPerspectiveCamera(camera as PerspectiveCamera)
-		} else if ((camera as any).isOrthographicCamera) {
-			updateOrthographicCamera(camera as OrthographicCamera)
-		}
-	}
+  const updateCamera = (camera: Camera) => {
+    if ((camera as any).isPerspectiveCamera) {
+      setupPerspectiveCamera(camera as PerspectiveCamera)
+    } else if ((camera as any).isOrthographicCamera) {
+      updateOrthographicCamera(camera as OrthographicCamera)
+    }
+  }
 
-	const resetPerspectiveCamera = (camera: PerspectiveCamera) => {
-		camera.aspect = previousAspect
-		camera.updateProjectionMatrix()
-	}
+  const resetPerspectiveCamera = (camera: PerspectiveCamera) => {
+    camera.aspect = previousAspect
+    camera.updateProjectionMatrix()
+  }
 
-	const resetOrthographicCamera = (camera: OrthographicCamera) => {
-		camera.left = previousLeft
-		camera.right = previousRight
-		camera.updateProjectionMatrix()
-	}
+  const resetOrthographicCamera = (camera: OrthographicCamera) => {
+    camera.left = previousLeft
+    camera.right = previousRight
+    camera.updateProjectionMatrix()
+  }
 
-	const resetCamera = (camera: Camera) => {
-		if ((camera as any).isPerspectiveCamera) {
-			resetPerspectiveCamera(camera as PerspectiveCamera)
-		} else if ((camera as any).isOrthographicCamera) {
-			resetOrthographicCamera(camera as OrthographicCamera)
-		}
-	}
+  const resetCamera = (camera: Camera) => {
+    if ((camera as any).isPerspectiveCamera) {
+      resetPerspectiveCamera(camera as PerspectiveCamera)
+    } else if ((camera as any).isOrthographicCamera) {
+      resetOrthographicCamera(camera as OrthographicCamera)
+    }
+  }
 
-	const viewport = new Vector4()
-	const size = new Vector2()
-	let dpr = 0
-	useTask(
-		() => {
-			if (!context) return
-			if (!defaultCamera.current) return
+  const viewport = new Vector4()
+  const size = new Vector2()
+  let dpr = 0
+  useTask(
+    () => {
+      if (!context) return
+      if (!defaultCamera.current) return
 
-			updateCamera(defaultCamera.current)
+      updateCamera(defaultCamera.current)
 
-			renderer.getViewport(viewport)
-			renderer.getSize(size)
+      renderer.getViewport(viewport)
+      renderer.getSize(size)
 
-			const setupCanvas = dpr === 0
+      const setupCanvas = dpr === 0
 
-			dpr = renderer.getPixelRatio()
+      dpr = renderer.getPixelRatio()
 
-			if (setupCanvas) {
-				canvasEl.width = width * dpr
-				canvasEl.height = height * dpr
-			}
+      if (setupCanvas) {
+        canvasEl.width = width * dpr
+        canvasEl.height = height * dpr
+      }
 
-			// set viewport
-			renderer.setViewport(0, 0, width, height)
+      // set viewport
+      renderer.setViewport(0, 0, width, height)
 
-			studioObjects.current.forEach((obj) => {
-				obj.visible = false
-			})
+      studioObjects.current.forEach((obj) => {
+        obj.visible = false
+      })
 
-			const originalOverrideMaterial = scene.overrideMaterial
-			scene.overrideMaterial = null
+      const originalOverrideMaterial = scene.overrideMaterial
+      scene.overrideMaterial = null
 
-			renderer.render(scene, defaultCamera.current)
+      renderer.render(scene, defaultCamera.current)
 
-			scene.overrideMaterial = originalOverrideMaterial
+      scene.overrideMaterial = originalOverrideMaterial
 
-			studioObjects.current.forEach((obj) => {
-				obj.visible = true
-			})
+      studioObjects.current.forEach((obj) => {
+        obj.visible = true
+      })
 
-			// reset viewport
-			renderer.setViewport(viewport)
+      // reset viewport
+      renderer.setViewport(viewport)
 
-			// draw to canvas
-			context.clearRect(0, 0, width * dpr, height * dpr)
-			context.drawImage(
-				renderer.domElement,
-				0,
-				(size.y - height) * dpr,
-				width * dpr,
-				height * dpr,
-				0,
-				0,
-				width * dpr,
-				height * dpr
-			)
+      // draw to canvas
+      context.clearRect(0, 0, width * dpr, height * dpr)
+      context.drawImage(
+        renderer.domElement,
+        0,
+        (size.y - height) * dpr,
+        width * dpr,
+        height * dpr,
+        0,
+        0,
+        width * dpr,
+        height * dpr,
+      )
 
-			resetCamera(defaultCamera.current)
-		},
-		{
-			before: autoRenderTask,
-			autoInvalidate: false,
-		}
-	)
+      resetCamera(defaultCamera.current)
+    },
+    {
+      before: autoRenderTask,
+      autoInvalidate: false,
+    },
+  )
 </script>
 
 <Element>
-	<canvas
-		bind:this={canvasEl}
-		style="width: {width}px; height: {height}px;"
-	/>
+  <canvas
+    bind:this={canvasEl}
+    style="width: {width}px; height: {height}px;"
+  />
 </Element>

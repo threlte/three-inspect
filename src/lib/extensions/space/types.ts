@@ -1,10 +1,10 @@
 export const spaceScope = 'space'
 
 export type SpaceState = {
-	space: 'local' | 'world'
+  space: 'local' | 'world'
 }
 
 export type SpaceActions = {
-	setSpace: (space: 'local' | 'world') => void
-	toggleSpace: () => void
+  setSpace: (space: 'local' | 'world') => void
+  toggleSpace: () => void
 }

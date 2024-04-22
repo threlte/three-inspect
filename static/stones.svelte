@@ -77,7 +77,10 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
   const gltf = suspend(useGltf<GLTFResult>('/stones.glb'))
 </script>
 
-<T is={ref} dispose={false}>
+<T
+  is={ref}
+  dispose={false}
+>
   {#await gltf}
     <slot name="fallback" />
   {:then gltf}
@@ -298,7 +301,10 @@ Command: npx @threlte/gltf@2.0.3 ./stones.glb -t -i -u -s -k
       position={[-1.66, 0, 8.25]}
     />
   {:catch error}
-    <slot name="error" {error} />
+    <slot
+      name="error"
+      {error}
+    />
   {/await}
 
   <slot {ref} />

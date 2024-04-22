@@ -1,10 +1,10 @@
 export const helpersScope = 'helpers'
 
 export type HelpersState = {
-	enabled: boolean
+  enabled: boolean
 }
 
 export type HelpersActions = {
-	toggleEnabled: () => void
-	setEnabled: (enabled: boolean) => void
+  toggleEnabled: () => void
+  setEnabled: (enabled: boolean) => void
 }

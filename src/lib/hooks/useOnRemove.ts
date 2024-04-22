@@ -13,39 +13,39 @@ type Callback = (object: THREE.Object3D) => void
 export const removeFns = new Set<Callback>()
 
 THREE.Object3D.prototype.remove = function (...objects: THREE.Object3D[]) {
-	remove.call(this, ...objects)
+  remove.call(this, ...objects)
 
-	for (const object of objects) {
-		intersectObjects.splice(intersectObjects.indexOf(object), 1)
-	}
+  for (const object of objects) {
+    intersectObjects.splice(intersectObjects.indexOf(object), 1)
+  }
 
-	for (const fn of removeFns) {
-		for (const object of objects) {
-			fn(object)
-		}
-	}
+  for (const fn of removeFns) {
+    for (const object of objects) {
+      fn(object)
+    }
+  }
 
-	return this
+  return this
 }
 
 THREE.Object3D.prototype.clear = function () {
-	clear.call(this)
+  clear.call(this)
 
-	for (const object of this.children) {
-		intersectObjects.splice(intersectObjects.indexOf(object), 1)
-	}
+  for (const object of this.children) {
+    intersectObjects.splice(intersectObjects.indexOf(object), 1)
+  }
 
-	for (const fn of removeFns) {
-		for (const child of this.children) {
-			fn(child)
-		}
-	}
+  for (const fn of removeFns) {
+    for (const child of this.children) {
+      fn(child)
+    }
+  }
 
-	return this
+  return this
 }
 
 export const useOnRemove = (callback: Callback) => {
-	removeFns.add(callback)
+  removeFns.add(callback)
 
-	onDestroy(() => removeFns.delete(callback))
+  onDestroy(() => removeFns.delete(callback))
 }

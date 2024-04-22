@@ -7,13 +7,13 @@ const originalTrace = console.trace
 const noop = () => {}
 
 const overrideConsole = () => {
-	console.warn = noop
-	console.trace = noop
+  console.warn = noop
+  console.trace = noop
 }
 
 const resetConsole = () => {
-	console.warn = originalWarn
-	console.trace = originalTrace
+  console.warn = originalWarn
+  console.trace = originalTrace
 }
 
 /**
@@ -21,10 +21,10 @@ const resetConsole = () => {
  * grown-ups only.
  */
 export const setStateDangerously = <Setter extends (...args: any[]) => any>(
-	callback: Setter,
+  callback: Setter,
 ): ReturnType<Setter> => {
-	overrideConsole()
-	const result = callback()
-	resetConsole()
-	return result
+  overrideConsole()
+  const result = callback()
+  resetConsole()
+  return result
 }

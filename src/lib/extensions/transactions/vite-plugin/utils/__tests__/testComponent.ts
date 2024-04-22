@@ -77,33 +77,33 @@ export const dummyScript = '<script>"ABC"</script>'
 export const dummyStyle = '<style></style>'
 
 type TestComponentOptions = {
-	scriptModule?: string
-	script?: string
-	markup?: string
-	style?: string
-	as?: 'string' | 'magic-string'
+  scriptModule?: string
+  script?: string
+  markup?: string
+  style?: string
+  as?: 'string' | 'magic-string'
 }
 
 type BuildTestComponentReturn<Options extends TestComponentOptions> = Options extends {
-	as: 'magic-string'
+  as: 'magic-string'
 }
-	? MagicString
-	: string
+  ? MagicString
+  : string
 
 const asMagicString = (options: TestComponentOptions): options is { as: 'magic-string' } => {
-	return options.as === 'magic-string'
+  return options.as === 'magic-string'
 }
 
 export const buildTestComponent = <Options extends TestComponentOptions>(
-	options: Options,
+  options: Options,
 ): BuildTestComponentReturn<Options> => {
-	const str = [options.scriptModule, options.script, options.markup, options.style]
-		.filter(Boolean)
-		.join('\n\n')
-	if (asMagicString(options)) {
-		return toMagicString(str) as BuildTestComponentReturn<Options>
-	}
-	return str as BuildTestComponentReturn<Options>
+  const str = [options.scriptModule, options.script, options.markup, options.style]
+    .filter(Boolean)
+    .join('\n\n')
+  if (asMagicString(options)) {
+    return toMagicString(str) as BuildTestComponentReturn<Options>
+  }
+  return str as BuildTestComponentReturn<Options>
 }
 
 export const updatePropsMarkup = `<T.Mesh

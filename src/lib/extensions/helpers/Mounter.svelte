@@ -1,21 +1,21 @@
 <script lang="ts">
-	import { HierarchicalObject } from '@threlte/core'
-	import type { Object3D } from 'three'
+  import { HierarchicalObject } from '@threlte/core'
+  import type { Object3D } from 'three'
 
-	type Props = {
-		parent: Object3D
-	}
+  type Props = {
+    parent: Object3D
+  }
 
-	let { parent }: Props = $props()
+  let { parent }: Props = $props()
 </script>
 
 <HierarchicalObject
-	onChildMount={(child) => {
-		parent.add(child)
-	}}
-	onChildDestroy={(child) => {
-		parent.remove(child)
-	}}
+  onChildMount={(child) => {
+    parent.add(child)
+  }}
+  onChildDestroy={(child) => {
+    parent.remove(child)
+  }}
 >
-	<slot />
+  <slot />
 </HierarchicalObject>

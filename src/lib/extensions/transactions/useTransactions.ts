@@ -4,55 +4,55 @@ import type { TransactionQueue, TransactionQueueCommitArgs } from './Transaction
 import { transactionsScope, type TransactionsActions, type TransactionsState } from './types'
 
 export const useTransactions = () => {
-	const { getExtension } = useStudio()
+  const { getExtension } = useStudio()
 
-	const ext = getExtension<TransactionsState, TransactionsActions>(transactionsScope)
+  const ext = getExtension<TransactionsState, TransactionsActions>(transactionsScope)
 
-	const commit = (transactions: TransactionQueueCommitArgs) => {
-		ext.run('commit', transactions)
-	}
+  const commit = (transactions: TransactionQueueCommitArgs) => {
+    ext.run('commit', transactions)
+  }
 
-	const undo = () => {
-		ext.run('undo')
-	}
+  const undo = () => {
+    ext.run('undo')
+  }
 
-	const redo = () => {
-		ext.run('redo')
-	}
+  const redo = () => {
+    ext.run('redo')
+  }
 
-	const onTransaction = (...args: Parameters<TransactionQueue['onTransaction']>) => {
-		return ext.state.queue?.onTransaction(...args)
-	}
+  const onTransaction = (...args: Parameters<TransactionQueue['onTransaction']>) => {
+    return ext.state.queue?.onTransaction(...args)
+  }
 
-	const onCommit = (...args: Parameters<TransactionQueue['onCommit']>) => {
-		return ext.state.queue?.onCommit(...args)
-	}
+  const onCommit = (...args: Parameters<TransactionQueue['onCommit']>) => {
+    return ext.state.queue?.onCommit(...args)
+  }
 
-	const onUndo = (...args: Parameters<TransactionQueue['onUndo']>) => {
-		return ext.state.queue?.onUndo(...args)
-	}
+  const onUndo = (...args: Parameters<TransactionQueue['onUndo']>) => {
+    return ext.state.queue?.onUndo(...args)
+  }
 
-	const onRedo = (...args: Parameters<TransactionQueue['onRedo']>) => {
-		return ext.state.queue?.onRedo(...args)
-	}
+  const onRedo = (...args: Parameters<TransactionQueue['onRedo']>) => {
+    return ext.state.queue?.onRedo(...args)
+  }
 
-	const openInEditor = (object: Object3D) => {
-		ext.run('openInEditor', object)
-	}
+  const openInEditor = (object: Object3D) => {
+    ext.run('openInEditor', object)
+  }
 
-	const openSelectedInEditor = () => {
-		ext.run('openSelectedInEditor')
-	}
+  const openSelectedInEditor = () => {
+    ext.run('openSelectedInEditor')
+  }
 
-	return {
-		commit,
-		undo,
-		redo,
-		onTransaction,
-		onCommit,
-		onUndo,
-		onRedo,
-		openInEditor,
-		openSelectedInEditor,
-	}
+  return {
+    commit,
+    undo,
+    redo,
+    onTransaction,
+    onCommit,
+    onUndo,
+    onRedo,
+    openInEditor,
+    openSelectedInEditor,
+  }
 }
