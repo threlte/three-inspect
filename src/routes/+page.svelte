@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Scene from './Scene.svelte'
+	import App from './App.svelte'
 </script>
 
-<Scene />
+<App />
 
 <style>
 	:global(body) {
