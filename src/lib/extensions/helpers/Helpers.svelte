@@ -9,6 +9,7 @@
 	import { useStudio } from '../../internal/extensions'
 	import { useObjectSelection } from '../object-selection/useObjectSelection.svelte'
 	import { useStudioObjectsRegistry } from '../studio-objects-registry/useStudioObjectsRegistry.svelte'
+	import { useTransactions } from '../transactions/useTransactions'
 	import AxesHelper from './AxesHelper.svelte'
 	import GroupHelper from './GroupHelper.svelte'
 	import Mounter from './Mounter.svelte'
@@ -16,6 +17,7 @@
 
 	const { autoRenderTask } = useThrelte()
 	const { useExtension } = useStudio()
+	const { onTransaction } = useTransactions()
 
 	const ext = useExtension<HelpersState, HelpersActions>({
 		scope: helpersScope,
@@ -76,16 +78,10 @@
 		return object.isGroup
 	}
 
-	let frame = $state(0)
-	useTask(
-		() => {
-			frame++
-		},
-		{
-			before: autoRenderTask,
-			autoInvalidate: false,
-		},
-	)
+	let invalidations = $state(1)
+	onTransaction(() => {
+		invalidations++
+	})
 </script>
 
 <ToolbarItem position="left">
@@ -137,7 +133,7 @@
 				on:create={onCreate}
 			/>
 		{:else if isLight(object)}
-			{#if object.shadow && frame && object.castShadow}
+			{#if object.shadow && invalidations && object.castShadow}
 				<T.CameraHelper
 					userData={{ ignoreOverrideMaterial: true }}
 					args={[object.shadow.camera]}
