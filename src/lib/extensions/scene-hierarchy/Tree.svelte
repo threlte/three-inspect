@@ -118,7 +118,6 @@ max-height: 50vh;
 		}
 		const item = new TreeViewItem({
 			text,
-			allowDrag: false,
 			allowDrop: false,
 			icon: findIcon(object).codePointAt(0)?.toString(16),
 		})
