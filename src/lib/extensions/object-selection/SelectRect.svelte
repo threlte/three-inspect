@@ -121,6 +121,7 @@
     renderer.domElement.addEventListener('pointerdown', onPointerDown)
     renderer.domElement.addEventListener('pointermove', onPointerMove)
     renderer.domElement.addEventListener('pointerup', onPointerUp)
+    renderer.domElement.style.cursor = 'crosshair'
     return () => {
       if (lastEvent) onPointerUp(lastEvent)
       renderer.domElement.removeEventListener('pointerdown', onPointerDown)
@@ -134,6 +135,7 @@
         console.warn(error)
       }
       selectionHelper.dispose()
+      renderer.domElement.style.cursor = 'auto'
     }
   })
 </script>

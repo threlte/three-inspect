@@ -66,11 +66,10 @@
   onMount(() => {
     renderer.domElement.addEventListener('pointerdown', recordDown)
     renderer.domElement.addEventListener('pointerup', raycast)
-    renderer.domElement.style.cursor = 'crosshair'
+
     return () => {
       renderer.domElement.removeEventListener('pointerdown', recordDown)
       renderer.domElement.removeEventListener('pointerup', raycast)
-      renderer.domElement.style.cursor = 'auto'
     }
   })
 </script>

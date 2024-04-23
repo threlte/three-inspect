@@ -32,6 +32,14 @@
     align-items: stretch;
     justify-content: space-between;
     padding: 2px 2px;
+    overflow-x: auto;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  #toolbar-items-wrapper::-webkit-scrollbar {
+    display: none;
   }
 
   .toolbar-items > :global(* + *) {
