@@ -34,7 +34,15 @@
         invalidate()
       },
       addToSelection({ state }, objects) {
-        state.selectedObjects.push(...objects)
+        for (let i = 0; i < objects.length; i++) {
+          const obj = objects[i]
+          const exists = state.selectedObjects.find((a) => {
+            return a.uuid === obj.uuid
+          })
+          if (exists === undefined) {
+            state.selectedObjects.push(obj)
+          }
+        }
         invalidate()
       },
       removeFromSelection({ state }, objects) {

@@ -76,6 +76,7 @@
       camera.current.layers.set(31)
       const currentSceneBackground = scene.background
       objectSelection.selectedObjects.forEach((object, i) => {
+        if (object === camera.current) return
         object.userData.originalLayer = object.layers.mask
         object.layers.enable(31)
         object.userData.originalVisible = object.visible
@@ -96,6 +97,7 @@
       renderer.setClearAlpha(currentClearAlpha)
       scene.background = currentSceneBackground
       objectSelection.selectedObjects.forEach((object) => {
+        if (object === camera.current) return
         object.layers.mask = object.userData.originalLayer
         object.visible = object.userData.originalVisible
         if (hasMaterial(object)) {
