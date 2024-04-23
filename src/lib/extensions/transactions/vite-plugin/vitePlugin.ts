@@ -123,8 +123,9 @@ export const plugin: () => Plugin = () => {
             return { column: 0, row: 0 }
           }
           const start = node.start
+          const sliceTo = start + 1 + node.name.length
           // slice the markup to the start of the node
-          const slice = toMagicString(markup.slice(0, start))
+          const slice = toMagicString(markup.slice(0, sliceTo))
           // assemble the component back together to get the index
           const finalComponent = componentUtils.assembleComponent(
             slice,
