@@ -1,6 +1,6 @@
 <script lang="ts">
   import { T, useTask } from '@threlte/core'
-  import { RoundedBoxGeometry } from '@threlte/extras'
+  import { RoundedBoxGeometry, Float } from '@threlte/extras'
 
   let rotationY = $state(0)
 
@@ -22,18 +22,23 @@
   position={[-2.5, 8, 3.1]}
   castShadow
   color="#fcbaba"
+  shadow.mapSize.width={2048}
+  shadow.mapSize.height={2048}
+  shadow.autoUpdate
 />
 <T.AmbientLight color="#e1e5ff" />
 
 <!-- CUBE -->
-<T.Mesh
-  position={[0, 0.9, 0]}
-  castShadow
-  rotation.y={rotationY}
->
-  <RoundedBoxGeometry radius={0.1} />
-  <T.MeshStandardMaterial color="red" />
-</T.Mesh>
+<Float>
+  <T.Mesh
+    position={[0, 0.9, 0]}
+    castShadow
+    rotation.y={rotationY}
+  >
+    <RoundedBoxGeometry radius={0.1} />
+    <T.MeshStandardMaterial color="red" />
+  </T.Mesh>
+</Float>
 
 <T.Mesh receiveShadow>
   <T.CylinderGeometry args={[2, 2, 0.2, 128]} />
