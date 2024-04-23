@@ -15,7 +15,6 @@
 
 <!-- LIGHTS -->
 <T.DirectionalLight />
-<T.AmbientLight />
 
 <Stones />
 

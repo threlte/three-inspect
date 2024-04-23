@@ -1,1 +1,1 @@
-export { plugin as studioPlugin } from './extensions/transactions/vite-plugin/vitePlugin'
+export { plugin as default } from './extensions/transactions/vite-plugin/vitePlugin'

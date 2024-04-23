@@ -38,7 +38,11 @@
     "sourceMap": true,
     "isolatedModules": true,
     "skipLibCheck": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "@threlte/studio": ["./src/lib/index.ts"]
+    }
   },
-  "include": ["src/**/*"]
+
+  "include": ["src/**/*", "./vite.config.ts"]
 }
