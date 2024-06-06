@@ -13,7 +13,7 @@
 		PerspectiveCamera,
 		Mesh,
 	} from 'three'
-	import { createInspector } from '$lib'
+	import { createInspector } from '../../../dist/inspector.js'
 	import { colors } from './colors'
 
 	let div: HTMLElement
