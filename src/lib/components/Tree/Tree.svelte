@@ -83,7 +83,7 @@
 		}
 	}
 
-	const handleSelect = async (item: TreeViewItem) => {
+	const handleSelect = (item: TreeViewItem) => {
 		if (!observeChanges) return
 		selectedObject.set(treeItemToObject.get(item))
 	}

@@ -1,21 +1,25 @@
+'use strict'
+
 module.exports = {
+	env: {
+		browser: true,
+	},
 	plugins: ['@typescript-eslint'],
 	extends: [
 		'eslint:all',
 		'plugin:@typescript-eslint/recommended',
 		'plugin:@typescript-eslint/strict',
-		'plugin:@typescript-eslint/strict-type-checked',
-		'plugin:@typescript-eslint/stylistic-type-checked',
 		'plugin:unicorn/all',
 		'prettier',
 		'plugin:svelte/recommended',
 		'plugin:svelte/prettier',
 	],
+	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		sourceType: 'module',
 		ecmaVersion: 'latest',
 		extraFileExtensions: ['.svelte'],
-		project: ['./tsconfig.json'],
+		project: './tsconfig.json',
 	},
 	root: true,
 	overrides: [
@@ -35,6 +39,9 @@ module.exports = {
 		{
 			files: ['*.svelte'],
 			parser: 'svelte-eslint-parser',
+			parserOptions: {
+				parser: '@typescript-eslint/parser',
+			},
 		},
 	],
 	rules: {

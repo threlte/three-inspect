@@ -2,6 +2,8 @@
 	context="module"
 	lang="ts"
 >
+	import { persisted } from '../../internal/persisted'
+
 	const freeCamPosition = persisted('freeCamPosition', [0, 0, 5])
 	const freeCamQuat = persisted('freeCamQuat', [0, 0, 0, 1])
 </script>
@@ -12,16 +14,15 @@
 	import { onDestroy } from 'svelte'
 	import CameraControls from '../Internal/CameraControls.svelte'
 	import { getInternalContext } from '../../internal/context'
-	import { persisted } from '../../internal/persisted'
 
 	const { camera } = useThrelte()
 	const { defaultCamera } = getInternalContext()
 	const freeCamera = new PerspectiveCamera()
 
 	defaultCamera.set(camera.current)
-	watch(camera, (newCamera) => {
-		if (newCamera !== freeCamera) {
-			defaultCamera.set(newCamera)
+	watch(camera, ($camera) => {
+		if ($camera !== freeCamera) {
+			defaultCamera.set($camera)
 			camera.set(freeCamera)
 		}
 	})

@@ -10,11 +10,11 @@
 	 * @param {HTMLElement} el
 	 * @param {HTMLElement|string} target DOM Element or CSS Selector
 	 */
-	function portal(el: HTMLElement, target: HTMLElement | string = 'body') {
+	const portal = (el: HTMLElement, target: HTMLElement | string = 'body') => {
 		let targetEl: HTMLElement | null
 
-		async function update(newTarget: HTMLElement | string) {
-			target = newTarget
+		async function update(updatedTarget: HTMLElement | string) {
+			target = updatedTarget
 			if (typeof target === 'string') {
 				targetEl = document.querySelector(target)
 				if (targetEl === null) {

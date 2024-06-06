@@ -56,10 +56,10 @@
 	const cubes: Object3D[] = []
 	let index = 0
 
-	const cubeTranslation = (index_: number, n: number) => {
-		const x = (index_ % 3) * n - n
-		const y = (((index_ % 9) / 3) | 0) * n - n
-		const z = ((index_ / 9) | 0) * n - n
+	const cubeTranslation = (cubeIndex: number, n: number) => {
+		const x = (cubeIndex % 3) * n - n
+		const y = Math.trunc((cubeIndex % 9) / 3) * n - n
+		const z = Math.trunc(cubeIndex / 9) * n - n
 		translateMatrix.makeTranslation(x, y, z)
 	}
 
@@ -94,8 +94,8 @@
 		x += 0.05
 		camera.applyMatrix4(rotationMatrix)
 
-		for (const [index, cube] of cubes.entries()) {
-			cubeTranslation(index, Math.sin(x / 2) * 0.01)
+		for (const [cubeIndex, cube] of cubes.entries()) {
+			cubeTranslation(cubeIndex, Math.sin(x / 2) * 0.01)
 			cube.applyMatrix4(translateMatrix)
 		}
 

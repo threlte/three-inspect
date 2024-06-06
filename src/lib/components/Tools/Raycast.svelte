@@ -28,7 +28,7 @@
 		// Update the picking ray with the camera and pointer position
 		raycaster.setFromCamera(pointer, camera.current)
 
-		let hits = raycaster.intersectObjects(intersectObjects)
+		const hits = raycaster.intersectObjects(intersectObjects)
 		let hit = hits.shift()
 
 		while (hit?.object.userData.threeInspectSkipRaycast) {
