@@ -57,7 +57,8 @@
 	const register = (object3D: Object3D) => {
 		const { parent } = object3D
 		const name = object3D.name
-		const parentItem = parent === scene ? treeroot : objectToTreeItem.get(parent!)
+		const parentItem =
+			parent === scene ? treeroot : objectToTreeItem.get(parent!)
 		const text = `${name ? `${name} ` : ''}(${object3D.type})`
 		const item = new TreeViewItem({ text })
 		item.open = true

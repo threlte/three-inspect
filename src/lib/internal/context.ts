@@ -1,4 +1,10 @@
-import type { Scene, Light, PerspectiveCamera, OrthographicCamera, Camera } from 'three'
+import type {
+	Scene,
+	Light,
+	PerspectiveCamera,
+	OrthographicCamera,
+	Camera,
+} from 'three'
 import { type CurrentWritable, currentWritable } from '@threlte/core'
 import { type Writable, writable } from 'svelte/store'
 import { getContext, setContext } from 'svelte'

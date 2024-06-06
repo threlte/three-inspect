@@ -8,7 +8,8 @@
 
 	scene.background = new Color('black')
 
-	const position = (symmetry = true) => (Math.random() - (symmetry ? 0.5 : 0)) * 20
+	const position = (symmetry = true) =>
+		(Math.random() - (symmetry ? 0.5 : 0)) * 20
 	const rotation = () => Math.random() * Math.PI * 2
 </script>
 

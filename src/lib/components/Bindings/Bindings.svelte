@@ -13,7 +13,11 @@
 	import Scene from './Scene.svelte'
 	import Material from './Material.svelte'
 
-	export let object: ThreeScene | ThreeLight | PerspectiveCamera | OrthographicCamera
+	export let object:
+		| ThreeScene
+		| ThreeLight
+		| PerspectiveCamera
+		| OrthographicCamera
 
 	$: userData = JSON.stringify(object.userData)
 </script>

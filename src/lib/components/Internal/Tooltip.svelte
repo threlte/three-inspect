@@ -15,10 +15,19 @@
 	}
 
 	const update = async () => {
-		const { x, y, placement, middlewareData } = await computePosition(ref, tooltipEl, {
-			placement: 'top',
-			middleware: [offset(6), flip(), shift({ padding: 5 }), arrow({ element: arrowEl })],
-		})
+		const { x, y, placement, middlewareData } = await computePosition(
+			ref,
+			tooltipEl,
+			{
+				placement: 'top',
+				middleware: [
+					offset(6),
+					flip(),
+					shift({ padding: 5 }),
+					arrow({ element: arrowEl }),
+				],
+			}
+		)
 
 		Object.assign(tooltipEl.style, {
 			left: `${x}px`,
