@@ -1,5 +1,11 @@
 # three-inspect
 
+## 0.5.0
+
+### Minor Changes
+
+- d027853: Package css into vanilla export
+
 ## 0.4.5
 
 ### Patch Changes
