@@ -90,9 +90,14 @@ Once running, the inspector can be toggled with the `i` key.
 `three-inspect` can be used in any Three.js-based environment by importing the `createInspector` function.
 
 ```ts
-import { createInspector } from 'three-inspect'
+import { createInspector } from 'three-inspect/vanilla'
 
-const inspector = createInspector({ scene, camera, renderer })
+const targetElement = document.querySelector('div')
+const inspector = createInspector(targetElement, {
+	scene,
+	camera,
+	renderer,
+})
 
 // When you're finished with the inspector...
 inspector.dispose()

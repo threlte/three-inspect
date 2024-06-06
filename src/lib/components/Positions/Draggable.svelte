@@ -1,5 +1,12 @@
 <script lang="ts">
-	import { Pane, ThemeUtils, Element, Separator, TabGroup, TabPage } from 'svelte-tweakpane-ui'
+	import {
+		Pane,
+		ThemeUtils,
+		Element,
+		Separator,
+		TabGroup,
+		TabPage,
+	} from 'svelte-tweakpane-ui'
 	import { getInternalContext, useInspector } from '../../internal/context'
 	import { browser } from '../../internal/browser'
 	import Tree from '../Tree/Tree.svelte'

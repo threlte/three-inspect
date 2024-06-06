@@ -10,7 +10,12 @@
 	import Color from './Color.svelte'
 	import Shadow from './Shadow.svelte'
 
-	export let object: DirectionalLight | PointLight | SpotLight | HemisphereLight | RectAreaLight
+	export let object:
+		| DirectionalLight
+		| PointLight
+		| SpotLight
+		| HemisphereLight
+		| RectAreaLight
 </script>
 
 <Color

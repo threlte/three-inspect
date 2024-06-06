@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { T, useTask } from '@threlte/core'
 	import { useGltf, Float } from '@threlte/extras'
+	import type { Object3D } from 'three'
 
 	export let floatIntensity: number
 	export let rotationSpeed: number
@@ -13,7 +14,7 @@
 	$: scene = $gltf?.scene
 	$: prop = scene?.getObjectByName('Prop')
 
-	$: scene?.traverse((node: THREE.Object3D) => {
+	$: scene?.traverse((node: Object3D) => {
 		node.castShadow = true
 		node.receiveShadow = true
 	})

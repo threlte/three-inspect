@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { useTask, useThrelte } from '@threlte/core'
 	import { Element } from 'svelte-tweakpane-ui'
-	import { Camera, OrthographicCamera, PerspectiveCamera, Vector2, Vector4 } from 'three'
+	import {
+		Camera,
+		OrthographicCamera,
+		PerspectiveCamera,
+		Vector2,
+		Vector4,
+	} from 'three'
 	import { getInternalContext } from '../../internal/context'
 
 	export let width = 160

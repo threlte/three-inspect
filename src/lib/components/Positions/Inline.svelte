@@ -2,7 +2,14 @@
 	import { useThrelte } from '@threlte/core'
 	import { onMount } from 'svelte'
 	import { Pane as SplitPane, Splitpanes } from 'svelte-splitpanes'
-	import { Pane, Element, Separator, ThemeUtils, TabGroup, TabPage } from 'svelte-tweakpane-ui'
+	import {
+		Pane,
+		Element,
+		Separator,
+		ThemeUtils,
+		TabGroup,
+		TabPage,
+	} from 'svelte-tweakpane-ui'
 	import { getInternalContext, useInspector } from '../../internal/context'
 	import Bindings from '../Bindings/Bindings.svelte'
 	import Tools from '../Tools/Tools.svelte'

@@ -5,20 +5,29 @@
 	let tooltipEl: HTMLElement
 	let arrowEl: HTMLElement
 
-	function showTooltip() {
+	const showTooltip = () => {
 		tooltipEl.style.display = 'block'
 		update()
 	}
 
-	function hideTooltip() {
+	const hideTooltip = () => {
 		tooltipEl.style.display = ''
 	}
 
-	async function update() {
-		const { x, y, placement, middlewareData } = await computePosition(ref, tooltipEl, {
-			placement: 'top',
-			middleware: [offset(6), flip(), shift({ padding: 5 }), arrow({ element: arrowEl })],
-		})
+	const update = async () => {
+		const { x, y, placement, middlewareData } = await computePosition(
+			ref,
+			tooltipEl,
+			{
+				placement: 'top',
+				middleware: [
+					offset(6),
+					flip(),
+					shift({ padding: 5 }),
+					arrow({ element: arrowEl }),
+				],
+			}
+		)
 
 		Object.assign(tooltipEl.style, {
 			left: `${x}px`,
@@ -37,8 +46,8 @@
 		if (!staticSide) return
 
 		Object.assign(arrowEl.style, {
-			left: arrowX == null ? '' : `${arrowX}px`,
-			top: arrowY == null ? '' : `${arrowY}px`,
+			left: arrowX === undefined ? '' : `${arrowX}px`,
+			top: arrowY === undefined ? '' : `${arrowY}px`,
 			right: '',
 			bottom: '',
 			[staticSide]: '-4px',

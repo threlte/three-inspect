@@ -1,50 +1,15 @@
 <script lang="ts">
-	import { Color, Euler, Matrix4 } from 'three'
+	import { Color } from 'three'
 	import { T, useThrelte } from '@threlte/core'
 	import { OrbitControls, InstancedMesh, Instance } from '@threlte/extras'
-	import { createNoise3D, type NoiseFunction3D } from 'simplex-noise'
 	import { Inspector } from '$lib'
 
-	const { scene, renderer, camera } = useThrelte()
+	const { scene } = useThrelte()
 
 	scene.background = new Color('black')
 
-	// {
-	//   const count = 20
-	//   const trails: { trail: Trail, noise3d: NoiseFunction3D }[] = []
-	//   const v3 = new THREE.Vector3()
-
-	//   for (let i = 0; i < count; i += 1) {
-	//     let j = 0
-	//     const noise3d = createNoise3D(() => Math.random() * 2)
-	//     const trail = new Trail()
-	//     trail.decay = 3
-	//     trail.geometry.attenuation = 'squared'
-	//     trail.position.set(0, 7, 0)
-	//     scene.add(trail)
-	//     trails.push({ trail, noise3d })
-	//   }
-
-	//   let time = 0
-
-	//   useTask((delta) => {
-	//     time += delta
-
-	//     for (let i = 0, l = trails.length; i < l; i += 1) {
-	//       const { trail, noise3d } = trails[i]
-	//       const x = noise3d(Math.sin(time / 10000) * 10, 0, 0)
-	//       const y = noise3d(0, Math.cos(time / 10000) * 10, 0)
-	//       const z = noise3d(0, 0, Math.sin(time / 10000) * 10)
-	//       v3.set(x * 5, y * 10, z * 10)
-	//       trail.target.position.lerp(v3, 0.05)
-	//       trail.update()
-	//     }
-	//   })
-	// }
-
-	const euler = new Euler()
-	const m4 = new Matrix4()
-	const position = (symmetry = true) => (Math.random() - (symmetry ? 0.5 : 0)) * 20
+	const position = (symmetry = true) =>
+		(Math.random() - (symmetry ? 0.5 : 0)) * 20
 	const rotation = () => Math.random() * Math.PI * 2
 </script>
 

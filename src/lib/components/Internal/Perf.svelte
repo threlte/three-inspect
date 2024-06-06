@@ -10,6 +10,14 @@
 	let ref: HTMLElement
 	let perf: ThreePerf
 
+	const { start } = useTask(
+		() => {
+			perf.end()
+			perf.begin()
+		},
+		{ autoStart: false }
+	)
+
 	onMount(() => {
 		perf = new ThreePerf({
 			renderer,
@@ -27,14 +35,6 @@
 			perf.dispose()
 		}
 	})
-
-	const { start } = useTask(
-		() => {
-			perf.end()
-			perf.begin()
-		},
-		{ autoStart: false }
-	)
 </script>
 
 <div bind:this={ref} />
