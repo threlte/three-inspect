@@ -92,7 +92,8 @@ Once running, the inspector can be toggled with the `i` key.
 ```ts
 import { createInspector } from 'three-inspect/vanilla'
 
-const inspector = createInspector({
+const targetElement = document.querySelector('div')
+const inspector = createInspector(targetElement, {
 	scene,
 	camera,
 	renderer,
