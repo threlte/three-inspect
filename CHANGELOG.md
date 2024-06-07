@@ -1,5 +1,11 @@
 # three-inspect
 
+## 0.5.1
+
+### Patch Changes
+
+- d059479: Fix perf monitor in vanilla environments
+
 ## 0.5.0
 
 ### Minor Changes
