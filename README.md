@@ -34,17 +34,27 @@ Currently, it covers:
 
 `three-inspect` is built with first-class support for [Threlte](https://threlte.xyz), but can be used with most Three.js apps (see Getting started (Vanilla, R3F, TresJS, etc.) below).
 
-If you are using Threlte, simply create the inspector by importing the `<Inspector>` component:
+If you are using Threlte, simply create the inspector by importing the `<Inspector>` component. The `<Inspector>` component must be placed in a separate child component of your `<Canvas>`.
 
-```html
+```svelte
+<!-- App.svelte -->
 <script>
 	import { Canvas } from '@threlte/core'
+	import Scene from './Scene.svelte'
+</script>
+
+<Canvas>
+	<Scene />
+</Canvas>
+```
+
+```svelte
+<!-- Scene.svelte -->
+<script>
 	import { Inspector } from 'three-inspect'
 </script>
 
-<canvas>
-	<Inspector />
-</canvas>
+<Inspector />
 ```
 
 Once running, the inspector can be toggled with the `i` key.
@@ -53,36 +63,35 @@ Once running, the inspector can be toggled with the `i` key.
 
 `three-inspect` uses [`svelte-tweakpane-ui`](https://kitschpatrol.com/svelte-tweakpane-ui) under the hood, and can be extended by adding additional tweakpane tabs or panes.
 
-```html
+```svelte
+<!-- Scene.svelte -->
 <script>
-	import { Canvas } from '@threlte/core'
 	import { Inspector } from 'three-inspect'
+	import { TabPage, Slider } from 'svelte-tweakpane-ui'
 
 	let foo = 1
 	let bar = 0
 </script>
 
-<canvas>
-	<Inspector>
-		<TabPage
-			slot="inspector"
-			title="world"
-		>
-			<Slider
-				bind:value="{foo}"
-				label="Foo"
-				min="{1}"
-				max="{30}"
-			/>
-			<Slider
-				bind:value="{bar}"
-				label="Bar"
-				min="{0}"
-				max="{1}"
-			/>
-		</TabPage>
-	</Inspector>
-</canvas>
+<Inspector>
+	<TabPage
+		slot="inspector"
+		title="world"
+	>
+		<Slider
+			bind:value={foo}
+			label="Foo"
+			min={1}
+			max={30}
+		/>
+		<Slider
+			bind:value={bar}
+			label="Bar"
+			min={0}
+			max={1}
+		/>
+	</TabPage>
+</Inspector>
 ```
 
 ### Getting started (Vanilla, R3F, TresJS, etc.)
