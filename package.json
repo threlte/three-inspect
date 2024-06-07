@@ -36,6 +36,7 @@
 	"license": "MIT",
 	"scripts": {
 		"start": "vite --host --open",
+		"dev": "vite --host --open",
 		"build": "vite build && npm run package",
 		"package": "svelte-kit sync && svelte-package && npm run package:vanilla && publint",
 		"package:vanilla": "vite build --config vite.lib.config.ts && tsc --project tsconfig.lib.json --emitDeclarationOnly",
