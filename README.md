@@ -39,19 +39,19 @@ If you are using Threlte, simply create the inspector by importing the `<Inspect
 ```svelte
 <!-- App.svelte -->
 <script>
-	import { Canvas } from '@threlte/core'
-	import Scene from './Scene.svelte'
+  import { Canvas } from '@threlte/core'
+  import Scene from './Scene.svelte'
 </script>
 
 <Canvas>
-	<Scene />
+  <Scene />
 </Canvas>
 ```
 
 ```svelte
 <!-- Scene.svelte -->
 <script>
-	import { Inspector } from 'three-inspect'
+  import { Inspector } from 'three-inspect'
 </script>
 
 <Inspector />
@@ -66,31 +66,31 @@ Once running, the inspector can be toggled with the `i` key.
 ```svelte
 <!-- Scene.svelte -->
 <script>
-	import { Inspector } from 'three-inspect'
-	import { TabPage, Slider } from 'svelte-tweakpane-ui'
+  import { Inspector } from 'three-inspect'
+  import { TabPage, Slider } from 'svelte-tweakpane-ui'
 
-	let foo = 1
-	let bar = 0
+  let foo = 1
+  let bar = 0
 </script>
 
 <Inspector>
-	<TabPage
-		slot="inspector"
-		title="world"
-	>
-		<Slider
-			bind:value={foo}
-			label="Foo"
-			min={1}
-			max={30}
-		/>
-		<Slider
-			bind:value={bar}
-			label="Bar"
-			min={0}
-			max={1}
-		/>
-	</TabPage>
+  <TabPage
+    slot="inspector"
+    title="world"
+  >
+    <Slider
+      bind:value={foo}
+      label="Foo"
+      min={1}
+      max={30}
+    />
+    <Slider
+      bind:value={bar}
+      label="Bar"
+      min={0}
+      max={1}
+    />
+  </TabPage>
 </Inspector>
 ```
 
@@ -103,9 +103,9 @@ import { createInspector } from 'three-inspect/vanilla'
 
 const targetElement = document.querySelector('div')
 const inspector = createInspector(targetElement, {
-	scene,
-	camera,
-	renderer,
+  scene,
+  camera,
+  renderer,
 })
 
 // When you're finished with the inspector...
