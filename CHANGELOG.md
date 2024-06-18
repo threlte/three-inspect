@@ -1,20 +1,10 @@
 # three-inspect
 
-## 0.6.0
+## 0.7.0
 
 ### Minor Changes
 
 - df3d429: Fix svelte export in package.json
-
-### Patch Changes
-
-- 8d2b5c5: Fix svelte export in package.json
-
-## 0.5.2
-
-### Patch Changes
-
-- 8ed379f: Fix svelte export in package.json
 
 ## 0.6.0
 
