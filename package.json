@@ -1,6 +1,6 @@
 {
 	"name": "three-inspect",
-	"version": "0.6.0",
+	"version": "0.5.1",
 	"type": "module",
 	"files": [
 		"dist",
@@ -10,8 +10,7 @@
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
-			"svelte": "./dist/index.js",
-			"import": "./dist/index.js"
+			"svelte": "./dist/index.js"
 		},
 		"./vanilla": {
 			"types": "./dist/inspector.d.ts",
