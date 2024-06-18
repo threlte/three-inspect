@@ -1,5 +1,11 @@
 # three-inspect
 
+## 0.6.0
+
+### Minor Changes
+
+- a0abc79: Remove svelte-splitpanes dependency
+
 ## 0.5.1
 
 ### Patch Changes
