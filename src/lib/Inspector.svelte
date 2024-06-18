@@ -3,11 +3,9 @@
 	import { persisted } from './internal/persisted'
 	import { setPublicContext, setInternalContext } from './internal/context'
 
-	export let position: 'draggable' | 'inline' = 'inline'
-
 	const enabled = persisted('enabled', true)
 
-	setPublicContext({ position })
+	setPublicContext({})
 	setInternalContext()
 
 	const handleKeyup = (event: KeyboardEvent) => {

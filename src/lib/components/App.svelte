@@ -3,19 +3,17 @@
 	import { Grid } from '@threlte/extras'
 
 	import { persisted } from '../internal/persisted'
-	import { getInternalContext, useInspector } from '../internal/context'
+	import { getInternalContext } from '../internal/context'
 	import { add } from '../hooks/useOnAdd'
 	import { remove } from '../hooks/useOnRemove'
 	import Portal from './Internal/Portal.svelte'
 	import AxesHelper from './Internal/AxesHelper.svelte'
 	import FreeCamera from './Tools/FreeCamera.svelte'
 	import Raycast from './Tools/Raycast.svelte'
-	import Inline from './Positions/Inline.svelte'
 	import Draggable from './Positions/Draggable.svelte'
 	import TransformControls from './Tools/TransformControls.svelte'
 	import Helpers from './Tools/Helpers.svelte'
 
-	const { position } = useInspector()
 	const { scene } = useThrelte()
 	const { usingFreeCamera, usingRaycast, selectedObject } = getInternalContext()
 
@@ -23,16 +21,15 @@
 	const axes = persisted('axes', true)
 
 	$: object = $selectedObject
-	$: component = $position === 'inline' ? Inline : Draggable
 </script>
 
 <Portal>
 	{#if $$slots.default}
-		<svelte:component this={component}>
+		<Draggable>
 			<slot />
-		</svelte:component>
+		</Draggable>
 	{:else}
-		<svelte:component this={component} />
+		<Draggable />
 	{/if}
 </Portal>
 

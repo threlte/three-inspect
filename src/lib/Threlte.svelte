@@ -8,7 +8,6 @@
 	import { useThrelte } from '@threlte/core'
 	import Inspector from './Inspector.svelte'
 
-	export let position: 'draggable' | 'inline' = 'draggable'
 	export let scene: undefined | Scene = undefined
 	export let camera: undefined | PerspectiveCamera | OrthographicCamera =
 		undefined
@@ -22,9 +21,9 @@
 </script>
 
 {#if $$slots.default}
-	<Inspector {position}>
+	<Inspector>
 		<slot />
 	</Inspector>
 {:else}
-	<Inspector {position} />
+	<Inspector />
 {/if}
