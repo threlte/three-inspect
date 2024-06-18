@@ -9,7 +9,6 @@
 	import Threlte from './Threlte.svelte'
 	import { writable } from 'svelte/store'
 
-	export let position: 'draggable' | 'inline' = 'draggable'
 	export let scene: Scene
 	export let camera: PerspectiveCamera | OrthographicCamera
 	export let renderer: WebGLRenderer
@@ -39,7 +38,6 @@
 </script>
 
 <Threlte
-	{position}
 	{scene}
 	{camera}
 	{renderer}

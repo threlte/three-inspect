@@ -25,12 +25,10 @@ interface InternalContext {
 }
 
 interface PublicContext {
-	position: Writable<'inline' | 'draggable'>
 	theme: Writable<keyof typeof ThemeUtils.presets>
 }
 
 interface SetPublicContextOptions {
-	position?: 'inline' | 'draggable'
 	theme?: keyof typeof ThemeUtils.presets
 }
 
@@ -46,7 +44,6 @@ export const setInternalContext = () => {
 
 export const setPublicContext = (options: SetPublicContextOptions) => {
 	setContext<PublicContext>(publicKey, {
-		position: writable(options.position ?? 'inline'),
 		theme: writable(options.theme ?? 'light'),
 	})
 }
