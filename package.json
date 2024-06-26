@@ -2,6 +2,18 @@
 	"name": "three-inspect",
 	"version": "0.7.0",
 	"type": "module",
+	"description": "An inspector and debugger for Three.js",
+	"keywords": [
+		"three",
+		"three.js",
+		"3d",
+		"inspect",
+		"debug",
+		"webgl",
+		"monitoring",
+		"threlte",
+		"r3f"
+	],
 	"files": [
 		"dist",
 		"!dist/**/*.test.*",
@@ -21,17 +33,6 @@
 		"type": "git",
 		"url": "git+https://github.com/michealparks/three-inspect.git"
 	},
-	"keywords": [
-		"three",
-		"three.js",
-		"3d",
-		"inspect",
-		"debug",
-		"webgl",
-		"monitoring",
-		"threlte",
-		"r3f"
-	],
 	"license": "MIT",
 	"scripts": {
 		"start": "vite --host --open",
