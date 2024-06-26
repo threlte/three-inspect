@@ -31,7 +31,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/michealparks/three-inspect.git"
+		"url": "git+https://github.com/threlte/three-inspect.git"
 	},
 	"license": "MIT",
 	"scripts": {
