@@ -32,7 +32,7 @@ Currently, it covers:
 
 ### Getting started
 
-`three-inspect` is built with first-class support for [Threlte](https://threlte.xyz), but can be used with most Three.js apps (see Getting started (Vanilla, R3F, TresJS, etc.) below).
+`three-inspect` is built with first-class support for [Threlte](https://threlte.xyz), but can be used without a framework or with other Frameworks such as React Three Fiber, for this setup see the section below.
 
 If you are using Threlte, simply create the inspector by importing the `<Inspector>` component. The `<Inspector>` component must be placed in a separate child component of your `<Canvas>`.
 
@@ -58,6 +58,24 @@ If you are using Threlte, simply create the inspector by importing the `<Inspect
 ```
 
 Once running, the inspector can be toggled with the `i` key.
+
+### Getting started (Vanilla, R3F, TresJS, etc.)
+
+`three-inspect` can be used in any Three.js-based environment by importing the `createInspector` function.
+
+```ts
+import { createInspector } from 'three-inspect/vanilla'
+
+const targetElement = document.querySelector('div')
+const inspector = createInspector(targetElement, {
+  scene,
+  camera,
+  renderer,
+})
+
+// When you're finished with the inspector...
+inspector.dispose()
+```
 
 ### Extending
 
@@ -92,24 +110,6 @@ Once running, the inspector can be toggled with the `i` key.
     />
   </TabPage>
 </Inspector>
-```
-
-### Getting started (Vanilla, R3F, TresJS, etc.)
-
-`three-inspect` can be used in any Three.js-based environment by importing the `createInspector` function.
-
-```ts
-import { createInspector } from 'three-inspect/vanilla'
-
-const targetElement = document.querySelector('div')
-const inspector = createInspector(targetElement, {
-  scene,
-  camera,
-  renderer,
-})
-
-// When you're finished with the inspector...
-inspector.dispose()
 ```
 
 Note that some features, such as extending the UI, are not possible using this function.
