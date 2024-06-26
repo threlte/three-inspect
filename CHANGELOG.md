@@ -1,5 +1,11 @@
 # three-inspect
 
+## 0.7.1
+
+### Patch Changes
+
+- ee83b7f: Add package.json description
+
 ## 0.7.0
 
 ### Minor Changes

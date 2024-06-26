@@ -1,6 +1,6 @@
 {
 	"name": "three-inspect",
-	"version": "0.7.0",
+	"version": "0.7.1",
 	"type": "module",
 	"description": "An inspector and debugger for Three.js",
 	"keywords": [
