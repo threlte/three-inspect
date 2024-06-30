@@ -1,5 +1,11 @@
 # three-inspect
 
+## 0.7.2
+
+### Patch Changes
+
+- 74e7077: Fix camera controls SSR undefined import
+
 ## 0.7.1
 
 ### Patch Changes
